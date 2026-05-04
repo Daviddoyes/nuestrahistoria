@@ -1,0 +1,172 @@
+'use client'
+
+import { useState, useRef } from 'react'
+import { X, ImagePlus } from 'lucide-react'
+import { getSupabase } from '@/lib/supabase'
+import type { Plan } from '@/types/planes'
+
+type Props = {
+  plan: Plan
+  onClose: () => void
+  onSubmit: (id: string, descripcion: string, fotoUrl: string | null) => Promise<void>
+}
+
+export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
+  const [descripcion, setDescripcion] = useState('')
+  const [foto, setFoto] = useState<File | null>(null)
+  const [preview, setPreview] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setFoto(file)
+    const reader = new FileReader()
+    reader.onloadend = () => setPreview(reader.result as string)
+    reader.readAsDataURL(file)
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    try {
+      let fotoUrl: string | null = null
+      if (foto) {
+        const ext = foto.name.split('.').pop()
+        const fileName = `${Date.now()}.${ext}`
+        const sb = getSupabase()
+        const { error: uploadError } = await sb.storage
+          .from('fotos')
+          .upload(fileName, foto, { cacheControl: '3600', upsert: true })
+        if (uploadError) {
+          console.error('[upload] error:', JSON.stringify(uploadError))
+          throw uploadError
+        }
+        const { data: { publicUrl } } = sb.storage.from('fotos').getPublicUrl(fileName)
+        fotoUrl = publicUrl
+        console.log('[upload] publicUrl:', fotoUrl)
+      }
+      await onSubmit(plan.id, descripcion, fotoUrl)
+    } catch (err) {
+      console.error('[CompletarPlanModal]', err)
+      const msg = err instanceof Error ? err.message : 'Error al subir la foto'
+      setError(`${msg} — verifica que el bucket "fotos" existe y es público.`)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm"
+      onClick={e => e.target === e.currentTarget && onClose()}
+    >
+      <div className="w-full bg-[#141414] rounded-t-2xl shadow-2xl overflow-hidden max-h-[92vh] overflow-y-auto">
+        <div className="flex justify-center pt-3 pb-1">
+          <div className="w-9 h-1 bg-[#2A2A2A] rounded-full" />
+        </div>
+
+        <div className="px-5 py-3 flex items-center justify-between sticky top-0 bg-[#141414] border-b border-[#2A2A2A]">
+          <h2 className="font-serif font-semibold text-[#F0F0F0] text-base">Completar plan</h2>
+          <button
+            onClick={onClose}
+            className="text-[#444444] active:text-[#F0F0F0] w-8 h-8 flex items-center justify-center rounded-lg active:bg-[#1A1A1A] transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="px-5 pt-4 pb-5 space-y-4">
+          <div className="rounded-xl bg-[#1A1A1A] border border-[#2A2A2A] px-4 py-3">
+            <p className="text-[10px] uppercase tracking-[0.12em] text-[#666666] mb-0.5">Plan</p>
+            <p className="font-medium text-[#F0F0F0] text-sm">{plan.titulo}</p>
+          </div>
+
+          <div>
+            <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-1.5">
+              Foto del recuerdo
+            </label>
+
+            {/* Photo picker */}
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              className="w-full rounded-xl border border-dashed border-[#2A2A2A] cursor-pointer overflow-hidden"
+              style={{ background: preview ? '#000' : '#1A1A1A' }}
+            >
+              {preview ? (
+                <img
+                  src={preview}
+                  alt="Preview"
+                  style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }}
+                />
+              ) : (
+                <div className="flex flex-col items-center justify-center p-8 text-[#444444]">
+                  <ImagePlus className="w-8 h-8 mb-1.5" />
+                  <p className="text-sm">Seleccionar foto</p>
+                  <p className="text-xs text-[#333333] mt-0.5">Opcional</p>
+                </div>
+              )}
+            </div>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFotoChange}
+              className="hidden"
+            />
+            {foto && (
+              <button
+                type="button"
+                onClick={() => { setFoto(null); setPreview(null) }}
+                className="mt-2 text-xs text-[#444444] active:text-[#666666] transition-colors min-h-[44px] flex items-center"
+              >
+                Quitar foto
+              </button>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-1.5">
+              Como fue
+            </label>
+            <textarea
+              value={descripcion}
+              onChange={e => setDescripcion(e.target.value)}
+              placeholder="Describe el recuerdo..."
+              rows={4}
+              className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#C9B99A] resize-none text-base"
+            />
+          </div>
+
+          {error && (
+            <p className="text-sm text-[#C97B7B] bg-[#8B3A3A]/20 px-3 py-2 rounded-lg">{error}</p>
+          )}
+
+          <div
+            className="flex gap-3"
+            style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+          >
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 py-3.5 rounded-xl border border-[#2A2A2A] text-[#666666] active:bg-[#1A1A1A] transition-colors text-sm font-medium min-h-[44px]"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex-1 bg-[#C9B99A] active:bg-[#B8A88A] disabled:opacity-30 disabled:cursor-not-allowed text-[#0A0A0A] py-3.5 rounded-xl transition-colors text-sm font-semibold min-h-[44px]"
+            >
+              {loading ? 'Subiendo...' : 'Guardar historia'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
