@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: '/planes',
     display: 'standalone',
     orientation: 'portrait',
-    background_color: '#3D5A4C',
-    theme_color: '#3D5A4C',
+    background_color: '#0A0A0A',
+    theme_color: '#0A0A0A',
     icons: [
       { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
       { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
