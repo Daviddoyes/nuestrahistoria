@@ -35,17 +35,19 @@ export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
     try {
       let fotoUrl: string | null = null
       if (foto) {
-        const ext = foto.name.split('.').pop()
-        const fileName = `${Date.now()}.${ext}`
-        const sb = getSupabase()
-        const { error: uploadError } = await sb.storage
+        const fileExt = foto.name.split('.').pop()
+        const fileName = `${Date.now()}.${fileExt}`
+        const supabase = getSupabase()
+        const { error: uploadError } = await supabase.storage
           .from('fotos')
-          .upload(fileName, foto, { cacheControl: '3600', upsert: true })
+          .upload(fileName, foto, { upsert: true })
         if (uploadError) {
-          console.error('[upload] error:', JSON.stringify(uploadError))
-          throw uploadError
+          console.error('[upload] uploadError:', uploadError)
+          throw new Error(uploadError.message)
         }
-        const { data: { publicUrl } } = sb.storage.from('fotos').getPublicUrl(fileName)
+        const { data: { publicUrl } } = supabase.storage
+          .from('fotos')
+          .getPublicUrl(fileName)
         fotoUrl = publicUrl
         console.log('[upload] publicUrl:', fotoUrl)
       }
