@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { X, Calendar, User } from 'lucide-react'
 import type { Plan } from '@/types/planes'
 
@@ -19,8 +19,6 @@ function formatDate(dateStr: string) {
 
 export default function HistoriaDetailModal({ plan, onClose }: Props) {
   const [closing, setClosing] = useState(false)
-  const touchStartY = useRef(0)
-  const touchCurrentY = useRef(0)
 
   const close = () => {
     if (closing) return
@@ -28,64 +26,44 @@ export default function HistoriaDetailModal({ plan, onClose }: Props) {
     setTimeout(onClose, 260)
   }
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartY.current = e.touches[0].clientY
-  }
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    touchCurrentY.current = e.touches[0].clientY
-  }
-
-  const handleTouchEnd = () => {
-    const delta = touchCurrentY.current - touchStartY.current
-    if (delta > 80) close()
-  }
-
   return (
-    <div
-      className={`fixed inset-0 z-50 bg-[#0A0A0A] flex flex-col ${closing ? 'modal-slide-down' : 'modal-slide-up'}`}
-      style={{ height: '100dvh', overflow: 'hidden' }}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
-      {/* Close button */}
+    <>
+      {/* X button — fixed, outside scroll, always visible */}
       <button
         onClick={close}
         aria-label="Cerrar"
-        className="absolute right-4 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white/10 text-white/50 active:bg-white/20 active:text-white transition-colors"
+        className="fixed right-4 z-[60] w-9 h-9 flex items-center justify-center rounded-full bg-black/50 text-white/60 active:bg-black/70 active:text-white transition-colors"
         style={{ top: 'calc(env(safe-area-inset-top, 0px) + 1rem)' }}
       >
         <X className="w-4 h-4" />
       </button>
 
-      {/* Photo — fixed height, never grows */}
+      {/* Single scroll container — everything flows naturally inside */}
       <div
-        className="w-full flex-shrink-0"
-        style={{ height: plan.foto_url ? '40dvh' : 0, background: '#000' }}
+        className={`fixed inset-0 z-50 bg-[#0A0A0A] ${closing ? 'modal-slide-down' : 'modal-slide-up'}`}
+        style={{
+          overflowY: 'scroll',
+          WebkitOverflowScrolling: 'touch',
+          overscrollBehavior: 'contain',
+        } as React.CSSProperties}
       >
-        {plan.foto_url && (
-          <img
-            src={plan.foto_url}
-            alt={plan.titulo}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain',
-              display: 'block',
-            }}
-          />
-        )}
-      </div>
+        {/* Photo — full width, natural height, black bg */}
+        <div style={{ background: '#000' }}>
+          {plan.foto_url ? (
+            <img
+              src={plan.foto_url}
+              alt={plan.titulo}
+              style={{ width: '100%', height: 'auto', display: 'block' }}
+            />
+          ) : (
+            <div style={{ height: '30vw', background: '#111' }} />
+          )}
+        </div>
 
-      {/* Scrollable content */}
-      <div
-        className="flex-1 min-h-0 overflow-y-auto"
-        style={{ WebkitOverflowScrolling: 'touch' } as React.CSSProperties}
-      >
+        {/* Content — normal flow below the photo */}
         <div
           className="px-6 pt-6"
-          style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 3rem)' }}
+          style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 4rem)' }}
         >
           <p className="text-[10px] uppercase tracking-[0.15em] text-[#C9B99A] mb-3">
             Historia
@@ -116,6 +94,6 @@ export default function HistoriaDetailModal({ plan, onClose }: Props) {
           )}
         </div>
       </div>
-    </div>
+    </>
   )
 }
