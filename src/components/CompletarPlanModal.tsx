@@ -2,7 +2,6 @@
 
 import { useState, useRef } from 'react'
 import { X, ImagePlus } from 'lucide-react'
-import { getSupabase } from '@/lib/supabase'
 import type { Plan } from '@/types/planes'
 
 type Props = {
@@ -35,20 +34,21 @@ export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
     try {
       let fotoUrl: string | null = null
       if (foto) {
-        const fileExt = foto.name.split('.').pop()
-        const fileName = `${Date.now()}.${fileExt}`
-        const supabase = getSupabase()
-        const { error: uploadError } = await supabase.storage
-          .from('fotos')
-          .upload(fileName, foto, { upsert: true })
-        if (uploadError) {
-          console.error('[upload] uploadError:', uploadError)
-          throw new Error(uploadError.message)
+        console.log('[debug] supabase url:', process.env.NEXT_PUBLIC_SUPABASE_URL)
+        console.log('[debug] bucket upload start')
+
+        const fd = new FormData()
+        fd.append('file', foto)
+
+        const res = await fetch('/api/upload', { method: 'POST', body: fd })
+        const json = await res.json()
+
+        if (!res.ok || json.error) {
+          console.error('[upload] api error:', json.error)
+          throw new Error(json.error ?? 'Error al subir la foto')
         }
-        const { data: { publicUrl } } = supabase.storage
-          .from('fotos')
-          .getPublicUrl(fileName)
-        fotoUrl = publicUrl
+
+        fotoUrl = json.publicUrl
         console.log('[upload] publicUrl:', fotoUrl)
       }
       await onSubmit(plan.id, descripcion, fotoUrl)
