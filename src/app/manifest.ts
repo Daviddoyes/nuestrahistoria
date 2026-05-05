@@ -2,9 +2,9 @@ import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Nuestros Planes',
-    short_name: 'Planes',
-    description: 'Nuestros Planes',
+    name: 'Nuestra Historia',
+    short_name: 'Historia',
+    description: 'Nuestra Historia',
     start_url: '/planes',
     display: 'standalone',
     orientation: 'portrait',

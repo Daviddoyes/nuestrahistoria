@@ -55,8 +55,9 @@ export default function LoginPage() {
       <div className="w-full max-w-sm mx-auto">
         <div className="mb-10">
           <h1 className="font-serif text-3xl font-bold text-[#F0F0F0] tracking-tight">
-            Nuestros Planes
+            Nuestra Historia
           </h1>
+          <p className="text-sm text-[#666666] mt-2">Vuestra historia, vuestros planes</p>
           <div className="h-px w-12 bg-[#C9B99A] mt-3" />
         </div>
 

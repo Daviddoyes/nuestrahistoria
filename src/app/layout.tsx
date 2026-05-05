@@ -18,12 +18,12 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: "Nuestros Planes",
-  description: "Nuestros Planes",
+  title: "Nuestra Historia",
+  description: "Nuestra Historia",
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Nuestros Planes',
+    title: 'Nuestra Historia',
   },
 };
 
