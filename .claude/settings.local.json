@@ -3,7 +3,19 @@
     "allow": [
       "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\")",
       "Read(//c/Users/david/Desktop/**)",
-      "Bash(npx create-next-app@latest createstories --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\")"
+      "Bash(npx create-next-app@latest createstories --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\")",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(vercel)",
+      "Bash(vercel --prod)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(gh repo *)",
+      "Bash(git remote *)",
+      "Bash(git branch *)",
+      "Bash(xcopy createstories *)"
     ]
   }
 }
