@@ -1,24 +1,50 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
-export default function LoginPage() {
+type Tab = 'login' | 'register'
+
+export default function AuthPage() {
   const router = useRouter()
-  const [password, setPassword] = useState('')
+  const [tab, setTab] = useState<Tab>('login')
   const [nombre, setNombre] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    if (localStorage.getItem('isLoggedIn') === 'true') {
-      router.push('/planes')
-    }
-  }, [router])
+  const supabase = createClient()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+
+    const { data, error: authError } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    })
+
+    if (authError || !data.user) {
+      setError('Email o contraseña incorrectos')
+      setLoading(false)
+      return
+    }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('pareja_id')
+      .eq('id', data.user.id)
+      .single()
+
+    router.push(profile?.pareja_id ? '/planes' : '/onboarding')
+  }
+
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!nombre.trim()) {
       setError('Escribe tu nombre')
@@ -26,26 +52,44 @@ export default function LoginPage() {
     }
     setLoading(true)
     setError('')
-    try {
-      const res = await fetch('/api/auth', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password }),
-      })
-      const { success: ok } = await res.json()
-      if (ok) {
-        localStorage.setItem('isLoggedIn', 'true')
-        localStorage.setItem('userName', nombre.trim())
-        router.push('/planes')
-      } else {
-        setError('Contraseña incorrecta')
-      }
-    } catch {
-      setError('Algo salió mal, inténtalo de nuevo')
-    } finally {
+
+    const { data, error: authError } = await supabase.auth.signUp({
+      email: email.trim(),
+      password,
+      options: { data: { nombre: nombre.trim() } },
+    })
+
+    if (authError) {
+      setError(authError.message)
       setLoading(false)
+      return
     }
+
+    if (!data.user) {
+      setError('No se pudo crear la cuenta')
+      setLoading(false)
+      return
+    }
+
+    const { error: profileError } = await supabase.from('profiles').insert({
+      id: data.user.id,
+      nombre: nombre.trim(),
+      email: email.trim(),
+    })
+
+    if (profileError) {
+      setError('Revisa tu email para confirmar tu cuenta y vuelve a entrar.')
+      setLoading(false)
+      return
+    }
+
+    router.push('/onboarding')
   }
+
+  const inputClass =
+    'w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#C9B99A] text-base'
+  const labelClass =
+    'block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-1.5'
 
   return (
     <main
@@ -61,56 +105,142 @@ export default function LoginPage() {
           <div className="h-px w-12 bg-[#C9B99A] mt-3" />
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-1.5">
-              Tu nombre
-            </label>
-            <input
-              type="text"
-              value={nombre}
-              onChange={e => setNombre(e.target.value)}
-              placeholder="Escribe tu nombre"
-              autoComplete="name"
-              className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#C9B99A] text-base"
-            />
-          </div>
-
-          <div>
-            <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-1.5">
-              Contraseña
-            </label>
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="••••••••"
-                autoComplete="current-password"
-                className="w-full px-4 py-3.5 pr-12 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#C9B99A] text-base"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-0 top-0 bottom-0 px-4 text-[#444444] active:text-[#C9B99A]"
-              >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
-          </div>
-
-          {error && (
-            <p className="text-sm text-[#C97B7B] bg-[#8B3A3A]/20 px-3 py-2 rounded-lg">{error}</p>
-          )}
-
+        <div className="flex gap-1 mb-8 bg-[#1A1A1A] p-1 rounded-xl">
           <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-[#C9B99A] active:bg-[#B8A88A] disabled:opacity-40 disabled:cursor-not-allowed text-[#0A0A0A] font-semibold py-3.5 rounded-xl transition-colors text-base mt-2"
+            onClick={() => {
+              setTab('login')
+              setError('')
+            }}
+            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
+              tab === 'login' ? 'bg-[#C9B99A] text-[#0A0A0A]' : 'text-[#666666]'
+            }`}
           >
-            {loading ? 'Entrando...' : 'Entrar'}
+            Entrar
           </button>
-        </form>
+          <button
+            onClick={() => {
+              setTab('register')
+              setError('')
+            }}
+            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
+              tab === 'register' ? 'bg-[#C9B99A] text-[#0A0A0A]' : 'text-[#666666]'
+            }`}
+          >
+            Crear cuenta
+          </button>
+        </div>
+
+        {tab === 'login' ? (
+          <form onSubmit={handleLogin} className="space-y-5">
+            <div>
+              <label className={labelClass}>Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="tu@email.com"
+                autoComplete="email"
+                className={inputClass}
+              />
+            </div>
+
+            <div>
+              <label className={labelClass}>Contraseña</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  autoComplete="current-password"
+                  className={`${inputClass} pr-12`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-0 top-0 bottom-0 px-4 text-[#444444] active:text-[#C9B99A]"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            {error && (
+              <p className="text-sm text-[#C97B7B] bg-[#8B3A3A]/20 px-3 py-2 rounded-lg">
+                {error}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-[#C9B99A] active:bg-[#B8A88A] disabled:opacity-40 disabled:cursor-not-allowed text-[#0A0A0A] font-semibold py-3.5 rounded-xl transition-colors text-base mt-2"
+            >
+              {loading ? 'Entrando...' : 'Entrar'}
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleRegister} className="space-y-5">
+            <div>
+              <label className={labelClass}>Tu nombre</label>
+              <input
+                type="text"
+                value={nombre}
+                onChange={e => setNombre(e.target.value)}
+                placeholder="Escribe tu nombre"
+                autoComplete="name"
+                className={inputClass}
+              />
+            </div>
+
+            <div>
+              <label className={labelClass}>Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="tu@email.com"
+                autoComplete="email"
+                className={inputClass}
+              />
+            </div>
+
+            <div>
+              <label className={labelClass}>Contraseña</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="Mínimo 6 caracteres"
+                  autoComplete="new-password"
+                  className={`${inputClass} pr-12`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-0 top-0 bottom-0 px-4 text-[#444444] active:text-[#C9B99A]"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            {error && (
+              <p className="text-sm text-[#C97B7B] bg-[#8B3A3A]/20 px-3 py-2 rounded-lg">
+                {error}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-[#C9B99A] active:bg-[#B8A88A] disabled:opacity-40 disabled:cursor-not-allowed text-[#0A0A0A] font-semibold py-3.5 rounded-xl transition-colors text-base mt-2"
+            >
+              {loading ? 'Creando cuenta...' : 'Crear cuenta'}
+            </button>
+          </form>
+        )}
       </div>
     </main>
   )

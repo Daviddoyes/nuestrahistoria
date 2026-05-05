@@ -2,65 +2,66 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { Plus, LogOut } from 'lucide-react'
-import { getPlanes, addPlan, completarPlan, deletePlan } from '@/lib/actions'
+import { Plus } from 'lucide-react'
+import { getMyData, addPlan, completarPlan, deletePlan } from '@/lib/actions'
 import PlanCard from '@/components/PlanCard'
 import HistoriaCard from '@/components/HistoriaCard'
 import BottomNav from '@/components/BottomNav'
 import NuevoPlanModal from '@/components/NuevoPlanModal'
 import CompletarPlanModal from '@/components/CompletarPlanModal'
-import type { Plan } from '@/types/planes'
+import UserMenu from '@/components/UserMenu'
+import type { Plan, Profile } from '@/types/planes'
 
 type Tab = 'pendientes' | 'historias'
 
 export default function PlanesPage() {
   const router = useRouter()
-  const [userName, setUserName] = useState('')
+  const [profile, setProfile] = useState<Profile | null>(null)
   const [activeTab, setActiveTab] = useState<Tab>('pendientes')
   const [planes, setPlanes] = useState<Plan[]>([])
   const [loading, setLoading] = useState(true)
   const [showNuevoPlan, setShowNuevoPlan] = useState(false)
   const [planToComplete, setPlanToComplete] = useState<Plan | null>(null)
+  const [upgraded, setUpgraded] = useState(false)
 
-  const fetchPlanes = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     try {
-      const data = await getPlanes()
-      setPlanes(data as Plan[])
+      const { planes: planesData, profile: profileData } = await getMyData()
+      if (!profileData) {
+        router.push('/')
+        return
+      }
+      setProfile(profileData)
+      setPlanes(planesData)
     } catch (err) {
       console.error(err)
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [router])
 
   useEffect(() => {
-    if (localStorage.getItem('isLoggedIn') !== 'true') {
-      router.push('/')
-      return
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('upgraded') === 'true') {
+      setUpgraded(true)
+      window.history.replaceState({}, '', '/planes')
     }
-    setUserName(localStorage.getItem('userName') || '')
-    fetchPlanes()
-  }, [router, fetchPlanes])
+    fetchData()
+  }, [fetchData])
 
   const pendientes = planes.filter(p => p.estado === 'pendiente')
   const historias = planes.filter(p => p.estado === 'hecho')
-
-  const handleLogout = () => {
-    localStorage.removeItem('isLoggedIn')
-    localStorage.removeItem('userName')
-    router.push('/')
-  }
+  const isAtLimit = profile?.plan === 'free' && planes.length >= 5
 
   const handleAddPlan = async (titulo: string, descripcion: string | null) => {
-    // throws on error — NuevoPlanModal catches and shows the message
-    await addPlan(titulo, descripcion, userName)
+    await addPlan(titulo, descripcion)
     setShowNuevoPlan(false)
-    await fetchPlanes()
+    await fetchData()
   }
 
   const handleDeletePlan = async (id: string) => {
     await deletePlan(id)
-    await fetchPlanes()
+    await fetchData()
   }
 
   const handleCompletarPlan = async (
@@ -70,29 +71,49 @@ export default function PlanesPage() {
   ) => {
     await completarPlan(id, descripcion, fotoUrl)
     setPlanToComplete(null)
-    await fetchPlanes()
+    await fetchData()
   }
 
   return (
     <div className="min-h-screen bg-[#0A0A0A]">
-      {/* Header */}
       <header
         className="bg-[#0A0A0A]/90 backdrop-blur-md border-b border-[#2A2A2A] sticky top-0 z-10"
         style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
       >
         <div className="flex items-center justify-between px-5 h-12">
-          <span className="font-serif font-semibold text-[#F0F0F0] tracking-tight">Nuestros Planes</span>
-          <button
-            onClick={handleLogout}
-            className="text-[#444444] active:text-[#C9B99A] transition-colors p-2 -mr-2 min-w-[44px] min-h-[44px] flex items-center justify-end"
-            aria-label="Salir"
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
+          <span className="font-serif font-semibold text-[#F0F0F0] tracking-tight">
+            Nuestros Planes
+          </span>
+          {profile && <UserMenu nombre={profile.nombre || ''} plan={profile.plan} />}
         </div>
       </header>
 
-      {/* Scrollable content */}
+      {upgraded && (
+        <div className="mx-4 mt-4 bg-[#4CAF50]/10 border border-[#4CAF50]/30 rounded-xl px-4 py-3 flex items-center justify-between">
+          <p className="text-sm text-[#4CAF50] font-medium">¡Ya eres Premium! Planes ilimitados</p>
+          <button
+            onClick={() => setUpgraded(false)}
+            className="text-[#4CAF50] text-lg leading-none ml-3"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
+      {isAtLimit && (
+        <div className="mx-4 mt-4 bg-[#C9B99A]/10 border border-[#C9B99A]/30 rounded-xl px-4 py-3 flex items-center justify-between gap-3">
+          <p className="text-sm text-[#C9B99A] font-medium">
+            Has alcanzado el límite gratuito (5 planes)
+          </p>
+          <button
+            onClick={() => router.push('/pricing')}
+            className="shrink-0 text-xs font-semibold bg-[#C9B99A] text-[#0A0A0A] px-3 py-1.5 rounded-lg"
+          >
+            Upgrade
+          </button>
+        </div>
+      )}
+
       <div
         className="px-4 py-4"
         style={{
@@ -143,8 +164,7 @@ export default function PlanesPage() {
         )}
       </div>
 
-      {/* FAB — visible only on pendientes tab */}
-      {activeTab === 'pendientes' && (
+      {activeTab === 'pendientes' && !isAtLimit && (
         <button
           onClick={() => setShowNuevoPlan(true)}
           className="fixed right-5 z-20 w-14 h-14 bg-[#C9B99A] text-[#0A0A0A] rounded-full shadow-lg shadow-[#C9B99A]/20 flex items-center justify-center active:scale-95 transition-transform"
@@ -155,7 +175,6 @@ export default function PlanesPage() {
         </button>
       )}
 
-      {/* Bottom navigation */}
       <BottomNav
         activeTab={activeTab}
         onTabChange={setActiveTab}
