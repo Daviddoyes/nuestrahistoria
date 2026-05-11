@@ -23,8 +23,10 @@ export async function POST(req: NextRequest) {
 
     const supabase = createClient(supabaseUrl, supabaseKey)
 
-    const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg'
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${fileExt}`
+    const fileName = `foto-${Date.now()}.jpg`
+
+    console.log('[upload] fileName:', fileName)
+    console.log('[upload] bucket:', 'fotos')
 
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
@@ -35,6 +37,8 @@ export async function POST(req: NextRequest) {
         contentType: file.type,
         upsert: true,
       })
+
+    console.log('[upload] error:', JSON.stringify(uploadError))
 
     if (uploadError) {
       console.error('[upload] uploadError:', uploadError)
