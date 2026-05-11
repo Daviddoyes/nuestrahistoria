@@ -23,14 +23,14 @@ export async function POST(req: NextRequest) {
 
     const supabase = createClient(supabaseUrl, supabaseKey)
 
-    const fileExt = file.name.split('.').pop()
-    const fileName = `${Date.now()}.${fileExt}`
+    const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg'
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${fileExt}`
 
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
 
     const { error: uploadError } = await supabase.storage
-      .from('fotos')
+      .from('Fotos')
       .upload(fileName, buffer, {
         contentType: file.type,
         upsert: true,
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     }
 
     const { data: { publicUrl } } = supabase.storage
-      .from('fotos')
+      .from('Fotos')
       .getPublicUrl(fileName)
 
     console.log('[upload] publicUrl:', publicUrl)
