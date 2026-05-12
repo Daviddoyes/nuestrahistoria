@@ -51,7 +51,7 @@ export default function PlanesPage() {
 
   const pendientes = planes.filter(p => p.estado === 'pendiente')
   const historias = planes.filter(p => p.estado === 'hecho')
-  const isAtLimit = profile?.plan === 'free' && planes.length >= 5
+  const isAtLimit = profile?.plan === 'free' && pendientes.length >= 5
 
   const handleAddPlan = async (titulo: string, descripcion: string | null) => {
     await addPlan(titulo, descripcion)

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Copy, Check, Users, ArrowRight } from 'lucide-react'
+import { Copy, Check, Users, ArrowRight, Link2 } from 'lucide-react'
 import { getMyProfile, vincularPareja } from '@/lib/actions'
 import type { Profile } from '@/types/planes'
 
@@ -20,10 +20,6 @@ export default function OnboardingPage() {
       const p = await getMyProfile()
       if (!p) {
         router.push('/')
-        return
-      }
-      if (p.pareja_id) {
-        router.push('/planes')
         return
       }
       setProfile(p)
@@ -49,7 +45,10 @@ export default function OnboardingPage() {
     setError('')
     try {
       await vincularPareja(codigoInput)
-      router.push('/planes')
+      // Reload profile to reflect new pareja_id
+      const updated = await getMyProfile()
+      setProfile(updated)
+      setCodigoInput('')
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error al vincular')
     } finally {
@@ -76,13 +75,16 @@ export default function OnboardingPage() {
             <Users className="w-5 h-5 text-[#C9B99A]" />
           </div>
           <h1 className="font-serif text-2xl font-bold text-[#F0F0F0] tracking-tight">
-            Vincular pareja
+            {profile?.pareja_id ? 'Mi cuenta' : 'Vincular pareja'}
           </h1>
           <p className="text-sm text-[#666666] mt-2">
-            Comparte tu código o introduce el de tu pareja
+            {profile?.pareja_id
+              ? 'Ya estás vinculado con tu pareja'
+              : 'Comparte tu código o introduce el de tu pareja'}
           </p>
         </div>
 
+        {/* Invitation code — always visible */}
         <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl p-5 mb-6">
           <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-3">
             Tu código
@@ -108,41 +110,63 @@ export default function OnboardingPage() {
           </p>
         </div>
 
-        <form onSubmit={handleVincular} className="space-y-4">
-          <div>
-            <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-1.5">
-              Código de tu pareja
-            </label>
-            <input
-              type="text"
-              value={codigoInput}
-              onChange={e => setCodigoInput(e.target.value.toLowerCase())}
-              placeholder="ej: a3b4c5d6"
-              maxLength={8}
-              className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#C9B99A] text-base font-mono tracking-widest"
-            />
-          </div>
+        {/* Already linked state */}
+        {profile?.pareja_id ? (
+          <>
+            <div className="bg-[#1A2A1A] border border-[#2A4A2A] rounded-xl px-4 py-3 flex items-center gap-3 mb-6">
+              <Link2 className="w-4 h-4 text-[#6BBF6B] shrink-0" />
+              <p className="text-sm text-[#6BBF6B]">Pareja vinculada correctamente</p>
+            </div>
+            <button
+              onClick={() => router.push('/planes')}
+              className="w-full bg-[#C9B99A] active:bg-[#B8A88A] text-[#0A0A0A] font-semibold py-3.5 rounded-xl transition-colors text-base flex items-center justify-center gap-2"
+            >
+              Ir a nuestros planes
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </>
+        ) : (
+          /* Not linked — show link form */
+          <>
+            <form onSubmit={handleVincular} className="space-y-4">
+              <div>
+                <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-1.5">
+                  Código de tu pareja
+                </label>
+                <input
+                  type="text"
+                  value={codigoInput}
+                  onChange={e => setCodigoInput(e.target.value.toLowerCase())}
+                  placeholder="ej: a3b4c5d6"
+                  maxLength={8}
+                  className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#C9B99A] text-base font-mono tracking-widest"
+                />
+              </div>
 
-          {error && (
-            <p className="text-sm text-[#C97B7B] bg-[#8B3A3A]/20 px-3 py-2 rounded-lg">{error}</p>
-          )}
+              {error && (
+                <p className="text-sm text-[#C97B7B] bg-[#8B3A3A]/20 px-3 py-2 rounded-lg">
+                  {error}
+                </p>
+              )}
 
-          <button
-            type="submit"
-            disabled={linking}
-            className="w-full bg-[#C9B99A] active:bg-[#B8A88A] disabled:opacity-40 disabled:cursor-not-allowed text-[#0A0A0A] font-semibold py-3.5 rounded-xl transition-colors text-base"
-          >
-            {linking ? 'Vinculando...' : 'Vincular pareja'}
-          </button>
-        </form>
+              <button
+                type="submit"
+                disabled={linking}
+                className="w-full bg-[#C9B99A] active:bg-[#B8A88A] disabled:opacity-40 disabled:cursor-not-allowed text-[#0A0A0A] font-semibold py-3.5 rounded-xl transition-colors text-base"
+              >
+                {linking ? 'Vinculando...' : 'Vincular pareja'}
+              </button>
+            </form>
 
-        <button
-          onClick={() => router.push('/planes')}
-          className="w-full mt-4 flex items-center justify-center gap-2 text-sm text-[#444444] py-3 active:text-[#666666] transition-colors"
-        >
-          Continuar solo
-          <ArrowRight className="w-4 h-4" />
-        </button>
+            <button
+              onClick={() => router.push('/planes')}
+              className="w-full mt-4 flex items-center justify-center gap-2 text-sm text-[#444444] py-3 active:text-[#666666] transition-colors"
+            >
+              Continuar solo
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </>
+        )}
       </div>
     </main>
   )

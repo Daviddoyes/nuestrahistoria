@@ -29,7 +29,9 @@ export async function getMyData(): Promise<{ planes: Plan[]; profile: Profile | 
 
   if (!profile) return { planes: [], profile: null }
 
-  const codigos: string[] = [profile.codigo_invitacion]
+  // Build list of pareja_codigos to query — handle null codigo_invitacion safely
+  const codigos: string[] = []
+  if (profile.codigo_invitacion) codigos.push(profile.codigo_invitacion)
 
   if (profile.pareja_id) {
     const { data: partner } = await service
@@ -39,6 +41,8 @@ export async function getMyData(): Promise<{ planes: Plan[]; profile: Profile | 
       .single()
     if (partner?.codigo_invitacion) codigos.push(partner.codigo_invitacion)
   }
+
+  if (codigos.length === 0) return { planes: [], profile: profile as Profile }
 
   const supabase = getAnonClient()
   const { data: planes, error } = await supabase
@@ -108,10 +112,12 @@ export async function addPlan(titulo: string, descripcion: string | null) {
       if (partner?.codigo_invitacion) codigos.push(partner.codigo_invitacion)
     }
     const supabase = getAnonClient()
+    // Only count pending plans — completed plans don't count toward the limit
     const { count } = await supabase
       .from('planes')
       .select('*', { count: 'exact', head: true })
       .in('pareja_codigo', codigos)
+      .eq('estado', 'pendiente')
     if ((count ?? 0) >= 5) throw new Error('Límite del plan gratuito alcanzado')
   }
 
