@@ -82,7 +82,7 @@ export default function PlanesPage() {
       >
         <div className="flex items-center justify-between px-5 h-12">
           <span className="font-serif font-semibold text-[#F0F0F0] tracking-tight">
-            Nuestros Planes
+            Livestory
           </span>
           {profile && <UserMenu nombre={profile.nombre || ''} plan={profile.plan} />}
         </div>
@@ -101,13 +101,13 @@ export default function PlanesPage() {
       )}
 
       {isAtLimit && (
-        <div className="mx-4 mt-4 bg-[#C9B99A]/10 border border-[#C9B99A]/30 rounded-xl px-4 py-3 flex items-center justify-between gap-3">
-          <p className="text-sm text-[#C9B99A] font-medium">
+        <div className="mx-4 mt-4 bg-[#E8692A]/10 border border-[#E8692A]/30 rounded-xl px-4 py-3 flex items-center justify-between gap-3">
+          <p className="text-sm text-[#E8692A] font-medium">
             Has alcanzado el límite gratuito (5 planes)
           </p>
           <button
             onClick={() => router.push('/pricing')}
-            className="shrink-0 text-xs font-semibold bg-[#C9B99A] text-[#0A0A0A] px-3 py-1.5 rounded-lg"
+            className="shrink-0 text-xs font-semibold bg-[#E8692A] text-white px-3 py-1.5 rounded-lg"
           >
             Upgrade
           </button>
@@ -122,7 +122,7 @@ export default function PlanesPage() {
       >
         {loading ? (
           <div className="flex justify-center pt-24">
-            <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#C9B99A] rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#E8692A] rounded-full animate-spin" />
           </div>
         ) : activeTab === 'pendientes' ? (
           <div key="pendientes" className="tab-fade-in space-y-3">
@@ -146,7 +146,7 @@ export default function PlanesPage() {
           <div key="historias" className="tab-fade-in">
             {historias.length === 0 ? (
               <div className="flex flex-col items-center justify-center pt-24 gap-2 text-center">
-                <p className="text-base font-medium text-[#F0F0F0]">Sin historias aun</p>
+                <p className="text-base font-medium text-[#F0F0F0]">Sin historias aún</p>
                 <p className="text-sm text-[#666666]">Completa un plan para crear una historia</p>
               </div>
             ) : (
@@ -167,7 +167,7 @@ export default function PlanesPage() {
       {activeTab === 'pendientes' && !isAtLimit && (
         <button
           onClick={() => setShowNuevoPlan(true)}
-          className="fixed right-5 z-20 w-14 h-14 bg-[#C9B99A] text-[#0A0A0A] rounded-full shadow-lg shadow-[#C9B99A]/20 flex items-center justify-center active:scale-95 transition-transform"
+          className="fixed right-5 z-20 w-14 h-14 bg-[#E8692A] text-white rounded-full shadow-lg shadow-[#E8692A]/25 flex items-center justify-center active:scale-95 transition-transform"
           style={{ bottom: 'calc(3.5rem + env(safe-area-inset-bottom, 0px) + 1.25rem)' }}
           aria-label="Añadir plan"
         >

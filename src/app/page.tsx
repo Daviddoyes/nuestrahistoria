@@ -96,14 +96,14 @@ export default function AuthPage() {
     if (!resetEmail.trim()) return
     setResetLoading(true)
     await supabase.auth.resetPasswordForEmail(resetEmail.trim(), {
-      redirectTo: 'https://nuestrahistoria-psi.vercel.app/reset-password',
+      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`,
     })
     setResetLoading(false)
     setResetSent(true)
   }
 
   const inputClass =
-    'w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#C9B99A] text-base'
+    'w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-base'
   const labelClass =
     'block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-1.5'
 
@@ -115,18 +115,21 @@ export default function AuthPage() {
       >
         <div className="w-full max-w-sm mx-auto">
           <div className="mb-10">
+            <div className="w-10 h-10 rounded-full bg-[#E8692A] flex items-center justify-center mb-4">
+              <span className="text-white font-bold text-sm tracking-wide">LS</span>
+            </div>
             <h1 className="font-serif text-3xl font-bold text-[#F0F0F0] tracking-tight">
-              Nuestra Historia
+              Livestory
             </h1>
-            <p className="text-sm text-[#666666] mt-2">Vuestra historia, vuestros planes</p>
-            <div className="h-px w-12 bg-[#C9B99A] mt-3" />
+            <p className="text-sm text-[#666666] mt-2">Vive. Recuerda. Comparte.</p>
+            <div className="h-px w-12 bg-[#E8692A] mt-3" />
           </div>
 
           <div className="flex gap-1 mb-8 bg-[#1A1A1A] p-1 rounded-xl">
             <button
               onClick={() => { setTab('login'); setError('') }}
               className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-                tab === 'login' ? 'bg-[#C9B99A] text-[#0A0A0A]' : 'text-[#666666]'
+                tab === 'login' ? 'bg-[#E8692A] text-white' : 'text-[#666666]'
               }`}
             >
               Entrar
@@ -134,7 +137,7 @@ export default function AuthPage() {
             <button
               onClick={() => { setTab('register'); setError('') }}
               className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-                tab === 'register' ? 'bg-[#C9B99A] text-[#0A0A0A]' : 'text-[#666666]'
+                tab === 'register' ? 'bg-[#E8692A] text-white' : 'text-[#666666]'
               }`}
             >
               Crear cuenta
@@ -169,7 +172,7 @@ export default function AuthPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-0 top-0 bottom-0 px-4 text-[#444444] active:text-[#C9B99A]"
+                    className="absolute right-0 top-0 bottom-0 px-4 text-[#444444] active:text-[#E8692A]"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -185,7 +188,7 @@ export default function AuthPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#C9B99A] active:bg-[#B8A88A] disabled:opacity-40 disabled:cursor-not-allowed text-[#0A0A0A] font-semibold py-3.5 rounded-xl transition-colors text-base mt-2"
+                className="w-full bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl transition-colors text-base mt-2"
               >
                 {loading ? 'Entrando...' : 'Entrar'}
               </button>
@@ -193,7 +196,7 @@ export default function AuthPage() {
               <button
                 type="button"
                 onClick={() => { setResetEmail(email); setResetSent(false); setShowForgot(true) }}
-                className="w-full text-center text-xs text-[#666666] pt-1 active:text-[#C9B99A] transition-colors"
+                className="w-full text-center text-xs text-[#666666] pt-1 active:text-[#E8692A] transition-colors"
               >
                 ¿Olvidaste tu contraseña?
               </button>
@@ -238,7 +241,7 @@ export default function AuthPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-0 top-0 bottom-0 px-4 text-[#444444] active:text-[#C9B99A]"
+                    className="absolute right-0 top-0 bottom-0 px-4 text-[#444444] active:text-[#E8692A]"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -254,7 +257,7 @@ export default function AuthPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#C9B99A] active:bg-[#B8A88A] disabled:opacity-40 disabled:cursor-not-allowed text-[#0A0A0A] font-semibold py-3.5 rounded-xl transition-colors text-base mt-2"
+                className="w-full bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl transition-colors text-base mt-2"
               >
                 {loading ? 'Creando cuenta...' : 'Crear cuenta'}
               </button>
@@ -276,7 +279,7 @@ export default function AuthPage() {
               </h2>
               <button
                 onClick={() => setShowForgot(false)}
-                className="text-[#444444] active:text-[#C9B99A] p-1"
+                className="text-[#444444] active:text-[#E8692A] p-1"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -305,7 +308,7 @@ export default function AuthPage() {
                 <button
                   type="submit"
                   disabled={resetLoading || !resetEmail.trim()}
-                  className="w-full bg-[#C9B99A] active:bg-[#B8A88A] disabled:opacity-40 disabled:cursor-not-allowed text-[#0A0A0A] font-semibold py-3.5 rounded-xl transition-colors text-base"
+                  className="w-full bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl transition-colors text-base"
                 >
                   {resetLoading ? 'Enviando...' : 'Enviar enlace'}
                 </button>

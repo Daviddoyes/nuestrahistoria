@@ -65,7 +65,7 @@ export default function HistoriaDetailModal({ plan, onClose }: Props) {
           className="px-6 pt-6"
           style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 4rem)' }}
         >
-          <p className="text-[10px] uppercase tracking-[0.15em] text-[#C9B99A] mb-3">
+          <p className="text-[10px] uppercase tracking-[0.15em] text-[#E8692A] mb-3">
             Historia
           </p>
 

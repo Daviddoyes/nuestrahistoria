@@ -26,7 +26,7 @@ export default function BottomNav({
         <button
           onClick={() => onTabChange('pendientes')}
           className={`flex-1 flex flex-col items-center justify-center gap-1 active:bg-[#141414] transition-colors ${
-            activeTab === 'pendientes' ? 'text-[#E8E0D0]' : 'text-[#333333]'
+            activeTab === 'pendientes' ? 'text-[#E8692A]' : 'text-[#333333]'
           }`}
         >
           <ListTodo className="w-6 h-6" strokeWidth={activeTab === 'pendientes' ? 2 : 1.5} />
@@ -38,7 +38,7 @@ export default function BottomNav({
         <button
           onClick={() => onTabChange('historias')}
           className={`flex-1 flex flex-col items-center justify-center gap-1 active:bg-[#141414] transition-colors ${
-            activeTab === 'historias' ? 'text-[#E8E0D0]' : 'text-[#333333]'
+            activeTab === 'historias' ? 'text-[#E8692A]' : 'text-[#333333]'
           }`}
         >
           <BookOpen className="w-6 h-6" strokeWidth={activeTab === 'historias' ? 2 : 1.5} />

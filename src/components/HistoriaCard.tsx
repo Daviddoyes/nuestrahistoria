@@ -53,7 +53,7 @@ export default function HistoriaCard({ plan, onDelete }: Props) {
 
         {/* Text overlay */}
         <div className="absolute inset-x-0 bottom-0 p-4">
-          <span className="text-[#C9B99A]/60 text-[10px] uppercase tracking-widest font-medium block mb-1.5">
+          <span className="text-[#E8692A]/60 text-[10px] uppercase tracking-widest font-medium block mb-1.5">
             Historia
           </span>
           <h3 className="font-serif font-semibold text-white text-base leading-snug mb-1.5">

@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation'
 import { Check, Crown, Zap } from 'lucide-react'
 
 const FREE_FEATURES = [
-  '5 planes por pareja',
+  '5 planes pendientes',
   'Historias ilimitadas',
-  '1 pareja vinculada',
+  '1 contacto vinculado',
   'Fotos en las historias',
 ]
 
@@ -49,7 +49,7 @@ export default function PricingPage() {
       <div className="w-full max-w-sm mx-auto">
         <button
           onClick={() => router.back()}
-          className="text-[#666666] text-sm mb-8 active:text-[#C9B99A] transition-colors"
+          className="text-[#666666] text-sm mb-8 active:text-[#E8692A] transition-colors"
         >
           ← Volver
         </button>
@@ -65,7 +65,7 @@ export default function PricingPage() {
           <button
             onClick={() => setBilling('monthly')}
             className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-              billing === 'monthly' ? 'bg-[#C9B99A] text-[#0A0A0A]' : 'text-[#666666]'
+              billing === 'monthly' ? 'bg-[#E8692A] text-white' : 'text-[#666666]'
             }`}
           >
             Mensual
@@ -73,7 +73,7 @@ export default function PricingPage() {
           <button
             onClick={() => setBilling('yearly')}
             className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors relative ${
-              billing === 'yearly' ? 'bg-[#C9B99A] text-[#0A0A0A]' : 'text-[#666666]'
+              billing === 'yearly' ? 'bg-[#E8692A] text-white' : 'text-[#666666]'
             }`}
           >
             Anual
@@ -87,7 +87,7 @@ export default function PricingPage() {
           <div className="flex items-start justify-between mb-4">
             <div>
               <h2 className="font-semibold text-[#F0F0F0] text-lg">Gratuito</h2>
-              <p className="text-sm text-[#666666]">Para empezar vuestra historia</p>
+              <p className="text-sm text-[#666666]">Para empezar</p>
             </div>
             <div className="text-right">
               <p className="text-2xl font-bold text-[#F0F0F0]">0€</p>
@@ -97,7 +97,7 @@ export default function PricingPage() {
           <ul className="space-y-2 mb-5">
             {FREE_FEATURES.map(f => (
               <li key={f} className="flex items-center gap-2 text-sm text-[#888888]">
-                <Check className="w-4 h-4 text-[#C9B99A] shrink-0" />
+                <Check className="w-4 h-4 text-[#E8692A] shrink-0" />
                 {f}
               </li>
             ))}
@@ -110,9 +110,9 @@ export default function PricingPage() {
           </button>
         </div>
 
-        <div className="bg-[#1A1A1A] border border-[#C9B99A]/50 rounded-2xl p-5 relative overflow-hidden">
+        <div className="bg-[#1A1A1A] border border-[#E8692A]/50 rounded-2xl p-5 relative overflow-hidden">
           <div className="absolute top-3 right-3">
-            <span className="flex items-center gap-1 text-[10px] font-medium bg-[#C9B99A] text-[#0A0A0A] px-2 py-1 rounded-full">
+            <span className="flex items-center gap-1 text-[10px] font-medium bg-[#E8692A] text-white px-2 py-1 rounded-full">
               <Crown className="w-3 h-3" />
               Popular
             </span>
@@ -120,7 +120,7 @@ export default function PricingPage() {
 
           <div className="mb-1 pr-20">
             <h2 className="font-semibold text-[#F0F0F0] text-lg">Premium</h2>
-            <p className="text-sm text-[#666666]">Todo ilimitado para vuestra pareja</p>
+            <p className="text-sm text-[#666666]">Todo ilimitado, sin restricciones</p>
           </div>
 
           <div className="mb-4">
@@ -143,7 +143,7 @@ export default function PricingPage() {
           <ul className="space-y-2 mb-5">
             {PREMIUM_FEATURES.map(f => (
               <li key={f} className="flex items-center gap-2 text-sm text-[#F0F0F0]">
-                <Check className="w-4 h-4 text-[#C9B99A] shrink-0" />
+                <Check className="w-4 h-4 text-[#E8692A] shrink-0" />
                 {f}
               </li>
             ))}
@@ -152,7 +152,7 @@ export default function PricingPage() {
           <button
             onClick={handleUpgrade}
             disabled={loading}
-            className="w-full bg-[#C9B99A] active:bg-[#B8A88A] disabled:opacity-40 text-[#0A0A0A] font-semibold py-3.5 rounded-xl text-sm flex items-center justify-center gap-2"
+            className="w-full bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 text-white font-semibold py-3.5 rounded-xl text-sm flex items-center justify-center gap-2"
           >
             <Zap className="w-4 h-4" />
             {loading ? 'Redirigiendo...' : 'Hacerse Premium'}

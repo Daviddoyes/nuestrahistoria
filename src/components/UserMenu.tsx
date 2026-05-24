@@ -27,7 +27,7 @@ export default function UserMenu({ nombre, plan }: UserMenuProps) {
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="w-8 h-8 rounded-full bg-[#C9B99A] text-[#0A0A0A] font-semibold text-sm flex items-center justify-center active:scale-95 transition-transform"
+        className="w-8 h-8 rounded-full bg-[#E8692A] text-white font-semibold text-sm flex items-center justify-center active:scale-95 transition-transform"
         aria-label="Menú de usuario"
       >
         {initial}
@@ -40,7 +40,7 @@ export default function UserMenu({ nombre, plan }: UserMenuProps) {
             <div className="px-4 py-3 border-b border-[#2A2A2A]">
               <p className="text-sm font-medium text-[#F0F0F0] truncate">{nombre}</p>
               <div className="flex items-center gap-1 mt-0.5">
-                {plan === 'premium' && <Crown className="w-3 h-3 text-[#C9B99A]" />}
+                {plan === 'premium' && <Crown className="w-3 h-3 text-[#E8692A]" />}
                 <p className="text-xs text-[#666666]">
                   {plan === 'premium' ? 'Premium' : 'Plan gratuito'}
                 </p>
@@ -53,7 +53,7 @@ export default function UserMenu({ nombre, plan }: UserMenuProps) {
                   setOpen(false)
                   router.push('/pricing')
                 }}
-                className="w-full px-4 py-3 text-left text-sm text-[#C9B99A] flex items-center gap-2 active:bg-[#2A2A2A] transition-colors"
+                className="w-full px-4 py-3 text-left text-sm text-[#E8692A] flex items-center gap-2 active:bg-[#2A2A2A] transition-colors"
               >
                 <Crown className="w-4 h-4" />
                 Hacerse Premium

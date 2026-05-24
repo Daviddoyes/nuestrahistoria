@@ -52,7 +52,7 @@ export default function ResetPasswordPage() {
   }
 
   const inputClass =
-    'w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#C9B99A] text-base'
+    'w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-base'
   const labelClass =
     'block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-1.5'
 
@@ -63,11 +63,14 @@ export default function ResetPasswordPage() {
     >
       <div className="w-full max-w-sm mx-auto">
         <div className="mb-10">
+          <div className="w-10 h-10 rounded-full bg-[#E8692A] flex items-center justify-center mb-4">
+            <span className="text-white font-bold text-sm tracking-wide">LS</span>
+          </div>
           <h1 className="font-serif text-3xl font-bold text-[#F0F0F0] tracking-tight">
             Nueva contraseña
           </h1>
           <p className="text-sm text-[#666666] mt-2">Elige una contraseña segura</p>
-          <div className="h-px w-12 bg-[#C9B99A] mt-3" />
+          <div className="h-px w-12 bg-[#E8692A] mt-3" />
         </div>
 
         {done ? (
@@ -78,7 +81,7 @@ export default function ResetPasswordPage() {
           </div>
         ) : !ready ? (
           <div className="flex flex-col items-center gap-4 pt-8">
-            <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#C9B99A] rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#E8692A] rounded-full animate-spin" />
             <p className="text-sm text-[#666666]">Verificando enlace...</p>
           </div>
         ) : (
@@ -98,7 +101,7 @@ export default function ResetPasswordPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-0 top-0 bottom-0 px-4 text-[#444444] active:text-[#C9B99A]"
+                  className="absolute right-0 top-0 bottom-0 px-4 text-[#444444] active:text-[#E8692A]"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -126,7 +129,7 @@ export default function ResetPasswordPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#C9B99A] active:bg-[#B8A88A] disabled:opacity-40 disabled:cursor-not-allowed text-[#0A0A0A] font-semibold py-3.5 rounded-xl transition-colors text-base mt-2"
+              className="w-full bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl transition-colors text-base mt-2"
             >
               {loading ? 'Guardando...' : 'Guardar contraseña'}
             </button>

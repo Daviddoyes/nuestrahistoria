@@ -23,7 +23,7 @@ export default function PlanCard({ plan, onCompletar, onDelete }: Props) {
 
   return (
     <div className="bg-[#141414] rounded-xl border border-[#2A2A2A] p-4 transition-colors"
-      style={{ borderLeft: '2px solid #C9B99A' }}
+      style={{ borderLeft: '2px solid #E8692A' }}
     >
       <div className="flex items-start justify-between gap-3">
         {/* Content */}
@@ -47,7 +47,7 @@ export default function PlanCard({ plan, onCompletar, onDelete }: Props) {
           <button
             onClick={onCompletar}
             aria-label="Marcar como hecho"
-            className="w-11 h-11 rounded-xl border border-[#2A2A2A] flex items-center justify-center text-[#444444] active:bg-[#C9B99A] active:text-[#0A0A0A] active:border-[#C9B99A] transition-colors"
+            className="w-11 h-11 rounded-xl border border-[#2A2A2A] flex items-center justify-center text-[#444444] active:bg-[#E8692A] active:text-white active:border-[#E8692A] transition-colors"
           >
             <Check className="w-5 h-5" />
           </button>

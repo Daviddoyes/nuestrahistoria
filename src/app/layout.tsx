@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const viewport: Viewport = {
-  themeColor: '#0A0A0A',
+  themeColor: '#E8692A',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
@@ -18,12 +18,12 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: "Nuestra Historia",
-  description: "Nuestra Historia",
+  title: "Livestory",
+  description: "Vive. Recuerda. Comparte.",
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Nuestra Historia',
+    title: 'Livestory',
   },
 };
 

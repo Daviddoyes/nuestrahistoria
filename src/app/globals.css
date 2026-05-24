@@ -4,6 +4,11 @@
   --font-sans: var(--font-inter);
 }
 
+:root {
+  --accent: #E8692A;
+  --accent-hover: #D4581A;
+}
+
 *,
 *::before,
 *::after {
