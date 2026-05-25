@@ -20,6 +20,7 @@ import {
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { getMyData, addPlan, completarPlan, deletePlan, updateOrden } from '@/lib/actions'
+import type { ConQuien, TipoAcceso } from '@/types/planes'
 import PlanCard from '@/components/PlanCard'
 import HistoriaCard from '@/components/HistoriaCard'
 import BottomNav from '@/components/BottomNav'
@@ -76,15 +77,16 @@ export default function PlanesPage() {
   const [showNuevoPlan, setShowNuevoPlan] = useState(false)
   const [planToComplete, setPlanToComplete] = useState<Plan | null>(null)
   const [upgraded, setUpgraded] = useState(false)
+  const [tipoAcceso, setTipoAcceso] = useState<TipoAcceso>('owner')
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
   )
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (tipo: TipoAcceso = 'owner') => {
     try {
-      const { planes: planesData, profile: profileData } = await getMyData()
+      const { planes: planesData, profile: profileData } = await getMyData(tipo)
       if (!profileData) {
         router.push('/')
         return
@@ -104,7 +106,9 @@ export default function PlanesPage() {
       setUpgraded(true)
       window.history.replaceState({}, '', '/planes')
     }
-    fetchData()
+    const tipo = (localStorage.getItem('tipo_acceso') as TipoAcceso) || 'owner'
+    setTipoAcceso(tipo)
+    fetchData(tipo)
   }, [fetchData])
 
   const pendientes = planes
@@ -121,15 +125,15 @@ export default function PlanesPage() {
 
   const isAtLimit = profile?.plan === 'free' && pendientes.length >= 5
 
-  const handleAddPlan = async (titulo: string, descripcion: string | null) => {
-    await addPlan(titulo, descripcion)
+  const handleAddPlan = async (titulo: string, descripcion: string | null, conQuien: ConQuien) => {
+    await addPlan(titulo, descripcion, conQuien)
     setShowNuevoPlan(false)
-    await fetchData()
+    await fetchData(tipoAcceso)
   }
 
   const handleDeletePlan = async (id: string) => {
     await deletePlan(id)
-    await fetchData()
+    await fetchData(tipoAcceso)
   }
 
   const handleCompletarPlan = async (
@@ -140,7 +144,7 @@ export default function PlanesPage() {
   ) => {
     await completarPlan(id, descripcion, fotoUrl, fechaMomento)
     setPlanToComplete(null)
-    await fetchData()
+    await fetchData(tipoAcceso)
   }
 
   const handleDragEnd = async (event: DragEndEvent) => {

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, X } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { lookupCode } from '@/lib/actions'
 
 type Tab = 'login' | 'register'
 
@@ -21,6 +22,11 @@ export default function AuthPage() {
   const [resetEmail, setResetEmail] = useState('')
   const [resetLoading, setResetLoading] = useState(false)
   const [resetSent, setResetSent] = useState(false)
+
+  const [showCodeSection, setShowCodeSection] = useState(false)
+  const [accessCode, setAccessCode] = useState('')
+  const [accessCodeLoading, setAccessCodeLoading] = useState(false)
+  const [accessCodeResult, setAccessCodeResult] = useState<'pareja' | 'amigos' | 'not_found' | null>(null)
 
   const supabase = createClient()
 
@@ -100,6 +106,21 @@ export default function AuthPage() {
     })
     setResetLoading(false)
     setResetSent(true)
+  }
+
+  const handleVerifyCode = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!accessCode.trim()) return
+    setAccessCodeLoading(true)
+    setAccessCodeResult(null)
+    const result = await lookupCode(accessCode)
+    if (result) {
+      localStorage.setItem('tipo_acceso', result.tipo)
+      setAccessCodeResult(result.tipo)
+    } else {
+      setAccessCodeResult('not_found')
+    }
+    setAccessCodeLoading(false)
   }
 
   const inputClass =
@@ -260,6 +281,47 @@ export default function AuthPage() {
                 className="w-full bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl transition-colors text-base mt-2"
               >
                 {loading ? 'Creando cuenta...' : 'Crear cuenta'}
+              </button>
+            </form>
+          )}
+        </div>
+
+        {/* Code access section */}
+        <div className="mt-8 pt-6 border-t border-[#1A1A1A]">
+          <button
+            type="button"
+            onClick={() => setShowCodeSection(!showCodeSection)}
+            className="w-full text-center text-xs text-[#444444] active:text-[#666666] transition-colors"
+          >
+            ¿Tienes un código de acceso?
+          </button>
+
+          {showCodeSection && (
+            <form onSubmit={handleVerifyCode} className="mt-4 space-y-3">
+              <input
+                type="text"
+                value={accessCode}
+                onChange={e => { setAccessCode(e.target.value.toLowerCase()); setAccessCodeResult(null) }}
+                placeholder="Introduce el código"
+                maxLength={8}
+                className={`${inputClass} font-mono tracking-widest`}
+              />
+              {accessCodeResult === 'not_found' && (
+                <p className="text-sm text-[#C97B7B] bg-[#8B3A3A]/20 px-3 py-2 rounded-lg">
+                  Código no encontrado
+                </p>
+              )}
+              {(accessCodeResult === 'pareja' || accessCodeResult === 'amigos') && (
+                <p className="text-sm text-[#6BBF6B] bg-[#1A2A1A] border border-[#2A4A2A] px-3 py-2 rounded-lg">
+                  ¡Código de {accessCodeResult} guardado! Inicia sesión o crea una cuenta para acceder.
+                </p>
+              )}
+              <button
+                type="submit"
+                disabled={accessCodeLoading || !accessCode.trim()}
+                className="w-full bg-[#1A1A1A] border border-[#2A2A2A] text-[#F0F0F0] disabled:opacity-40 font-medium py-3 rounded-xl text-sm"
+              >
+                {accessCodeLoading ? 'Verificando...' : 'Verificar código'}
               </button>
             </form>
           )}

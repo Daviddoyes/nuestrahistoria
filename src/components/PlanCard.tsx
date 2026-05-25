@@ -1,8 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import { Check, Trash2 } from 'lucide-react'
+import { Check, Trash2, User, Heart, Users } from 'lucide-react'
 import type { Plan } from '@/types/planes'
+
+const CON_QUIEN_ICON: Record<string, React.ElementType | null> = {
+  solo: User,
+  pareja: Heart,
+  amigos: Users,
+  todos: null,
+}
 
 type Props = {
   plan: Plan
@@ -14,10 +21,20 @@ export default function PlanCard({ plan, onCompletar, onDelete }: Props) {
   const [confirming, setConfirming] = useState(false)
 
   return (
-    <div className="bg-[#141414] rounded-xl border border-[#2A2A2A] p-4 transition-colors"
+    <div className="relative bg-[#141414] rounded-xl border border-[#2A2A2A] p-4 transition-colors"
       style={{ borderLeft: '2px solid #E8692A' }}
     >
       <div className="flex items-start justify-between gap-3">
+        {/* con_quien badge */}
+        {(() => {
+          const Icon = CON_QUIEN_ICON[plan.con_quien ?? 'todos']
+          return Icon ? (
+            <div className="absolute top-3 right-3">
+              <Icon className="w-3.5 h-3.5 text-[#444444]" />
+            </div>
+          ) : null
+        })()}
+
         {/* Content */}
         <div className="flex-1 min-w-0 py-0.5">
           <h3 className="font-serif font-semibold text-[#F0F0F0] text-base leading-snug mb-1.5">

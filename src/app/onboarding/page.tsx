@@ -2,9 +2,47 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Copy, Check, Users, ArrowRight, Link2 } from 'lucide-react'
+import { Copy, Check, Users, ArrowRight, Link2, Heart } from 'lucide-react'
 import { getMyProfile, vincularPareja } from '@/lib/actions'
 import type { Profile } from '@/types/planes'
+
+function CodeBlock({
+  label,
+  code,
+}: {
+  label: string
+  code: string
+}) {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(code)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <div className="flex-1 min-w-0">
+        <p className="text-[10px] text-[#666666] uppercase tracking-[0.1em] mb-0.5">{label}</p>
+        <span className="font-mono text-lg font-bold text-[#E8692A] tracking-widest uppercase">
+          {code}
+        </span>
+      </div>
+      <button
+        onClick={handleCopy}
+        className="flex items-center gap-1.5 text-xs text-[#666666] bg-[#2A2A2A] px-3 py-2 rounded-lg active:bg-[#3A3A3A] transition-colors shrink-0"
+      >
+        {copied ? (
+          <Check className="w-3.5 h-3.5 text-[#E8692A]" />
+        ) : (
+          <Copy className="w-3.5 h-3.5" />
+        )}
+        {copied ? 'Copiado' : 'Copiar'}
+      </button>
+    </div>
+  )
+}
 
 export default function OnboardingPage() {
   const router = useRouter()
@@ -13,7 +51,6 @@ export default function OnboardingPage() {
   const [codigoInput, setCodigoInput] = useState('')
   const [error, setError] = useState('')
   const [linking, setLinking] = useState(false)
-  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     const load = async () => {
@@ -28,13 +65,6 @@ export default function OnboardingPage() {
     load()
   }, [router])
 
-  const handleCopiar = async () => {
-    if (!profile) return
-    await navigator.clipboard.writeText(profile.codigo_invitacion)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
   const handleVincular = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!codigoInput.trim()) {
@@ -44,7 +74,8 @@ export default function OnboardingPage() {
     setLinking(true)
     setError('')
     try {
-      await vincularPareja(codigoInput)
+      const tipo = await vincularPareja(codigoInput)
+      localStorage.setItem('tipo_acceso', tipo)
       const updated = await getMyProfile()
       setProfile(updated)
       setCodigoInput('')
@@ -62,6 +93,9 @@ export default function OnboardingPage() {
       </div>
     )
   }
+
+  const codigoPareja = profile?.codigo_pareja ?? profile?.codigo_invitacion ?? ''
+  const codigoAmigos = profile?.codigo_amigos ?? ''
 
   return (
     <main
@@ -83,29 +117,39 @@ export default function OnboardingPage() {
           </p>
         </div>
 
-        {/* Invitation code — always visible */}
-        <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl p-5 mb-6">
-          <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-3">
-            Tu código
+        {/* Invitation codes */}
+        <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl p-5 mb-6 space-y-4">
+          <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666]">
+            Tus códigos de invitación
           </p>
-          <div className="flex items-center justify-between gap-3">
-            <span className="font-mono text-2xl font-bold text-[#E8692A] tracking-widest uppercase">
-              {profile?.codigo_invitacion}
-            </span>
-            <button
-              onClick={handleCopiar}
-              className="flex items-center gap-1.5 text-xs text-[#666666] bg-[#2A2A2A] px-3 py-2 rounded-lg active:bg-[#3A3A3A] transition-colors"
-            >
-              {copied ? (
-                <Check className="w-3.5 h-3.5 text-[#E8692A]" />
-              ) : (
-                <Copy className="w-3.5 h-3.5" />
-              )}
-              {copied ? 'Copiado' : 'Copiar'}
-            </button>
-          </div>
-          <p className="text-xs text-[#444444] mt-3">
-            Comparte este código para conectar con alguien
+
+          {codigoPareja && (
+            <div className="flex items-start gap-3">
+              <div className="w-7 h-7 rounded-lg bg-[#E8692A]/10 flex items-center justify-center shrink-0 mt-0.5">
+                <Heart className="w-3.5 h-3.5 text-[#E8692A]" />
+              </div>
+              <div className="flex-1">
+                <CodeBlock label="Código pareja" code={codigoPareja} />
+              </div>
+            </div>
+          )}
+
+          {codigoAmigos && (
+            <>
+              <div className="h-px bg-[#2A2A2A]" />
+              <div className="flex items-start gap-3">
+                <div className="w-7 h-7 rounded-lg bg-[#2A2A2A] flex items-center justify-center shrink-0 mt-0.5">
+                  <Users className="w-3.5 h-3.5 text-[#666666]" />
+                </div>
+                <div className="flex-1">
+                  <CodeBlock label="Código amigos" code={codigoAmigos} />
+                </div>
+              </div>
+            </>
+          )}
+
+          <p className="text-xs text-[#444444]">
+            Comparte el código para que puedan ver tus planes
           </p>
         </div>
 

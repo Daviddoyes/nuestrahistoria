@@ -1,16 +1,25 @@
 'use client'
 
 import { useState } from 'react'
-import { X } from 'lucide-react'
+import { X, User, Heart, Users, Globe } from 'lucide-react'
+import type { ConQuien } from '@/types/planes'
 
 type Props = {
   onClose: () => void
-  onSubmit: (titulo: string, descripcion: string | null) => Promise<void>
+  onSubmit: (titulo: string, descripcion: string | null, conQuien: ConQuien) => Promise<void>
 }
+
+const CON_QUIEN_OPTIONS: { value: ConQuien; label: string; icon: React.ElementType }[] = [
+  { value: 'solo', label: 'Solo', icon: User },
+  { value: 'pareja', label: 'Pareja', icon: Heart },
+  { value: 'amigos', label: 'Amigos', icon: Users },
+  { value: 'todos', label: 'Todos', icon: Globe },
+]
 
 export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
   const [titulo, setTitulo] = useState('')
   const [descripcion, setDescripcion] = useState('')
+  const [conQuien, setConQuien] = useState<ConQuien>('todos')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -20,7 +29,7 @@ export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
     setLoading(true)
     setError('')
     try {
-      await onSubmit(titulo.trim(), descripcion.trim() || null)
+      await onSubmit(titulo.trim(), descripcion.trim() || null, conQuien)
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Error al guardar el plan'
       setError(msg)
@@ -77,6 +86,32 @@ export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
               rows={3}
               className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] resize-none text-base"
             />
+          </div>
+
+          <div>
+            <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-2">
+              Con quién
+            </label>
+            <div className="grid grid-cols-4 gap-2">
+              {CON_QUIEN_OPTIONS.map(({ value, label, icon: Icon }) => {
+                const active = conQuien === value
+                return (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setConQuien(value)}
+                    className={`flex flex-col items-center gap-1.5 py-2.5 rounded-xl border text-xs font-medium transition-colors ${
+                      active
+                        ? 'bg-[#E8692A] border-[#E8692A] text-white'
+                        : 'border-[#2A2A2A] text-[#666666] active:bg-[#1A1A1A]'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    {label}
+                  </button>
+                )
+              })}
+            </div>
           </div>
 
           {error && (
