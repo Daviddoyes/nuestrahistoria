@@ -10,14 +10,6 @@ type Props = {
   onDelete: () => void
 }
 
-function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString('es-ES', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
-}
-
 export default function PlanCard({ plan, onCompletar, onDelete }: Props) {
   const [confirming, setConfirming] = useState(false)
 
@@ -36,10 +28,7 @@ export default function PlanCard({ plan, onCompletar, onDelete }: Props) {
               {plan.descripcion}
             </p>
           )}
-          <div className="flex flex-wrap gap-3 text-[10px] text-[#666666] uppercase tracking-[0.1em]">
-            <span>{plan.creado_por}</span>
-            <span>{formatDate(plan.created_at)}</span>
-          </div>
+          <p className="text-[10px] text-[#666666] uppercase tracking-[0.1em]">{plan.creado_por}</p>
         </div>
 
         {/* Action buttons */}

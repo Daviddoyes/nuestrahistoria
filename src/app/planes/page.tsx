@@ -2,8 +2,24 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { Plus } from 'lucide-react'
-import { getMyData, addPlan, completarPlan, deletePlan } from '@/lib/actions'
+import { Plus, GripVertical } from 'lucide-react'
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
+import type { DragEndEvent } from '@dnd-kit/core'
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+  arrayMove,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import { getMyData, addPlan, completarPlan, deletePlan, updateOrden } from '@/lib/actions'
 import PlanCard from '@/components/PlanCard'
 import HistoriaCard from '@/components/HistoriaCard'
 import BottomNav from '@/components/BottomNav'
@@ -14,6 +30,43 @@ import type { Plan, Profile } from '@/types/planes'
 
 type Tab = 'pendientes' | 'historias'
 
+function SortablePlanCard({
+  plan,
+  onCompletar,
+  onDelete,
+}: {
+  plan: Plan
+  onCompletar: () => void
+  onDelete: () => void
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: plan.id })
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.4 : 1,
+      }}
+      className="flex items-center gap-2"
+    >
+      <button
+        {...attributes}
+        {...listeners}
+        className="touch-none shrink-0 text-[#333333] active:text-[#E8692A] p-1.5 -ml-1"
+        aria-label="Mover plan"
+      >
+        <GripVertical className="w-4 h-4" />
+      </button>
+      <div className="flex-1 min-w-0">
+        <PlanCard plan={plan} onCompletar={onCompletar} onDelete={onDelete} />
+      </div>
+    </div>
+  )
+}
+
 export default function PlanesPage() {
   const router = useRouter()
   const [profile, setProfile] = useState<Profile | null>(null)
@@ -23,6 +76,11 @@ export default function PlanesPage() {
   const [showNuevoPlan, setShowNuevoPlan] = useState(false)
   const [planToComplete, setPlanToComplete] = useState<Plan | null>(null)
   const [upgraded, setUpgraded] = useState(false)
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
+  )
 
   const fetchData = useCallback(async () => {
     try {
@@ -49,8 +107,18 @@ export default function PlanesPage() {
     fetchData()
   }, [fetchData])
 
-  const pendientes = planes.filter(p => p.estado === 'pendiente')
-  const historias = planes.filter(p => p.estado === 'hecho')
+  const pendientes = planes
+    .filter(p => p.estado === 'pendiente')
+    .sort((a, b) => a.orden - b.orden || a.created_at.localeCompare(b.created_at))
+
+  const historias = planes
+    .filter(p => p.estado === 'hecho')
+    .sort((a, b) => {
+      const da = a.fecha_momento ?? a.created_at
+      const db = b.fecha_momento ?? b.created_at
+      return db.localeCompare(da)
+    })
+
   const isAtLimit = profile?.plan === 'free' && pendientes.length >= 5
 
   const handleAddPlan = async (titulo: string, descripcion: string | null) => {
@@ -67,11 +135,25 @@ export default function PlanesPage() {
   const handleCompletarPlan = async (
     id: string,
     descripcion: string,
-    fotoUrl: string | null
+    fotoUrl: string | null,
+    fechaMomento: string | null
   ) => {
-    await completarPlan(id, descripcion, fotoUrl)
+    await completarPlan(id, descripcion, fotoUrl, fechaMomento)
     setPlanToComplete(null)
     await fetchData()
+  }
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+
+    const oldIndex = pendientes.findIndex(p => p.id === active.id)
+    const newIndex = pendientes.findIndex(p => p.id === over.id)
+    if (oldIndex === -1 || newIndex === -1) return
+
+    const reordered = arrayMove(pendientes, oldIndex, newIndex)
+    setPlanes(prev => [...reordered, ...prev.filter(p => p.estado !== 'pendiente')])
+    await updateOrden(reordered.map((p, i) => ({ id: p.id, orden: i })))
   }
 
   return (
@@ -125,23 +207,34 @@ export default function PlanesPage() {
             <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#E8692A] rounded-full animate-spin" />
           </div>
         ) : activeTab === 'pendientes' ? (
-          <div key="pendientes" className="tab-fade-in space-y-3">
-            {pendientes.length === 0 ? (
-              <div className="flex flex-col items-center justify-center pt-24 gap-2 text-center">
-                <p className="text-base font-medium text-[#F0F0F0]">Sin planes pendientes</p>
-                <p className="text-sm text-[#666666]">Toca + para añadir el primer plan</p>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={pendientes.map(p => p.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <div key="pendientes" className="tab-fade-in space-y-3">
+                {pendientes.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center pt-24 gap-2 text-center">
+                    <p className="text-base font-medium text-[#F0F0F0]">Sin planes pendientes</p>
+                    <p className="text-sm text-[#666666]">Toca + para añadir el primer plan</p>
+                  </div>
+                ) : (
+                  pendientes.map(plan => (
+                    <SortablePlanCard
+                      key={plan.id}
+                      plan={plan}
+                      onCompletar={() => setPlanToComplete(plan)}
+                      onDelete={() => handleDeletePlan(plan.id)}
+                    />
+                  ))
+                )}
               </div>
-            ) : (
-              pendientes.map(plan => (
-                <PlanCard
-                  key={plan.id}
-                  plan={plan}
-                  onCompletar={() => setPlanToComplete(plan)}
-                  onDelete={() => handleDeletePlan(plan.id)}
-                />
-              ))
-            )}
-          </div>
+            </SortableContext>
+          </DndContext>
         ) : (
           <div key="historias" className="tab-fade-in">
             {historias.length === 0 ? (

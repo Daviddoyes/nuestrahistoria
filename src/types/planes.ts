@@ -7,6 +7,8 @@ export type Plan = {
   estado: string
   foto_url: string | null
   historia_descripcion: string | null
+  fecha_momento: string | null
+  orden: number
   created_at: string
 }
 

@@ -7,11 +7,12 @@ import type { Plan } from '@/types/planes'
 type Props = {
   plan: Plan
   onClose: () => void
-  onSubmit: (id: string, descripcion: string, fotoUrl: string | null) => Promise<void>
+  onSubmit: (id: string, descripcion: string, fotoUrl: string | null, fechaMomento: string | null) => Promise<void>
 }
 
 export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
   const [descripcion, setDescripcion] = useState('')
+  const [fechaMomento, setFechaMomento] = useState(() => new Date().toISOString().split('T')[0])
   const [foto, setFoto] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -77,7 +78,7 @@ export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
         fotoUrl = json.publicUrl
         console.log('[upload] publicUrl:', fotoUrl)
       }
-      await onSubmit(plan.id, descripcion, fotoUrl)
+      await onSubmit(plan.id, descripcion, fotoUrl, fechaMomento || null)
     } catch (err) {
       console.error('[CompletarPlanModal]', err)
       const msg = err instanceof Error ? err.message : 'Error al subir la foto'
@@ -167,6 +168,20 @@ export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
               placeholder="Describe el recuerdo..."
               rows={4}
               className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] resize-none text-base"
+            />
+          </div>
+
+          <div>
+            <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-1.5">
+              ¿Cuándo ocurrió?
+            </label>
+            <input
+              type="date"
+              value={fechaMomento}
+              onChange={e => setFechaMomento(e.target.value)}
+              max={new Date().toISOString().split('T')[0]}
+              style={{ colorScheme: 'dark' }}
+              className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] focus:outline-none focus:border-[#E8692A] text-base"
             />
           </div>
 

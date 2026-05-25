@@ -49,7 +49,6 @@ export async function getMyData(): Promise<{ planes: Plan[]; profile: Profile | 
     .from('planes')
     .select('*')
     .in('pareja_codigo', codigos)
-    .order('created_at', { ascending: false })
 
   if (error) throw new Error(error.message)
   return { planes: (planes ?? []) as Plan[], profile: profile as Profile }
@@ -128,6 +127,7 @@ export async function addPlan(titulo: string, descripcion: string | null) {
     creado_por: profile.nombre || user.email || 'Usuario',
     pareja_codigo: profile.codigo_invitacion,
     estado: 'pendiente',
+    orden: 0,
   })
 
   if (error) throw new Error(error.message)
@@ -137,7 +137,8 @@ export async function addPlan(titulo: string, descripcion: string | null) {
 export async function completarPlan(
   id: string,
   historiaDescripcion: string,
-  fotoUrl: string | null
+  fotoUrl: string | null,
+  fechaMomento: string | null
 ) {
   const supabase = getAnonClient()
   const { error } = await supabase
@@ -146,9 +147,20 @@ export async function completarPlan(
       estado: 'hecho',
       historia_descripcion: historiaDescripcion,
       foto_url: fotoUrl,
+      fecha_momento: fechaMomento,
     })
     .eq('id', id)
   if (error) throw new Error(error.message)
+  revalidatePath('/planes')
+}
+
+export async function updateOrden(updates: { id: string; orden: number }[]) {
+  const supabase = getAnonClient()
+  await Promise.all(
+    updates.map(({ id, orden }) =>
+      supabase.from('planes').update({ orden }).eq('id', id)
+    )
+  )
   revalidatePath('/planes')
 }
 

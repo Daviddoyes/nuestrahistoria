@@ -9,12 +9,10 @@ type Props = {
   onClose: () => void
 }
 
-function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString('es-ES', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
+function formatDate(dateStr: string | null, fallback: string) {
+  const str = dateStr ?? fallback
+  const date = new Date(str.includes('T') ? str : `${str}T12:00:00`)
+  return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
 export default function HistoriaDetailModal({ plan, onClose }: Props) {
@@ -80,7 +78,7 @@ export default function HistoriaDetailModal({ plan, onClose }: Props) {
             </span>
             <span className="flex items-center gap-2 text-[11px] text-[#666666] uppercase tracking-[0.1em]">
               <Calendar className="w-3 h-3 flex-shrink-0" />
-              {formatDate(plan.created_at)}
+              {formatDate(plan.fecha_momento, plan.created_at)}
             </span>
           </div>
 

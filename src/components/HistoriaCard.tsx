@@ -10,12 +10,10 @@ type Props = {
   onDelete: () => void
 }
 
-function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString('es-ES', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
+function formatDate(dateStr: string | null, fallback: string) {
+  const str = dateStr ?? fallback
+  const date = new Date(str.includes('T') ? str : `${str}T12:00:00`)
+  return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
 export default function HistoriaCard({ plan, onDelete }: Props) {
@@ -71,7 +69,7 @@ export default function HistoriaCard({ plan, onDelete }: Props) {
             </span>
             <span className="flex items-center gap-1">
               <Calendar className="w-2.5 h-2.5" />
-              {formatDate(plan.created_at)}
+              {formatDate(plan.fecha_momento, plan.created_at)}
             </span>
           </div>
         </div>
