@@ -242,6 +242,16 @@ export async function vincularPareja(codigoInput: string): Promise<TipoAcceso> {
   return tipo
 }
 
+export async function updateHistoriaDescripcion(id: string, descripcion: string) {
+  const supabase = getAnonClient()
+  const { error } = await supabase
+    .from('planes')
+    .update({ historia_descripcion: descripcion })
+    .eq('id', id)
+  if (error) throw new Error(error.message)
+  revalidatePath('/planes')
+}
+
 export async function lookupCode(
   codigo: string
 ): Promise<{ tipo: 'pareja' | 'amigos' } | null> {

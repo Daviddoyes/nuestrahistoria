@@ -1,12 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import { X, Calendar, User } from 'lucide-react'
+import { X, Calendar, User, Pencil } from 'lucide-react'
 import type { Plan } from '@/types/planes'
+import { updateHistoriaDescripcion } from '@/lib/actions'
 
 type Props = {
   plan: Plan
   onClose: () => void
+  isOwner?: boolean
+  onUpdate?: () => void
 }
 
 function formatDate(dateStr: string | null, fallback: string) {
@@ -15,13 +18,44 @@ function formatDate(dateStr: string | null, fallback: string) {
   return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
-export default function HistoriaDetailModal({ plan, onClose }: Props) {
+export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }: Props) {
   const [closing, setClosing] = useState(false)
+  const [descripcion, setDescripcion] = useState(plan.historia_descripcion ?? '')
+  const [editing, setEditing] = useState(false)
+  const [editText, setEditText] = useState(descripcion)
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
 
   const close = () => {
     if (closing) return
     setClosing(true)
     setTimeout(onClose, 260)
+  }
+
+  const handleEdit = () => {
+    setEditText(descripcion)
+    setSaveError('')
+    setEditing(true)
+  }
+
+  const handleCancel = () => {
+    setEditing(false)
+    setSaveError('')
+  }
+
+  const handleSave = async () => {
+    setSaving(true)
+    setSaveError('')
+    try {
+      await updateHistoriaDescripcion(plan.id, editText)
+      setDescripcion(editText)
+      setEditing(false)
+      onUpdate?.()
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : 'Error al guardar')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -36,7 +70,7 @@ export default function HistoriaDetailModal({ plan, onClose }: Props) {
         <X className="w-4 h-4" />
       </button>
 
-      {/* Single scroll container — everything flows naturally inside */}
+      {/* Single scroll container */}
       <div
         className={`fixed inset-0 z-50 bg-[#0A0A0A] ${closing ? 'modal-slide-down' : 'modal-slide-up'}`}
         style={{
@@ -45,7 +79,7 @@ export default function HistoriaDetailModal({ plan, onClose }: Props) {
           overscrollBehavior: 'contain',
         } as React.CSSProperties}
       >
-        {/* Photo — full width, natural height, black bg */}
+        {/* Photo */}
         <div style={{ background: '#000' }}>
           {plan.foto_url ? (
             <img
@@ -58,7 +92,7 @@ export default function HistoriaDetailModal({ plan, onClose }: Props) {
           )}
         </div>
 
-        {/* Content — normal flow below the photo */}
+        {/* Content */}
         <div
           className="px-6 pt-6"
           style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 4rem)' }}
@@ -82,13 +116,59 @@ export default function HistoriaDetailModal({ plan, onClose }: Props) {
             </span>
           </div>
 
-          {plan.historia_descripcion && (
-            <>
-              <div className="h-px w-full bg-[#2A2A2A] mb-6" />
-              <p className="text-[#A0A0A0] text-base leading-relaxed">
-                {plan.historia_descripcion}
-              </p>
-            </>
+          <div className="h-px w-full bg-[#2A2A2A] mb-6" />
+
+          {editing ? (
+            <div className="space-y-3">
+              <textarea
+                value={editText}
+                onChange={e => setEditText(e.target.value)}
+                rows={6}
+                autoFocus
+                className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] resize-none text-base leading-relaxed"
+              />
+              {saveError && (
+                <p className="text-sm text-[#C97B7B] bg-[#8B3A3A]/20 px-3 py-2 rounded-lg">
+                  {saveError}
+                </p>
+              )}
+              <div className="flex gap-3">
+                <button
+                  onClick={handleCancel}
+                  className="flex-1 py-3 rounded-xl border border-[#2A2A2A] text-[#666666] active:bg-[#1A1A1A] transition-colors text-sm font-medium"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleSave}
+                  disabled={saving}
+                  className="flex-1 py-3 rounded-xl bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 text-white text-sm font-semibold transition-colors"
+                >
+                  {saving ? 'Guardando...' : 'Guardar'}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="relative group">
+              {descripcion ? (
+                <p className="text-[#A0A0A0] text-base leading-relaxed pr-8">
+                  {descripcion}
+                </p>
+              ) : (
+                <p className="text-[#444444] text-base leading-relaxed italic pr-8">
+                  Sin descripción
+                </p>
+              )}
+              {isOwner && (
+                <button
+                  onClick={handleEdit}
+                  aria-label="Editar descripción"
+                  className="absolute top-0 right-0 p-1 text-[#444444] active:text-[#E8692A] transition-colors"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
           )}
         </div>
       </div>

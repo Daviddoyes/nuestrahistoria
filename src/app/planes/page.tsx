@@ -253,6 +253,8 @@ export default function PlanesPage() {
                     key={plan.id}
                     plan={plan}
                     onDelete={() => handleDeletePlan(plan.id)}
+                    isOwner={tipoAcceso === 'owner'}
+                    onUpdate={() => fetchData(tipoAcceso)}
                   />
                 ))}
               </div>

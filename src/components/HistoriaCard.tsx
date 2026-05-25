@@ -8,6 +8,8 @@ import HistoriaDetailModal from './HistoriaDetailModal'
 type Props = {
   plan: Plan
   onDelete: () => void
+  isOwner?: boolean
+  onUpdate?: () => void
 }
 
 function formatDate(dateStr: string | null, fallback: string) {
@@ -16,7 +18,7 @@ function formatDate(dateStr: string | null, fallback: string) {
   return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
-export default function HistoriaCard({ plan, onDelete }: Props) {
+export default function HistoriaCard({ plan, onDelete, isOwner, onUpdate }: Props) {
   const [confirming, setConfirming] = useState(false)
   const [showDetail, setShowDetail] = useState(false)
 
@@ -105,6 +107,8 @@ export default function HistoriaCard({ plan, onDelete }: Props) {
         <HistoriaDetailModal
           plan={plan}
           onClose={() => setShowDetail(false)}
+          isOwner={isOwner}
+          onUpdate={onUpdate}
         />
       )}
     </>
