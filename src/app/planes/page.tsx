@@ -126,7 +126,8 @@ export default function PlanesPage() {
   const isAtLimit = profile?.plan === 'free' && pendientes.length >= 5
 
   const handleAddPlan = async (titulo: string, descripcion: string | null, conQuien: ConQuien) => {
-    await addPlan(titulo, descripcion, conQuien)
+    const result = await addPlan(titulo, descripcion, conQuien)
+    if (!result.success) throw new Error(result.error ?? 'Error al añadir el plan')
     setShowNuevoPlan(false)
     await fetchData(tipoAcceso)
   }

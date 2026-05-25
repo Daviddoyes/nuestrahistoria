@@ -102,54 +102,61 @@ export async function addPlan(
   titulo: string,
   descripcion: string | null,
   conQuien: ConQuien = 'todos'
-) {
-  const serverSupa = await createServerClient()
-  const {
-    data: { user },
-  } = await serverSupa.auth.getUser()
-  if (!user) throw new Error('No autenticado')
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const serverSupa = await createServerClient()
+    const {
+      data: { user },
+    } = await serverSupa.auth.getUser()
+    if (!user) return { success: false, error: 'No autenticado' }
 
-  const service = createServiceRoleClient()
-  const { data: profile } = await service
-    .from('profiles')
-    .select('codigo_invitacion, plan, nombre, pareja_id')
-    .eq('id', user.id)
-    .single()
+    const service = createServiceRoleClient()
+    const { data: profile } = await service
+      .from('profiles')
+      .select('codigo_invitacion, plan, nombre, pareja_id')
+      .eq('id', user.id)
+      .single()
 
-  if (!profile?.codigo_invitacion) throw new Error('Perfil no encontrado')
+    if (!profile?.codigo_invitacion) return { success: false, error: 'Perfil no encontrado' }
 
-  if (profile.plan === 'free') {
-    const codigos = [profile.codigo_invitacion]
-    if (profile.pareja_id) {
-      const { data: partner } = await service
-        .from('profiles')
-        .select('codigo_invitacion')
-        .eq('id', profile.pareja_id)
-        .single()
-      if (partner?.codigo_invitacion) codigos.push(partner.codigo_invitacion)
+    if (profile.plan === 'free') {
+      const codigos = [profile.codigo_invitacion]
+      if (profile.pareja_id) {
+        const { data: partner } = await service
+          .from('profiles')
+          .select('codigo_invitacion')
+          .eq('id', profile.pareja_id)
+          .single()
+        if (partner?.codigo_invitacion) codigos.push(partner.codigo_invitacion)
+      }
+      const supabase = getAnonClient()
+      const { count } = await supabase
+        .from('planes')
+        .select('*', { count: 'exact', head: true })
+        .in('pareja_codigo', codigos)
+        .eq('estado', 'pendiente')
+      if ((count ?? 0) >= 5)
+        return { success: false, error: 'Límite del plan gratuito alcanzado' }
     }
+
     const supabase = getAnonClient()
-    const { count } = await supabase
-      .from('planes')
-      .select('*', { count: 'exact', head: true })
-      .in('pareja_codigo', codigos)
-      .eq('estado', 'pendiente')
-    if ((count ?? 0) >= 5) throw new Error('Límite del plan gratuito alcanzado')
+    const { error } = await supabase.from('planes').insert({
+      titulo,
+      descripcion,
+      creado_por: profile.nombre || user.email || 'Usuario',
+      pareja_codigo: profile.codigo_invitacion,
+      estado: 'pendiente',
+      con_quien: conQuien,
+      orden: 0,
+    })
+
+    if (error) return { success: false, error: error.message }
+
+    revalidatePath('/planes')
+    return { success: true }
+  } catch (e) {
+    return { success: false, error: String(e) }
   }
-
-  const supabase = getAnonClient()
-  const { error } = await supabase.from('planes').insert({
-    titulo,
-    descripcion,
-    creado_por: profile.nombre || user.email || 'Usuario',
-    pareja_codigo: profile.codigo_invitacion,
-    estado: 'pendiente',
-    con_quien: conQuien,
-    orden: 0,
-  })
-
-  if (error) throw new Error(error.message)
-  revalidatePath('/planes')
 }
 
 export async function completarPlan(
