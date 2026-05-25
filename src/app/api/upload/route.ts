@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 
     const supabase = createClient(supabaseUrl, supabaseKey)
 
-    const fileName = `foto-${Date.now()}.jpg`
+    const fileName = `foto-${Date.now()}-${Math.random().toString(36).substring(2, 6)}.jpg`
 
     console.log('[upload] fileName:', fileName)
     console.log('[upload] bucket:', 'fotos')
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     const { error: uploadError } = await supabase.storage
       .from('fotos')
       .upload(fileName, buffer, {
-        contentType: file.type,
+        contentType: 'image/jpeg',
         upsert: true,
       })
 
