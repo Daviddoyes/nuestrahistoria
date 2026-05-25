@@ -27,6 +27,32 @@ export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
     reader.readAsDataURL(file)
   }
 
+  const compressImage = (file: File): Promise<Blob> =>
+    new Promise((resolve, reject) => {
+      const img = new Image()
+      const url = URL.createObjectURL(file)
+      img.onload = () => {
+        URL.revokeObjectURL(url)
+        const MAX = 1200
+        let { width, height } = img
+        if (width > MAX) {
+          height = Math.round((height * MAX) / width)
+          width = MAX
+        }
+        const canvas = document.createElement('canvas')
+        canvas.width = width
+        canvas.height = height
+        canvas.getContext('2d')!.drawImage(img, 0, 0, width, height)
+        canvas.toBlob(
+          blob => (blob ? resolve(blob) : reject(new Error('Canvas toBlob failed'))),
+          'image/jpeg',
+          0.8
+        )
+      }
+      img.onerror = reject
+      img.src = url
+    })
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -34,11 +60,11 @@ export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
     try {
       let fotoUrl: string | null = null
       if (foto) {
-        console.log('[debug] supabase url:', process.env.NEXT_PUBLIC_SUPABASE_URL)
-        console.log('[debug] bucket upload start')
+        const compressed = await compressImage(foto)
+        console.log('[upload] original size:', foto.size, 'compressed size:', compressed.size)
 
         const fd = new FormData()
-        fd.append('file', foto)
+        fd.append('file', new File([compressed], 'foto.jpg', { type: 'image/jpeg' }))
 
         const res = await fetch('/api/upload', { method: 'POST', body: fd })
         const json = await res.json()

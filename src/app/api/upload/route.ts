@@ -15,6 +15,8 @@ export async function POST(req: NextRequest) {
 
     console.log('[upload] supabaseUrl:', supabaseUrl)
     console.log('[upload] file name:', file.name, 'size:', file.size)
+    console.log('[upload] file size:', file.size)
+    console.log('[upload] file type:', file.type)
 
     if (!supabaseUrl || !supabaseKey) {
       console.error('[upload] missing env vars')
@@ -38,7 +40,7 @@ export async function POST(req: NextRequest) {
         upsert: true,
       })
 
-    console.log('[upload] error:', JSON.stringify(uploadError))
+    console.log('[upload] error completo:', JSON.stringify(uploadError))
 
     if (uploadError) {
       console.error('[upload] uploadError:', uploadError)
