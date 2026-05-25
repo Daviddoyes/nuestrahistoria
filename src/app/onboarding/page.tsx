@@ -9,9 +9,11 @@ import type { Profile } from '@/types/planes'
 function CodeBlock({
   label,
   code,
+  description,
 }: {
   label: string
   code: string
+  description: string
 }) {
   const [copied, setCopied] = useState(false)
 
@@ -22,24 +24,27 @@ function CodeBlock({
   }
 
   return (
-    <div className="flex items-center justify-between gap-3">
-      <div className="flex-1 min-w-0">
-        <p className="text-[10px] text-[#666666] uppercase tracking-[0.1em] mb-0.5">{label}</p>
-        <span className="font-mono text-lg font-bold text-[#E8692A] tracking-widest uppercase">
-          {code}
-        </span>
+    <div>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <p className="text-[10px] text-[#666666] uppercase tracking-[0.1em] mb-0.5">{label}</p>
+          <span className="font-mono text-lg font-bold text-[#E8692A] tracking-widest uppercase">
+            {code}
+          </span>
+        </div>
+        <button
+          onClick={handleCopy}
+          className="flex items-center gap-1.5 text-xs text-[#666666] bg-[#2A2A2A] px-3 py-2 rounded-lg active:bg-[#3A3A3A] transition-colors shrink-0"
+        >
+          {copied ? (
+            <Check className="w-3.5 h-3.5 text-[#E8692A]" />
+          ) : (
+            <Copy className="w-3.5 h-3.5" />
+          )}
+          {copied ? 'Copiado' : 'Copiar'}
+        </button>
       </div>
-      <button
-        onClick={handleCopy}
-        className="flex items-center gap-1.5 text-xs text-[#666666] bg-[#2A2A2A] px-3 py-2 rounded-lg active:bg-[#3A3A3A] transition-colors shrink-0"
-      >
-        {copied ? (
-          <Check className="w-3.5 h-3.5 text-[#E8692A]" />
-        ) : (
-          <Copy className="w-3.5 h-3.5" />
-        )}
-        {copied ? 'Copiado' : 'Copiar'}
-      </button>
+      <p className="text-xs text-[#444444] mt-1.5">{description}</p>
     </div>
   )
 }
@@ -117,40 +122,39 @@ export default function OnboardingPage() {
           </p>
         </div>
 
-        {/* Invitation codes */}
-        <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl p-5 mb-6 space-y-4">
+        {/* Invitation codes — always shown */}
+        <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-2xl p-5 mb-6 space-y-5">
           <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666]">
             Tus códigos de invitación
           </p>
 
-          {codigoPareja && (
-            <div className="flex items-start gap-3">
-              <div className="w-7 h-7 rounded-lg bg-[#E8692A]/10 flex items-center justify-center shrink-0 mt-0.5">
-                <Heart className="w-3.5 h-3.5 text-[#E8692A]" />
-              </div>
-              <div className="flex-1">
-                <CodeBlock label="Código pareja" code={codigoPareja} />
-              </div>
+          <div className="flex items-start gap-3">
+            <div className="w-7 h-7 rounded-lg bg-[#E8692A]/10 flex items-center justify-center shrink-0 mt-0.5">
+              <Heart className="w-3.5 h-3.5 text-[#E8692A]" />
             </div>
-          )}
+            <div className="flex-1">
+              <CodeBlock
+                label="Código pareja"
+                code={codigoPareja}
+                description="Ve planes de pareja y todos"
+              />
+            </div>
+          </div>
 
-          {codigoAmigos && (
-            <>
-              <div className="h-px bg-[#2A2A2A]" />
-              <div className="flex items-start gap-3">
-                <div className="w-7 h-7 rounded-lg bg-[#2A2A2A] flex items-center justify-center shrink-0 mt-0.5">
-                  <Users className="w-3.5 h-3.5 text-[#666666]" />
-                </div>
-                <div className="flex-1">
-                  <CodeBlock label="Código amigos" code={codigoAmigos} />
-                </div>
-              </div>
-            </>
-          )}
+          <div className="h-px bg-[#2A2A2A]" />
 
-          <p className="text-xs text-[#444444]">
-            Comparte el código para que puedan ver tus planes
-          </p>
+          <div className="flex items-start gap-3">
+            <div className="w-7 h-7 rounded-lg bg-[#2A2A2A] flex items-center justify-center shrink-0 mt-0.5">
+              <Users className="w-3.5 h-3.5 text-[#666666]" />
+            </div>
+            <div className="flex-1">
+              <CodeBlock
+                label="Código amigos"
+                code={codigoAmigos}
+                description="Ve planes de amigos y todos"
+              />
+            </div>
+          </div>
         </div>
 
         {profile?.pareja_id ? (

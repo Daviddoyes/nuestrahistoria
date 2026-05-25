@@ -68,6 +68,10 @@ export async function getMyData(
   return { planes: planes as Plan[], profile: profile as Profile }
 }
 
+function randomCode() {
+  return Math.random().toString(36).substring(2, 10)
+}
+
 export async function getMyProfile(): Promise<Profile | null> {
   const serverSupa = await createServerClient()
   const {
@@ -89,10 +93,22 @@ export async function getMyProfile(): Promise<Profile | null> {
         id: user.id,
         email: user.email || '',
         nombre: (user.user_metadata?.nombre as string) || user.email?.split('@')[0] || '',
+        codigo_pareja: randomCode(),
+        codigo_amigos: randomCode(),
       })
       .select()
       .single()
     return newProfile as Profile | null
+  }
+
+  // Auto-generate any missing codes for existing profiles
+  const missing: Record<string, string> = {}
+  if (!profile.codigo_pareja) missing.codigo_pareja = randomCode()
+  if (!profile.codigo_amigos) missing.codigo_amigos = randomCode()
+
+  if (Object.keys(missing).length > 0) {
+    await service.from('profiles').update(missing).eq('id', profile.id)
+    Object.assign(profile, missing)
   }
 
   return profile as Profile
