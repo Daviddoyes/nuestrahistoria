@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import SplashScreen from "@/components/SplashScreen";
+import InstallBanner from "@/components/InstallBanner";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -9,7 +11,7 @@ const inter = Inter({
 });
 
 export const viewport: Viewport = {
-  themeColor: '#E8692A',
+  themeColor: '#0A0A0A',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
@@ -25,6 +27,9 @@ export const metadata: Metadata = {
     statusBarStyle: 'black-translucent',
     title: 'Livestory',
   },
+  icons: {
+    apple: [{ url: '/icon-512.png', sizes: '512x512', type: 'image/png' }],
+  },
 };
 
 export default function RootLayout({
@@ -34,7 +39,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${inter.variable} h-full`}>
-      <body className="min-h-full antialiased">{children}</body>
+      <head>
+        <meta name="mobile-web-app-capable" content="yes" />
+      </head>
+      <body className="min-h-full antialiased">
+        <SplashScreen />
+        {children}
+        <InstallBanner />
+      </body>
     </html>
   );
 }
