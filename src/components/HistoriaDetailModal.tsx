@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { X, Calendar, User, Pencil } from 'lucide-react'
 import type { Plan } from '@/types/planes'
 import { updateHistoriaDescripcion } from '@/lib/actions'
+import ShareStoryImage from './ShareStoryImage'
 
 type Props = {
   plan: Plan
@@ -117,6 +118,12 @@ export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }
           </div>
 
           <div className="h-px w-full bg-[#2A2A2A] mb-6" />
+
+          {!editing && (
+            <div className="mb-6">
+              <ShareStoryImage plan={plan} descripcion={descripcion} />
+            </div>
+          )}
 
           {editing ? (
             <div className="space-y-3">
