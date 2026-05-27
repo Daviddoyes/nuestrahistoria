@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Check, Trash2, User, Heart, Users } from 'lucide-react'
 import type { Plan } from '@/types/planes'
+import SharePlanImage from './SharePlanImage'
 
 const CON_QUIEN_ICON: Record<string, React.ElementType | null> = {
   solo: User,
@@ -66,6 +67,13 @@ export default function PlanCard({ plan, onCompletar, onDelete }: Props) {
           </button>
         </div>
       </div>
+
+      {/* Share button — bottom right */}
+      {!confirming && (
+        <div className="flex justify-end mt-2">
+          <SharePlanImage plan={plan} />
+        </div>
+      )}
 
       {/* Inline confirmation strip */}
       {confirming && (
