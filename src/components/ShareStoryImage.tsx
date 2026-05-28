@@ -14,7 +14,11 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
   const templateRef = useRef<HTMLDivElement>(null)
   const [generating, setGenerating] = useState(false)
 
-  const titulo = plan.titulo.length > 80 ? plan.titulo.slice(0, 80) + '…' : plan.titulo
+  const len = plan.titulo.length
+  const titleFontSize = len > 40 ? 44 : len > 20 ? 54 : 64
+  // JS-truncate to ~3 lines worth of chars at the chosen font size
+  const maxChars = titleFontSize >= 64 ? 55 : titleFontSize >= 54 ? 70 : 90
+  const titulo = len > maxChars ? plan.titulo.slice(0, maxChars - 1) + '…' : plan.titulo
 
   const handleShare = async () => {
     if (!templateRef.current) return
@@ -111,18 +115,19 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
           <div
             style={{
               fontFamily: 'Georgia, serif',
-              fontSize: 68,
+              fontSize: titleFontSize,
               fontWeight: 700,
               color: '#FFFFFF',
-              lineHeight: 1.2,
+              lineHeight: 1.25,
               textAlign: 'center',
               letterSpacing: '-0.01em',
-              maxWidth: '100%',
-              // Clamp to 3 lines
-              display: '-webkit-box',
-              WebkitLineClamp: 3,
-              WebkitBoxOrient: 'vertical',
+              width: '100%',
+              padding: '0 60px',
+              wordBreak: 'break-word',
+              whiteSpace: 'normal',
               overflow: 'hidden',
+              maxHeight: titleFontSize * 1.25 * 3 + 4, // 3 lines hard cap
+              boxSizing: 'border-box',
             } as React.CSSProperties}
           >
             {titulo}
@@ -135,8 +140,8 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
                 border: '16px solid #FFFFFF',
                 boxShadow: '0 24px 80px rgba(0,0,0,0.7)',
                 flexShrink: 0,
-                maxWidth: '86%',    // 86% of 1080 = ~928px
-                maxHeight: '55%',   // 55% of 1920 = 1056px
+                width: 1000,        // 1080 - 40px margin each side
+                maxHeight: 1056,    // 55% of 1920
                 overflow: 'hidden',
                 display: 'flex',
                 alignItems: 'center',
@@ -150,8 +155,8 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
                 crossOrigin="anonymous"
                 style={{
                   display: 'block',
-                  maxWidth: '928px',
-                  maxHeight: '1056px',
+                  maxWidth: '100%',
+                  maxHeight: 1056,
                   width: 'auto',
                   height: 'auto',
                   objectFit: 'contain',
@@ -165,7 +170,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
         <div
           style={{
             position: 'absolute',
-            bottom: 72,
+            bottom: 88,
             left: 0,
             right: 0,
             textAlign: 'center',
