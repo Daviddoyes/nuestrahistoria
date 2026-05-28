@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff } from 'lucide-react'
-import { createClient } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase-browser'
 
 const supabase = createClient()
 
@@ -18,20 +18,31 @@ export default function ResetPasswordPage() {
   const [done, setDone] = useState(false)
 
   useEffect(() => {
-    const code = new URLSearchParams(window.location.search).get('code')
-    console.log('[reset] code from URL:', code)
-
-    if (code) {
-      supabase.auth.exchangeCodeForSession(code)
-        .then(({ data, error: e }) => {
-          console.log('[reset] exchange result:', data?.session?.user?.email ?? null, e?.message ?? null)
-          if (!e) setReady(true)
-          else setError('Link inválido o expirado: ' + e.message)
-        })
-    } else {
-      console.log('[reset] no code found in URL')
+    // If the callback route couldn't exchange the code, it redirects here with ?error=
+    if (new URLSearchParams(window.location.search).get('error')) {
       setError('Link inválido o expirado')
+      return
     }
+
+    // The /auth/callback route already exchanged the code server-side and set cookies.
+    // getSession() picks up the session from cookies immediately.
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        setReady(true)
+      } else {
+        // Fallback: listen for PASSWORD_RECOVERY / SIGNED_IN in case the
+        // session cookie is still propagating
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+          (event, session) => {
+            if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
+              setReady(true)
+              subscription.unsubscribe()
+            }
+          }
+        )
+        return () => subscription.unsubscribe()
+      }
+    })
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
