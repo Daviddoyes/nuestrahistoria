@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { Share2 } from 'lucide-react'
 import type { Plan } from '@/types/planes'
 
@@ -24,6 +24,18 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
   const templateRef = useRef<HTMLDivElement>(null)
   const [generating, setGenerating] = useState(false)
   const [base64Url, setBase64Url] = useState<string | null>(null)
+  const [imgDimensions, setImgDimensions] = useState({ width: 1000, height: 750 })
+
+  useEffect(() => {
+    if (!plan.foto_url) return
+    const img = new Image()
+    img.onload = () => setImgDimensions({ width: img.naturalWidth, height: img.naturalHeight })
+    img.src = plan.foto_url
+  }, [plan.foto_url])
+
+  const ratio = imgDimensions.width / imgDimensions.height
+  const marcoWidth = ratio > 1 ? 960 : ratio === 1 ? 900 : Math.round(1100 * ratio)
+  const marcoHeight = ratio > 1 ? Math.round(960 / ratio) : ratio === 1 ? 900 : 1100
 
   const len = plan.titulo.length
   const titleFontSize = len > 50 ? 36 : len > 35 ? 44 : len > 20 ? 54 : 64
@@ -142,18 +154,15 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
             <span style={{ color: '#FFFFFF' }}>{plan.titulo}</span>
           </div>
 
-          {/* Photo in orange frame */}
+          {/* Photo in orange frame — sized to match natural photo proportions */}
           {photoSrc && (
             <div
               style={{
-                width: 960,
-                maxHeight: 1000,
+                width: marcoWidth,
+                height: marcoHeight,
                 border: '6px solid #E8692A',
                 boxShadow: '0 12px 40px rgba(0,0,0,0.5)',
                 background: '#000',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
                 overflow: 'hidden',
                 flexShrink: 0,
                 boxSizing: 'border-box',
@@ -162,12 +171,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
               <img
                 src={photoSrc}
                 alt={plan.titulo}
-                style={{
-                  display: 'block',
-                  width: '100%',
-                  height: 'auto',
-                  objectFit: 'contain',
-                }}
+                style={{ display: 'block', width: '100%', height: '100%', objectFit: 'fill' }}
               />
             </div>
           )}
