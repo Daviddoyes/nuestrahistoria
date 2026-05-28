@@ -89,19 +89,20 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
         }}
         aria-hidden="true"
       >
-        {/* Blurred background — same photo scaled to fill */}
+        {/* Blurred background — scale to ensure full coverage */}
         {photoSrc && (
           <img
             src={photoSrc}
             alt=""
             style={{
               position: 'absolute',
-              top: '-5%',
-              left: '-5%',
-              width: '110%',
-              height: '110%',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
               objectFit: 'cover',
               filter: 'blur(28px)',
+              transform: 'scale(1.15)',
             }}
           />
         )}
@@ -109,7 +110,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
         {/* Dark overlay */}
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.88)' }} />
 
-        {/* Main flex column — title / photo / brand */}
+        {/* Main flex column — centered, equal gap title / photo / brand */}
         <div
           style={{
             position: 'absolute',
@@ -117,8 +118,8 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '120px 60px',
+            justifyContent: 'center',
+            padding: '0 60px',
             gap: 60,
             boxSizing: 'border-box',
           } as React.CSSProperties}
@@ -126,11 +127,9 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
           {/* Title */}
           <div
             style={{
-              flex: '0 0 auto',
               fontFamily: 'Georgia, serif',
               fontSize: titleFontSize,
               fontWeight: 700,
-              color: '#FFFFFF',
               lineHeight: 1.3,
               textAlign: 'center',
               letterSpacing: '-0.01em',
@@ -139,16 +138,16 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
               width: '100%',
             } as React.CSSProperties}
           >
-            <span style={{ color: '#E8692A' }}>✓ </span>{plan.titulo}
+            <span style={{ color: '#E8692A' }}>✓ </span>
+            <span style={{ color: '#FFFFFF' }}>{plan.titulo}</span>
           </div>
 
-          {/* Photo in white frame — height adapts to image */}
+          {/* Photo in orange frame */}
           {photoSrc && (
             <div
               style={{
-                flex: '0 1 auto',
+                width: 960,
                 maxHeight: 1000,
-                width: 1000,
                 border: '6px solid #E8692A',
                 boxShadow: '0 12px 40px rgba(0,0,0,0.5)',
                 background: '#000',
@@ -156,6 +155,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
                 alignItems: 'center',
                 justifyContent: 'center',
                 overflow: 'hidden',
+                flexShrink: 0,
                 boxSizing: 'border-box',
               } as React.CSSProperties}
             >
@@ -175,12 +175,11 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
           {/* Brand */}
           <div
             style={{
-              flex: '0 0 auto',
               textAlign: 'center',
-              fontSize: 26,
-              letterSpacing: '0.32em',
+              fontSize: 28,
+              letterSpacing: '0.28em',
               color: '#E8692A',
-              fontWeight: 600,
+              fontWeight: 700,
               textTransform: 'uppercase',
               fontFamily: 'system-ui, sans-serif',
             }}
