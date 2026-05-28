@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client'
 export default function ResetPasswordPage() {
   const router = useRouter()
   const [ready, setReady] = useState(false)
+  const [invalid, setInvalid] = useState(false)
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -15,16 +16,65 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
 
-  const supabase = createClient()
-
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') {
-        setReady(true)
+    const supabase = createClient()
+    let mounted = true
+
+    const tryReady = () => {
+      if (mounted) setReady(true)
+    }
+
+    const run = async () => {
+      // 1. PKCE flow: ?code= in URL (modern Supabase with @supabase/ssr)
+      const params = new URLSearchParams(window.location.search)
+      const code = params.get('code')
+      const tokenHash = params.get('token_hash')
+
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code)
+        if (!error) { tryReady(); return }
       }
-    })
-    return () => subscription.unsubscribe()
-  }, [supabase])
+
+      if (tokenHash) {
+        const { error } = await supabase.auth.verifyOtp({
+          token_hash: tokenHash,
+          type: 'recovery',
+        })
+        if (!error) { tryReady(); return }
+      }
+
+      // 2. Hash-fragment flow: Supabase may have already processed #access_token
+      //    before our effect ran — getSession() catches that case
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) { tryReady(); return }
+
+      // 3. Still nothing — listen for PASSWORD_RECOVERY / SIGNED_IN events
+      //    (hash-fragment flow where the client is still initialising)
+      const timer = setTimeout(() => {
+        if (mounted) setInvalid(true)
+      }, 8000)
+
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+        if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
+          clearTimeout(timer)
+          tryReady()
+        }
+      })
+
+      return () => {
+        clearTimeout(timer)
+        subscription.unsubscribe()
+      }
+    }
+
+    let innerCleanup: (() => void) | undefined
+    run().then(fn => { innerCleanup = fn })
+
+    return () => {
+      mounted = false
+      innerCleanup?.()
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -39,6 +89,7 @@ export default function ResetPasswordPage() {
     setLoading(true)
     setError('')
 
+    const supabase = createClient()
     const { error: updateError } = await supabase.auth.updateUser({ password })
 
     if (updateError) {
@@ -79,6 +130,20 @@ export default function ResetPasswordPage() {
               ¡Contraseña actualizada! Redirigiendo...
             </p>
           </div>
+        ) : invalid ? (
+          <div className="space-y-4">
+            <div className="bg-[#2A1A1A] border border-[#4A2A2A] rounded-xl px-4 py-4">
+              <p className="text-sm text-[#C97B7B]">
+                El enlace no es válido o ha expirado. Solicita un nuevo correo de recuperación.
+              </p>
+            </div>
+            <button
+              onClick={() => router.push('/')}
+              className="w-full bg-[#E8692A] active:bg-[#D4581A] text-white font-semibold py-3.5 rounded-xl transition-colors text-base"
+            >
+              Volver al inicio
+            </button>
+          </div>
         ) : !ready ? (
           <div className="flex flex-col items-center gap-4 pt-8">
             <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#E8692A] rounded-full animate-spin" />
@@ -100,7 +165,7 @@ export default function ResetPasswordPage() {
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={() => setShowPassword(v => !v)}
                   className="absolute right-0 top-0 bottom-0 px-4 text-[#444444] active:text-[#E8692A]"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -131,7 +196,7 @@ export default function ResetPasswordPage() {
               disabled={loading}
               className="w-full bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl transition-colors text-base mt-2"
             >
-              {loading ? 'Guardando...' : 'Guardar contraseña'}
+              {loading ? 'Guardando...' : 'Guardar nueva contraseña'}
             </button>
           </form>
         )}
