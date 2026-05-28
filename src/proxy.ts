@@ -2,6 +2,19 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  // Public routes — skip auth entirely so PKCE codes and hash tokens reach the client intact
+  const isPublic =
+    pathname === '/' ||
+    pathname.startsWith('/reset-password') ||
+    pathname.startsWith('/pricing') ||
+    pathname.startsWith('/api/')
+
+  if (isPublic) {
+    return NextResponse.next()
+  }
+
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -29,7 +42,6 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const { pathname } = request.nextUrl
   const isProtected =
     pathname.startsWith('/planes') || pathname.startsWith('/onboarding')
 
