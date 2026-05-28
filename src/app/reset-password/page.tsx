@@ -18,21 +18,20 @@ export default function ResetPasswordPage() {
   const [done, setDone] = useState(false)
 
   useEffect(() => {
-    // With implicit flow + detectSessionInUrl:true, the browser client parses
-    // the #access_token hash automatically and fires PASSWORD_RECOVERY.
-    // getSession() catches it if parsing completed before this effect ran.
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        setReady(true)
-      } else {
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-          if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
-            setReady(true)
-            subscription.unsubscribe()
-          }
+    const code = new URLSearchParams(window.location.search).get('code')
+    console.log('[reset] code from URL:', code)
+
+    if (code) {
+      supabase.auth.exchangeCodeForSession(code)
+        .then(({ data, error: e }) => {
+          console.log('[reset] exchange result:', data?.session?.user?.email ?? null, e?.message ?? null)
+          if (!e) setReady(true)
+          else setError('Link inválido o expirado: ' + e.message)
         })
-      }
-    })
+    } else {
+      console.log('[reset] no code found in URL')
+      setError('Link inválido o expirado')
+    }
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
