@@ -122,76 +122,69 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
         {/* Dark overlay — also oversized to guarantee full coverage */}
         <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '120%', height: '120%', background: 'rgba(0,0,0,0.88)' }} />
 
-        {/* Main flex column — symmetric padding top/bottom, equal margins around photo */}
+        {/* Title — positioned above the photo center */}
         <div
           style={{
             position: 'absolute',
-            inset: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '180px 60px',
-            gap: 0,
-            boxSizing: 'border-box',
+            bottom: `calc(50% + ${marcoHeight / 2}px + 80px)`,
+            left: 60,
+            right: 60,
+            textAlign: 'center',
+            fontFamily: 'Georgia, serif',
+            fontSize: titleFontSize,
+            fontWeight: 700,
+            lineHeight: 1.3,
+            letterSpacing: 0,
+            wordBreak: 'break-word',
+            whiteSpace: 'normal',
           } as React.CSSProperties}
         >
-          {/* Title */}
+          <span style={{ display: 'inline', color: '#E8692A' }}>✓ </span>
+          <span style={{ display: 'inline', color: '#FFFFFF' }}>{plan.titulo}</span>
+        </div>
+
+        {/* Photo — mathematically centered */}
+        {photoSrc && (
           <div
             style={{
-              fontFamily: 'Georgia, serif',
-              fontSize: titleFontSize,
-              fontWeight: 700,
-              lineHeight: 1.3,
-              textAlign: 'center',
-              letterSpacing: '-0.01em',
-              wordBreak: 'break-word',
-              whiteSpace: 'normal',
-              width: '100%',
-              marginBottom: 80,
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: marcoWidth,
+              height: marcoHeight,
+              border: '6px solid #E8692A',
+              boxShadow: '0 12px 40px rgba(0,0,0,0.5)',
+              background: '#000',
+              overflow: 'hidden',
+              boxSizing: 'border-box',
             } as React.CSSProperties}
           >
-            <span style={{ color: '#E8692A' }}>✓ </span>
-            <span style={{ color: '#FFFFFF' }}>{plan.titulo}</span>
+            <img
+              src={photoSrc}
+              alt={plan.titulo}
+              style={{ display: 'block', width: '100%', height: '100%', objectFit: 'fill' }}
+            />
           </div>
+        )}
 
-          {/* Photo in orange frame — sized to match natural photo proportions */}
-          {photoSrc && (
-            <div
-              style={{
-                width: marcoWidth,
-                height: marcoHeight,
-                border: '6px solid #E8692A',
-                boxShadow: '0 12px 40px rgba(0,0,0,0.5)',
-                background: '#000',
-                overflow: 'hidden',
-                flexShrink: 0,
-                boxSizing: 'border-box',
-              } as React.CSSProperties}
-            >
-              <img
-                src={photoSrc}
-                alt={plan.titulo}
-                style={{ display: 'block', width: '100%', height: '100%', objectFit: 'fill' }}
-              />
-            </div>
-          )}
-
-          {/* Brand */}
-          <div
-            style={{
-              textAlign: 'center',
-              fontSize: 28,
-              letterSpacing: '0.28em',
-              color: '#E8692A',
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              fontFamily: 'system-ui, sans-serif',
-              marginTop: 80,
-            }}
-          >
-            LIVESTORY.APP
-          </div>
+        {/* Brand — positioned below the photo center */}
+        <div
+          style={{
+            position: 'absolute',
+            top: `calc(50% + ${marcoHeight / 2}px + 80px)`,
+            left: 60,
+            right: 60,
+            textAlign: 'center',
+            fontSize: 28,
+            letterSpacing: '0.28em',
+            color: '#E8692A',
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            fontFamily: 'system-ui, sans-serif',
+          } as React.CSSProperties}
+        >
+          LIVESTORY.APP
         </div>
       </div>
 
