@@ -9,19 +9,11 @@ type Props = {
   descripcion: string
 }
 
-function formatDate(dateStr: string | null, fallback: string) {
-  const str = dateStr ?? fallback
-  const date = new Date(str.includes('T') ? str : `${str}T12:00:00`)
-  return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase()
-}
-
 export default function ShareStoryImage({ plan, descripcion }: Props) {
   const templateRef = useRef<HTMLDivElement>(null)
   const [generating, setGenerating] = useState(false)
 
   const titulo = plan.titulo.length > 80 ? plan.titulo.slice(0, 80) + '…' : plan.titulo
-  const desc = descripcion.length > 100 ? descripcion.slice(0, 100) + '…' : descripcion
-  const dateStr = formatDate(plan.fecha_momento, plan.created_at)
 
   const handleShare = async () => {
     if (!templateRef.current) return
@@ -30,7 +22,7 @@ export default function ShareStoryImage({ plan, descripcion }: Props) {
       const { default: html2canvas } = await import('html2canvas')
       const canvas = await html2canvas(templateRef.current, {
         useCORS: true,
-        scale: 2,
+        scale: 1,
         backgroundColor: '#0A0A0A',
         logging: false,
       })
@@ -60,22 +52,21 @@ export default function ShareStoryImage({ plan, descripcion }: Props) {
 
   return (
     <>
-      {/* Hidden template — rendered off-screen for html2canvas */}
+      {/* Hidden 1080×1920 template rendered off-screen for html2canvas */}
       <div
         ref={templateRef}
         style={{
           position: 'fixed',
           left: '-9999px',
           top: 0,
-          width: 540,
-          height: 960,
+          width: 1080,
+          height: 1920,
           background: '#0A0A0A',
           overflow: 'hidden',
-          fontFamily: 'system-ui, sans-serif',
         }}
         aria-hidden="true"
       >
-        {/* Fullbleed photo */}
+        {/* Blurred background — same photo scaled to fill */}
         {plan.foto_url && (
           <img
             src={plan.foto_url}
@@ -83,94 +74,109 @@ export default function ShareStoryImage({ plan, descripcion }: Props) {
             crossOrigin="anonymous"
             style={{
               position: 'absolute',
-              inset: 0,
-              width: '100%',
-              height: '100%',
+              top: '-5%',
+              left: '-5%',
+              width: '110%',
+              height: '110%',
               objectFit: 'cover',
+              filter: 'blur(28px)',
             }}
           />
         )}
 
-        {/* Gradient overlay */}
+        {/* Dark overlay 60% */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            background:
-              'linear-gradient(to bottom, rgba(10,10,10,0.75) 0%, transparent 30%, transparent 45%, rgba(10,10,10,0.85) 70%, #0A0A0A 100%)',
+            background: 'rgba(0,0,0,0.62)',
           }}
         />
 
-        {/* Brand top */}
+        {/* Main content — vertically centered */}
         <div
           style={{
             position: 'absolute',
-            top: 52,
-            left: 0,
-            right: 0,
-            textAlign: 'center',
-            fontSize: 13,
-            letterSpacing: '0.35em',
-            color: '#E8692A',
-            fontWeight: 600,
-            textTransform: 'uppercase',
+            inset: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '160px 80px 120px',
+            gap: 52,
           }}
         >
-          LIVESTORY
-        </div>
-
-        {/* Bottom content */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 72,
-            left: 48,
-            right: 48,
-          }}
-        >
-          {/* Title */}
+          {/* Title above the frame */}
           <div
             style={{
               fontFamily: 'Georgia, serif',
-              fontSize: 38,
+              fontSize: 68,
               fontWeight: 700,
-              color: '#F0F0F0',
+              color: '#FFFFFF',
               lineHeight: 1.2,
-              marginBottom: 16,
-              overflow: 'hidden',
+              textAlign: 'center',
+              letterSpacing: '-0.01em',
+              maxWidth: '100%',
+              // Clamp to 3 lines
               display: '-webkit-box',
               WebkitLineClamp: 3,
               WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
             } as React.CSSProperties}
           >
             {titulo}
           </div>
 
-          {/* Description */}
-          {desc && (
+          {/* Photo in white frame */}
+          {plan.foto_url && (
             <div
               style={{
-                fontSize: 17,
-                color: '#999999',
-                lineHeight: 1.5,
-                marginBottom: 20,
+                border: '16px solid #FFFFFF',
+                boxShadow: '0 24px 80px rgba(0,0,0,0.7)',
+                flexShrink: 0,
+                maxWidth: '86%',    // 86% of 1080 = ~928px
+                maxHeight: '55%',   // 55% of 1920 = 1056px
+                overflow: 'hidden',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: '#000',
               }}
             >
-              {desc}
+              <img
+                src={plan.foto_url}
+                alt={plan.titulo}
+                crossOrigin="anonymous"
+                style={{
+                  display: 'block',
+                  maxWidth: '928px',
+                  maxHeight: '1056px',
+                  width: 'auto',
+                  height: 'auto',
+                  objectFit: 'contain',
+                }}
+              />
             </div>
           )}
+        </div>
 
-          {/* Date */}
-          <div
-            style={{
-              fontSize: 11,
-              letterSpacing: '0.18em',
-              color: '#555555',
-              textTransform: 'uppercase',
-            }}
-          >
-            {dateStr}
-          </div>
+        {/* Brand — bottom */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 72,
+            left: 0,
+            right: 0,
+            textAlign: 'center',
+            fontSize: 22,
+            letterSpacing: '0.32em',
+            color: '#E8692A',
+            fontWeight: 600,
+            textTransform: 'uppercase',
+            fontFamily: 'system-ui, sans-serif',
+          }}
+        >
+          LIVESTORY.APP
         </div>
       </div>
 
