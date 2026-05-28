@@ -154,16 +154,15 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
               width: marcoWidth,
               height: marcoHeight,
               border: '6px solid #E8692A',
-              boxShadow: '0 12px 40px rgba(0,0,0,0.5)',
               background: '#000',
               overflow: 'hidden',
-              boxSizing: 'border-box',
             } as React.CSSProperties}
           >
             <img
-              src={photoSrc}
+              src={base64Url || plan.foto_url || ''}
               alt={plan.titulo}
-              style={{ display: 'block', width: '100%', height: '100%', objectFit: 'fill' }}
+              crossOrigin="anonymous"
+              style={{ display: 'block', width: '100%', height: '100%', objectFit: 'contain', background: '#000' }}
             />
           </div>
         )}
