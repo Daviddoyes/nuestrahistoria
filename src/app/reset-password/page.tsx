@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { Eye, EyeOff } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
+const supabase = createClient()
+
 export default function ResetPasswordPage() {
   const router = useRouter()
   const [ready, setReady] = useState(false)
@@ -16,41 +18,21 @@ export default function ResetPasswordPage() {
   const [done, setDone] = useState(false)
 
   useEffect(() => {
-    const supabase = createClient()
-
-    // 1. Implicit flow — hash fragment (#access_token=...&type=recovery)
-    const hash = window.location.hash
-    if (hash && hash.includes('access_token')) {
-      const params = new URLSearchParams(hash.substring(1))
-      const access_token = params.get('access_token')
-      const refresh_token = params.get('refresh_token') ?? ''
-      const type = params.get('type')
-
-      if (type === 'recovery' && access_token) {
-        supabase.auth
-          .setSession({ access_token, refresh_token })
-          .then(({ error: e }) => {
-            if (!e) setReady(true)
-            else setError('Link inválido o expirado')
-          })
-        return
-      }
-    }
-
-    // 2. PKCE flow — ?code= query param
-    const code = new URLSearchParams(window.location.search).get('code')
-    if (code) {
-      supabase.auth
-        .exchangeCodeForSession(code)
-        .then(({ error: e }) => {
-          if (!e) setReady(true)
-          else setError('Link inválido o expirado')
+    // With implicit flow + detectSessionInUrl:true, the browser client parses
+    // the #access_token hash automatically and fires PASSWORD_RECOVERY.
+    // getSession() catches it if parsing completed before this effect ran.
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        setReady(true)
+      } else {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+          if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
+            setReady(true)
+            subscription.unsubscribe()
+          }
         })
-      return
-    }
-
-    // Neither token found
-    setError('Link inválido o expirado')
+      }
+    })
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -60,7 +42,6 @@ export default function ResetPasswordPage() {
 
     setLoading(true)
     setError('')
-    const supabase = createClient()
     const { error: updateError } = await supabase.auth.updateUser({ password })
     if (updateError) {
       setError(updateError.message)
@@ -99,13 +80,7 @@ export default function ResetPasswordPage() {
           </div>
         ) : !ready ? (
           <div className="flex flex-col items-center gap-4 pt-8">
-            {!error && (
-              <>
-                <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#E8692A] rounded-full animate-spin" />
-                <p className="text-sm text-[#666666]">Verificando enlace...</p>
-              </>
-            )}
-            {error && (
+            {error ? (
               <div className="w-full space-y-4">
                 <p className="text-sm text-[#C97B7B] bg-[#8B3A3A]/20 px-3 py-2 rounded-lg">
                   {error}
@@ -117,6 +92,11 @@ export default function ResetPasswordPage() {
                   Volver al inicio
                 </button>
               </div>
+            ) : (
+              <>
+                <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#E8692A] rounded-full animate-spin" />
+                <p className="text-sm text-[#666666]">Verificando enlace...</p>
+              </>
             )}
           </div>
         ) : (
