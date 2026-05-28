@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Calendar, User, Trash2 } from 'lucide-react'
 import type { Plan } from '@/types/planes'
 import HistoriaDetailModal from './HistoriaDetailModal'
+import ShareStoryImage from './ShareStoryImage'
 
 type Props = {
   plan: Plan
@@ -42,14 +43,21 @@ export default function HistoriaCard({ plan, onDelete, isOwner, onUpdate }: Prop
         {/* Gradient for text readability */}
         <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/95 via-black/60 to-transparent" />
 
-        {/* Trash button — top right */}
-        <button
-          onClick={e => { e.stopPropagation(); setConfirming(true) }}
-          aria-label="Eliminar historia"
-          className="absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-lg bg-black/40 flex items-center justify-center text-white/30 active:bg-[#8B3A3A]/80 active:text-white transition-colors"
-        >
-          <Trash2 className="w-3.5 h-3.5" />
-        </button>
+        {/* Action buttons — top right */}
+        <div className="absolute top-2.5 right-2.5 z-10 flex flex-col gap-1.5">
+          <button
+            onClick={e => { e.stopPropagation(); setConfirming(true) }}
+            aria-label="Eliminar historia"
+            className="w-8 h-8 rounded-lg bg-black/40 flex items-center justify-center text-white/30 active:bg-[#8B3A3A]/80 active:text-white transition-colors"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+          <ShareStoryImage
+            plan={plan}
+            descripcion={plan.historia_descripcion ?? ''}
+            compact
+          />
+        </div>
 
         {/* Text overlay */}
         <div className="absolute inset-x-0 bottom-0 p-4">
@@ -60,7 +68,16 @@ export default function HistoriaCard({ plan, onDelete, isOwner, onUpdate }: Prop
             {plan.titulo}
           </h3>
           {plan.historia_descripcion && (
-            <p className="text-white/60 text-xs leading-relaxed mb-2.5 line-clamp-2">
+            <p
+              className="text-xs leading-relaxed mb-2.5"
+              style={{
+                color: '#999999',
+                overflow: 'hidden',
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+              } as React.CSSProperties}
+            >
               {plan.historia_descripcion}
             </p>
           )}

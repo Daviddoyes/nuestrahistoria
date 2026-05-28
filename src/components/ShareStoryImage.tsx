@@ -7,9 +7,10 @@ import type { Plan } from '@/types/planes'
 type Props = {
   plan: Plan
   descripcion: string
+  compact?: boolean
 }
 
-export default function ShareStoryImage({ plan, descripcion }: Props) {
+export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
   const templateRef = useRef<HTMLDivElement>(null)
   const [generating, setGenerating] = useState(false)
 
@@ -181,14 +182,25 @@ export default function ShareStoryImage({ plan, descripcion }: Props) {
       </div>
 
       {/* Share button */}
-      <button
-        onClick={handleShare}
-        disabled={generating}
-        className="flex items-center gap-2 text-sm text-[#666666] active:text-[#E8692A] disabled:opacity-40 transition-colors py-1"
-      >
-        <Share2 className="w-4 h-4" />
-        {generating ? 'Generando imagen...' : 'Compartir historia'}
-      </button>
+      {compact ? (
+        <button
+          onClick={e => { e.stopPropagation(); handleShare() }}
+          disabled={generating}
+          aria-label={generating ? 'Generando imagen...' : 'Compartir historia'}
+          className="w-8 h-8 rounded-lg bg-black/40 flex items-center justify-center text-white/50 active:bg-[#E8692A]/80 active:text-white disabled:opacity-40 transition-colors"
+        >
+          <Share2 className="w-3.5 h-3.5" />
+        </button>
+      ) : (
+        <button
+          onClick={handleShare}
+          disabled={generating}
+          className="flex items-center gap-2 text-sm text-[#666666] active:text-[#E8692A] disabled:opacity-40 transition-colors py-1"
+        >
+          <Share2 className="w-4 h-4" />
+          {generating ? 'Generando imagen...' : 'Compartir historia'}
+        </button>
+      )}
     </>
   )
 }
