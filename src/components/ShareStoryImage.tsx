@@ -89,26 +89,26 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
         }}
         aria-hidden="true"
       >
-        {/* Blurred background — scale to ensure full coverage */}
+        {/* Blurred background — oversized to cover blur edges */}
         {photoSrc && (
           <img
             src={photoSrc}
             alt=""
             style={{
               position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
+              top: '-10%',
+              left: '-10%',
+              width: '120%',
+              height: '120%',
               objectFit: 'cover',
               filter: 'blur(28px)',
-              transform: 'scale(1.15)',
+              transform: 'scale(1.2)',
             }}
           />
         )}
 
-        {/* Dark overlay */}
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.88)' }} />
+        {/* Dark overlay — also oversized to guarantee full coverage */}
+        <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '120%', height: '120%', background: 'rgba(0,0,0,0.88)' }} />
 
         {/* Main flex column — centered, equal gap title / photo / brand */}
         <div
