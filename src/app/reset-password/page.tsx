@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
@@ -8,7 +8,6 @@ import { createClient } from '@/lib/supabase/client'
 export default function ResetPasswordPage() {
   const router = useRouter()
   const [ready, setReady] = useState(false)
-  const [invalid, setInvalid] = useState(false)
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -18,88 +17,46 @@ export default function ResetPasswordPage() {
 
   useEffect(() => {
     const supabase = createClient()
-    let mounted = true
 
-    const tryReady = () => {
-      if (mounted) setReady(true)
-    }
+    // Subscribe first so we don't miss the event
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') setReady(true)
+    })
 
-    const run = async () => {
-      // 1. PKCE flow: ?code= in URL (modern Supabase with @supabase/ssr)
-      const params = new URLSearchParams(window.location.search)
-      const code = params.get('code')
-      const tokenHash = params.get('token_hash')
-
-      if (code) {
-        const { error } = await supabase.auth.exchangeCodeForSession(code)
-        if (!error) { tryReady(); return }
-      }
-
-      if (tokenHash) {
-        const { error } = await supabase.auth.verifyOtp({
-          token_hash: tokenHash,
-          type: 'recovery',
-        })
-        if (!error) { tryReady(); return }
-      }
-
-      // 2. Hash-fragment flow: Supabase may have already processed #access_token
-      //    before our effect ran — getSession() catches that case
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session) { tryReady(); return }
-
-      // 3. Still nothing — listen for PASSWORD_RECOVERY / SIGNED_IN events
-      //    (hash-fragment flow where the client is still initialising)
-      const timer = setTimeout(() => {
-        if (mounted) setInvalid(true)
-      }, 8000)
-
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-        if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
-          clearTimeout(timer)
-          tryReady()
-        }
-      })
-
-      return () => {
-        clearTimeout(timer)
-        subscription.unsubscribe()
+    // Supabase sends the token as a hash fragment (#access_token=...&type=recovery).
+    // createBrowserClient defaults to PKCE flow and won't auto-parse the hash,
+    // so we extract and inject the session manually.
+    const hash = window.location.hash
+    if (hash.includes('type=recovery')) {
+      const p = new URLSearchParams(hash.replace(/^#/, ''))
+      const access_token = p.get('access_token')
+      const refresh_token = p.get('refresh_token') ?? ''
+      if (access_token) {
+        supabase.auth
+          .setSession({ access_token, refresh_token })
+          .then(({ error: e }) => { if (!e) setReady(true) })
       }
     }
 
-    let innerCleanup: (() => void) | undefined
-    run().then(fn => { innerCleanup = fn })
-
-    return () => {
-      mounted = false
-      innerCleanup?.()
-    }
+    return () => subscription.unsubscribe()
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (password.length < 6) {
-      setError('La contraseña debe tener al menos 6 caracteres')
-      return
-    }
-    if (password !== confirm) {
-      setError('Las contraseñas no coinciden')
-      return
-    }
+    if (password !== confirm) { setError('Las contraseñas no coinciden'); return }
+    if (password.length < 6) { setError('Mínimo 6 caracteres'); return }
+
     setLoading(true)
     setError('')
-
     const supabase = createClient()
     const { error: updateError } = await supabase.auth.updateUser({ password })
-
     if (updateError) {
       setError(updateError.message)
       setLoading(false)
-      return
+    } else {
+      setDone(true)
+      setTimeout(() => router.push('/planes'), 1500)
     }
-
-    setDone(true)
-    setTimeout(() => router.push('/planes'), 2000)
   }
 
   const inputClass =
@@ -126,23 +83,7 @@ export default function ResetPasswordPage() {
 
         {done ? (
           <div className="bg-[#1A2A1A] border border-[#2A4A2A] rounded-xl px-4 py-4">
-            <p className="text-sm text-[#6BBF6B]">
-              ¡Contraseña actualizada! Redirigiendo...
-            </p>
-          </div>
-        ) : invalid ? (
-          <div className="space-y-4">
-            <div className="bg-[#2A1A1A] border border-[#4A2A2A] rounded-xl px-4 py-4">
-              <p className="text-sm text-[#C97B7B]">
-                El enlace no es válido o ha expirado. Solicita un nuevo correo de recuperación.
-              </p>
-            </div>
-            <button
-              onClick={() => router.push('/')}
-              className="w-full bg-[#E8692A] active:bg-[#D4581A] text-white font-semibold py-3.5 rounded-xl transition-colors text-base"
-            >
-              Volver al inicio
-            </button>
+            <p className="text-sm text-[#6BBF6B]">¡Contraseña actualizada! Redirigiendo...</p>
           </div>
         ) : !ready ? (
           <div className="flex flex-col items-center gap-4 pt-8">
@@ -194,7 +135,7 @@ export default function ResetPasswordPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl transition-colors text-base mt-2"
+              className="w-full bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl transition-colors text-base"
             >
               {loading ? 'Guardando...' : 'Guardar nueva contraseña'}
             </button>
