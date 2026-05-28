@@ -85,7 +85,7 @@ export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }
           style={{
             background: '#000',
             width: '100%',
-            height: '70vw',
+            height: '55vh',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -105,7 +105,7 @@ export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }
         {/* Content */}
         <div
           className="px-6 pt-6"
-          style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 4rem)' }}
+          style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 6rem)' }}
         >
           <p className="text-[10px] uppercase tracking-[0.15em] text-[#E8692A] mb-3">
             Historia
@@ -165,14 +165,23 @@ export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }
               </div>
             </div>
           ) : (
-            <div className="relative group">
+            <div className="relative">
+              <p className="text-[10px] uppercase tracking-[0.18em] text-[#666666] mb-2">
+                Recuerdo
+              </p>
               {descripcion ? (
-                <p className="text-[#A0A0A0] text-base leading-relaxed pr-8">
+                <p
+                  style={{ fontSize: 16, lineHeight: 1.8, color: '#C0C0C0', paddingTop: 8 }}
+                  className="pr-8"
+                >
                   {descripcion}
                 </p>
               ) : (
-                <p className="text-[#444444] text-base leading-relaxed italic pr-8">
-                  Sin descripción
+                <p
+                  style={{ fontSize: 16, lineHeight: 1.8, color: '#444444', paddingTop: 8 }}
+                  className="italic pr-8"
+                >
+                  Sin descripción añadida
                 </p>
               )}
               {isOwner && (
