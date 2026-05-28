@@ -18,17 +18,26 @@ export default function ResetPasswordPage() {
   useEffect(() => {
     const supabase = createClient()
 
+    console.log('[reset] search:', window.location.search)
+    console.log('[reset] hash:', window.location.hash)
+
+    const timer = setTimeout(() => {
+      setError('El enlace ha expirado. Solicita uno nuevo.')
+    }, 5000)
+
     const code = new URLSearchParams(window.location.search).get('code')
 
     if (code) {
-      // PKCE flow: Supabase sent a ?code= param
+      console.log('[reset] found code, exchanging...')
       supabase.auth.exchangeCodeForSession(code).then(({ error: e }) => {
+        clearTimeout(timer)
+        console.log('[reset] exchangeCodeForSession result:', e ? e.message : 'ok')
         if (!e) setReady(true)
         else setError('Link inválido o expirado')
       })
     } else {
-      // Fallback: implicit flow with #access_token hash fragment
       const hash = window.location.hash
+      console.log('[reset] no code, checking hash:', hash.slice(0, 60))
       if (hash.includes('access_token')) {
         const p = new URLSearchParams(hash.substring(1))
         const access_token = p.get('access_token')
@@ -37,12 +46,18 @@ export default function ResetPasswordPage() {
           supabase.auth
             .setSession({ access_token, refresh_token })
             .then(({ error: e }) => {
+              clearTimeout(timer)
+              console.log('[reset] setSession result:', e ? e.message : 'ok')
               if (!e) setReady(true)
               else setError('Link inválido o expirado')
             })
         }
+      } else {
+        console.log('[reset] no code and no hash token found')
       }
     }
+
+    return () => clearTimeout(timer)
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -91,8 +106,25 @@ export default function ResetPasswordPage() {
           </div>
         ) : !ready ? (
           <div className="flex flex-col items-center gap-4 pt-8">
-            <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#E8692A] rounded-full animate-spin" />
-            <p className="text-sm text-[#666666]">Verificando enlace...</p>
+            {!error && (
+              <>
+                <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#E8692A] rounded-full animate-spin" />
+                <p className="text-sm text-[#666666]">Verificando enlace...</p>
+              </>
+            )}
+            {error && (
+              <div className="w-full space-y-4">
+                <p className="text-sm text-[#C97B7B] bg-[#8B3A3A]/20 px-3 py-2 rounded-lg">
+                  {error}
+                </p>
+                <button
+                  onClick={() => router.push('/')}
+                  className="w-full bg-[#E8692A] active:bg-[#D4581A] text-white font-semibold py-3.5 rounded-xl transition-colors text-base"
+                >
+                  Volver al inicio
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5">
