@@ -10,13 +10,23 @@ type Props = {
   compact?: boolean
 }
 
+const toBase64 = async (url: string): Promise<string> => {
+  const response = await fetch('/api/proxy-image?url=' + encodeURIComponent(url))
+  const blob = await response.blob()
+  return new Promise((resolve) => {
+    const reader = new FileReader()
+    reader.onloadend = () => resolve(reader.result as string)
+    reader.readAsDataURL(blob)
+  })
+}
+
 export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
   const templateRef = useRef<HTMLDivElement>(null)
   const [generating, setGenerating] = useState(false)
+  const [base64Url, setBase64Url] = useState<string | null>(null)
 
   const len = plan.titulo.length
   const titleFontSize = len > 40 ? 44 : len > 20 ? 54 : 64
-  // JS-truncate to ~3 lines worth of chars at the chosen font size
   const maxChars = titleFontSize >= 64 ? 55 : titleFontSize >= 54 ? 70 : 90
   const titulo = len > maxChars ? plan.titulo.slice(0, maxChars - 1) + '…' : plan.titulo
 
@@ -24,9 +34,17 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
     if (!templateRef.current) return
     setGenerating(true)
     try {
+      let imgSrc = base64Url
+      if (!imgSrc && plan.foto_url) {
+        imgSrc = await toBase64(plan.foto_url)
+        setBase64Url(imgSrc)
+        // Allow React to re-render with base64Url before html2canvas reads the DOM
+        await new Promise(r => setTimeout(r, 80))
+      }
+
       const { default: html2canvas } = await import('html2canvas')
       const canvas = await html2canvas(templateRef.current, {
-        useCORS: true,
+        useCORS: false,
         scale: 1,
         backgroundColor: '#0A0A0A',
         logging: false,
@@ -55,6 +73,8 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
     }
   }
 
+  const photoSrc = base64Url ?? plan.foto_url
+
   return (
     <>
       {/* Hidden 1080×1920 template rendered off-screen for html2canvas */}
@@ -72,11 +92,10 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
         aria-hidden="true"
       >
         {/* Blurred background — same photo scaled to fill */}
-        {plan.foto_url && (
+        {photoSrc && (
           <img
-            src={plan.foto_url}
+            src={photoSrc}
             alt=""
-            crossOrigin="anonymous"
             style={{
               position: 'absolute',
               top: '-5%',
@@ -126,7 +145,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
               wordBreak: 'break-word',
               whiteSpace: 'normal',
               overflow: 'hidden',
-              maxHeight: titleFontSize * 1.25 * 3 + 4, // 3 lines hard cap
+              maxHeight: titleFontSize * 1.25 * 3 + 4,
               boxSizing: 'border-box',
             } as React.CSSProperties}
           >
@@ -134,14 +153,14 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
           </div>
 
           {/* Photo in white frame */}
-          {plan.foto_url && (
+          {photoSrc && (
             <div
               style={{
                 border: '16px solid #FFFFFF',
                 boxShadow: '0 24px 80px rgba(0,0,0,0.7)',
                 flexShrink: 0,
-                width: 1000,        // 1080 - 40px margin each side
-                maxHeight: 1056,    // 55% of 1920
+                width: 1000,
+                maxHeight: 1056,
                 overflow: 'hidden',
                 display: 'flex',
                 alignItems: 'center',
@@ -150,9 +169,8 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
               }}
             >
               <img
-                src={plan.foto_url}
+                src={photoSrc}
                 alt={plan.titulo}
-                crossOrigin="anonymous"
                 style={{
                   display: 'block',
                   maxWidth: '100%',
@@ -191,7 +209,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
         <button
           onClick={e => { e.stopPropagation(); handleShare() }}
           disabled={generating}
-          aria-label={generating ? 'Generando imagen...' : 'Compartir historia'}
+          aria-label={generating ? 'Preparando imagen...' : 'Compartir historia'}
           className="w-8 h-8 rounded-lg bg-black/40 flex items-center justify-center text-white/50 active:bg-[#E8692A]/80 active:text-white disabled:opacity-40 transition-colors"
         >
           <Share2 className="w-3.5 h-3.5" />
@@ -203,7 +221,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
           className="flex items-center gap-2 text-sm text-[#666666] active:text-[#E8692A] disabled:opacity-40 transition-colors py-1"
         >
           <Share2 className="w-4 h-4" />
-          {generating ? 'Generando imagen...' : 'Compartir historia'}
+          {generating ? 'Preparando imagen...' : 'Compartir historia'}
         </button>
       )}
     </>
