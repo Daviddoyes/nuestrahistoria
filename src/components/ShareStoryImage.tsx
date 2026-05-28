@@ -26,9 +26,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
   const [base64Url, setBase64Url] = useState<string | null>(null)
 
   const len = plan.titulo.length
-  const titleFontSize = len > 40 ? 44 : len > 20 ? 54 : 64
-  const maxChars = titleFontSize >= 64 ? 55 : titleFontSize >= 54 ? 70 : 90
-  const titulo = len > maxChars ? plan.titulo.slice(0, maxChars - 1) + '…' : plan.titulo
+  const titleFontSize = len > 50 ? 36 : len > 35 ? 44 : len > 20 ? 54 : 64
 
   const handleShare = async () => {
     if (!templateRef.current) return
@@ -144,12 +142,10 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
               padding: '0 60px',
               wordBreak: 'break-word',
               whiteSpace: 'normal',
-              overflow: 'hidden',
-              maxHeight: titleFontSize * 1.25 * 3 + 4,
               boxSizing: 'border-box',
             } as React.CSSProperties}
           >
-            {titulo}
+            {plan.titulo}
           </div>
 
           {/* Photo in white frame */}
@@ -160,7 +156,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
                 boxShadow: '0 24px 80px rgba(0,0,0,0.7)',
                 flexShrink: 0,
                 width: 1000,
-                maxHeight: 1056,
+                maxHeight: 900,
                 overflow: 'hidden',
                 display: 'flex',
                 alignItems: 'center',
@@ -174,7 +170,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
                 style={{
                   display: 'block',
                   maxWidth: '100%',
-                  maxHeight: 1056,
+                  maxHeight: 900,
                   width: 'auto',
                   height: 'auto',
                   objectFit: 'contain',
