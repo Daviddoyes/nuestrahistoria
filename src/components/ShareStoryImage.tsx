@@ -106,85 +106,78 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
           />
         )}
 
-        {/* Dark overlay 60% */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'rgba(0,0,0,0.78)',
-          }}
-        />
+        {/* Dark overlay */}
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.82)' }} />
 
-        {/* Main content — vertically centered */}
+        {/* Zone 1 — Title (top: 160px, height: 640px) */}
         <div
           style={{
             position: 'absolute',
-            inset: 0,
+            top: 160,
+            left: 0,
+            right: 0,
+            height: 640,
             display: 'flex',
-            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '160px 80px 120px',
-            gap: 52,
-          }}
+            padding: '0 80px',
+            boxSizing: 'border-box',
+          } as React.CSSProperties}
         >
-          {/* Title above the frame */}
           <div
             style={{
               fontFamily: 'Georgia, serif',
               fontSize: titleFontSize,
               fontWeight: 700,
               color: '#FFFFFF',
-              lineHeight: 1.25,
+              lineHeight: 1.3,
               textAlign: 'center',
               letterSpacing: '-0.01em',
-              width: '100%',
-              padding: '0 60px',
               wordBreak: 'break-word',
               whiteSpace: 'normal',
-              boxSizing: 'border-box',
             } as React.CSSProperties}
           >
             <span style={{ color: '#E8692A' }}>✓ </span>{plan.titulo}
           </div>
-
-          {/* Photo in white frame */}
-          {photoSrc && (
-            <div
-              style={{
-                border: '16px solid #FFFFFF',
-                boxShadow: '0 24px 80px rgba(0,0,0,0.7)',
-                flexShrink: 0,
-                width: 1000,
-                maxHeight: 900,
-                overflow: 'hidden',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: '#000',
-              }}
-            >
-              <img
-                src={photoSrc}
-                alt={plan.titulo}
-                style={{
-                  display: 'block',
-                  maxWidth: '100%',
-                  maxHeight: 900,
-                  width: 'auto',
-                  height: 'auto',
-                  objectFit: 'contain',
-                }}
-              />
-            </div>
-          )}
         </div>
 
-        {/* Brand — bottom */}
+        {/* Zone 2 — Photo (top: 500px, fixed 900px tall frame) */}
+        {photoSrc && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 500,
+              left: 40,
+              right: 40,
+              height: 900,
+              border: '16px solid #FFFFFF',
+              boxShadow: '0 24px 80px rgba(0,0,0,0.7)',
+              overflow: 'hidden',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: '#000',
+              boxSizing: 'border-box',
+            } as React.CSSProperties}
+          >
+            <img
+              src={photoSrc}
+              alt={plan.titulo}
+              style={{
+                display: 'block',
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+              }}
+            />
+          </div>
+        )}
+
+        {/* Zone 3 — Brand (bottom: 160px) */}
         <div
           style={{
             position: 'absolute',
-            bottom: 140,
+            bottom: 160,
             left: 0,
             right: 0,
             textAlign: 'center',
