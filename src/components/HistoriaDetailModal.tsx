@@ -80,18 +80,18 @@ export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }
           overscrollBehavior: 'contain',
         } as React.CSSProperties}
       >
-        {/* Photo — natural height, black background */}
-        <div style={{ background: '#000', width: '100%' }}>
-          {plan.foto_url ? (
+        {/* Photo — natural height, no fixed container */}
+        {plan.foto_url ? (
+          <div style={{ width: '100%', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <img
               src={plan.foto_url}
               alt={plan.titulo}
-              style={{ width: '100%', height: 'auto', display: 'block' }}
+              style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'contain' }}
             />
-          ) : (
-            <div style={{ width: '100%', height: '50vw', background: '#111' }} />
-          )}
-        </div>
+          </div>
+        ) : (
+          <div style={{ width: '100%', height: '50vw', background: '#111' }} />
+        )}
 
         {/* Content */}
         <div

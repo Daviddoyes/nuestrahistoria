@@ -111,7 +111,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'rgba(0,0,0,0.62)',
+            background: 'rgba(0,0,0,0.78)',
           }}
         />
 
@@ -145,7 +145,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
               boxSizing: 'border-box',
             } as React.CSSProperties}
           >
-            {plan.titulo}
+            <span style={{ color: '#E8692A' }}>✓ </span>{plan.titulo}
           </div>
 
           {/* Photo in white frame */}
@@ -184,11 +184,11 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
         <div
           style={{
             position: 'absolute',
-            bottom: 88,
+            bottom: 140,
             left: 0,
             right: 0,
             textAlign: 'center',
-            fontSize: 22,
+            fontSize: 26,
             letterSpacing: '0.32em',
             color: '#E8692A',
             fontWeight: 600,
