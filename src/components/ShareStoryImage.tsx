@@ -122,7 +122,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
         {/* Dark overlay — also oversized to guarantee full coverage */}
         <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '120%', height: '120%', background: 'rgba(0,0,0,0.88)' }} />
 
-        {/* Main flex column — centered, equal gap title / photo / brand */}
+        {/* Main flex column — symmetric padding top/bottom, equal margins around photo */}
         <div
           style={{
             position: 'absolute',
@@ -131,8 +131,8 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '0 60px',
-            gap: 60,
+            padding: '180px 60px',
+            gap: 0,
             boxSizing: 'border-box',
           } as React.CSSProperties}
         >
@@ -148,6 +148,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
               wordBreak: 'break-word',
               whiteSpace: 'normal',
               width: '100%',
+              marginBottom: 80,
             } as React.CSSProperties}
           >
             <span style={{ color: '#E8692A' }}>✓ </span>
@@ -186,6 +187,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
               fontWeight: 700,
               textTransform: 'uppercase',
               fontFamily: 'system-ui, sans-serif',
+              marginTop: 80,
             }}
           >
             LIVESTORY.APP
