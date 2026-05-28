@@ -107,7 +107,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
         )}
 
         {/* Dark overlay */}
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.82)' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.88)' }} />
 
         {/* Main flex column — title / photo / brand */}
         <div
@@ -118,7 +118,8 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '160px 60px',
+            padding: '120px 60px',
+            gap: 60,
             boxSizing: 'border-box',
           } as React.CSSProperties}
         >
@@ -148,8 +149,8 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
                 flex: '0 1 auto',
                 maxHeight: 1000,
                 width: 1000,
-                border: '16px solid #FFFFFF',
-                boxShadow: '0 24px 80px rgba(0,0,0,0.7)',
+                border: '6px solid #E8692A',
+                boxShadow: '0 12px 40px rgba(0,0,0,0.5)',
                 background: '#000',
                 display: 'flex',
                 alignItems: 'center',
