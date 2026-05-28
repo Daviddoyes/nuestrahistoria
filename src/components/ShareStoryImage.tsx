@@ -109,23 +109,23 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
         {/* Dark overlay */}
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.82)' }} />
 
-        {/* Zone 1 — Title (top: 160px, height: 640px) */}
+        {/* Main flex column — title / photo / brand */}
         <div
           style={{
             position: 'absolute',
-            top: 160,
-            left: 0,
-            right: 0,
-            height: 640,
+            inset: 0,
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
-            padding: '0 80px',
+            justifyContent: 'space-between',
+            padding: '160px 60px',
             boxSizing: 'border-box',
           } as React.CSSProperties}
         >
+          {/* Title */}
           <div
             style={{
+              flex: '0 0 auto',
               fontFamily: 'Georgia, serif',
               fontSize: titleFontSize,
               fontWeight: 700,
@@ -135,61 +135,57 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
               letterSpacing: '-0.01em',
               wordBreak: 'break-word',
               whiteSpace: 'normal',
+              width: '100%',
             } as React.CSSProperties}
           >
             <span style={{ color: '#E8692A' }}>✓ </span>{plan.titulo}
           </div>
-        </div>
 
-        {/* Zone 2 — Photo (top: 500px, fixed 900px tall frame) */}
-        {photoSrc && (
+          {/* Photo in white frame — height adapts to image */}
+          {photoSrc && (
+            <div
+              style={{
+                flex: '0 1 auto',
+                maxHeight: 1000,
+                width: 1000,
+                border: '16px solid #FFFFFF',
+                boxShadow: '0 24px 80px rgba(0,0,0,0.7)',
+                background: '#000',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                overflow: 'hidden',
+                boxSizing: 'border-box',
+              } as React.CSSProperties}
+            >
+              <img
+                src={photoSrc}
+                alt={plan.titulo}
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  height: 'auto',
+                  objectFit: 'contain',
+                }}
+              />
+            </div>
+          )}
+
+          {/* Brand */}
           <div
             style={{
-              position: 'absolute',
-              top: 500,
-              left: 40,
-              right: 40,
-              height: 900,
-              border: '16px solid #FFFFFF',
-              boxShadow: '0 24px 80px rgba(0,0,0,0.7)',
-              overflow: 'hidden',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: '#000',
-              boxSizing: 'border-box',
-            } as React.CSSProperties}
+              flex: '0 0 auto',
+              textAlign: 'center',
+              fontSize: 26,
+              letterSpacing: '0.32em',
+              color: '#E8692A',
+              fontWeight: 600,
+              textTransform: 'uppercase',
+              fontFamily: 'system-ui, sans-serif',
+            }}
           >
-            <img
-              src={photoSrc}
-              alt={plan.titulo}
-              style={{
-                display: 'block',
-                width: '100%',
-                height: '100%',
-                objectFit: 'contain',
-              }}
-            />
+            LIVESTORY.APP
           </div>
-        )}
-
-        {/* Zone 3 — Brand (bottom: 160px) */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 160,
-            left: 0,
-            right: 0,
-            textAlign: 'center',
-            fontSize: 26,
-            letterSpacing: '0.32em',
-            color: '#E8692A',
-            fontWeight: 600,
-            textTransform: 'uppercase',
-            fontFamily: 'system-ui, sans-serif',
-          }}
-        >
-          LIVESTORY.APP
         </div>
       </div>
 
