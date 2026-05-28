@@ -18,27 +18,31 @@ export default function ResetPasswordPage() {
   useEffect(() => {
     const supabase = createClient()
 
-    // Subscribe first so we don't miss the event
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') setReady(true)
-    })
+    const code = new URLSearchParams(window.location.search).get('code')
 
-    // Supabase sends the token as a hash fragment (#access_token=...&type=recovery).
-    // createBrowserClient defaults to PKCE flow and won't auto-parse the hash,
-    // so we extract and inject the session manually.
-    const hash = window.location.hash
-    if (hash.includes('type=recovery')) {
-      const p = new URLSearchParams(hash.replace(/^#/, ''))
-      const access_token = p.get('access_token')
-      const refresh_token = p.get('refresh_token') ?? ''
-      if (access_token) {
-        supabase.auth
-          .setSession({ access_token, refresh_token })
-          .then(({ error: e }) => { if (!e) setReady(true) })
+    if (code) {
+      // PKCE flow: Supabase sent a ?code= param
+      supabase.auth.exchangeCodeForSession(code).then(({ error: e }) => {
+        if (!e) setReady(true)
+        else setError('Link inválido o expirado')
+      })
+    } else {
+      // Fallback: implicit flow with #access_token hash fragment
+      const hash = window.location.hash
+      if (hash.includes('access_token')) {
+        const p = new URLSearchParams(hash.substring(1))
+        const access_token = p.get('access_token')
+        const refresh_token = p.get('refresh_token') ?? ''
+        if (access_token) {
+          supabase.auth
+            .setSession({ access_token, refresh_token })
+            .then(({ error: e }) => {
+              if (!e) setReady(true)
+              else setError('Link inválido o expirado')
+            })
+        }
       }
     }
-
-    return () => subscription.unsubscribe()
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
