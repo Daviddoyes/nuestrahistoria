@@ -18,46 +18,39 @@ export default function ResetPasswordPage() {
   useEffect(() => {
     const supabase = createClient()
 
-    console.log('[reset] search:', window.location.search)
-    console.log('[reset] hash:', window.location.hash)
+    // 1. Implicit flow — hash fragment (#access_token=...&type=recovery)
+    const hash = window.location.hash
+    if (hash && hash.includes('access_token')) {
+      const params = new URLSearchParams(hash.substring(1))
+      const access_token = params.get('access_token')
+      const refresh_token = params.get('refresh_token') ?? ''
+      const type = params.get('type')
 
-    const timer = setTimeout(() => {
-      setError('El enlace ha expirado. Solicita uno nuevo.')
-    }, 5000)
-
-    const code = new URLSearchParams(window.location.search).get('code')
-
-    if (code) {
-      console.log('[reset] found code, exchanging...')
-      supabase.auth.exchangeCodeForSession(code).then(({ error: e }) => {
-        clearTimeout(timer)
-        console.log('[reset] exchangeCodeForSession result:', e ? e.message : 'ok')
-        if (!e) setReady(true)
-        else setError('Link inválido o expirado')
-      })
-    } else {
-      const hash = window.location.hash
-      console.log('[reset] no code, checking hash:', hash.slice(0, 60))
-      if (hash.includes('access_token')) {
-        const p = new URLSearchParams(hash.substring(1))
-        const access_token = p.get('access_token')
-        const refresh_token = p.get('refresh_token') ?? ''
-        if (access_token) {
-          supabase.auth
-            .setSession({ access_token, refresh_token })
-            .then(({ error: e }) => {
-              clearTimeout(timer)
-              console.log('[reset] setSession result:', e ? e.message : 'ok')
-              if (!e) setReady(true)
-              else setError('Link inválido o expirado')
-            })
-        }
-      } else {
-        console.log('[reset] no code and no hash token found')
+      if (type === 'recovery' && access_token) {
+        supabase.auth
+          .setSession({ access_token, refresh_token })
+          .then(({ error: e }) => {
+            if (!e) setReady(true)
+            else setError('Link inválido o expirado')
+          })
+        return
       }
     }
 
-    return () => clearTimeout(timer)
+    // 2. PKCE flow — ?code= query param
+    const code = new URLSearchParams(window.location.search).get('code')
+    if (code) {
+      supabase.auth
+        .exchangeCodeForSession(code)
+        .then(({ error: e }) => {
+          if (!e) setReady(true)
+          else setError('Link inválido o expirado')
+        })
+      return
+    }
+
+    // Neither token found
+    setError('Link inválido o expirado')
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
