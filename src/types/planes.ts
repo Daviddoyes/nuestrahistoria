@@ -33,5 +33,5 @@ export type Profile = {
   created_at: string
   onboarding_completado?: boolean
   intereses?: string[]
-  con_quien_vive?: string
+  con_quien_vive?: string[]
 }

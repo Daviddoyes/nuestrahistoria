@@ -277,7 +277,7 @@ export async function updateHistoriaDescripcion(id: string, descripcion: string)
 
 export async function completeOnboarding(data: {
   intereses: string[]
-  con_quien_vive: string
+  con_quien_vive: string[]
 }): Promise<void> {
   const serverSupa = await createServerClient()
   const { data: { user } } = await serverSupa.auth.getUser()

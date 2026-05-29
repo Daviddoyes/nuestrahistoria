@@ -6,6 +6,7 @@ import { getMyProfile, completeOnboarding, addPlan } from '@/lib/actions'
 import type { ConQuien } from '@/types/planes'
 
 type InterId = 'viajes' | 'gastronomia' | 'musica' | 'deporte' | 'cultura'
+type CompaniaId = 'pareja' | 'amigos' | 'familia' | 'solo'
 
 const INTERESES: { id: InterId; icon: string; label: string }[] = [
   { id: 'viajes', icon: '✈️', label: 'Viajes y aventura' },
@@ -15,7 +16,7 @@ const INTERESES: { id: InterId; icon: string; label: string }[] = [
   { id: 'cultura', icon: '🎨', label: 'Cultura y arte' },
 ]
 
-const CON_QUIEN_OPTIONS: { id: string; icon: string; label: string }[] = [
+const CON_QUIEN_OPTIONS: { id: CompaniaId; icon: string; label: string }[] = [
   { id: 'pareja', icon: '👫', label: 'En pareja' },
   { id: 'amigos', icon: '👥', label: 'Con amigos' },
   { id: 'familia', icon: '👨‍👩‍👧', label: 'En familia' },
@@ -60,9 +61,33 @@ const PLANES_SUGERIDOS: Record<InterId, { titulo: string; descripcion: string }[
   ],
 }
 
-function getSugeridos(intereses: InterId[]) {
+const PLANES_POR_COMPANIA: Record<CompaniaId, { titulo: string; descripcion: string }[]> = {
+  pareja: [
+    { titulo: 'Escapada romántica a París', descripcion: 'La ciudad del amor' },
+    { titulo: 'Cena con estrellas Michelin', descripcion: 'Una noche especial' },
+    { titulo: 'Ver un atardecer en Santorini', descripcion: 'Inolvidable' },
+  ],
+  amigos: [
+    { titulo: 'Road trip sin destino fijo', descripcion: 'Solo vosotros y la carretera' },
+    { titulo: 'Festival de música', descripcion: 'Vivir la música en directo' },
+    { titulo: 'Viaje a Tailandia', descripcion: 'Aventura en grupo' },
+  ],
+  familia: [
+    { titulo: 'Viaje a Disneyland', descripcion: 'La magia para todos' },
+    { titulo: 'Reunión familiar en la playa', descripcion: 'Un verano juntos' },
+    { titulo: 'Ruta por los pueblos de España', descripcion: 'Descubrir los orígenes' },
+  ],
+  solo: [
+    { titulo: 'Viaje solo a Japón', descripcion: 'Descubrirte a ti mismo' },
+    { titulo: 'Retiro de meditación', descripcion: 'Conectar contigo' },
+    { titulo: 'Hacer el Camino de Santiago solo', descripcion: 'Un reto personal' },
+  ],
+}
+
+function getSugeridos(intereses: InterId[], compania: CompaniaId[]) {
   const pool: { titulo: string; descripcion: string }[] = []
   for (const id of intereses) pool.push(...PLANES_SUGERIDOS[id])
+  for (const c of compania) pool.push(...PLANES_POR_COMPANIA[c])
   for (let i = pool.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
     ;[pool[i], pool[j]] = [pool[j], pool[i]]
@@ -70,7 +95,7 @@ function getSugeridos(intereses: InterId[]) {
   const seen = new Set<string>()
   const result: { titulo: string; descripcion: string }[] = []
   for (const p of pool) {
-    if (!seen.has(p.titulo) && result.length < 3) {
+    if (!seen.has(p.titulo) && result.length < 4) {
       seen.add(p.titulo)
       result.push(p)
     }
@@ -87,11 +112,12 @@ export default function OnboardingPage() {
   const [screen, setScreen] = useState(0)
   const [edad, setEdad] = useState('')
   const [intereses, setIntereses] = useState<InterId[]>([])
-  const [conQuien, setConQuien] = useState('')
+  const [conQuien, setConQuien] = useState<CompaniaId[]>([])
   const [sugeridos, setSugeridos] = useState<{ titulo: string; descripcion: string }[]>([])
   const [addedPlans, setAddedPlans] = useState<Set<number>>(new Set())
   const [addingPlan, setAddingPlan] = useState<number | null>(null)
   const [finishing, setFinishing] = useState(false)
+  const [finishError, setFinishError] = useState<string | null>(null)
 
   useEffect(() => {
     getMyProfile().then(p => {
@@ -103,17 +129,23 @@ export default function OnboardingPage() {
   }, [router])
 
   const advance = (next: number) => {
-    if (next === 3) setSugeridos(getSugeridos(intereses))
+    if (next === 3) setSugeridos(getSugeridos(intereses, conQuien))
     setScreen(next)
+  }
+
+  const toggleConQuien = (id: CompaniaId) => {
+    setConQuien(prev => prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id])
   }
 
   const handleAddPlan = async (plan: { titulo: string; descripcion: string }, idx: number) => {
     setAddingPlan(idx)
-    const cq: ConQuien =
-      conQuien === 'pareja' ? 'pareja'
-      : conQuien === 'amigos' ? 'amigos'
-      : conQuien === 'solo' ? 'solo'
-      : 'todos'
+    let cq: ConQuien = 'todos'
+    if (conQuien.length === 1) {
+      const c = conQuien[0]
+      if (c === 'pareja') cq = 'pareja'
+      else if (c === 'amigos') cq = 'amigos'
+      else if (c === 'solo') cq = 'solo'
+    }
     await addPlan(plan.titulo, plan.descripcion, cq)
     setAddedPlans(prev => new Set([...prev, idx]))
     setAddingPlan(null)
@@ -121,10 +153,15 @@ export default function OnboardingPage() {
 
   const handleFinish = async () => {
     setFinishing(true)
+    setFinishError(null)
+    console.log('[Onboarding] handleFinish start', { intereses, conQuien })
     try {
       await completeOnboarding({ intereses, con_quien_vive: conQuien })
+      console.log('[Onboarding] completeOnboarding OK, redirecting to /planes')
       router.push('/planes')
-    } catch {
+    } catch (err) {
+      console.error('[Onboarding] completeOnboarding error:', err)
+      setFinishError(String(err))
       setFinishing(false)
     }
   }
@@ -169,6 +206,7 @@ export default function OnboardingPage() {
         width: `${TOTAL * 100}vw`,
         transform: `translateX(-${screen * 100}vw)`,
         transition: 'transform 0.35s cubic-bezier(0.32, 0.72, 0, 1)',
+        minHeight: 0,
       }}>
 
         {/* Screen 0 — Bienvenida */}
@@ -178,11 +216,12 @@ export default function OnboardingPage() {
               <div className="w-10 h-10 rounded-full bg-[#E8692A] flex items-center justify-center mb-6">
                 <span className="text-white font-bold text-sm tracking-wide">LS</span>
               </div>
-              <h1 className="font-serif text-3xl font-bold text-[#F0F0F0] leading-tight mb-3">
+              <h1 className="font-serif text-3xl font-bold text-[#F0F0F0] leading-tight mb-5">
                 Hola, {nombre} 👋
               </h1>
-              <p className="text-base text-[#666666] leading-relaxed">
-                Livestory es tu espacio para planear, vivir y recordar los mejores momentos.
+              <p style={{ fontFamily: 'Georgia, serif', color: '#999999', fontSize: 16, lineHeight: 1.7, textAlign: 'center' }}>
+                Las redes están llenas de vidas perfectas.<br />
+                Livestory es para los que prefieren vivirlas.
               </p>
             </div>
             <div>
@@ -249,19 +288,22 @@ export default function OnboardingPage() {
           </button>
         </div>
 
-        {/* Screen 2 — Con quién */}
+        {/* Screen 2 — Con quién (multi-select) */}
         <div style={{ width: '100vw', minWidth: '100vw', height: '100%', display: 'flex', flexDirection: 'column', padding: '0 1.5rem', paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom, 0px))', boxSizing: 'border-box' }}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 24 }}>
-            <h2 className="font-serif text-2xl font-bold text-[#F0F0F0] leading-tight">
-              ¿Con quién vives tus mejores momentos?
-            </h2>
+            <div>
+              <h2 className="font-serif text-2xl font-bold text-[#F0F0F0] leading-tight mb-1">
+                ¿Con quién vives tus mejores momentos?
+              </h2>
+              <p className="text-sm text-[#666666]">Elige todas las que quieras</p>
+            </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               {CON_QUIEN_OPTIONS.map(item => {
-                const sel = conQuien === item.id
+                const sel = conQuien.includes(item.id)
                 return (
                   <button
                     key={item.id}
-                    onClick={() => setConQuien(item.id)}
+                    onClick={() => toggleConQuien(item.id)}
                     style={{
                       padding: '20px 12px',
                       borderRadius: 16,
@@ -284,28 +326,28 @@ export default function OnboardingPage() {
               })}
             </div>
           </div>
-          <button onClick={() => advance(3)} disabled={!conQuien} className="w-full bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 text-white font-semibold py-3.5 rounded-xl text-base mt-4">
+          <button onClick={() => advance(3)} disabled={conQuien.length === 0} className="w-full bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 text-white font-semibold py-3.5 rounded-xl text-base mt-4">
             Continuar
           </button>
         </div>
 
         {/* Screen 3 — Planes sugeridos */}
         <div style={{ width: '100vw', minWidth: '100vw', height: '100%', display: 'flex', flexDirection: 'column', padding: '0 1.5rem', paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom, 0px))', boxSizing: 'border-box' }}>
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 16 }}>
-            <div>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 16, overflowY: 'auto', paddingTop: '1rem' }}>
+            <div style={{ flexShrink: 0 }}>
               <h2 className="font-serif text-2xl font-bold text-[#F0F0F0] leading-tight mb-1">
                 Planes para ti
               </h2>
-              <p className="text-sm text-[#666666]">Basados en tus intereses</p>
+              <p className="text-sm text-[#666666]">Basados en tus intereses y compañía</p>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flexShrink: 0 }}>
               {sugeridos.map((plan, idx) => {
                 const added = addedPlans.has(idx)
                 const adding = addingPlan === idx
                 return (
                   <div key={idx} style={{
                     background: '#1A1A1A',
-                    border: '1px solid #2A2A2A',
+                    border: `1px solid ${added ? '#3A3A3A' : '#2A2A2A'}`,
                     borderRadius: 16,
                     padding: '14px 16px',
                     display: 'flex',
@@ -313,7 +355,7 @@ export default function OnboardingPage() {
                     gap: 12,
                   }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontSize: 14, fontWeight: 600, color: '#F0F0F0', lineHeight: 1.3, margin: 0 }}>
+                      <p style={{ fontSize: 14, fontWeight: 600, color: added ? '#888888' : '#F0F0F0', lineHeight: 1.3, margin: 0 }}>
                         {plan.titulo}
                       </p>
                       <p style={{ fontSize: 12, color: '#666666', marginTop: 3, marginBottom: 0 }}>
@@ -327,11 +369,11 @@ export default function OnboardingPage() {
                         flexShrink: 0,
                         padding: '8px 14px',
                         borderRadius: 10,
-                        background: added ? '#2A2A2A' : '#E8692A',
-                        color: added ? '#666666' : '#FFFFFF',
+                        background: added ? 'transparent' : '#E8692A',
+                        color: added ? '#555555' : '#FFFFFF',
                         fontSize: 12,
                         fontWeight: 600,
-                        border: 'none',
+                        border: added ? '1px solid #3A3A3A' : 'none',
                         opacity: adding ? 0.6 : 1,
                         whiteSpace: 'nowrap',
                         cursor: added || adding ? 'default' : 'pointer',
@@ -344,7 +386,17 @@ export default function OnboardingPage() {
               })}
             </div>
           </div>
-          <button onClick={handleFinish} disabled={finishing} className="w-full bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 text-white font-semibold py-3.5 rounded-xl text-base mt-4">
+          {finishError && (
+            <p style={{ fontSize: 12, color: '#E8692A', textAlign: 'center', marginTop: 8, flexShrink: 0 }}>
+              Error: {finishError}
+            </p>
+          )}
+          <button
+            onClick={handleFinish}
+            disabled={finishing}
+            className="w-full bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 text-white font-semibold py-3.5 rounded-xl text-base mt-4"
+            style={{ flexShrink: 0 }}
+          >
             {finishing ? 'Guardando...' : 'Empezar →'}
           </button>
         </div>
