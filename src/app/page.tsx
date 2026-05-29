@@ -48,11 +48,15 @@ export default function AuthPage() {
 
     const { data: profile } = await supabase
       .from('profiles')
-      .select('pareja_id')
+      .select('pareja_id, onboarding_completado')
       .eq('id', data.user.id)
       .single()
 
-    router.push(profile?.pareja_id ? '/planes' : '/onboarding')
+    if (profile?.onboarding_completado) {
+      router.push('/planes')
+    } else {
+      router.push('/onboarding')
+    }
   }
 
   const handleRegister = async (e: React.FormEvent) => {
