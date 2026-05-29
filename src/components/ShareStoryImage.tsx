@@ -20,6 +20,13 @@ const toBase64 = async (url: string): Promise<string> => {
   })
 }
 
+const getImageDimensions = (src: string): Promise<{ width: number; height: number }> =>
+  new Promise((resolve) => {
+    const img = new Image()
+    img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight })
+    img.src = src
+  })
+
 export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
   const templateRef = useRef<HTMLDivElement>(null)
   const [generating, setGenerating] = useState(false)
@@ -45,11 +52,12 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
     setGenerating(true)
     try {
       let imgSrc = base64Url
-      if (!imgSrc && plan.foto_url) {
+      if (plan.foto_url) {
         imgSrc = await toBase64(plan.foto_url)
         setBase64Url(imgSrc)
-        // Allow React to re-render with base64Url before html2canvas reads the DOM
-        await new Promise(r => setTimeout(r, 80))
+        const dims = await getImageDimensions(imgSrc)
+        setImgDimensions(dims)
+        await new Promise(r => setTimeout(r, 200))
       }
 
       const { default: html2canvas } = await import('html2canvas')
@@ -122,68 +130,74 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
         {/* Dark overlay — also oversized to guarantee full coverage */}
         <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '120%', height: '120%', background: 'rgba(0,0,0,0.88)' }} />
 
-        {/* Title — positioned above the photo center */}
+        {/* Main flex column — title / photo / brand, vertically centered */}
         <div
           style={{
             position: 'absolute',
-            bottom: `calc(50% + ${marcoHeight / 2}px + 80px)`,
-            left: 60,
-            right: 60,
-            textAlign: 'center',
-            fontFamily: 'Georgia, serif',
-            fontSize: titleFontSize,
-            fontWeight: 700,
-            lineHeight: 1.3,
-            letterSpacing: 0,
-            wordBreak: 'break-word',
-            whiteSpace: 'normal',
+            inset: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '0 60px',
+            boxSizing: 'border-box',
           } as React.CSSProperties}
         >
-          <span style={{ display: 'inline', color: '#E8692A' }}>✓ </span>
-          <span style={{ display: 'inline', color: '#FFFFFF' }}>{plan.titulo}</span>
-        </div>
-
-        {/* Photo — mathematically centered */}
-        {photoSrc && (
+          {/* Title */}
           <div
             style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: marcoWidth,
-              height: marcoHeight,
-              border: '6px solid #E8692A',
-              background: '#000',
-              overflow: 'hidden',
+              textAlign: 'center',
+              fontFamily: 'Georgia, serif',
+              fontSize: titleFontSize,
+              fontWeight: 700,
+              lineHeight: 1.3,
+              letterSpacing: 0,
+              wordBreak: 'break-word',
+              whiteSpace: 'normal',
+              width: '100%',
+              marginBottom: 80,
             } as React.CSSProperties}
           >
-            <img
-              src={base64Url || plan.foto_url || ''}
-              alt={plan.titulo}
-              crossOrigin="anonymous"
-              style={{ display: 'block', width: '100%', height: '100%', objectFit: 'contain', background: '#000' }}
-            />
+            <span style={{ display: 'inline', color: '#E8692A' }}>✓ </span>
+            <span style={{ display: 'inline', color: '#FFFFFF' }}>{plan.titulo}</span>
           </div>
-        )}
 
-        {/* Brand — positioned below the photo center */}
-        <div
-          style={{
-            position: 'absolute',
-            top: `calc(50% + ${marcoHeight / 2}px + 80px)`,
-            left: 60,
-            right: 60,
-            textAlign: 'center',
-            fontSize: 28,
-            letterSpacing: '0.28em',
-            color: '#E8692A',
-            fontWeight: 700,
-            textTransform: 'uppercase',
-            fontFamily: 'system-ui, sans-serif',
-          } as React.CSSProperties}
-        >
-          LIVESTORY.APP
+          {/* Photo frame — no transform, flex child */}
+          {photoSrc && (
+            <div
+              style={{
+                width: marcoWidth,
+                height: marcoHeight,
+                border: '6px solid #E8692A',
+                background: '#000',
+                overflow: 'hidden',
+                flexShrink: 0,
+              } as React.CSSProperties}
+            >
+              <img
+                src={base64Url || plan.foto_url || ''}
+                alt={plan.titulo}
+                crossOrigin="anonymous"
+                style={{ display: 'block', width: '100%', height: '100%', objectFit: 'contain', background: '#000' }}
+              />
+            </div>
+          )}
+
+          {/* Brand */}
+          <div
+            style={{
+              textAlign: 'center',
+              fontSize: 28,
+              letterSpacing: '0.28em',
+              color: '#E8692A',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              fontFamily: 'system-ui, sans-serif',
+              marginTop: 80,
+            } as React.CSSProperties}
+          >
+            LIVESTORY.APP
+          </div>
         </div>
       </div>
 
