@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import { getMyProfile, completeOnboarding, addPlan } from '@/lib/actions'
+import { createClient } from '@/lib/supabase/client'
 import type { ConQuien } from '@/types/planes'
 
 type InterId = 'viajes' | 'gastronomia' | 'musica' | 'deporte' | 'cultura'
@@ -107,8 +107,11 @@ const TOTAL = 4
 
 export default function OnboardingPage() {
   const router = useRouter()
+  const supabase = useMemo(() => createClient(), [])
+
   const [loading, setLoading] = useState(true)
   const [nombre, setNombre] = useState('')
+  const [codigoInvitacion, setCodigoInvitacion] = useState('')
   const [screen, setScreen] = useState(0)
   const [edad, setEdad] = useState('')
   const [intereses, setIntereses] = useState<InterId[]>([])
@@ -120,13 +123,25 @@ export default function OnboardingPage() {
   const [finishError, setFinishError] = useState<string | null>(null)
 
   useEffect(() => {
-    getMyProfile().then(p => {
-      if (!p) { router.push('/'); return }
-      if (p.onboarding_completado === true) { router.push('/planes'); return }
-      setNombre(p.nombre || '')
+    const load = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { router.push('/'); return }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('nombre, codigo_invitacion, onboarding_completado')
+        .eq('id', user.id)
+        .single()
+
+      if (!profile) { router.push('/'); return }
+      if (profile.onboarding_completado === true) { router.push('/planes'); return }
+
+      setNombre(profile.nombre || '')
+      setCodigoInvitacion(profile.codigo_invitacion || '')
       setLoading(false)
-    })
-  }, [router])
+    }
+    load()
+  }, [supabase, router])
 
   const advance = (next: number) => {
     if (next === 3) setSugeridos(getSugeridos(intereses, conQuien))
@@ -146,8 +161,16 @@ export default function OnboardingPage() {
       else if (c === 'amigos') cq = 'amigos'
       else if (c === 'solo') cq = 'solo'
     }
-    await addPlan(plan.titulo, plan.descripcion, cq)
-    setAddedPlans(prev => new Set([...prev, idx]))
+    const { error } = await supabase.from('planes').insert({
+      titulo: plan.titulo,
+      descripcion: plan.descripcion,
+      creado_por: nombre || 'Yo',
+      pareja_codigo: codigoInvitacion,
+      estado: 'pendiente',
+      con_quien: cq,
+      orden: 0,
+    })
+    if (!error) setAddedPlans(prev => new Set([...prev, idx]))
     setAddingPlan(null)
   }
 
@@ -156,12 +179,26 @@ export default function OnboardingPage() {
     setFinishError(null)
     console.log('[Onboarding] handleFinish start', { intereses, conQuien })
     try {
-      await completeOnboarding({ intereses, con_quien_vive: conQuien })
-      console.log('[Onboarding] completeOnboarding OK, redirecting to /planes')
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('No hay sesión activa')
+
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          onboarding_completado: true,
+          intereses,
+          con_quien_vive: conQuien,
+        })
+        .eq('id', user.id)
+
+      if (profileError) throw profileError
+
+      console.log('[Onboarding] profile updated OK, redirecting to /planes')
       router.push('/planes')
     } catch (err) {
-      console.error('[Onboarding] completeOnboarding error:', err)
-      setFinishError(String(err))
+      console.error('[Onboarding] error:', err)
+      const msg = err instanceof Error ? err.message : JSON.stringify(err)
+      setFinishError(msg)
       setFinishing(false)
     }
   }
@@ -387,7 +424,7 @@ export default function OnboardingPage() {
             </div>
           </div>
           {finishError && (
-            <p style={{ fontSize: 12, color: '#E8692A', textAlign: 'center', marginTop: 8, flexShrink: 0 }}>
+            <p style={{ fontSize: 12, color: '#E8692A', textAlign: 'center', marginTop: 8, flexShrink: 0, padding: '0 4px' }}>
               Error: {finishError}
             </p>
           )}
