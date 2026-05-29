@@ -275,6 +275,29 @@ export async function updateHistoriaDescripcion(id: string, descripcion: string)
   revalidatePath('/planes')
 }
 
+export async function completeOnboarding(data: {
+  intereses: string[]
+  con_quien_vive: string
+}): Promise<void> {
+  const serverSupa = await createServerClient()
+  const { data: { user } } = await serverSupa.auth.getUser()
+  if (!user) throw new Error('No autenticado')
+
+  const service = createServiceRoleClient()
+  const { error } = await service
+    .from('profiles')
+    .update({
+      onboarding_completado: true,
+      intereses: data.intereses,
+      con_quien_vive: data.con_quien_vive,
+    })
+    .eq('id', user.id)
+
+  if (error) throw new Error(error.message)
+  revalidatePath('/onboarding')
+  revalidatePath('/planes')
+}
+
 export async function lookupCode(
   codigo: string
 ): Promise<{ tipo: 'pareja' | 'amigos' } | null> {

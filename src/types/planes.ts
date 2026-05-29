@@ -31,4 +31,7 @@ export type Profile = {
   stripe_customer_id: string | null
   stripe_subscription_id: string | null
   created_at: string
+  onboarding_completado?: boolean
+  intereses?: string[]
+  con_quien_vive?: string
 }
