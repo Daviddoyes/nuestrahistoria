@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect, useMemo, useRef } from 'react'
-import { X, Search, UserPlus, Check, Trash2, LogOut } from 'lucide-react'
-import { inviteUserToPlan, leavePlan } from '@/lib/actions'
+import { useState, useEffect, useMemo } from 'react'
+import { X, Check, Trash2, LogOut } from 'lucide-react'
+import { leavePlan } from '@/lib/actions'
 import { createClient } from '@/lib/supabase/client'
 import SharePlanImage from './SharePlanImage'
 import type { Plan } from '@/types/planes'
@@ -15,7 +15,7 @@ type Participante = {
   estado: string
 }
 
-type SearchResult = { id: string; nombre: string; username: string; foto_perfil_url: string | null }
+type Usuario = { id: string; nombre: string; username: string; foto_perfil_url: string | null }
 
 type Props = {
   plan: Plan
@@ -49,28 +49,17 @@ function ParticipantAvatar({ nombre, fotoUrl, size = 36 }: { nombre: string | nu
   )
 }
 
-function SearchAvatar({ item }: { item: SearchResult }) {
-  if (item.foto_perfil_url) {
-    return <img src={item.foto_perfil_url} alt="" className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
-  }
-  return (
-    <div className="w-8 h-8 rounded-full bg-[#E8692A] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-      {item.nombre?.[0]?.toUpperCase() ?? '?'}
-    </div>
-  )
-}
-
 export default function PlanDetailModal({ plan, currentUserId, onClose, onCompletar, onDeleted, onUpdate }: Props) {
   const supabase = useMemo(() => createClient(), [])
+
   const [participantes, setParticipantes] = useState<Participante[]>([])
   const [confirming, setConfirming] = useState(false)
   const [deletingLoading, setDeletingLoading] = useState(false)
 
-  const [searchQuery, setSearchQuery] = useState('')
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([])
-  const [searching, setSearching] = useState(false)
-  const [inviting, setInviting] = useState<string | null>(null)
-  const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [busqueda, setBusqueda] = useState('')
+  const [resultados, setResultados] = useState<Usuario[]>([])
+  const [invitadosPendientes, setInvitadosPendientes] = useState<Usuario[]>([])
+  const [invitando, setInvitando] = useState(false)
 
   useEffect(() => {
     supabase
@@ -81,37 +70,54 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
   }, [plan.id, supabase])
 
   useEffect(() => {
-    const q = searchQuery.trim()
-    if (q.length < 2) { setSearchResults([]); return }
-    if (searchTimeout.current) clearTimeout(searchTimeout.current)
-    searchTimeout.current = setTimeout(async () => {
-      setSearching(true)
-      const existingIds = participantes.map(p => p.user_id)
+    const q = busqueda.replace('@', '').trim()
+    if (q.length < 2) { setResultados([]); return }
+
+    const buscar = async () => {
+      const excluir = [
+        currentUserId,
+        ...participantes.map(p => p.user_id),
+        ...invitadosPendientes.map(u => u.id),
+      ]
+
       let query = supabase
         .from('profiles')
         .select('id, nombre, username, foto_perfil_url')
         .or(`username.ilike.%${q}%,nombre.ilike.%${q}%`)
         .neq('id', currentUserId)
-      if (existingIds.length > 0) {
-        query = query.not('id', 'in', `(${existingIds.join(',')})`)
-      }
-      const { data } = await query.limit(5)
-      setSearchResults((data ?? []) as SearchResult[])
-      setSearching(false)
-    }, 300)
-    return () => { if (searchTimeout.current) clearTimeout(searchTimeout.current) }
-  }, [searchQuery, supabase, participantes, currentUserId])
 
-  const handleInvite = async (user: SearchResult) => {
-    setInviting(user.id)
-    await inviteUserToPlan(plan.id, user.id)
-    setParticipantes(prev => [
-      ...prev,
-      { id: '', user_id: user.id, nombre_usuario: user.nombre, foto_url: user.foto_perfil_url, estado: 'invitado' },
-    ])
-    setSearchQuery('')
-    setSearchResults([])
-    setInviting(null)
+      if (excluir.length > 1) {
+        // exclude participantes and chips already selected
+        const extraExcluir = excluir.slice(1)
+        query = query.not('id', 'in', `(${extraExcluir.join(',')})`)
+      }
+
+      const { data, error } = await query.limit(5)
+      if (!error) setResultados((data ?? []) as Usuario[])
+    }
+
+    buscar()
+  }, [busqueda, supabase, currentUserId, participantes, invitadosPendientes])
+
+  const handleInvitar = async () => {
+    if (invitadosPendientes.length === 0) return
+    setInvitando(true)
+    for (const invitado of invitadosPendientes) {
+      await supabase.from('plan_participantes' as never).insert({
+        plan_id: plan.id,
+        user_id: invitado.id,
+        nombre_usuario: invitado.nombre,
+        estado: 'invitado',
+      })
+      setParticipantes(prev => [
+        ...prev,
+        { id: '', user_id: invitado.id, nombre_usuario: invitado.nombre, foto_url: invitado.foto_perfil_url, estado: 'invitado' },
+      ])
+    }
+    setInvitadosPendientes([])
+    setBusqueda('')
+    setResultados([])
+    setInvitando(false)
     onUpdate()
   }
 
@@ -166,61 +172,107 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
             </div>
           )}
 
-          {/* Invite search */}
+          {/* Invite section */}
           <div className="mb-6">
-            <p className="text-[10px] uppercase tracking-[0.12em] text-[#666666] mb-2">Invitar</p>
-            <div style={{ position: 'relative' }}>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#444444]" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  placeholder="Buscar por @username"
-                  className="w-full pl-9 pr-4 py-3 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-sm"
-                />
+            <p className="text-[10px] uppercase tracking-[0.12em] text-[#666666] mb-3">Invitar</p>
+
+            {/* Selected chips */}
+            {invitadosPendientes.length > 0 && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 10 }}>
+                {invitadosPendientes.map(u => (
+                  <div key={u.id} style={{
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    background: '#2A2A2A', border: '1px solid #E8692A',
+                    borderRadius: 20, padding: '5px 10px 5px 12px',
+                  }}>
+                    <span style={{ fontSize: 13, color: '#F0F0F0' }}>{u.nombre}</span>
+                    <button
+                      type="button"
+                      onPointerDown={(e) => {
+                        e.preventDefault()
+                        setInvitadosPendientes(prev => prev.filter(i => i.id !== u.id))
+                      }}
+                      style={{ color: '#888888', lineHeight: 1, padding: 3, display: 'flex' }}
+                    >
+                      <X style={{ width: 12, height: 12 }} />
+                    </button>
+                  </div>
+                ))}
               </div>
-              {(searching || searchResults.length > 0) && (
+            )}
+
+            {/* Search input + dropdown */}
+            <div style={{ position: 'relative' }}>
+              <input
+                type="text"
+                value={busqueda}
+                onChange={e => setBusqueda(e.target.value)}
+                placeholder="Buscar por nombre o @usuario"
+                className="w-full px-4 py-3 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-sm"
+              />
+
+              {resultados.length > 0 && (
                 <div style={{
                   position: 'absolute',
                   top: '100%',
                   left: 0,
                   right: 0,
-                  zIndex: 50,
                   background: '#1A1A1A',
                   border: '1px solid #2A2A2A',
-                  borderRadius: '0.75rem',
-                  marginTop: '4px',
-                  maxHeight: '200px',
+                  borderRadius: 8,
+                  zIndex: 100,
+                  maxHeight: 200,
                   overflowY: 'auto',
+                  marginTop: 4,
                 }}>
-                  {searching && <div className="px-4 py-3 text-xs text-[#666666]">Buscando...</div>}
-                  {!searching && searchResults.map(item => (
+                  {resultados.map(usuario => (
                     <div
-                      key={item.id}
-                      onPointerDown={(e) => { e.preventDefault(); handleInvite(item) }}
+                      key={usuario.id}
+                      onPointerDown={(e) => {
+                        e.preventDefault()
+                        setInvitadosPendientes(prev => [...prev, usuario])
+                        setBusqueda('')
+                        setResultados([])
+                      }}
                       style={{
-                        display: 'flex', alignItems: 'center', gap: '0.75rem',
-                        padding: '0.75rem 1rem', minHeight: '44px',
-                        borderBottom: '1px solid #222222', cursor: 'pointer',
-                        opacity: inviting === item.id ? 0.4 : 1,
-                        pointerEvents: inviting === item.id ? 'none' : 'auto',
+                        padding: '12px 16px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 12,
+                        minHeight: 44,
+                        cursor: 'pointer',
+                        borderBottom: '1px solid #222222',
                       }}
                     >
-                      <SearchAvatar item={item} />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-[#F0F0F0] truncate">{item.nombre}</p>
-                        <p className="text-xs text-[#666666]">@{item.username}</p>
+                      <div style={{
+                        width: 32, height: 32, borderRadius: '50%',
+                        background: '#E8692A', display: 'flex',
+                        alignItems: 'center', justifyContent: 'center',
+                        color: '#fff', fontSize: 14, fontWeight: 700,
+                        flexShrink: 0,
+                      }}>
+                        {usuario.nombre?.[0]?.toUpperCase() || '?'}
                       </div>
-                      {inviting === item.id
-                        ? <div className="w-4 h-4 border border-[#E8692A] border-t-transparent rounded-full animate-spin flex-shrink-0" />
-                        : <UserPlus className="w-4 h-4 text-[#E8692A] flex-shrink-0" />
-                      }
+                      <div>
+                        <div style={{ color: '#F0F0F0', fontSize: 14 }}>{usuario.nombre}</div>
+                        <div style={{ color: '#666666', fontSize: 12 }}>@{usuario.username}</div>
+                      </div>
                     </div>
                   ))}
                 </div>
               )}
             </div>
+
+            {/* Invite button — only shown when chips exist */}
+            {invitadosPendientes.length > 0 && (
+              <button
+                onClick={handleInvitar}
+                disabled={invitando}
+                className="w-full mt-3 py-3 bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl text-sm font-semibold min-h-[44px] transition-colors"
+              >
+                {invitando ? 'Invitando...' : `Invitar ${invitadosPendientes.length === 1 ? 'a 1 persona' : `a ${invitadosPendientes.length} personas`}`}
+              </button>
+            )}
           </div>
 
           <div className="h-px bg-[#2A2A2A] mb-6" />
@@ -261,10 +313,7 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
                     Cancelar
                   </button>
                   <button
-                    onClick={async () => {
-                      setDeletingLoading(true)
-                      onDeleted()
-                    }}
+                    onClick={async () => { setDeletingLoading(true); onDeleted() }}
                     disabled={deletingLoading}
                     className="flex-1 py-3 rounded-xl bg-[#8B3A3A] active:bg-[#7A2A2A] text-white text-sm min-h-[44px] disabled:opacity-40"
                   >

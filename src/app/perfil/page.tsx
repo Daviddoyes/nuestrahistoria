@@ -65,17 +65,44 @@ export default function PerfilPage() {
 
   const fetchData = useCallback(async () => {
     try {
-      const { planes: pl, profile: prof, invitaciones: invs } = await getMyData()
+      const { planes: pl, profile: prof } = await getMyData()
       if (!prof) { router.push('/'); return }
       setProfile(prof)
       setPlanes(pl)
-      setInvitaciones(invs)
+
+      // Load invitations client-side for reliability
+      const { data: invParts } = await supabase
+        .from('plan_participantes' as never)
+        .select('id, plan_id')
+        .eq('user_id', prof.id)
+        .eq('estado', 'invitado')
+
+      if (invParts && (invParts as { id: string; plan_id: string }[]).length > 0) {
+        const planIds = (invParts as { id: string; plan_id: string }[]).map(p => p.plan_id)
+        const { data: planData } = await supabase
+          .from('planes')
+          .select('id, titulo, creado_por')
+          .in('id', planIds)
+
+        const invs: InvitacionPendiente[] = (invParts as { id: string; plan_id: string }[]).map(p => {
+          const plan = (planData ?? []).find((pl: { id: string; titulo: string; creado_por: string }) => pl.id === p.plan_id)
+          return {
+            participante_id: p.id,
+            plan_id: p.plan_id,
+            plan_titulo: plan?.titulo ?? 'Plan',
+            invitado_por: plan?.creado_por ?? 'Alguien',
+          }
+        })
+        setInvitaciones(invs)
+      } else {
+        setInvitaciones([])
+      }
     } catch (e) {
       console.error(e)
     } finally {
       setLoading(false)
     }
-  }, [router])
+  }, [router, supabase])
 
   useEffect(() => { fetchData() }, [fetchData])
 
