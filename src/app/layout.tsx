@@ -41,6 +41,7 @@ export default function RootLayout({
     <html lang="es" className={`${inter.variable} h-full`}>
       <head>
         <meta name="mobile-web-app-capable" content="yes" />
+        <link rel="apple-touch-startup-image" href="/apple-splash-screen.png" />
       </head>
       <body className="min-h-full antialiased">
         <SplashScreen />
