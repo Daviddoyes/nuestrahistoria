@@ -91,19 +91,52 @@ export default function PerfilPage() {
     const file = e.target.files?.[0]
     if (!file || !profile) return
     setUploadingFoto(true)
+    // Reset so the same file can be re-selected after an error
+    if (fileInputRef.current) fileInputRef.current.value = ''
     try {
-      const ext = file.name.split('.').pop() ?? 'jpg'
-      const path = `${profile.id}/avatar.${ext}`
+      // Compress to JPEG at 800px max, 85% quality
+      const compressed = await new Promise<Blob>((resolve, reject) => {
+        const img = new Image()
+        const url = URL.createObjectURL(file)
+        img.onload = () => {
+          URL.revokeObjectURL(url)
+          const MAX = 800
+          let { width, height } = img
+          if (width > MAX) { height = Math.round(height * MAX / width); width = MAX }
+          if (height > MAX) { width = Math.round(width * MAX / height); height = MAX }
+          const canvas = document.createElement('canvas')
+          canvas.width = width
+          canvas.height = height
+          canvas.getContext('2d')!.drawImage(img, 0, 0, width, height)
+          canvas.toBlob(b => b ? resolve(b) : reject(new Error('Canvas toBlob failed')), 'image/jpeg', 0.85)
+        }
+        img.onerror = reject
+        img.src = url
+      })
+
+      const path = `avatar-${profile.id}.jpg`
+      console.log('[avatar] uploading', path, compressed.size, 'bytes')
+
       const { error: upError } = await supabase.storage
         .from('avatars')
-        .upload(path, file, { upsert: true, contentType: file.type })
-      if (upError) throw upError
+        .upload(path, compressed, { upsert: true, contentType: 'image/jpeg' })
+
+      if (upError) { console.error('[avatar] storage error:', upError); throw upError }
+
       const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
       const urlWithBust = `${publicUrl}?t=${Date.now()}`
-      await supabase.from('profiles').update({ foto_perfil_url: urlWithBust }).eq('id', profile.id)
+      console.log('[avatar] public URL:', urlWithBust)
+
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ foto_perfil_url: urlWithBust })
+        .eq('id', profile.id)
+
+      if (updateError) { console.error('[avatar] profile update error:', updateError); throw updateError }
+
       setProfile(prev => prev ? { ...prev, foto_perfil_url: urlWithBust } : prev)
     } catch (err) {
-      console.error('Avatar upload error:', err)
+      console.error('[avatar] upload failed:', err)
     } finally {
       setUploadingFoto(false)
     }
@@ -184,6 +217,19 @@ export default function PerfilPage() {
         paddingTop: 'env(safe-area-inset-top, 0px)',
       }}
     >
+      {/* ── Brand bar ──────────────────────────────────────── */}
+      <div
+        className="flex-shrink-0 flex items-center justify-center border-b border-[#1A1A1A]"
+        style={{ height: 32 }}
+      >
+        <span style={{
+          fontSize: 11, fontWeight: 700, letterSpacing: '0.2em',
+          color: '#E8692A', textTransform: 'uppercase', fontFamily: 'system-ui, sans-serif',
+        }}>
+          LIVESTORY
+        </span>
+      </div>
+
       {/* ── Invitation banners ─────────────────────────────── */}
       {invitaciones.length > 0 && (
         <div
@@ -277,17 +323,13 @@ export default function PerfilPage() {
             <span className="text-[22px] font-bold text-[#F0F0F0] leading-none">{pendientes.length}</span>
             <span className="text-[10px] uppercase tracking-[0.14em] text-[#555555]">Planes</span>
           </div>
-          {pendientes.length >= 3 ? (
-            <ShareBucketList
-              planes={pendientes}
-              nombre={profile.nombre || ''}
-              username={profile.username}
-              fotoPerfil={profile.foto_perfil_url}
-              compact
-            />
-          ) : (
-            <div className="min-h-[44px] min-w-[44px] flex items-center justify-center text-[#2A2A2A] text-lg">↗</div>
-          )}
+          <ShareBucketList
+            planes={pendientes}
+            nombre={profile.nombre || ''}
+            username={profile.username}
+            fotoPerfil={profile.foto_perfil_url}
+            compact
+          />
         </div>
 
         <div className="w-px bg-[#1A1A1A]" />
