@@ -120,8 +120,8 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
   }
 
   const myRole = participantes.find(p => p.user_id === currentUserId)?.estado
-  const isOwner = myRole === 'owner'
-  const isParticipant = myRole === 'aceptado'
+  const isOwner = myRole === 'owner' || plan.pareja_codigo === currentUserId
+  const isParticipant = myRole === 'aceptado' && plan.pareja_codigo !== currentUserId
 
   return (
     <>

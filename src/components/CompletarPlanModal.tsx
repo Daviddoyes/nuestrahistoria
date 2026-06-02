@@ -143,9 +143,10 @@ export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
             <input
               ref={fileInputRef}
               type="file"
-              accept="image/*"
+              accept="image/*,video/*"
+              capture={undefined}
               onChange={handleFotoChange}
-              className="hidden"
+              style={{ display: 'none' }}
             />
             {foto && (
               <button
