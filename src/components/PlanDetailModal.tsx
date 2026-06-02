@@ -223,16 +223,16 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
             {isOwner && !confirming && (
               <button
                 onClick={() => setConfirming(true)}
-                className="w-full py-4 border border-[#2A2A2A] text-[#555555] active:bg-[#1A1A1A] rounded-xl text-sm font-medium min-h-[44px] flex items-center justify-center gap-2 transition-colors"
+                className="w-full py-3 flex items-center justify-center gap-2 text-xs text-[#666666] active:text-[#888888] transition-colors min-h-[44px]"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="w-3.5 h-3.5" />
                 Eliminar plan
               </button>
             )}
 
             {isOwner && confirming && (
               <div className="border border-[#2A2A2A] rounded-xl p-4 space-y-3">
-                <p className="text-sm text-[#666666] text-center">¿Eliminar este plan para todos?</p>
+                <p className="text-sm text-[#666666] text-center">¿Eliminar este plan? Esta acción no se puede deshacer.</p>
                 <div className="flex gap-3">
                   <button
                     onClick={() => setConfirming(false)}
