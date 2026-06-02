@@ -12,15 +12,13 @@ type Props = {
   compact?: boolean
 }
 
-const TITLE_SIZE: Record<number, number> = { 1: 36, 2: 32, 3: 30, 4: 28, 5: 26 }
-
 export default function ShareBucketList({ planes, nombre, username, fotoPerfil, compact }: Props) {
   const templateRef = useRef<HTMLDivElement>(null)
   const avatarImgRef = useRef<HTMLImageElement>(null)
   const [generating, setGenerating] = useState(false)
 
   const top5 = planes.slice(0, 5)
-  const titleSize = TITLE_SIZE[top5.length] ?? 26
+  const planTitleSize = top5.length <= 3 ? 32 : 26
 
   const handleShare = async () => {
     if (!templateRef.current) return
@@ -54,7 +52,7 @@ export default function ShareBucketList({ planes, nombre, username, fotoPerfil, 
       const canvas = await html2canvas(templateRef.current, {
         useCORS: false,
         scale: 2,
-        backgroundColor: '#0A0A0A',
+        backgroundColor: '#0D0D0D',
         logging: false,
       })
 
@@ -88,7 +86,8 @@ export default function ShareBucketList({ planes, nombre, username, fotoPerfil, 
         aria-hidden="true"
         style={{
           position: 'fixed', left: '-9999px', top: 0,
-          width: 1080, height: 1920, background: '#0A0A0A',
+          width: 1080, height: 1920,
+          background: 'linear-gradient(180deg, #0D0D0D 0%, #0A0A0A 100%)',
           display: 'flex', flexDirection: 'column',
           boxSizing: 'border-box', overflow: 'hidden',
         }}
@@ -96,114 +95,109 @@ export default function ShareBucketList({ planes, nombre, username, fotoPerfil, 
         {/* Top accent */}
         <div style={{ height: 6, background: '#E8692A', flexShrink: 0 }} />
 
-        {/* Top section */}
+        {/* Centered main content */}
         <div style={{
-          display: 'flex', flexDirection: 'column', alignItems: 'center',
-          padding: '72px 80px 0', flexShrink: 0,
+          flex: 1, display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          padding: '60px 100px',
         }}>
+          {/* Brand label */}
           <p style={{
-            fontFamily: 'system-ui, sans-serif', fontSize: 18, fontWeight: 700,
+            fontFamily: 'system-ui, sans-serif', fontSize: 16, fontWeight: 700,
             letterSpacing: '0.32em', color: '#E8692A', textTransform: 'uppercase',
-            margin: 0, marginBottom: 48,
+            margin: 0, marginBottom: 44,
           }}>
             LIVESTORY
           </p>
 
-          <div style={{ width: '100%', height: 1, background: '#2A2A2A', marginBottom: 64 }} />
-
+          {/* Title */}
           <p style={{
-            fontFamily: 'Georgia, serif', fontSize: 52, fontWeight: 700,
-            color: '#F0F0F0', margin: 0, lineHeight: 1.15, textAlign: 'center',
+            fontFamily: 'Georgia, serif', fontSize: 64, fontWeight: 700,
+            color: '#F0F0F0', margin: 0, lineHeight: 1.1,
+            textAlign: 'center', marginBottom: 40,
           }}>
-            ESTA ES MI LISTA
-          </p>
-          <p style={{
-            fontFamily: 'Georgia, serif', fontSize: 52, fontWeight: 700,
-            color: '#F0F0F0', margin: 0, lineHeight: 1.15, textAlign: 'center',
-            marginBottom: 60,
-          }}>
-            DE PLANES
+            MY PLAN LIST
           </p>
 
-          {/* Profile photo */}
-          {fotoPerfil ? (
-            <img
-              ref={avatarImgRef}
-              src={fotoPerfil}
-              alt=""
-              style={{
-                width: 80, height: 80, borderRadius: '50%', objectFit: 'cover',
-                border: '3px solid #E8692A', marginBottom: 20,
-              }}
-            />
-          ) : (
-            <div style={{
-              width: 80, height: 80, borderRadius: '50%', background: '#E8692A',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 32, fontWeight: 700, color: '#fff', marginBottom: 20,
-            }}>
-              {nombre[0]?.toUpperCase() ?? '?'}
-            </div>
-          )}
+          {/* Orange separator */}
+          <div style={{ width: 60, height: 2, background: '#E8692A', marginBottom: 52 }} />
 
-          <p style={{
-            fontFamily: 'Georgia, serif', fontSize: 28, fontWeight: 700,
-            color: '#F0F0F0', margin: 0, textAlign: 'center',
+          {/* Profile row: photo + name side by side */}
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 28, marginBottom: 68,
           }}>
-            {nombre}
-          </p>
-          {username && (
-            <p style={{
-              fontFamily: 'system-ui, sans-serif', fontSize: 20, color: '#555555',
-              margin: 0, marginTop: 6, textAlign: 'center',
-            }}>
-              @{username}
-            </p>
-          )}
-        </div>
-
-        {/* Plans section */}
-        <div style={{
-          flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center',
-          padding: '0 80px',
-        }}>
-          {top5.map((plan, i) => (
-            <div key={plan.id}>
-              {i > 0 && (
-                <div style={{ height: 1, background: '#1A1A1A', margin: '0' }} />
-              )}
+            {fotoPerfil ? (
+              <img
+                ref={avatarImgRef}
+                src={fotoPerfil}
+                alt=""
+                style={{
+                  width: 100, height: 100, borderRadius: '50%', objectFit: 'cover',
+                  border: '3px solid #E8692A', flexShrink: 0,
+                }}
+              />
+            ) : (
               <div style={{
-                display: 'flex', alignItems: 'stretch',
-                padding: '36px 0',
+                width: 100, height: 100, borderRadius: '50%', background: '#E8692A',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 40, fontWeight: 700, color: '#fff', flexShrink: 0,
               }}>
-                <p style={{
-                  fontFamily: 'monospace', fontSize: 18, fontWeight: 700,
-                  color: '#E8692A', margin: 0, lineHeight: 1,
-                  width: 60, flexShrink: 0,
-                  display: 'flex', alignItems: 'center',
-                }}>
-                  {String(i + 1).padStart(2, '0')}
-                </p>
-                <div style={{ width: 1, background: '#2A2A2A', flexShrink: 0, marginRight: 32 }} />
-                <p style={{
-                  fontFamily: 'Georgia, serif', fontSize: titleSize,
-                  fontWeight: 600, color: '#F0F0F0', lineHeight: 1.35,
-                  margin: 0, wordBreak: 'break-word', flex: 1,
-                }}>
-                  {plan.titulo}
-                </p>
+                {nombre[0]?.toUpperCase() ?? '?'}
               </div>
+            )}
+            <div>
+              <p style={{
+                fontFamily: 'Georgia, serif', fontSize: 30, fontWeight: 700,
+                color: '#F0F0F0', margin: 0, lineHeight: 1.2,
+              }}>
+                {nombre}
+              </p>
+              {username && (
+                <p style={{
+                  fontFamily: 'system-ui, sans-serif', fontSize: 22, color: '#555555',
+                  margin: 0, marginTop: 6,
+                }}>
+                  @{username}
+                </p>
+              )}
             </div>
-          ))}
-        </div>
+          </div>
 
-        {/* Footer */}
-        <div style={{ padding: '0 80px', flexShrink: 0 }}>
-          <div style={{ height: 1, background: '#2A2A2A', marginBottom: 40 }} />
+          {/* Plans list */}
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+            {top5.map((plan, i) => (
+              <div key={plan.id}>
+                {i > 0 && (
+                  <div style={{ height: 1, background: '#2A2A2A' }} />
+                )}
+                <div style={{
+                  display: 'flex', alignItems: 'flex-start', gap: 24,
+                  padding: '20px 0',
+                }}>
+                  <span style={{
+                    fontFamily: 'system-ui, sans-serif', fontSize: planTitleSize,
+                    color: '#E8692A', lineHeight: 1.35, flexShrink: 0,
+                  }}>
+                    ✦
+                  </span>
+                  <p style={{
+                    fontFamily: 'Georgia, serif', fontSize: planTitleSize,
+                    fontWeight: 600, color: '#F0F0F0', lineHeight: 1.35,
+                    margin: 0, wordBreak: 'break-word',
+                  }}>
+                    {plan.titulo}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Footer */}
+          <div style={{ width: '100%', height: 1, background: '#2A2A2A', marginTop: 52, marginBottom: 32 }} />
           <p style={{
-            fontFamily: 'system-ui, sans-serif', fontSize: 20, fontWeight: 700,
+            fontFamily: 'system-ui, sans-serif', fontSize: 18, fontWeight: 700,
             letterSpacing: '0.28em', color: '#E8692A', textTransform: 'uppercase',
-            margin: 0, marginBottom: 40, textAlign: 'center',
+            margin: 0,
           }}>
             LIVESTORY.APP
           </p>
