@@ -207,12 +207,11 @@ export default function OnboardingPage() {
       else if (c === 'amigos') cq = 'amigos'
       else if (c === 'solo') cq = 'solo'
     }
-    const code = codigoInvitacion || userId
     const { error } = await supabase.from('planes').insert({
       titulo: plan.titulo,
-      descripcion: plan.descripcion,
+      descripcion: '',
       creado_por: nombre || 'Yo',
-      pareja_codigo: code,
+      pareja_codigo: userId,
       estado: 'pendiente',
       con_quien: cq,
       orden: 0,
