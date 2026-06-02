@@ -1,25 +1,18 @@
 'use server'
 
-import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { createServiceRoleClient } from '@/lib/supabase-server'
-import type { Plan, Profile, TipoAcceso, ConQuien } from '@/types/planes'
+import type { Plan, Profile, ConQuien, InvitacionPendiente } from '@/types/planes'
 
-const getAnonClient = () =>
-  createSupabaseClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
-
-export async function getMyData(
-  tipoAcceso: TipoAcceso = 'owner'
-): Promise<{ planes: Plan[]; profile: Profile | null }> {
+export async function getMyData(): Promise<{
+  planes: Plan[]
+  profile: Profile | null
+  invitaciones: InvitacionPendiente[]
+}> {
   const serverSupa = await createServerClient()
-  const {
-    data: { user },
-  } = await serverSupa.auth.getUser()
-  if (!user) return { planes: [], profile: null }
+  const { data: { user } } = await serverSupa.auth.getUser()
+  if (!user) return { planes: [], profile: null, invitaciones: [] }
 
   const service = createServiceRoleClient()
 
@@ -29,54 +22,66 @@ export async function getMyData(
     .eq('id', user.id)
     .single()
 
-  if (!profile) return { planes: [], profile: null }
+  if (!profile) return { planes: [], profile: null, invitaciones: [] }
 
-  const codigos: string[] = []
-  if (profile.codigo_invitacion) codigos.push(profile.codigo_invitacion)
-
-  if (profile.pareja_id) {
-    const { data: partner } = await service
-      .from('profiles')
-      .select('codigo_invitacion')
-      .eq('id', profile.pareja_id)
-      .single()
-    if (partner?.codigo_invitacion) {
-      codigos.push(partner.codigo_invitacion)
-    }
-  }
-  const ownCode = profile.codigo_invitacion
-
-  if (codigos.length === 0) return { planes: [], profile: profile as Profile }
-
-  const supabase = getAnonClient()
-  const { data: allPlanes, error } = await supabase
+  // Own plans (pareja_codigo = user.id)
+  const { data: ownPlanes } = await service
     .from('planes')
     .select('*')
-    .in('pareja_codigo', codigos)
+    .eq('pareja_codigo', user.id)
 
-  if (error) throw new Error(error.message)
+  // Plans user has accepted as participant
+  const { data: participaciones } = await service
+    .from('plan_participantes' as never)
+    .select('plan_id, estado')
+    .eq('user_id', user.id)
+    .in('estado', ['aceptado'])
 
-  const planes = (allPlanes ?? []).filter(plan => {
-    // Own plans always visible
-    if (plan.pareja_codigo === ownCode) return true
-    // Partner's plans filtered by con_quien based on access type
-    const cq: ConQuien = plan.con_quien ?? 'todos'
-    if (tipoAcceso === 'amigos') return cq === 'amigos' || cq === 'todos'
-    return cq === 'pareja' || cq === 'todos'
-  })
+  let sharedPlanes: Plan[] = []
+  if (participaciones && (participaciones as { plan_id: string }[]).length > 0) {
+    const ownIds = new Set((ownPlanes ?? []).map((p: Plan) => p.id))
+    const foreignIds = (participaciones as { plan_id: string }[])
+      .map(p => p.plan_id)
+      .filter(id => !ownIds.has(id))
+    if (foreignIds.length > 0) {
+      const { data } = await service.from('planes').select('*').in('id', foreignIds)
+      sharedPlanes = (data ?? []) as Plan[]
+    }
+  }
 
-  return { planes: planes as Plan[], profile: profile as Profile }
-}
+  // Pending invitations
+  const { data: invitadoParts } = await service
+    .from('plan_participantes' as never)
+    .select('id, plan_id')
+    .eq('user_id', user.id)
+    .eq('estado', 'invitado')
 
-function randomCode() {
-  return Math.random().toString(36).substring(2, 10)
+  let invitaciones: InvitacionPendiente[] = []
+  if (invitadoParts && (invitadoParts as { id: string; plan_id: string }[]).length > 0) {
+    const planIds = (invitadoParts as { id: string; plan_id: string }[]).map(p => p.plan_id)
+    const { data: planData } = await service
+      .from('planes')
+      .select('id, titulo, creado_por')
+      .in('id', planIds)
+
+    invitaciones = (invitadoParts as { id: string; plan_id: string }[]).map(p => {
+      const plan = (planData ?? []).find((pl: { id: string; titulo: string; creado_por: string }) => pl.id === p.plan_id)
+      return {
+        participante_id: p.id,
+        plan_id: p.plan_id,
+        plan_titulo: plan?.titulo ?? 'Plan',
+        invitado_por: plan?.creado_por ?? 'Alguien',
+      }
+    })
+  }
+
+  const planes = [...(ownPlanes ?? []), ...sharedPlanes] as Plan[]
+  return { planes, profile: profile as Profile, invitaciones }
 }
 
 export async function getMyProfile(): Promise<Profile | null> {
   const serverSupa = await createServerClient()
-  const {
-    data: { user },
-  } = await serverSupa.auth.getUser()
+  const { data: { user } } = await serverSupa.auth.getUser()
   if (!user) return null
 
   const service = createServiceRoleClient()
@@ -87,28 +92,15 @@ export async function getMyProfile(): Promise<Profile | null> {
     .single()
 
   if (!profile) {
+    const nombre = (user.user_metadata?.nombre as string) || user.email?.split('@')[0] || ''
+    const base = nombre.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '') || 'user'
+    const suffix = Math.random().toString(36).slice(2, 6)
     const { data: newProfile } = await service
       .from('profiles')
-      .insert({
-        id: user.id,
-        email: user.email || '',
-        nombre: (user.user_metadata?.nombre as string) || user.email?.split('@')[0] || '',
-        codigo_pareja: randomCode(),
-        codigo_amigos: randomCode(),
-      })
+      .insert({ id: user.id, email: user.email || '', nombre, username: `${base}_${suffix}` })
       .select()
       .single()
     return newProfile as Profile | null
-  }
-
-  // Auto-generate any missing codes for existing profiles
-  const missing: Record<string, string> = {}
-  if (!profile.codigo_pareja) missing.codigo_pareja = randomCode()
-  if (!profile.codigo_amigos) missing.codigo_amigos = randomCode()
-
-  if (Object.keys(missing).length > 0) {
-    await service.from('profiles').update(missing).eq('id', profile.id)
-    Object.assign(profile, missing)
   }
 
   return profile as Profile
@@ -117,56 +109,75 @@ export async function getMyProfile(): Promise<Profile | null> {
 export async function addPlan(
   titulo: string,
   descripcion: string | null,
-  conQuien: ConQuien = 'todos'
+  conQuien: ConQuien = 'todos',
+  invitadoIds: string[] = []
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const serverSupa = await createServerClient()
-    const {
-      data: { user },
-    } = await serverSupa.auth.getUser()
+    const { data: { user } } = await serverSupa.auth.getUser()
     if (!user) return { success: false, error: 'No autenticado' }
 
     const service = createServiceRoleClient()
     const { data: profile } = await service
       .from('profiles')
-      .select('codigo_invitacion, plan, nombre, pareja_id')
+      .select('plan, nombre')
       .eq('id', user.id)
       .single()
 
-    if (!profile?.codigo_invitacion) return { success: false, error: 'Perfil no encontrado' }
+    if (!profile) return { success: false, error: 'Perfil no encontrado' }
 
     if (profile.plan === 'free') {
-      const codigos = [profile.codigo_invitacion]
-      if (profile.pareja_id) {
-        const { data: partner } = await service
-          .from('profiles')
-          .select('codigo_invitacion')
-          .eq('id', profile.pareja_id)
-          .single()
-        if (partner?.codigo_invitacion) codigos.push(partner.codigo_invitacion)
-      }
-      const supabase = getAnonClient()
-      const { count } = await supabase
+      const { count } = await service
         .from('planes')
         .select('*', { count: 'exact', head: true })
-        .in('pareja_codigo', codigos)
+        .eq('pareja_codigo', user.id)
         .eq('estado', 'pendiente')
       if ((count ?? 0) >= 5)
         return { success: false, error: 'Límite del plan gratuito alcanzado' }
     }
 
-    const supabase = getAnonClient()
-    const { error } = await supabase.from('planes').insert({
-      titulo,
-      descripcion,
-      creado_por: profile.nombre || user.email || 'Usuario',
-      pareja_codigo: profile.codigo_invitacion,
-      estado: 'pendiente',
-      con_quien: conQuien,
-      orden: 0,
+    const { data: newPlan, error } = await service
+      .from('planes')
+      .insert({
+        titulo,
+        descripcion,
+        creado_por: profile.nombre || user.email || 'Usuario',
+        pareja_codigo: user.id,
+        estado: 'pendiente',
+        con_quien: conQuien,
+        orden: 0,
+      })
+      .select('id')
+      .single()
+
+    if (error || !newPlan) return { success: false, error: error?.message ?? 'Error al crear plan' }
+
+    // Insert creator as owner participant
+    await service.from('plan_participantes' as never).insert({
+      plan_id: newPlan.id,
+      user_id: user.id,
+      nombre_usuario: profile.nombre || user.email || 'Usuario',
+      estado: 'owner',
     })
 
-    if (error) return { success: false, error: error.message }
+    // Insert invitados
+    if (invitadoIds.length > 0) {
+      const { data: invProfiles } = await service
+        .from('profiles')
+        .select('id, nombre')
+        .in('id', invitadoIds)
+
+      if (invProfiles && (invProfiles as { id: string; nombre: string }[]).length > 0) {
+        await service.from('plan_participantes' as never).insert(
+          (invProfiles as { id: string; nombre: string }[]).map(p => ({
+            plan_id: newPlan.id,
+            user_id: p.id,
+            nombre_usuario: p.nombre,
+            estado: 'invitado',
+          }))
+        )
+      }
+    }
 
     revalidatePath('/planes')
     return { success: true }
@@ -181,8 +192,8 @@ export async function completarPlan(
   fotoUrl: string | null,
   fechaMomento: string | null
 ) {
-  const supabase = getAnonClient()
-  const { error } = await supabase
+  const service = createServiceRoleClient()
+  const { error } = await service
     .from('planes')
     .update({
       estado: 'hecho',
@@ -196,78 +207,25 @@ export async function completarPlan(
 }
 
 export async function deletePlan(id: string) {
-  const supabase = getAnonClient()
-  const { error } = await supabase.from('planes').delete().eq('id', id)
+  const service = createServiceRoleClient()
+  const { error } = await service.from('planes').delete().eq('id', id)
   if (error) throw new Error(error.message)
   revalidatePath('/planes')
 }
 
 export async function updateOrden(updates: { id: string; orden: number }[]) {
-  const supabase = getAnonClient()
+  const service = createServiceRoleClient()
   await Promise.all(
     updates.map(({ id, orden }) =>
-      supabase.from('planes').update({ orden }).eq('id', id)
+      service.from('planes').update({ orden }).eq('id', id)
     )
   )
   revalidatePath('/planes')
 }
 
-export async function vincularPareja(codigoInput: string): Promise<TipoAcceso> {
-  const serverSupa = await createServerClient()
-  const {
-    data: { user },
-  } = await serverSupa.auth.getUser()
-  if (!user) throw new Error('No autenticado')
-
-  const service = createServiceRoleClient()
-  const lower = codigoInput.trim().toLowerCase()
-
-  let partner: { id: string } | null = null
-  let tipo: TipoAcceso = 'pareja'
-
-  // 1. Check codigo_pareja
-  const { data: byPareja } = await service
-    .from('profiles')
-    .select('id')
-    .eq('codigo_pareja', lower)
-    .single()
-  if (byPareja) { partner = byPareja; tipo = 'pareja' }
-
-  // 2. Fallback: check legacy codigo_invitacion
-  if (!partner) {
-    const { data: byInvitacion } = await service
-      .from('profiles')
-      .select('id')
-      .eq('codigo_invitacion', lower)
-      .single()
-    if (byInvitacion) { partner = byInvitacion; tipo = 'pareja' }
-  }
-
-  // 3. Check codigo_amigos
-  if (!partner) {
-    const { data: byAmigos } = await service
-      .from('profiles')
-      .select('id')
-      .eq('codigo_amigos', lower)
-      .single()
-    if (byAmigos) { partner = byAmigos; tipo = 'amigos' }
-  }
-
-  if (!partner) throw new Error('Código no encontrado')
-  if (partner.id === user.id) throw new Error('No puedes vincularte contigo mismo')
-
-  await service.from('profiles').update({ pareja_id: partner.id }).eq('id', user.id)
-  await service.from('profiles').update({ pareja_id: user.id }).eq('id', partner.id)
-
-  revalidatePath('/onboarding')
-  revalidatePath('/planes')
-
-  return tipo
-}
-
 export async function updateHistoriaDescripcion(id: string, descripcion: string) {
-  const supabase = getAnonClient()
-  const { error } = await supabase
+  const service = createServiceRoleClient()
+  const { error } = await service
     .from('planes')
     .update({ historia_descripcion: descripcion })
     .eq('id', id)
@@ -298,32 +256,33 @@ export async function completeOnboarding(data: {
   revalidatePath('/planes')
 }
 
-export async function lookupCode(
-  codigo: string
-): Promise<{ tipo: 'pareja' | 'amigos' } | null> {
+export async function acceptInvitation(participanteId: string): Promise<void> {
   const service = createServiceRoleClient()
-  const lower = codigo.trim().toLowerCase()
+  await service
+    .from('plan_participantes' as never)
+    .update({ estado: 'aceptado' })
+    .eq('id', participanteId)
+  revalidatePath('/planes')
+}
 
-  const { data: byPareja } = await service
+export async function rejectInvitation(participanteId: string): Promise<void> {
+  const service = createServiceRoleClient()
+  await service
+    .from('plan_participantes' as never)
+    .delete()
+    .eq('id', participanteId)
+  revalidatePath('/planes')
+}
+
+export async function searchUsers(
+  query: string
+): Promise<{ id: string; nombre: string; username: string; foto_perfil_url: string | null }[]> {
+  if (query.trim().length < 2) return []
+  const service = createServiceRoleClient()
+  const { data } = await service
     .from('profiles')
-    .select('id')
-    .eq('codigo_pareja', lower)
-    .single()
-  if (byPareja) return { tipo: 'pareja' }
-
-  const { data: byInvitacion } = await service
-    .from('profiles')
-    .select('id')
-    .eq('codigo_invitacion', lower)
-    .single()
-  if (byInvitacion) return { tipo: 'pareja' }
-
-  const { data: byAmigos } = await service
-    .from('profiles')
-    .select('id')
-    .eq('codigo_amigos', lower)
-    .single()
-  if (byAmigos) return { tipo: 'amigos' }
-
-  return null
+    .select('id, nombre, username, foto_perfil_url')
+    .ilike('username', `%${query.trim()}%`)
+    .limit(5)
+  return (data ?? []) as { id: string; nombre: string; username: string; foto_perfil_url: string | null }[]
 }

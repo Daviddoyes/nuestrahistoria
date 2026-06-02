@@ -23,10 +23,9 @@ export type Profile = {
   id: string
   nombre: string
   email: string
-  pareja_id: string | null
-  codigo_invitacion: string
-  codigo_pareja: string | null
-  codigo_amigos: string | null
+  username: string | null
+  foto_perfil_url: string | null
+  edad: number | null
   plan: 'free' | 'premium'
   stripe_customer_id: string | null
   stripe_subscription_id: string | null
@@ -34,4 +33,23 @@ export type Profile = {
   onboarding_completado?: boolean
   intereses?: string[]
   con_quien_vive?: string[]
+}
+
+export type PlanParticipante = {
+  id: string
+  plan_id: string
+  user_id: string
+  nombre_usuario: string | null
+  estado: 'owner' | 'invitado' | 'aceptado' | 'pendiente'
+  foto_url: string | null
+  historia_descripcion: string | null
+  fecha_momento: string | null
+  created_at: string
+}
+
+export type InvitacionPendiente = {
+  participante_id: string
+  plan_id: string
+  plan_titulo: string
+  invitado_por: string
 }

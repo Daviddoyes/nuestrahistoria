@@ -1,12 +1,15 @@
 'use client'
 
-import { useState } from 'react'
-import { X, User, Heart, Users, Globe } from 'lucide-react'
+import { useState, useEffect, useMemo, useRef } from 'react'
+import { X, User, Heart, Users, Globe, Search, UserPlus } from 'lucide-react'
 import type { ConQuien } from '@/types/planes'
+import { createClient } from '@/lib/supabase/client'
+
+type InvitadoResult = { id: string; nombre: string; username: string; foto_perfil_url: string | null }
 
 type Props = {
   onClose: () => void
-  onSubmit: (titulo: string, descripcion: string | null, conQuien: ConQuien) => Promise<void>
+  onSubmit: (titulo: string, descripcion: string | null, conQuien: ConQuien, invitadoIds: string[]) => Promise<void>
 }
 
 const CON_QUIEN_OPTIONS: { value: ConQuien; label: string; icon: React.ElementType }[] = [
@@ -16,12 +19,54 @@ const CON_QUIEN_OPTIONS: { value: ConQuien; label: string; icon: React.ElementTy
   { value: 'todos', label: 'Todos', icon: Globe },
 ]
 
+function Avatar({ item }: { item: InvitadoResult }) {
+  if (item.foto_perfil_url) {
+    return <img src={item.foto_perfil_url} alt="" className="w-7 h-7 rounded-full object-cover flex-shrink-0" />
+  }
+  return (
+    <div className="w-7 h-7 rounded-full bg-[#E8692A] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+      {item.nombre?.[0]?.toUpperCase() ?? '?'}
+    </div>
+  )
+}
+
 export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
+  const supabase = useMemo(() => createClient(), [])
   const [titulo, setTitulo] = useState('')
   const [descripcion, setDescripcion] = useState('')
   const [conQuien, setConQuien] = useState<ConQuien>('todos')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState<InvitadoResult[]>([])
+  const [searching, setSearching] = useState(false)
+  const [invitados, setInvitados] = useState<InvitadoResult[]>([])
+  const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    if (searchQuery.trim().length < 2) { setSearchResults([]); return }
+    if (searchTimeout.current) clearTimeout(searchTimeout.current)
+    searchTimeout.current = setTimeout(async () => {
+      setSearching(true)
+      const { data } = await supabase
+        .from('profiles')
+        .select('id, nombre, username, foto_perfil_url')
+        .ilike('username', `%${searchQuery.trim()}%`)
+        .limit(5)
+      setSearchResults((data ?? []) as InvitadoResult[])
+      setSearching(false)
+    }, 300)
+    return () => { if (searchTimeout.current) clearTimeout(searchTimeout.current) }
+  }, [searchQuery, supabase])
+
+  const addInvitado = (item: InvitadoResult) => {
+    if (!invitados.find(i => i.id === item.id)) setInvitados(prev => [...prev, item])
+    setSearchQuery('')
+    setSearchResults([])
+  }
+
+  const removeInvitado = (id: string) => setInvitados(prev => prev.filter(i => i.id !== id))
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -29,7 +74,7 @@ export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
     setLoading(true)
     setError('')
     try {
-      await onSubmit(titulo.trim(), descripcion.trim() || null, conQuien)
+      await onSubmit(titulo.trim(), descripcion.trim() || null, conQuien, invitados.map(i => i.id))
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Error al guardar el plan'
       setError(msg)
@@ -44,12 +89,12 @@ export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
       className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm"
       onClick={e => e.target === e.currentTarget && onClose()}
     >
-      <div className="w-full bg-[#141414] rounded-t-2xl shadow-2xl overflow-hidden">
-        <div className="flex justify-center pt-3 pb-1">
+      <div className="w-full bg-[#141414] rounded-t-2xl shadow-2xl overflow-hidden max-h-[92dvh] flex flex-col">
+        <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
           <div className="w-9 h-1 bg-[#2A2A2A] rounded-full" />
         </div>
 
-        <div className="px-5 py-3 flex items-center justify-between">
+        <div className="px-5 py-3 flex items-center justify-between flex-shrink-0">
           <h2 className="font-serif font-semibold text-[#F0F0F0] text-base">Nuevo plan</h2>
           <button
             onClick={onClose}
@@ -59,10 +104,10 @@ export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="px-5 pb-5 space-y-4">
+        <form onSubmit={handleSubmit} className="px-5 pb-5 space-y-4 overflow-y-auto flex-1">
           <div>
             <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-1.5">
-              Titulo
+              Título
             </label>
             <input
               type="text"
@@ -76,14 +121,14 @@ export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
 
           <div>
             <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-1.5">
-              Descripcion{' '}
+              Descripción{' '}
               <span className="text-[#444444] normal-case tracking-normal">(opcional)</span>
             </label>
             <textarea
               value={descripcion}
               onChange={e => setDescripcion(e.target.value)}
-              placeholder="Añade mas detalles..."
-              rows={3}
+              placeholder="Añade más detalles..."
+              rows={2}
               className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] resize-none text-base"
             />
           </div>
@@ -112,6 +157,69 @@ export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
                 )
               })}
             </div>
+          </div>
+
+          {/* Invite section */}
+          <div>
+            <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-2">
+              Invitar personas
+            </label>
+
+            {invitados.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-2">
+                {invitados.map(item => (
+                  <div
+                    key={item.id}
+                    className="flex items-center gap-1.5 bg-[#1A1A1A] border border-[#2A2A2A] rounded-full pl-1 pr-2 py-1"
+                  >
+                    <Avatar item={item} />
+                    <span className="text-xs text-[#F0F0F0]">{item.nombre}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeInvitado(item.id)}
+                      className="text-[#444444] active:text-[#E8692A] ml-0.5"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#444444]" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                placeholder="Buscar por @username"
+                className="w-full pl-9 pr-4 py-3 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-sm"
+              />
+            </div>
+
+            {(searching || searchResults.length > 0) && (
+              <div className="mt-1 bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl overflow-hidden">
+                {searching && (
+                  <div className="px-4 py-3 text-xs text-[#666666]">Buscando...</div>
+                )}
+                {!searching && searchResults.map(item => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => addInvitado(item)}
+                    disabled={!!invitados.find(i => i.id === item.id)}
+                    className="w-full flex items-center gap-3 px-4 py-3 active:bg-[#2A2A2A] transition-colors disabled:opacity-40 border-b border-[#222222] last:border-0"
+                  >
+                    <Avatar item={item} />
+                    <div className="flex-1 min-w-0 text-left">
+                      <p className="text-sm font-medium text-[#F0F0F0] truncate">{item.nombre}</p>
+                      <p className="text-xs text-[#666666]">@{item.username}</p>
+                    </div>
+                    <UserPlus className="w-4 h-4 text-[#E8692A] flex-shrink-0" />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {error && (

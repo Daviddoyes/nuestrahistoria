@@ -8,9 +8,10 @@ import { createClient } from '@/lib/supabase/client'
 interface UserMenuProps {
   nombre: string
   plan: 'free' | 'premium'
+  fotoPerfil?: string | null
 }
 
-export default function UserMenu({ nombre, plan }: UserMenuProps) {
+export default function UserMenu({ nombre, plan, fotoPerfil }: UserMenuProps) {
   const [open, setOpen] = useState(false)
   const router = useRouter()
   const supabase = createClient()
@@ -27,10 +28,14 @@ export default function UserMenu({ nombre, plan }: UserMenuProps) {
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="w-8 h-8 rounded-full bg-[#E8692A] text-white font-semibold text-sm flex items-center justify-center active:scale-95 transition-transform"
+        className="w-8 h-8 rounded-full overflow-hidden bg-[#E8692A] text-white font-semibold text-sm flex items-center justify-center active:scale-95 transition-transform"
         aria-label="Menú de usuario"
       >
-        {initial}
+        {fotoPerfil ? (
+          <img src={fotoPerfil} alt="" className="w-full h-full object-cover" />
+        ) : (
+          initial
+        )}
       </button>
 
       {open && (
@@ -49,10 +54,7 @@ export default function UserMenu({ nombre, plan }: UserMenuProps) {
 
             {plan === 'free' && (
               <button
-                onClick={() => {
-                  setOpen(false)
-                  router.push('/pricing')
-                }}
+                onClick={() => { setOpen(false); router.push('/pricing') }}
                 className="w-full px-4 py-3 text-left text-sm text-[#E8692A] flex items-center gap-2 active:bg-[#2A2A2A] transition-colors"
               >
                 <Crown className="w-4 h-4" />
@@ -61,14 +63,11 @@ export default function UserMenu({ nombre, plan }: UserMenuProps) {
             )}
 
             <button
-              onClick={() => {
-                setOpen(false)
-                router.push('/onboarding')
-              }}
+              onClick={() => { setOpen(false); router.push('/perfil') }}
               className="w-full px-4 py-3 text-left text-sm text-[#F0F0F0] flex items-center gap-2 active:bg-[#2A2A2A] transition-colors"
             >
               <User className="w-4 h-4" />
-              Mi cuenta
+              Mi perfil
             </button>
 
             <button
