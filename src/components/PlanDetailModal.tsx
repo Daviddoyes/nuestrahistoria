@@ -92,9 +92,6 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
     if (q.length < 2) { setResultados([]); return }
 
     const buscar = async () => {
-      console.log('[invite] buscando:', q)
-      console.log('[invite] currentUserId:', currentUserId)
-
       const excluir = [
         currentUserId,
         ...participantes.map(p => p.user_id),
@@ -114,7 +111,6 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
       }
 
       const { data, error } = await query.limit(5)
-      console.log('[search] resultados:', data, error)
       if (!error) setResultados((data ?? []) as Usuario[])
     }
 
