@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { Camera, LogOut, Plus, Copy, Check, X } from 'lucide-react'
+import { Camera, LogOut, Plus, Copy, Check, X, Share2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import {
   getMyData,
@@ -343,11 +343,11 @@ export default function PerfilPage() {
           <button
             onClick={historias.length > 0 ? openHistoriaShare : undefined}
             disabled={historias.length === 0}
-            className={`min-h-[44px] min-w-[44px] flex items-center justify-center text-lg transition-colors ${
+            className={`min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors ${
               historias.length > 0 ? 'text-[#E8692A] active:text-[#D4581A]' : 'text-[#2A2A2A]'
             }`}
           >
-            ↗
+            <Share2 className="w-4 h-4" />
           </button>
         </div>
       </div>

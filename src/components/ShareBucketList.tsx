@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { ArrowUpRight, Share2 } from 'lucide-react'
+import { Share2 } from 'lucide-react'
 import type { Plan } from '@/types/planes'
 
 type Props = {
@@ -13,47 +13,25 @@ type Props = {
 }
 
 function planTitleSize(count: number) {
-  if (count <= 2) return 38
-  if (count === 3) return 34
-  return 28
+  if (count <= 2) return 48
+  if (count === 3) return 40
+  return 32
 }
 
 export default function ShareBucketList({ planes, nombre, username, fotoPerfil, compact }: Props) {
   const templateRef = useRef<HTMLDivElement>(null)
-  const avatarImgRef = useRef<HTMLImageElement>(null)
   const [generating, setGenerating] = useState(false)
 
   const top5 = planes.slice(0, 5)
   const titleSize = planTitleSize(top5.length)
 
+  // unused props kept for API compatibility
+  void nombre; void username; void fotoPerfil
+
   const handleShare = async () => {
     if (!templateRef.current) return
     setGenerating(true)
     try {
-      if (fotoPerfil && avatarImgRef.current) {
-        try {
-          const res = await fetch(`/api/proxy-image?url=${encodeURIComponent(fotoPerfil)}`)
-          if (res.ok) {
-            const blob = await res.blob()
-            const base64 = await new Promise<string>((resolve, reject) => {
-              const reader = new FileReader()
-              reader.onload = () => resolve(reader.result as string)
-              reader.onerror = reject
-              reader.readAsDataURL(blob)
-            })
-            avatarImgRef.current.src = base64
-            await new Promise(resolve => {
-              const img = avatarImgRef.current!
-              if (img.complete && img.naturalWidth > 0) { resolve(undefined); return }
-              img.onload = resolve
-              img.onerror = resolve
-            })
-          }
-        } catch {
-          // continue without photo
-        }
-      }
-
       const { default: html2canvas } = await import('html2canvas')
       const canvas = await html2canvas(templateRef.current, {
         useCORS: false,
@@ -96,104 +74,59 @@ export default function ShareBucketList({ planes, nombre, username, fotoPerfil, 
           background: 'linear-gradient(180deg, #0D0D0D 0%, #0A0A0A 100%)',
           display: 'flex', flexDirection: 'column',
           justifyContent: 'space-between',
-          padding: '120px 60px',
+          padding: '100px 80px',
           boxSizing: 'border-box', overflow: 'hidden',
         }}
       >
         {/* ── TOP: brand + title ── */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div style={{ height: 6, background: '#E8692A', width: '100%', marginBottom: 56 }} />
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 40 }}>
           <p style={{
             fontFamily: 'system-ui, sans-serif', fontSize: 16, fontWeight: 700,
             letterSpacing: '0.32em', color: '#E8692A', textTransform: 'uppercase',
-            margin: 0, marginBottom: 32,
+            margin: 0,
           }}>
             LIVESTORY
           </p>
+          <div style={{ width: '100%', height: 1, background: '#E8692A' }} />
           <p style={{
-            fontFamily: 'Georgia, serif', fontSize: 72, fontWeight: 700,
+            fontFamily: 'Georgia, serif', fontSize: 76, fontWeight: 700,
             color: '#F0F0F0', margin: 0, lineHeight: 1.1, textAlign: 'center',
           }}>
             MY PLAN LIST
           </p>
         </div>
 
-        {/* ── MIDDLE: profile + plans ── */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          {/* Profile */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 60 }}>
-            {fotoPerfil ? (
-              <div style={{
-                width: 110, height: 110, borderRadius: '50%',
-                overflow: 'hidden', border: '3px solid #E8692A',
-                flexShrink: 0, marginBottom: 20,
-              }}>
-                <img
-                  ref={avatarImgRef}
-                  src={fotoPerfil}
-                  alt=""
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                />
-              </div>
-            ) : (
-              <div style={{
-                width: 110, height: 110, borderRadius: '50%', background: '#E8692A',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 44, fontWeight: 700, color: '#fff',
-                flexShrink: 0, marginBottom: 20,
-              }}>
-                {nombre[0]?.toUpperCase() ?? '?'}
-              </div>
-            )}
-            <p style={{
-              fontFamily: 'Georgia, serif', fontSize: 28, fontWeight: 700,
-              color: '#F0F0F0', margin: 0, textAlign: 'center',
-            }}>
-              {nombre}
-            </p>
-            {username && (
+        {/* ── MIDDLE: plans ── */}
+        <div style={{
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          width: '100%',
+        }}>
+          {top5.map((plan, i) => (
+            <div key={plan.id} style={{ width: '100%' }}>
+              {i > 0 && (
+                <div style={{ height: 1, background: '#2A2A2A', margin: '36px 0' }} />
+              )}
               <p style={{
-                fontFamily: 'system-ui, sans-serif', fontSize: 18, color: '#555555',
-                margin: 0, marginTop: 8, textAlign: 'center',
+                fontFamily: 'Georgia, serif', fontSize: titleSize,
+                fontWeight: 600, color: '#F0F0F0', lineHeight: 1.35,
+                margin: 0, textAlign: 'center', wordBreak: 'break-word',
               }}>
-                @{username}
+                {plan.titulo}
               </p>
-            )}
-          </div>
-
-          {/* Orange separator */}
-          <div style={{ width: 60, height: 2, background: '#E8692A', marginBottom: 56 }} />
-
-          {/* Plans */}
-          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 0 }}>
-            {top5.map((plan, i) => (
-              <div key={plan.id}>
-                {i > 0 && (
-                  <div style={{ height: 1, background: '#2A2A2A', margin: '24px 0' }} />
-                )}
-                <p style={{
-                  fontFamily: 'Georgia, serif', fontSize: titleSize,
-                  fontWeight: 600, color: '#F0F0F0', lineHeight: 1.35,
-                  margin: 0, textAlign: 'center', wordBreak: 'break-word',
-                }}>
-                  {plan.titulo}
-                </p>
-              </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
 
         {/* ── BOTTOM: footer ── */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div style={{ height: 1, background: '#2A2A2A', width: '100%', marginBottom: 36 }} />
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 40 }}>
+          <div style={{ width: '100%', height: 1, background: '#E8692A' }} />
           <p style={{
             fontFamily: 'system-ui, sans-serif', fontSize: 20, fontWeight: 700,
             letterSpacing: '0.28em', color: '#E8692A', textTransform: 'uppercase',
-            margin: 0, marginBottom: 40,
+            margin: 0,
           }}>
             LIVESTORY.APP
           </p>
-          <div style={{ height: 6, background: '#E8692A', width: '100%' }} />
         </div>
       </div>
 
@@ -207,7 +140,7 @@ export default function ShareBucketList({ planes, nombre, username, fotoPerfil, 
           {generating ? (
             <div className="w-4 h-4 border border-[#E8692A] border-t-transparent rounded-full animate-spin" />
           ) : (
-            <ArrowUpRight className="w-5 h-5" />
+            <Share2 className="w-4 h-4" />
           )}
         </button>
       ) : (
