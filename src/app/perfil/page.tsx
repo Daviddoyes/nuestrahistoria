@@ -380,15 +380,23 @@ export default function PerfilPage() {
                 Aún no tienes planes. ¿A qué esperas?
               </p>
             ) : (
-              pendientes.map(plan => (
-                <button
-                  key={plan.id}
-                  onClick={() => setSelectedPlan(plan)}
-                  className="w-full text-left px-3 py-[14px] border-b border-[#1A1A1A] active:bg-[#111111] transition-colors min-h-[44px]"
-                >
-                  <p className="text-[13px] text-[#E0E0E0] leading-snug line-clamp-2 font-serif">{plan.titulo}</p>
-                </button>
-              ))
+              pendientes.map(plan => {
+                const isShared = plan.pareja_codigo !== profile.id
+                return (
+                  <button
+                    key={plan.id}
+                    onClick={() => setSelectedPlan(plan)}
+                    className="w-full text-left px-3 py-[14px] border-b border-[#1A1A1A] active:bg-[#111111] transition-colors min-h-[44px]"
+                  >
+                    <p className="text-[13px] text-[#E0E0E0] leading-snug line-clamp-2 font-serif">{plan.titulo}</p>
+                    {isShared && (
+                      <p className="text-[9px] text-[#E8692A] uppercase tracking-[0.1em] mt-0.5">
+                        {plan.creado_por}
+                      </p>
+                    )}
+                  </button>
+                )
+              })
             )}
           </div>
         </div>
@@ -428,6 +436,7 @@ export default function PerfilPage() {
       {/* ── Modals ─────────────────────────────────────────── */}
       {showNuevoPlan && (
         <NuevoPlanModal
+          currentUserId={profile.id}
           onClose={() => setShowNuevoPlan(false)}
           onSubmit={handleAddPlan}
         />

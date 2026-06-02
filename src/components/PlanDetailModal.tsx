@@ -81,18 +81,19 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
   }, [plan.id, supabase])
 
   useEffect(() => {
-    if (searchQuery.trim().length < 2) { setSearchResults([]); return }
+    const q = searchQuery.trim()
+    if (q.length < 2) { setSearchResults([]); return }
     if (searchTimeout.current) clearTimeout(searchTimeout.current)
     searchTimeout.current = setTimeout(async () => {
       setSearching(true)
       const existingIds = participantes.map(p => p.user_id)
-      const allExclude = [currentUserId, ...existingIds]
       let query = supabase
         .from('profiles')
         .select('id, nombre, username, foto_perfil_url')
-        .ilike('username', `%${searchQuery.trim()}%`)
-      if (allExclude.length > 0) {
-        query = query.not('id', 'in', `(${allExclude.join(',')})`)
+        .or(`username.ilike.%${q}%,nombre.ilike.%${q}%`)
+        .neq('id', currentUserId)
+      if (existingIds.length > 0) {
+        query = query.not('id', 'in', `(${existingIds.join(',')})`)
       }
       const { data } = await query.limit(5)
       setSearchResults((data ?? []) as SearchResult[])
@@ -197,8 +198,7 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
                   {!searching && searchResults.map(item => (
                     <div
                       key={item.id}
-                      onMouseDown={(e) => { e.preventDefault(); handleInvite(item) }}
-                      onTouchEnd={(e) => { e.preventDefault(); handleInvite(item) }}
+                      onPointerDown={(e) => { e.preventDefault(); handleInvite(item) }}
                       style={{
                         display: 'flex', alignItems: 'center', gap: '0.75rem',
                         padding: '0.75rem 1rem', minHeight: '44px',

@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 type InvitadoResult = { id: string; nombre: string; username: string; foto_perfil_url: string | null }
 
 type Props = {
+  currentUserId: string
   onClose: () => void
   onSubmit: (titulo: string, invitadoIds: string[]) => Promise<void>
 }
@@ -22,7 +23,7 @@ function Avatar({ item }: { item: InvitadoResult }) {
   )
 }
 
-export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
+export default function NuevoPlanModal({ currentUserId, onClose, onSubmit }: Props) {
   const supabase = useMemo(() => createClient(), [])
   const [titulo, setTitulo] = useState('')
   const [loading, setLoading] = useState(false)
@@ -35,20 +36,22 @@ export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
   const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    if (searchQuery.trim().length < 2) { setSearchResults([]); return }
+    const q = searchQuery.trim()
+    if (q.length < 2) { setSearchResults([]); return }
     if (searchTimeout.current) clearTimeout(searchTimeout.current)
     searchTimeout.current = setTimeout(async () => {
       setSearching(true)
       const { data } = await supabase
         .from('profiles')
         .select('id, nombre, username, foto_perfil_url')
-        .ilike('username', `%${searchQuery.trim()}%`)
+        .or(`username.ilike.%${q}%,nombre.ilike.%${q}%`)
+        .neq('id', currentUserId)
         .limit(5)
       setSearchResults((data ?? []) as InvitadoResult[])
       setSearching(false)
     }, 300)
     return () => { if (searchTimeout.current) clearTimeout(searchTimeout.current) }
-  }, [searchQuery, supabase])
+  }, [searchQuery, supabase, currentUserId])
 
   const addInvitado = (item: InvitadoResult) => {
     if (!invitados.find(i => i.id === item.id)) setInvitados(prev => [...prev, item])
@@ -168,8 +171,7 @@ export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
                     return (
                       <div
                         key={item.id}
-                        onMouseDown={(e) => { e.preventDefault(); addInvitado(item) }}
-                        onTouchEnd={(e) => { e.preventDefault(); addInvitado(item) }}
+                        onPointerDown={(e) => { e.preventDefault(); addInvitado(item) }}
                         style={{
                           display: 'flex', alignItems: 'center', gap: '0.75rem',
                           padding: '0.75rem 1rem', minHeight: '44px',
