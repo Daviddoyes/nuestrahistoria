@@ -12,13 +12,19 @@ type Props = {
   compact?: boolean
 }
 
+function planTitleSize(count: number) {
+  if (count <= 2) return 38
+  if (count === 3) return 34
+  return 28
+}
+
 export default function ShareBucketList({ planes, nombre, username, fotoPerfil, compact }: Props) {
   const templateRef = useRef<HTMLDivElement>(null)
   const avatarImgRef = useRef<HTMLImageElement>(null)
   const [generating, setGenerating] = useState(false)
 
   const top5 = planes.slice(0, 5)
-  const planTitleSize = top5.length <= 3 ? 32 : 26
+  const titleSize = planTitleSize(top5.length)
 
   const handleShare = async () => {
     if (!templateRef.current) return
@@ -89,122 +95,106 @@ export default function ShareBucketList({ planes, nombre, username, fotoPerfil, 
           width: 1080, height: 1920,
           background: 'linear-gradient(180deg, #0D0D0D 0%, #0A0A0A 100%)',
           display: 'flex', flexDirection: 'column',
+          justifyContent: 'space-between',
+          padding: '120px 60px',
           boxSizing: 'border-box', overflow: 'hidden',
         }}
       >
-        {/* Top accent */}
-        <div style={{ height: 6, background: '#E8692A', flexShrink: 0 }} />
-
-        {/* Centered main content */}
-        <div style={{
-          flex: 1, display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'center',
-          padding: '60px 100px',
-        }}>
-          {/* Brand label */}
+        {/* ── TOP: brand + title ── */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div style={{ height: 6, background: '#E8692A', width: '100%', marginBottom: 56 }} />
           <p style={{
             fontFamily: 'system-ui, sans-serif', fontSize: 16, fontWeight: 700,
             letterSpacing: '0.32em', color: '#E8692A', textTransform: 'uppercase',
-            margin: 0, marginBottom: 44,
+            margin: 0, marginBottom: 32,
           }}>
             LIVESTORY
           </p>
-
-          {/* Title */}
           <p style={{
-            fontFamily: 'Georgia, serif', fontSize: 64, fontWeight: 700,
-            color: '#F0F0F0', margin: 0, lineHeight: 1.1,
-            textAlign: 'center', marginBottom: 40,
+            fontFamily: 'Georgia, serif', fontSize: 72, fontWeight: 700,
+            color: '#F0F0F0', margin: 0, lineHeight: 1.1, textAlign: 'center',
           }}>
             MY PLAN LIST
           </p>
+        </div>
 
-          {/* Orange separator */}
-          <div style={{ width: 60, height: 2, background: '#E8692A', marginBottom: 52 }} />
-
-          {/* Profile row: photo + name side by side */}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 28, marginBottom: 68,
-          }}>
+        {/* ── MIDDLE: profile + plans ── */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          {/* Profile */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 60 }}>
             {fotoPerfil ? (
-              <img
-                ref={avatarImgRef}
-                src={fotoPerfil}
-                alt=""
-                style={{
-                  width: 100, height: 100, borderRadius: '50%', objectFit: 'cover',
-                  border: '3px solid #E8692A', flexShrink: 0,
-                }}
-              />
+              <div style={{
+                width: 110, height: 110, borderRadius: '50%',
+                overflow: 'hidden', border: '3px solid #E8692A',
+                flexShrink: 0, marginBottom: 20,
+              }}>
+                <img
+                  ref={avatarImgRef}
+                  src={fotoPerfil}
+                  alt=""
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
+              </div>
             ) : (
               <div style={{
-                width: 100, height: 100, borderRadius: '50%', background: '#E8692A',
+                width: 110, height: 110, borderRadius: '50%', background: '#E8692A',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 40, fontWeight: 700, color: '#fff', flexShrink: 0,
+                fontSize: 44, fontWeight: 700, color: '#fff',
+                flexShrink: 0, marginBottom: 20,
               }}>
                 {nombre[0]?.toUpperCase() ?? '?'}
               </div>
             )}
-            <div>
+            <p style={{
+              fontFamily: 'Georgia, serif', fontSize: 28, fontWeight: 700,
+              color: '#F0F0F0', margin: 0, textAlign: 'center',
+            }}>
+              {nombre}
+            </p>
+            {username && (
               <p style={{
-                fontFamily: 'Georgia, serif', fontSize: 30, fontWeight: 700,
-                color: '#F0F0F0', margin: 0, lineHeight: 1.2,
+                fontFamily: 'system-ui, sans-serif', fontSize: 18, color: '#555555',
+                margin: 0, marginTop: 8, textAlign: 'center',
               }}>
-                {nombre}
+                @{username}
               </p>
-              {username && (
-                <p style={{
-                  fontFamily: 'system-ui, sans-serif', fontSize: 22, color: '#555555',
-                  margin: 0, marginTop: 6,
-                }}>
-                  @{username}
-                </p>
-              )}
-            </div>
+            )}
           </div>
 
-          {/* Plans list */}
-          <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+          {/* Orange separator */}
+          <div style={{ width: 60, height: 2, background: '#E8692A', marginBottom: 56 }} />
+
+          {/* Plans */}
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 0 }}>
             {top5.map((plan, i) => (
               <div key={plan.id}>
                 {i > 0 && (
-                  <div style={{ height: 1, background: '#2A2A2A' }} />
+                  <div style={{ height: 1, background: '#2A2A2A', margin: '24px 0' }} />
                 )}
-                <div style={{
-                  display: 'flex', alignItems: 'flex-start', gap: 24,
-                  padding: '20px 0',
+                <p style={{
+                  fontFamily: 'Georgia, serif', fontSize: titleSize,
+                  fontWeight: 600, color: '#F0F0F0', lineHeight: 1.35,
+                  margin: 0, textAlign: 'center', wordBreak: 'break-word',
                 }}>
-                  <span style={{
-                    fontFamily: 'system-ui, sans-serif', fontSize: planTitleSize,
-                    color: '#E8692A', lineHeight: 1.35, flexShrink: 0,
-                  }}>
-                    ✦
-                  </span>
-                  <p style={{
-                    fontFamily: 'Georgia, serif', fontSize: planTitleSize,
-                    fontWeight: 600, color: '#F0F0F0', lineHeight: 1.35,
-                    margin: 0, wordBreak: 'break-word',
-                  }}>
-                    {plan.titulo}
-                  </p>
-                </div>
+                  {plan.titulo}
+                </p>
               </div>
             ))}
           </div>
+        </div>
 
-          {/* Footer */}
-          <div style={{ width: '100%', height: 1, background: '#2A2A2A', marginTop: 52, marginBottom: 32 }} />
+        {/* ── BOTTOM: footer ── */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div style={{ height: 1, background: '#2A2A2A', width: '100%', marginBottom: 36 }} />
           <p style={{
-            fontFamily: 'system-ui, sans-serif', fontSize: 18, fontWeight: 700,
+            fontFamily: 'system-ui, sans-serif', fontSize: 20, fontWeight: 700,
             letterSpacing: '0.28em', color: '#E8692A', textTransform: 'uppercase',
-            margin: 0,
+            margin: 0, marginBottom: 40,
           }}>
             LIVESTORY.APP
           </p>
+          <div style={{ height: 6, background: '#E8692A', width: '100%' }} />
         </div>
-
-        {/* Bottom accent */}
-        <div style={{ height: 6, background: '#E8692A', flexShrink: 0 }} />
       </div>
 
       {compact ? (
