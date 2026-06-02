@@ -158,7 +158,7 @@ export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }
           ) : (
             <div className="relative">
               <p className="text-[10px] uppercase tracking-[0.18em] text-[#666666] mb-2">
-                Recuerdo
+                El recuerdo
               </p>
               {descripcion ? (
                 <p
@@ -172,7 +172,7 @@ export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }
                   style={{ fontSize: 16, lineHeight: 1.8, color: '#444444', paddingTop: 8 }}
                   className="italic pr-8"
                 >
-                  Sin descripción añadida
+                  Sin descripción.
                 </p>
               )}
               {isOwner && (

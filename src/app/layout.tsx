@@ -21,7 +21,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "Livestory",
-  description: "Vive. Recuerda. Comparte.",
+  description: "Convierte tus intenciones en recuerdos.",
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',

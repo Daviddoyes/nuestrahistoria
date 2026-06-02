@@ -150,7 +150,7 @@ export default function ShareBucketList({ planes, nombre, username, fotoPerfil, 
           className="flex items-center gap-2 px-4 py-2.5 border border-[#2A2A2A] rounded-xl text-sm text-[#F0F0F0] active:bg-[#1A1A1A] transition-colors disabled:opacity-40 min-h-[44px]"
         >
           <Share2 className="w-4 h-4 text-[#666666]" />
-          {generating ? 'Generando...' : 'Compartir lista'}
+          {generating ? 'Generando...' : 'Compartir mi lista'}
         </button>
       )}
     </>

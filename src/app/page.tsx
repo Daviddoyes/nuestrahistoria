@@ -34,7 +34,7 @@ export default function AuthPage() {
     })
 
     if (authError || !data.user) {
-      setError('Email o contraseña incorrectos')
+      setError('Email o contraseña incorrectos.')
       setLoading(false)
       return
     }
@@ -74,7 +74,7 @@ export default function AuthPage() {
     }
 
     if (!data.user) {
-      setError('No se pudo crear la cuenta')
+      setError('No hemos podido crear tu cuenta.')
       setLoading(false)
       return
     }
@@ -86,7 +86,7 @@ export default function AuthPage() {
     })
 
     if (profileError) {
-      setError('Revisa tu email para confirmar tu cuenta y vuelve a entrar.')
+      setError('Algo ha ido mal. Inténtalo de nuevo.')
       setLoading(false)
       return
     }
@@ -124,7 +124,7 @@ export default function AuthPage() {
             <h1 className="font-serif text-3xl font-bold text-[#F0F0F0] tracking-tight">
               Livestory
             </h1>
-            <p className="text-sm text-[#666666] mt-2">Vive. Recuerda. Comparte.</p>
+            <p className="text-sm text-[#666666] mt-2">Convierte tus intenciones en recuerdos.</p>
             <div className="h-px w-12 bg-[#E8692A] mt-3" />
           </div>
 

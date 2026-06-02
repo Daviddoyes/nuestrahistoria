@@ -101,7 +101,7 @@ export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
               type="text"
               value={titulo}
               onChange={e => setTitulo(e.target.value)}
-              placeholder="Ej: Ver el atardecer en la playa"
+              placeholder="¿Qué quieres vivir?"
               className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-base"
               autoFocus
             />
@@ -109,7 +109,7 @@ export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
 
           <div>
             <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-2">
-              Invitar personas
+              Invita a alguien
               <span className="text-[#444444] normal-case tracking-normal ml-1">(opcional)</span>
             </label>
 
@@ -140,7 +140,7 @@ export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Buscar por @username"
+                placeholder="Busca por @usuario"
                 className="w-full pl-9 pr-4 py-3 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-sm"
               />
             </div>
@@ -190,7 +190,7 @@ export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
               disabled={!titulo.trim() || loading}
               className="flex-1 bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-30 disabled:cursor-not-allowed text-white py-3.5 rounded-xl text-sm font-semibold min-h-[44px]"
             >
-              {loading ? 'Guardando...' : 'Añadir'}
+              {loading ? 'Guardando...' : 'Añadir plan'}
             </button>
           </div>
         </form>

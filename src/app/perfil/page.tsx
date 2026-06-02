@@ -359,7 +359,7 @@ export default function PerfilPage() {
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Column header */}
           <div className="flex-shrink-0 flex items-center justify-between px-3 pt-2.5 pb-1.5">
-            <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#444444]">Planes</span>
+            <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#444444]">Mis planes</span>
             <button
               onClick={() => setShowNuevoPlan(true)}
               className="w-7 h-7 rounded-lg bg-[#E8692A] flex items-center justify-center text-white active:bg-[#D4581A] transition-colors"
@@ -377,7 +377,7 @@ export default function PerfilPage() {
           >
             {pendientes.length === 0 ? (
               <p className="text-[11px] text-[#333333] px-3 py-4 leading-relaxed">
-                Sin planes aún.{'\n'}Toca + para añadir.
+                Aún no tienes planes. ¿A qué esperas?
               </p>
             ) : (
               pendientes.map(plan => (
@@ -400,7 +400,7 @@ export default function PerfilPage() {
         {/* Right column — Historias */}
         <div className="flex-1 flex flex-col overflow-hidden">
           <div className="flex-shrink-0 px-3 pt-2.5 pb-1.5">
-            <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#444444]">Historias</span>
+            <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#444444]">Mis historias</span>
           </div>
 
           <div
@@ -409,7 +409,7 @@ export default function PerfilPage() {
           >
             {historias.length === 0 ? (
               <p className="text-[11px] text-[#333333] px-3 py-4 leading-relaxed">
-                Completa un plan para crear tu primera historia.
+                Aquí vivirán tus recuerdos.
               </p>
             ) : (
               historias.map(h => (

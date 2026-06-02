@@ -99,7 +99,7 @@ export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
         </div>
 
         <div className="px-5 py-3 flex items-center justify-between sticky top-0 bg-[#141414] border-b border-[#2A2A2A]">
-          <h2 className="font-serif font-semibold text-[#F0F0F0] text-base">Completar plan</h2>
+          <h2 className="font-serif font-semibold text-[#F0F0F0] text-base">Lo conseguiste.</h2>
           <button
             onClick={onClose}
             className="text-[#444444] active:text-[#F0F0F0] w-8 h-8 flex items-center justify-center rounded-lg active:bg-[#1A1A1A] transition-colors"
@@ -116,7 +116,7 @@ export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
 
           <div>
             <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-1.5">
-              Foto del recuerdo
+              La foto del momento
             </label>
 
             {/* Photo picker */}
@@ -160,12 +160,12 @@ export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
 
           <div>
             <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-1.5">
-              Como fue
+              ¿Cómo fue? (opcional)
             </label>
             <textarea
               value={descripcion}
               onChange={e => setDescripcion(e.target.value)}
-              placeholder="Describe el recuerdo..."
+              placeholder="Cuéntanos cómo fue este plan..."
               rows={4}
               className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] resize-none text-base"
             />
@@ -205,7 +205,7 @@ export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
               disabled={loading || !foto}
               className="flex-1 bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-30 disabled:cursor-not-allowed text-white py-3.5 rounded-xl transition-colors text-sm font-semibold min-h-[44px]"
             >
-              {loading ? 'Subiendo...' : 'Guardar historia'}
+              {loading ? 'Subiendo...' : 'Convertir en historia'}
             </button>
           </div>
         </form>

@@ -369,7 +369,7 @@ export default function OnboardingPage() {
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 32 }}>
             <div>
               <h1 className="font-serif text-3xl font-bold text-[#F0F0F0] leading-tight mb-5">
-                Hola, {nombre} 👋
+                Hola, {nombre}.
               </h1>
               <p style={{ fontFamily: 'Georgia, serif', color: '#999999', fontSize: 16, lineHeight: 1.7, textAlign: 'center' }}>
                 Las redes están llenas de vidas perfectas.<br />
@@ -401,9 +401,9 @@ export default function OnboardingPage() {
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 20 }}>
             <div>
               <h2 className="font-serif text-2xl font-bold text-[#F0F0F0] leading-tight mb-1">
-                ¿Qué experiencias te emocionan?
+                ¿Qué quieres vivir?
               </h2>
-              <p className="text-sm text-[#666666]">Elige todas las que quieras</p>
+              <p className="text-sm text-[#666666]">Elige lo que te mueve.</p>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               {INTERESES.map(item => {
@@ -443,9 +443,9 @@ export default function OnboardingPage() {
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 24 }}>
             <div>
               <h2 className="font-serif text-2xl font-bold text-[#F0F0F0] leading-tight mb-1">
-                ¿Con quién vives tus mejores momentos?
+                ¿Con quién mejor?
               </h2>
-              <p className="text-sm text-[#666666]">Elige todas las que quieras</p>
+              <p className="text-sm text-[#666666]">Tus mejores momentos siempre tienen compañía.</p>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               {CON_QUIEN_OPTIONS.map(item => {
@@ -484,8 +484,8 @@ export default function OnboardingPage() {
         <div style={screenStyle}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 16, overflowY: 'auto', paddingTop: '1rem' }}>
             <div style={{ flexShrink: 0 }}>
-              <h2 className="font-serif text-2xl font-bold text-[#F0F0F0] leading-tight mb-1">Planes para ti</h2>
-              <p className="text-sm text-[#666666]">Basados en tus intereses y compañía</p>
+              <h2 className="font-serif text-2xl font-bold text-[#F0F0F0] leading-tight mb-1">Tu primer plan.</h2>
+              <p className="text-sm text-[#666666]">Empieza hoy. No el lunes.</p>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flexShrink: 0 }}>
               {sugeridos.map((plan, idx) => {
@@ -537,7 +537,7 @@ export default function OnboardingPage() {
             className="w-full bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 text-white font-semibold py-3.5 rounded-xl text-base mt-4"
             style={{ flexShrink: 0 }}
           >
-            {finishing ? 'Guardando...' : 'Empezar →'}
+            {finishing ? 'Guardando...' : 'Empezar a vivir →'}
           </button>
         </div>
 

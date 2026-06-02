@@ -80,7 +80,7 @@ export default function ResetPasswordPage() {
           <h1 className="font-serif text-3xl font-bold text-[#F0F0F0] tracking-tight">
             Nueva contraseña
           </h1>
-          <p className="text-sm text-[#666666] mt-2">Elige una contraseña segura</p>
+          <p className="text-sm text-[#666666] mt-2">Elige una contraseña segura.</p>
           <div className="h-px w-12 bg-[#E8692A] mt-3" />
         </div>
 
@@ -156,7 +156,7 @@ export default function ResetPasswordPage() {
               disabled={loading}
               className="w-full bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl transition-colors text-base"
             >
-              {loading ? 'Guardando...' : 'Guardar nueva contraseña'}
+              {loading ? 'Guardando...' : 'Guardar contraseña'}
             </button>
           </form>
         )}
