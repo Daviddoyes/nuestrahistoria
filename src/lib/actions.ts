@@ -120,21 +120,11 @@ export async function addPlan(
     const service = createServiceRoleClient()
     const { data: profile } = await service
       .from('profiles')
-      .select('plan, nombre')
+      .select('nombre')
       .eq('id', user.id)
       .single()
 
     if (!profile) return { success: false, error: 'Perfil no encontrado' }
-
-    if (profile.plan === 'free') {
-      const { count } = await service
-        .from('planes')
-        .select('*', { count: 'exact', head: true })
-        .eq('pareja_codigo', user.id)
-        .eq('estado', 'pendiente')
-      if ((count ?? 0) >= 5)
-        return { success: false, error: 'Límite del plan gratuito alcanzado' }
-    }
 
     const { data: newPlan, error } = await service
       .from('planes')
