@@ -321,7 +321,7 @@ export default function PerfilPage() {
         <div className="flex-1 flex items-center justify-between px-4 py-2.5">
           <div className="flex items-baseline gap-2">
             <span className="text-[22px] font-bold text-[#F0F0F0] leading-none">{pendientes.length}</span>
-            <span className="text-[10px] uppercase tracking-[0.14em] text-[#555555]">Planes</span>
+            <span className="text-[10px] uppercase tracking-[0.14em] text-[#555555]">{pendientes.length === 1 ? 'Plan' : 'Planes'}</span>
           </div>
           <ShareBucketList
             planes={pendientes}
@@ -338,7 +338,7 @@ export default function PerfilPage() {
         <div className="flex-1 flex items-center justify-between px-4 py-2.5">
           <div className="flex items-baseline gap-2">
             <span className="text-[22px] font-bold text-[#F0F0F0] leading-none">{historias.length}</span>
-            <span className="text-[10px] uppercase tracking-[0.14em] text-[#555555]">Historias</span>
+            <span className="text-[10px] uppercase tracking-[0.14em] text-[#555555]">{historias.length === 1 ? 'Historia' : 'Historias'}</span>
           </div>
           <button
             onClick={historias.length > 0 ? openHistoriaShare : undefined}
@@ -384,10 +384,9 @@ export default function PerfilPage() {
                 <button
                   key={plan.id}
                   onClick={() => setSelectedPlan(plan)}
-                  className="w-full text-left px-3 py-[14px] border-b border-[#111111] active:bg-[#111111] transition-colors flex items-center gap-2 min-h-[44px]"
+                  className="w-full text-left px-3 py-[14px] border-b border-[#1A1A1A] active:bg-[#111111] transition-colors min-h-[44px]"
                 >
-                  <div className="w-1 h-1 rounded-full bg-[#E8692A] flex-shrink-0" />
-                  <p className="flex-1 text-[13px] text-[#E0E0E0] leading-snug line-clamp-2 font-serif">{plan.titulo}</p>
+                  <p className="text-[13px] text-[#E0E0E0] leading-snug line-clamp-2 font-serif">{plan.titulo}</p>
                 </button>
               ))
             )}
@@ -416,13 +415,9 @@ export default function PerfilPage() {
                 <button
                   key={h.id}
                   onClick={() => setSelectedHistoria(h)}
-                  className="w-full text-left px-3 py-[14px] border-b border-[#111111] active:bg-[#111111] transition-colors flex items-center gap-2 min-h-[44px]"
+                  className="w-full text-left px-3 py-[14px] border-b border-[#1A1A1A] active:bg-[#111111] transition-colors min-h-[44px]"
                 >
-                  {h.foto_url
-                    ? <img src={h.foto_url} alt="" className="w-8 h-8 rounded-md object-cover flex-shrink-0" />
-                    : <div className="w-8 h-8 rounded-md bg-[#1A1A1A] border border-[#2A2A2A] flex-shrink-0" />
-                  }
-                  <p className="flex-1 text-[13px] text-[#E0E0E0] leading-snug line-clamp-2 font-serif">{h.titulo}</p>
+                  <p className="text-[13px] text-[#E0E0E0] leading-snug line-clamp-2 font-serif">{h.titulo}</p>
                 </button>
               ))
             )}
