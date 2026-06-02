@@ -11,8 +11,8 @@ type Participante = {
   id: string
   user_id: string
   nombre_usuario: string | null
-  foto_url: string | null
   estado: string
+  foto_perfil_url?: string | null
 }
 
 type Usuario = { id: string; nombre: string; username: string; foto_perfil_url: string | null }
@@ -62,11 +62,29 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
   const [invitando, setInvitando] = useState(false)
 
   useEffect(() => {
-    supabase
-      .from('plan_participantes' as never)
-      .select('id, user_id, nombre_usuario, foto_url, estado')
-      .eq('plan_id', plan.id)
-      .then(({ data }) => { if (data) setParticipantes(data as Participante[]) })
+    const cargarParticipantes = async () => {
+      const { data: parts } = await supabase
+        .from('plan_participantes' as never)
+        .select('id, user_id, nombre_usuario, estado')
+        .eq('plan_id', plan.id)
+
+      if (!parts || !(parts as Participante[]).length) return
+
+      const userIds = (parts as Participante[]).map(p => p.user_id)
+      const { data: perfiles } = await supabase
+        .from('profiles')
+        .select('id, foto_perfil_url')
+        .in('id', userIds)
+
+      const fotoMap = Object.fromEntries(
+        ((perfiles ?? []) as { id: string; foto_perfil_url: string | null }[]).map(p => [p.id, p.foto_perfil_url])
+      )
+
+      setParticipantes(
+        (parts as Participante[]).map(p => ({ ...p, foto_perfil_url: fotoMap[p.user_id] ?? null }))
+      )
+    }
+    cargarParticipantes()
   }, [plan.id, supabase])
 
   useEffect(() => {
@@ -96,7 +114,7 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
       }
 
       const { data, error } = await query.limit(5)
-      console.log('[invite] resultados:', data, error)
+      console.log('[search] resultados:', data, error)
       if (!error) setResultados((data ?? []) as Usuario[])
     }
 
@@ -165,7 +183,7 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
               <div className="space-y-3">
                 {participantes.map((p, i) => (
                   <div key={i} className="flex items-center gap-3 min-h-[44px]">
-                    <ParticipantAvatar nombre={p.nombre_usuario} fotoUrl={p.foto_url} />
+                    <ParticipantAvatar nombre={p.nombre_usuario} fotoUrl={p.foto_perfil_url ?? null} />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-[#F0F0F0] truncate">{p.nombre_usuario ?? 'Usuario'}</p>
                       <p className="text-[10px] text-[#444444]">{ESTADO_LABEL[p.estado] ?? p.estado}</p>
