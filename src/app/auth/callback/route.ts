@@ -27,9 +27,16 @@ export async function GET(request: Request) {
     )
 
     const { error } = await supabase.auth.exchangeCodeForSession(code)
+
     if (!error) {
       return NextResponse.redirect(new URL(next, origin))
     }
+
+    // PKCE code_verifier missing (e.g. iOS PWA opened link in Safari).
+    // Forward the code to the client so it can attempt exchange there.
+    return NextResponse.redirect(
+      new URL(`/reset-password?code=${code}`, origin)
+    )
   }
 
   return NextResponse.redirect(new URL('/reset-password?error=invalid_link', origin))

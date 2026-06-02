@@ -99,7 +99,7 @@ export default function AuthPage() {
     if (!resetEmail.trim()) return
     setResetLoading(true)
     await supabase.auth.resetPasswordForEmail(resetEmail.trim(), {
-      redirectTo: 'https://livestory.app/auth/callback?next=/reset-password',
+      redirectTo: 'https://livestory.app/auth/callback',
     })
     setResetLoading(false)
     setResetSent(true)
