@@ -45,7 +45,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
   const marcoHeight = ratio > 1 ? Math.round(960 / ratio) : ratio === 1 ? 900 : 1100
 
   const len = plan.titulo.length
-  const titleFontSize = len > 50 ? 36 : len > 35 ? 44 : len > 20 ? 54 : 64
+  const titleFontSize = len > 60 ? 32 : len > 45 ? 38 : len > 30 ? 46 : len > 20 ? 54 : 64
 
   const handleShare = async () => {
     if (!templateRef.current) return
@@ -130,7 +130,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
         {/* Dark overlay — also oversized to guarantee full coverage */}
         <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '120%', height: '120%', background: 'rgba(0,0,0,0.88)' }} />
 
-        {/* Main flex column — title / photo / brand, vertically centered */}
+        {/* Main flex column — title / photo / brand, space-between so nothing clips */}
         <div
           style={{
             position: 'absolute',
@@ -138,31 +138,32 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
-            padding: '0 60px',
+            justifyContent: 'space-between',
+            padding: '120px 0 100px',
             boxSizing: 'border-box',
           } as React.CSSProperties}
         >
           {/* Title */}
           <div
             style={{
-              textAlign: 'center',
               fontFamily: 'Georgia, serif',
               fontSize: titleFontSize,
               fontWeight: 700,
+              color: '#FFFFFF',
               lineHeight: 1.3,
-              letterSpacing: 0,
+              textAlign: 'center',
               wordBreak: 'break-word',
               whiteSpace: 'normal',
               width: '100%',
-              marginBottom: 80,
+              padding: '0 80px',
+              boxSizing: 'border-box',
             } as React.CSSProperties}
           >
-            <span style={{ display: 'inline', color: '#E8692A' }}>✓ </span>
-            <span style={{ display: 'inline', color: '#FFFFFF' }}>{plan.titulo}</span>
+            <span style={{ color: '#E8692A', fontFamily: 'Georgia, serif' }}>✓ </span>
+            <span>{plan.titulo}</span>
           </div>
 
-          {/* Photo frame — no transform, flex child */}
+          {/* Photo frame */}
           {photoSrc && (
             <div
               style={{
@@ -193,7 +194,6 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
               fontWeight: 700,
               textTransform: 'uppercase',
               fontFamily: 'system-ui, sans-serif',
-              marginTop: 80,
             } as React.CSSProperties}
           >
             LIVESTORY.APP
