@@ -168,39 +168,59 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
           {/* Invite search */}
           <div className="mb-6">
             <p className="text-[10px] uppercase tracking-[0.12em] text-[#666666] mb-2">Invitar</p>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#444444]" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Buscar por @username"
-                className="w-full pl-9 pr-4 py-3 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-sm"
-              />
-            </div>
-            {(searching || searchResults.length > 0) && (
-              <div className="mt-1 bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl overflow-hidden">
-                {searching && <div className="px-4 py-3 text-xs text-[#666666]">Buscando...</div>}
-                {!searching && searchResults.map(item => (
-                  <button
-                    key={item.id}
-                    onClick={() => handleInvite(item)}
-                    disabled={inviting === item.id}
-                    className="w-full flex items-center gap-3 px-4 py-3 active:bg-[#2A2A2A] disabled:opacity-40 border-b border-[#222222] last:border-0 min-h-[44px]"
-                  >
-                    <SearchAvatar item={item} />
-                    <div className="flex-1 min-w-0 text-left">
-                      <p className="text-sm font-medium text-[#F0F0F0] truncate">{item.nombre}</p>
-                      <p className="text-xs text-[#666666]">@{item.username}</p>
-                    </div>
-                    {inviting === item.id
-                      ? <div className="w-4 h-4 border border-[#E8692A] border-t-transparent rounded-full animate-spin" />
-                      : <UserPlus className="w-4 h-4 text-[#E8692A] flex-shrink-0" />
-                    }
-                  </button>
-                ))}
+            <div style={{ position: 'relative' }}>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#444444]" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  placeholder="Buscar por @username"
+                  className="w-full pl-9 pr-4 py-3 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-sm"
+                />
               </div>
-            )}
+              {(searching || searchResults.length > 0) && (
+                <div style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  right: 0,
+                  zIndex: 50,
+                  background: '#1A1A1A',
+                  border: '1px solid #2A2A2A',
+                  borderRadius: '0.75rem',
+                  marginTop: '4px',
+                  maxHeight: '200px',
+                  overflowY: 'auto',
+                }}>
+                  {searching && <div className="px-4 py-3 text-xs text-[#666666]">Buscando...</div>}
+                  {!searching && searchResults.map(item => (
+                    <div
+                      key={item.id}
+                      onMouseDown={(e) => { e.preventDefault(); handleInvite(item) }}
+                      onTouchEnd={(e) => { e.preventDefault(); handleInvite(item) }}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: '0.75rem',
+                        padding: '0.75rem 1rem', minHeight: '44px',
+                        borderBottom: '1px solid #222222', cursor: 'pointer',
+                        opacity: inviting === item.id ? 0.4 : 1,
+                        pointerEvents: inviting === item.id ? 'none' : 'auto',
+                      }}
+                    >
+                      <SearchAvatar item={item} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-[#F0F0F0] truncate">{item.nombre}</p>
+                        <p className="text-xs text-[#666666]">@{item.username}</p>
+                      </div>
+                      {inviting === item.id
+                        ? <div className="w-4 h-4 border border-[#E8692A] border-t-transparent rounded-full animate-spin flex-shrink-0" />
+                        : <UserPlus className="w-4 h-4 text-[#E8692A] flex-shrink-0" />
+                      }
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="h-px bg-[#2A2A2A] mb-6" />

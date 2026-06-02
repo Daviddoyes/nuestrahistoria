@@ -134,40 +134,62 @@ export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
               </div>
             )}
 
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#444444]" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Busca por @usuario"
-                className="w-full pl-9 pr-4 py-3 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-sm"
-              />
-            </div>
-
-            {(searching || searchResults.length > 0) && (
-              <div className="mt-1 bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl overflow-hidden">
-                {searching && (
-                  <div className="px-4 py-3 text-xs text-[#666666]">Buscando...</div>
-                )}
-                {!searching && searchResults.map(item => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => addInvitado(item)}
-                    disabled={!!invitados.find(i => i.id === item.id)}
-                    className="w-full flex items-center gap-3 px-4 py-3 active:bg-[#2A2A2A] disabled:opacity-40 border-b border-[#222222] last:border-0 min-h-[44px]"
-                  >
-                    <Avatar item={item} />
-                    <div className="flex-1 min-w-0 text-left">
-                      <p className="text-sm font-medium text-[#F0F0F0] truncate">{item.nombre}</p>
-                      <p className="text-xs text-[#666666]">@{item.username}</p>
-                    </div>
-                    <UserPlus className="w-4 h-4 text-[#E8692A] flex-shrink-0" />
-                  </button>
-                ))}
+            <div style={{ position: 'relative' }}>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#444444]" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  placeholder="Busca por @usuario"
+                  className="w-full pl-9 pr-4 py-3 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-sm"
+                />
               </div>
-            )}
+
+              {(searching || searchResults.length > 0) && (
+                <div style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  right: 0,
+                  zIndex: 50,
+                  background: '#1A1A1A',
+                  border: '1px solid #2A2A2A',
+                  borderRadius: '0.75rem',
+                  marginTop: '4px',
+                  maxHeight: '200px',
+                  overflowY: 'auto',
+                }}>
+                  {searching && (
+                    <div className="px-4 py-3 text-xs text-[#666666]">Buscando...</div>
+                  )}
+                  {!searching && searchResults.map(item => {
+                    const alreadyAdded = !!invitados.find(i => i.id === item.id)
+                    return (
+                      <div
+                        key={item.id}
+                        onMouseDown={(e) => { e.preventDefault(); addInvitado(item) }}
+                        onTouchEnd={(e) => { e.preventDefault(); addInvitado(item) }}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: '0.75rem',
+                          padding: '0.75rem 1rem', minHeight: '44px',
+                          borderBottom: '1px solid #222222', cursor: 'pointer',
+                          opacity: alreadyAdded ? 0.4 : 1,
+                          pointerEvents: alreadyAdded ? 'none' : 'auto',
+                        }}
+                      >
+                        <Avatar item={item} />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-[#F0F0F0] truncate">{item.nombre}</p>
+                          <p className="text-xs text-[#666666]">@{item.username}</p>
+                        </div>
+                        <UserPlus className="w-4 h-4 text-[#E8692A] flex-shrink-0" />
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
           </div>
 
           {error && (
