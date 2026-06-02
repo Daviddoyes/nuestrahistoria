@@ -46,7 +46,7 @@ export default function AuthPage() {
       .single()
 
     if (profile?.onboarding_completado) {
-      router.push('/planes')
+      router.push('/perfil')
     } else {
       router.push('/onboarding')
     }

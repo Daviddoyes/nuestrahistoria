@@ -58,7 +58,7 @@ export default function ResetPasswordPage() {
       setLoading(false)
     } else {
       setDone(true)
-      setTimeout(() => router.push('/planes'), 1500)
+      setTimeout(() => router.push('/perfil'), 1500)
     }
   }
 

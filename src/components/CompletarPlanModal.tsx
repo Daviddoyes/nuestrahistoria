@@ -135,7 +135,7 @@ export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
                 <div className="flex flex-col items-center justify-center p-8 text-[#444444]">
                   <ImagePlus className="w-8 h-8 mb-1.5" />
                   <p className="text-sm">Seleccionar foto</p>
-                  <p className="text-xs text-[#333333] mt-0.5">Opcional</p>
+                  <p className="text-xs text-[#E8692A]/70 mt-0.5">Obligatoria</p>
                 </div>
               )}
             </div>
@@ -202,7 +202,7 @@ export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
             </button>
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !foto}
               className="flex-1 bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-30 disabled:cursor-not-allowed text-white py-3.5 rounded-xl transition-colors text-sm font-semibold min-h-[44px]"
             >
               {loading ? 'Subiendo...' : 'Guardar historia'}

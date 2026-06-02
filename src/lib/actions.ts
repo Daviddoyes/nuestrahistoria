@@ -179,7 +179,7 @@ export async function addPlan(
       }
     }
 
-    revalidatePath('/planes')
+    revalidatePath('/perfil')
     return { success: true }
   } catch (e) {
     return { success: false, error: String(e) }
@@ -203,14 +203,14 @@ export async function completarPlan(
     })
     .eq('id', id)
   if (error) throw new Error(error.message)
-  revalidatePath('/planes')
+  revalidatePath('/perfil')
 }
 
 export async function deletePlan(id: string) {
   const service = createServiceRoleClient()
   const { error } = await service.from('planes').delete().eq('id', id)
   if (error) throw new Error(error.message)
-  revalidatePath('/planes')
+  revalidatePath('/perfil')
 }
 
 export async function updateOrden(updates: { id: string; orden: number }[]) {
@@ -220,7 +220,7 @@ export async function updateOrden(updates: { id: string; orden: number }[]) {
       service.from('planes').update({ orden }).eq('id', id)
     )
   )
-  revalidatePath('/planes')
+  revalidatePath('/perfil')
 }
 
 export async function updateHistoriaDescripcion(id: string, descripcion: string) {
@@ -230,7 +230,7 @@ export async function updateHistoriaDescripcion(id: string, descripcion: string)
     .update({ historia_descripcion: descripcion })
     .eq('id', id)
   if (error) throw new Error(error.message)
-  revalidatePath('/planes')
+  revalidatePath('/perfil')
 }
 
 export async function completeOnboarding(data: {
@@ -253,7 +253,7 @@ export async function completeOnboarding(data: {
 
   if (error) throw new Error(error.message)
   revalidatePath('/onboarding')
-  revalidatePath('/planes')
+  revalidatePath('/perfil')
 }
 
 export async function acceptInvitation(participanteId: string): Promise<void> {
@@ -262,7 +262,7 @@ export async function acceptInvitation(participanteId: string): Promise<void> {
     .from('plan_participantes' as never)
     .update({ estado: 'aceptado' })
     .eq('id', participanteId)
-  revalidatePath('/planes')
+  revalidatePath('/perfil')
 }
 
 export async function rejectInvitation(participanteId: string): Promise<void> {
@@ -271,7 +271,49 @@ export async function rejectInvitation(participanteId: string): Promise<void> {
     .from('plan_participantes' as never)
     .delete()
     .eq('id', participanteId)
-  revalidatePath('/planes')
+  revalidatePath('/perfil')
+}
+
+export async function inviteUserToPlan(
+  planId: string,
+  userId: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const service = createServiceRoleClient()
+    const { data: prof } = await service
+      .from('profiles')
+      .select('nombre')
+      .eq('id', userId)
+      .single()
+
+    await service.from('plan_participantes' as never).upsert(
+      {
+        plan_id: planId,
+        user_id: userId,
+        nombre_usuario: (prof as { nombre: string } | null)?.nombre ?? '',
+        estado: 'invitado',
+      },
+      { onConflict: 'plan_id,user_id' }
+    )
+    revalidatePath('/perfil')
+    return { success: true }
+  } catch (e) {
+    return { success: false, error: String(e) }
+  }
+}
+
+export async function leavePlan(planId: string): Promise<void> {
+  const serverSupa = await createServerClient()
+  const { data: { user } } = await serverSupa.auth.getUser()
+  if (!user) return
+
+  const service = createServiceRoleClient()
+  await service
+    .from('plan_participantes' as never)
+    .delete()
+    .eq('plan_id', planId)
+    .eq('user_id', user.id)
+  revalidatePath('/perfil')
 }
 
 export async function searchUsers(
