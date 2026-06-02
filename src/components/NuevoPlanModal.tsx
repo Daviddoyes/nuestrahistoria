@@ -1,23 +1,15 @@
 'use client'
 
 import { useState, useEffect, useMemo, useRef } from 'react'
-import { X, User, Heart, Users, Globe, Search, UserPlus } from 'lucide-react'
-import type { ConQuien } from '@/types/planes'
+import { X, Search, UserPlus } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 type InvitadoResult = { id: string; nombre: string; username: string; foto_perfil_url: string | null }
 
 type Props = {
   onClose: () => void
-  onSubmit: (titulo: string, descripcion: string | null, conQuien: ConQuien, invitadoIds: string[]) => Promise<void>
+  onSubmit: (titulo: string, invitadoIds: string[]) => Promise<void>
 }
-
-const CON_QUIEN_OPTIONS: { value: ConQuien; label: string; icon: React.ElementType }[] = [
-  { value: 'solo', label: 'Solo', icon: User },
-  { value: 'pareja', label: 'Pareja', icon: Heart },
-  { value: 'amigos', label: 'Amigos', icon: Users },
-  { value: 'todos', label: 'Todos', icon: Globe },
-]
 
 function Avatar({ item }: { item: InvitadoResult }) {
   if (item.foto_perfil_url) {
@@ -33,8 +25,6 @@ function Avatar({ item }: { item: InvitadoResult }) {
 export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
   const supabase = useMemo(() => createClient(), [])
   const [titulo, setTitulo] = useState('')
-  const [descripcion, setDescripcion] = useState('')
-  const [conQuien, setConQuien] = useState<ConQuien>('todos')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -74,11 +64,9 @@ export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
     setLoading(true)
     setError('')
     try {
-      await onSubmit(titulo.trim(), descripcion.trim() || null, conQuien, invitados.map(i => i.id))
+      await onSubmit(titulo.trim(), invitados.map(i => i.id))
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Error al guardar el plan'
-      setError(msg)
-      console.error('[NuevoPlanModal]', err)
+      setError(err instanceof Error ? err.message : 'Error al guardar el plan')
     } finally {
       setLoading(false)
     }
@@ -98,7 +86,7 @@ export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
           <h2 className="font-serif font-semibold text-[#F0F0F0] text-base">Nuevo plan</h2>
           <button
             onClick={onClose}
-            className="text-[#444444] active:text-[#F0F0F0] w-8 h-8 flex items-center justify-center rounded-lg active:bg-[#1A1A1A] transition-colors"
+            className="text-[#444444] active:text-[#F0F0F0] w-10 h-10 flex items-center justify-center rounded-lg active:bg-[#1A1A1A]"
           >
             <X className="w-4 h-4" />
           </button>
@@ -120,49 +108,9 @@ export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
           </div>
 
           <div>
-            <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-1.5">
-              Descripción{' '}
-              <span className="text-[#444444] normal-case tracking-normal">(opcional)</span>
-            </label>
-            <textarea
-              value={descripcion}
-              onChange={e => setDescripcion(e.target.value)}
-              placeholder="Añade más detalles..."
-              rows={2}
-              className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] resize-none text-base"
-            />
-          </div>
-
-          <div>
-            <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-2">
-              Con quién
-            </label>
-            <div className="grid grid-cols-4 gap-2">
-              {CON_QUIEN_OPTIONS.map(({ value, label, icon: Icon }) => {
-                const active = conQuien === value
-                return (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => setConQuien(value)}
-                    className={`flex flex-col items-center gap-1.5 py-2.5 rounded-xl border text-xs font-medium transition-colors ${
-                      active
-                        ? 'bg-[#E8692A] border-[#E8692A] text-white'
-                        : 'border-[#2A2A2A] text-[#666666] active:bg-[#1A1A1A]'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    {label}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Invite section */}
-          <div>
             <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-2">
               Invitar personas
+              <span className="text-[#444444] normal-case tracking-normal ml-1">(opcional)</span>
             </label>
 
             {invitados.length > 0 && (
@@ -177,7 +125,7 @@ export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
                     <button
                       type="button"
                       onClick={() => removeInvitado(item.id)}
-                      className="text-[#444444] active:text-[#E8692A] ml-0.5"
+                      className="text-[#444444] active:text-[#E8692A] ml-0.5 p-0.5"
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -208,7 +156,7 @@ export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
                     type="button"
                     onClick={() => addInvitado(item)}
                     disabled={!!invitados.find(i => i.id === item.id)}
-                    className="w-full flex items-center gap-3 px-4 py-3 active:bg-[#2A2A2A] transition-colors disabled:opacity-40 border-b border-[#222222] last:border-0"
+                    className="w-full flex items-center gap-3 px-4 py-3 active:bg-[#2A2A2A] disabled:opacity-40 border-b border-[#222222] last:border-0 min-h-[44px]"
                   >
                     <Avatar item={item} />
                     <div className="flex-1 min-w-0 text-left">
@@ -233,14 +181,14 @@ export default function NuevoPlanModal({ onClose, onSubmit }: Props) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-3.5 rounded-xl border border-[#2A2A2A] text-[#666666] active:bg-[#1A1A1A] transition-colors text-sm font-medium min-h-[44px]"
+              className="flex-1 py-3.5 rounded-xl border border-[#2A2A2A] text-[#666666] active:bg-[#1A1A1A] text-sm font-medium min-h-[44px]"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={!titulo.trim() || loading}
-              className="flex-1 bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-30 disabled:cursor-not-allowed text-white py-3.5 rounded-xl transition-colors text-sm font-semibold min-h-[44px]"
+              className="flex-1 bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-30 disabled:cursor-not-allowed text-white py-3.5 rounded-xl text-sm font-semibold min-h-[44px]"
             >
               {loading ? 'Guardando...' : 'Añadir'}
             </button>

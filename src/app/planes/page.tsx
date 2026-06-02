@@ -28,17 +28,13 @@ import {
   acceptInvitation,
   rejectInvitation,
 } from '@/lib/actions'
-import type { ConQuien, InvitacionPendiente } from '@/types/planes'
+import type { InvitacionPendiente } from '@/types/planes'
 import PlanCard from '@/components/PlanCard'
-import HistoriaCard from '@/components/HistoriaCard'
 import BottomNav from '@/components/BottomNav'
 import NuevoPlanModal from '@/components/NuevoPlanModal'
 import CompletarPlanModal from '@/components/CompletarPlanModal'
 import UserMenu from '@/components/UserMenu'
-import ShareBucketList from '@/components/ShareBucketList'
 import type { Plan, Profile } from '@/types/planes'
-
-type Tab = 'pendientes' | 'historias'
 
 function SortablePlanCard({
   plan,
@@ -65,7 +61,7 @@ function SortablePlanCard({
       <button
         {...attributes}
         {...listeners}
-        className="touch-none shrink-0 text-[#333333] active:text-[#E8692A] p-1.5 -ml-1"
+        className="touch-none shrink-0 text-[#333333] active:text-[#E8692A] p-1.5 -ml-1 min-h-[44px] flex items-center"
         aria-label="Mover plan"
       >
         <GripVertical className="w-4 h-4" />
@@ -80,7 +76,6 @@ function SortablePlanCard({
 export default function PlanesPage() {
   const router = useRouter()
   const [profile, setProfile] = useState<Profile | null>(null)
-  const [activeTab, setActiveTab] = useState<Tab>('pendientes')
   const [planes, setPlanes] = useState<Plan[]>([])
   const [invitaciones, setInvitaciones] = useState<InvitacionPendiente[]>([])
   const [loading, setLoading] = useState(true)
@@ -121,18 +116,10 @@ export default function PlanesPage() {
     .filter(p => p.estado === 'pendiente')
     .sort((a, b) => a.orden - b.orden || a.created_at.localeCompare(b.created_at))
 
-  const historias = planes
-    .filter(p => p.estado === 'hecho')
-    .sort((a, b) => {
-      const da = a.fecha_momento ?? a.created_at
-      const db = b.fecha_momento ?? b.created_at
-      return db.localeCompare(da)
-    })
-
   const isAtLimit = profile?.plan === 'free' && pendientes.length >= 5
 
-  const handleAddPlan = async (titulo: string, descripcion: string | null, conQuien: ConQuien, invitadoIds: string[]) => {
-    const result = await addPlan(titulo, descripcion, conQuien, invitadoIds)
+  const handleAddPlan = async (titulo: string, invitadoIds: string[]) => {
+    const result = await addPlan(titulo, null, 'todos', invitadoIds)
     if (!result.success) throw new Error(result.error ?? 'Error al añadir el plan')
     setShowNuevoPlan(false)
     await fetchData()
@@ -204,7 +191,7 @@ export default function PlanesPage() {
       {upgraded && (
         <div className="mx-4 mt-4 bg-[#4CAF50]/10 border border-[#4CAF50]/30 rounded-xl px-4 py-3 flex items-center justify-between">
           <p className="text-sm text-[#4CAF50] font-medium">¡Ya eres Premium! Planes ilimitados</p>
-          <button onClick={() => setUpgraded(false)} className="text-[#4CAF50] text-lg leading-none ml-3">×</button>
+          <button onClick={() => setUpgraded(false)} className="text-[#4CAF50] text-lg leading-none ml-3 p-1 min-h-[44px] min-w-[44px] flex items-center justify-center">×</button>
         </div>
       )}
 
@@ -222,14 +209,14 @@ export default function PlanesPage() {
             <button
               onClick={() => handleReject(inv.participante_id)}
               disabled={processingInv === inv.participante_id}
-              className="w-8 h-8 rounded-lg border border-[#2A2A2A] flex items-center justify-center text-[#666666] active:bg-[#8B3A3A]/20 active:text-[#C97B7B] disabled:opacity-40"
+              className="w-10 h-10 rounded-lg border border-[#2A2A2A] flex items-center justify-center text-[#666666] active:bg-[#8B3A3A]/20 active:text-[#C97B7B] disabled:opacity-40 min-h-[44px]"
             >
               <X className="w-4 h-4" />
             </button>
             <button
               onClick={() => handleAccept(inv.participante_id)}
               disabled={processingInv === inv.participante_id}
-              className="px-3 h-8 rounded-lg bg-[#E8692A] text-white text-xs font-semibold active:bg-[#D4581A] disabled:opacity-40"
+              className="px-3 h-10 rounded-lg bg-[#E8692A] text-white text-xs font-semibold active:bg-[#D4581A] disabled:opacity-40 min-h-[44px]"
             >
               Aceptar
             </button>
@@ -242,7 +229,7 @@ export default function PlanesPage() {
           <p className="text-sm text-[#E8692A] font-medium">Has alcanzado el límite gratuito (5 planes)</p>
           <button
             onClick={() => router.push('/pricing')}
-            className="shrink-0 text-xs font-semibold bg-[#E8692A] text-white px-3 py-1.5 rounded-lg"
+            className="shrink-0 text-xs font-semibold bg-[#E8692A] text-white px-3 py-2 rounded-lg min-h-[44px]"
           >
             Upgrade
           </button>
@@ -251,16 +238,16 @@ export default function PlanesPage() {
 
       <div
         className="px-4 py-4"
-        style={{ paddingBottom: 'calc(3.5rem + env(safe-area-inset-bottom, 0px) + 5.5rem)' }}
+        style={{ paddingBottom: 'calc(3.5rem + env(safe-area-inset-bottom, 0px) + 5rem)' }}
       >
         {loading ? (
           <div className="flex justify-center pt-24">
             <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#E8692A] rounded-full animate-spin" />
           </div>
-        ) : activeTab === 'pendientes' ? (
+        ) : (
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={pendientes.map(p => p.id)} strategy={verticalListSortingStrategy}>
-              <div key="pendientes" className="tab-fade-in space-y-3">
+              <div className="space-y-3">
                 {pendientes.length === 0 ? (
                   <div className="flex flex-col items-center justify-center pt-24 gap-2 text-center">
                     <p className="text-base font-medium text-[#F0F0F0]">Sin planes pendientes</p>
@@ -279,62 +266,26 @@ export default function PlanesPage() {
               </div>
             </SortableContext>
           </DndContext>
-        ) : (
-          <div key="historias" className="tab-fade-in">
-            {historias.length === 0 ? (
-              <div className="flex flex-col items-center justify-center pt-24 gap-2 text-center">
-                <p className="text-base font-medium text-[#F0F0F0]">Sin historias aún</p>
-                <p className="text-sm text-[#666666]">Completa un plan para crear una historia</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 gap-3">
-                {historias.map(plan => (
-                  <HistoriaCard
-                    key={plan.id}
-                    plan={plan}
-                    onDelete={() => handleDeletePlan(plan.id)}
-                    isOwner={true}
-                    onUpdate={fetchData}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
         )}
       </div>
 
-      {/* FAB + share list button */}
-      {activeTab === 'pendientes' && (
+      {/* FAB */}
+      {!isAtLimit && (
         <div
-          className="fixed right-5 z-20 flex flex-col items-end gap-2"
+          className="fixed right-5 z-20"
           style={{ bottom: 'calc(3.5rem + env(safe-area-inset-bottom, 0px) + 1.25rem)' }}
         >
-          {profile && pendientes.length > 0 && (
-            <ShareBucketList
-              planes={pendientes}
-              nombre={profile.nombre || ''}
-              username={profile.username}
-            />
-          )}
-          {!isAtLimit && (
-            <button
-              onClick={() => setShowNuevoPlan(true)}
-              className="w-14 h-14 bg-[#E8692A] text-white rounded-full shadow-lg shadow-[#E8692A]/25 flex items-center justify-center active:scale-95 transition-transform"
-              aria-label="Añadir plan"
-            >
-              <Plus className="w-6 h-6" strokeWidth={2.5} />
-            </button>
-          )}
+          <button
+            onClick={() => setShowNuevoPlan(true)}
+            className="w-14 h-14 bg-[#E8692A] text-white rounded-full shadow-lg shadow-[#E8692A]/25 flex items-center justify-center active:scale-95 transition-transform"
+            aria-label="Añadir plan"
+          >
+            <Plus className="w-6 h-6" strokeWidth={2.5} />
+          </button>
         </div>
       )}
 
-      <BottomNav
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        pendientesCount={pendientes.length}
-        historiasCount={historias.length}
-        profile={profile}
-      />
+      <BottomNav profile={profile} />
 
       {showNuevoPlan && (
         <NuevoPlanModal
