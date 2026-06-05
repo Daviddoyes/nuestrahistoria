@@ -18,41 +18,18 @@ export default function ResetPasswordPage() {
   const [done, setDone] = useState(false)
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-
-    if (params.get('error')) {
-      setError('Link inválido o expirado')
-      return
-    }
-
-    // iOS PWA fallback: server couldn't exchange (missing code_verifier cookie),
-    // so it forwarded the code here for a client-side exchange.
-    const code = params.get('code')
-    if (code) {
-      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
-        if (error) {
-          setError('Link inválido o expirado')
-        } else {
-          setReady(true)
-        }
-      })
-      return
-    }
-
-    // Normal path: /auth/callback already exchanged the code server-side.
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         setReady(true)
       } else {
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
           (event, session) => {
-            if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
+            if (event === 'SIGNED_IN' || event === 'PASSWORD_RECOVERY') {
               setReady(true)
               subscription.unsubscribe()
             }
           }
         )
-        return () => subscription.unsubscribe()
       }
     })
   }, [])

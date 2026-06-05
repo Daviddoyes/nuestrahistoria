@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server'
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
-  const next = searchParams.get('next') ?? '/reset-password'
+  const next = searchParams.get('next') ?? '/perfil'
 
   if (code) {
     const cookieStore = await cookies()
@@ -14,9 +14,7 @@ export async function GET(request: Request) {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         cookies: {
-          getAll() {
-            return cookieStore.getAll()
-          },
+          getAll() { return cookieStore.getAll() },
           setAll(cookiesToSet) {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
@@ -25,19 +23,11 @@ export async function GET(request: Request) {
         },
       }
     )
-
     const { error } = await supabase.auth.exchangeCodeForSession(code)
-
     if (!error) {
-      return NextResponse.redirect(new URL(next, origin))
+      return NextResponse.redirect(`${origin}${next}`)
     }
-
-    // PKCE code_verifier missing (e.g. iOS PWA opened link in Safari).
-    // Forward the code to the client so it can attempt exchange there.
-    return NextResponse.redirect(
-      new URL(`/reset-password?code=${code}`, origin)
-    )
   }
 
-  return NextResponse.redirect(new URL('/reset-password?error=invalid_link', origin))
+  return NextResponse.redirect(`${origin}/`)
 }
