@@ -24,9 +24,13 @@ export async function GET(request: Request) {
       }
     )
     const { error } = await supabase.auth.exchangeCodeForSession(code)
+    console.log('[callback] code:', code?.substring(0, 20))
+    console.log('[callback] exchange error:', JSON.stringify(error))
+
     if (!error) {
       return NextResponse.redirect(`${origin}${next}`)
     }
+    console.log('[callback] falling back to login')
   }
 
   return NextResponse.redirect(`${origin}/`)
