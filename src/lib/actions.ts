@@ -223,6 +223,16 @@ export async function updateHistoriaDescripcion(id: string, descripcion: string)
   revalidatePath('/perfil')
 }
 
+export async function revertirHistoria(id: string) {
+  const service = createServiceRoleClient()
+  const { error } = await service
+    .from('planes')
+    .update({ estado: 'pendiente', foto_url: null, historia_descripcion: null, fecha_momento: null })
+    .eq('id', id)
+  if (error) throw new Error(error.message)
+  revalidatePath('/perfil')
+}
+
 export async function completeOnboarding(data: {
   intereses: string[]
   con_quien_vive: string[]

@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { X, Calendar, User, Pencil } from 'lucide-react'
+import { X, Calendar, User, Pencil, Trash2 } from 'lucide-react'
 import type { Plan } from '@/types/planes'
-import { updateHistoriaDescripcion } from '@/lib/actions'
+import { updateHistoriaDescripcion, revertirHistoria } from '@/lib/actions'
 import ShareStoryImage from './ShareStoryImage'
 
 type Props = {
@@ -26,6 +26,8 @@ export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }
   const [editText, setEditText] = useState(descripcion)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState('')
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   const close = () => {
     if (closing) return
@@ -42,6 +44,17 @@ export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }
   const handleCancel = () => {
     setEditing(false)
     setSaveError('')
+  }
+
+  const handleDelete = async () => {
+    setDeleting(true)
+    try {
+      await revertirHistoria(plan.id)
+      onUpdate?.()
+      onClose()
+    } finally {
+      setDeleting(false)
+    }
   }
 
   const handleSave = async () => {
@@ -182,6 +195,41 @@ export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }
                   className="absolute top-0 right-0 p-1 text-[#444444] active:text-[#E8692A] transition-colors"
                 >
                   <Pencil className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+          )}
+          {isOwner && !editing && (
+            <div className="mt-10 pt-6 border-t border-[#1A1A1A]">
+              {confirmDelete ? (
+                <div className="space-y-3">
+                  <p className="text-sm text-[#C0C0C0] leading-relaxed">
+                    ¿Eliminar esta historia? La foto y el recuerdo se perderán.
+                  </p>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setConfirmDelete(false)}
+                      className="flex-1 py-3 rounded-xl border border-[#2A2A2A] text-[#666666] active:bg-[#1A1A1A] transition-colors text-sm font-medium"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      onClick={handleDelete}
+                      disabled={deleting}
+                      className="flex-1 py-3 rounded-xl text-white text-sm font-semibold transition-colors disabled:opacity-40 active:opacity-80"
+                      style={{ background: '#8B3A3A' }}
+                    >
+                      {deleting ? 'Eliminando...' : 'Eliminar'}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setConfirmDelete(true)}
+                  className="flex items-center gap-2 text-[#666666] active:text-[#C97B7B] transition-colors"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span className="text-sm">Eliminar historia</span>
                 </button>
               )}
             </div>

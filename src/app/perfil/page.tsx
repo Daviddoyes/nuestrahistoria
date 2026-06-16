@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { Camera, LogOut, Plus, Copy, Check, X, Share2, ListTodo } from 'lucide-react'
+import { Camera, LogOut, Plus, Copy, Check, X, Share2, ListTodo, ChevronRight } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import {
   getMyData,
@@ -59,6 +59,8 @@ export default function PerfilPage() {
   const [copied, setCopied] = useState(false)
   const [processingInv, setProcessingInv] = useState<string | null>(null)
 
+  const [participantesPorPlan, setParticipantesPorPlan] = useState<Record<string, string[]>>({})
+
   const [showNuevoPlan, setShowNuevoPlan] = useState(false)
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null)
   const [planToComplete, setPlanToComplete] = useState<Plan | null>(null)
@@ -72,6 +74,25 @@ export default function PerfilPage() {
       if (!prof) { router.push('/'); return }
       setProfile(prof)
       setPlanes(pl)
+
+      // Load accepted/owner participants for all plans
+      if (pl.length > 0) {
+        const planIds = pl.filter(p => p.estado === 'pendiente').map(p => p.id)
+        if (planIds.length > 0) {
+          const { data: parts } = await supabase
+            .from('plan_participantes' as never)
+            .select('plan_id, nombre_usuario')
+            .in('plan_id', planIds)
+            .in('estado', ['owner', 'aceptado'])
+
+          const map: Record<string, string[]> = {}
+          for (const p of (parts ?? []) as { plan_id: string; nombre_usuario: string | null }[]) {
+            if (!map[p.plan_id]) map[p.plan_id] = []
+            if (p.nombre_usuario) map[p.plan_id].push(p.nombre_usuario)
+          }
+          setParticipantesPorPlan(map)
+        }
+      }
 
       const { data: invParts } = await supabase
         .from('plan_participantes' as never)
@@ -361,26 +382,60 @@ export default function PerfilPage() {
                 <p style={{ fontSize: 13, color: '#333333', textAlign: 'center' }}>¿A qué esperas?</p>
               </div>
             ) : (
-              pendientes.map(plan => {
-                const isShared = plan.pareja_codigo !== profile.id
-                return (
-                  <button
-                    key={plan.id}
-                    onClick={() => setSelectedPlan(plan)}
-                    className="w-full text-left border-b border-[#1A1A1A] active:bg-[#111111] transition-colors"
-                    style={{ display: 'block', padding: 16, minHeight: 52 }}
-                  >
-                    <p style={{ fontSize: 16, color: '#F0F0F0', fontWeight: 500, fontFamily: 'Georgia, serif', lineHeight: 1.3 }}>
-                      {plan.titulo}
-                    </p>
-                    {isShared && (
-                      <p style={{ fontSize: 9, color: '#E8692A', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: 3 }}>
-                        {plan.creado_por}
-                      </p>
-                    )}
-                  </button>
-                )
-              })
+              <div style={{ paddingTop: 6, paddingBottom: 6 }}>
+                {pendientes.map(plan => {
+                  const isShared = plan.pareja_codigo !== profile.id
+                  const participantes = participantesPorPlan[plan.id] ?? []
+                  const showParticipants = participantes.length > 1
+                  return (
+                    <button
+                      key={plan.id}
+                      onClick={() => setSelectedPlan(plan)}
+                      className="w-full text-left active:opacity-70 transition-opacity"
+                      style={{
+                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                        margin: '6px 12px', width: 'calc(100% - 24px)',
+                        background: '#141414', borderRadius: 12,
+                        borderLeft: '3px solid #E8692A',
+                        padding: '16px 16px 16px 20px',
+                        minHeight: 52,
+                      }}
+                    >
+                      <div style={{ flex: 1, minWidth: 0, paddingRight: 8 }}>
+                        <p style={{ fontSize: 15, color: '#F0F0F0', fontWeight: 500, lineHeight: 1.4 }}>
+                          {plan.titulo}
+                        </p>
+                        {isShared && (
+                          <p style={{ fontSize: 9, color: '#E8692A', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: 3 }}>
+                            {plan.creado_por}
+                          </p>
+                        )}
+                        {showParticipants && (
+                          <div style={{ display: 'flex', marginTop: 6 }}>
+                            {participantes.slice(0, 5).map((nombre, i) => (
+                              <div
+                                key={i}
+                                style={{
+                                  width: 20, height: 20, borderRadius: '50%',
+                                  background: '#2A2A2A', border: '1.5px solid #141414',
+                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                  fontSize: 9, color: '#fff', fontWeight: 600,
+                                  marginLeft: i === 0 ? 0 : -6,
+                                  zIndex: participantes.length - i,
+                                  position: 'relative', flexShrink: 0,
+                                }}
+                              >
+                                {nombre[0]?.toUpperCase() ?? '?'}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <ChevronRight style={{ width: 16, height: 16, color: '#444444', flexShrink: 0 }} />
+                    </button>
+                  )
+                })}
+              </div>
             )}
           </div>
         )}
