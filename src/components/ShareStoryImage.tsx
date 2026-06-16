@@ -130,74 +130,68 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
         {/* Dark overlay — also oversized to guarantee full coverage */}
         <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '120%', height: '120%', background: 'rgba(0,0,0,0.88)' }} />
 
-        {/* Main flex column — title / photo / brand, space-between so nothing clips */}
+        {/* Title — always exactly 80px above the photo frame */}
         <div
           style={{
             position: 'absolute',
-            inset: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '120px 0 100px',
-            boxSizing: 'border-box',
+            bottom: (1920 - marcoHeight) / 2 + 80,
+            left: 60,
+            right: 60,
+            textAlign: 'center',
+            fontFamily: 'Georgia, serif',
+            fontSize: titleFontSize,
+            fontWeight: 700,
+            color: '#FFFFFF',
+            lineHeight: 1.3,
+            wordBreak: 'break-word',
+            whiteSpace: 'normal',
           } as React.CSSProperties}
         >
-          {/* Title */}
+          <span style={{ color: '#E8692A', fontFamily: 'Georgia, serif' }}>✓ </span>
+          <span>{plan.titulo}</span>
+        </div>
+
+        {/* Photo frame — mathematically centred */}
+        {photoSrc && (
           <div
             style={{
-              fontFamily: 'Georgia, serif',
-              fontSize: titleFontSize,
-              fontWeight: 700,
-              color: '#FFFFFF',
-              lineHeight: 1.3,
-              textAlign: 'center',
-              wordBreak: 'break-word',
-              whiteSpace: 'normal',
-              width: '100%',
-              padding: '0 80px',
-              boxSizing: 'border-box',
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: marcoWidth,
+              height: marcoHeight,
+              border: '6px solid #E8692A',
+              background: '#000',
+              overflow: 'hidden',
             } as React.CSSProperties}
           >
-            <span style={{ color: '#E8692A', fontFamily: 'Georgia, serif' }}>✓ </span>
-            <span>{plan.titulo}</span>
+            <img
+              src={base64Url || plan.foto_url || ''}
+              alt={plan.titulo}
+              crossOrigin="anonymous"
+              style={{ display: 'block', width: '100%', height: '100%', objectFit: 'contain', background: '#000' }}
+            />
           </div>
+        )}
 
-          {/* Photo frame */}
-          {photoSrc && (
-            <div
-              style={{
-                width: marcoWidth,
-                height: marcoHeight,
-                border: '6px solid #E8692A',
-                background: '#000',
-                overflow: 'hidden',
-                flexShrink: 0,
-              } as React.CSSProperties}
-            >
-              <img
-                src={base64Url || plan.foto_url || ''}
-                alt={plan.titulo}
-                crossOrigin="anonymous"
-                style={{ display: 'block', width: '100%', height: '100%', objectFit: 'contain', background: '#000' }}
-              />
-            </div>
-          )}
-
-          {/* Brand */}
-          <div
-            style={{
-              textAlign: 'center',
-              fontSize: 28,
-              letterSpacing: '0.28em',
-              color: '#E8692A',
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              fontFamily: 'system-ui, sans-serif',
-            } as React.CSSProperties}
-          >
-            LIVESTORY.APP
-          </div>
+        {/* Brand — always exactly 80px below the photo frame */}
+        <div
+          style={{
+            position: 'absolute',
+            top: (1920 + marcoHeight) / 2 + 80,
+            left: 60,
+            right: 60,
+            textAlign: 'center',
+            fontSize: 28,
+            letterSpacing: '0.28em',
+            color: '#E8692A',
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            fontFamily: 'system-ui, sans-serif',
+          } as React.CSSProperties}
+        >
+          LIVESTORY.APP
         </div>
       </div>
 
