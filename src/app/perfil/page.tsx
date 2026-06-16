@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { Camera, LogOut, Plus, Copy, Check, X, Share2 } from 'lucide-react'
+import { Camera, LogOut, Plus, Copy, Check, X, Share2, ListTodo } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import {
   getMyData,
@@ -18,7 +18,10 @@ import HistoriaDetailModal from '@/components/HistoriaDetailModal'
 import CompletarPlanModal from '@/components/CompletarPlanModal'
 import ShareBucketList from '@/components/ShareBucketList'
 import ShareStoryImage from '@/components/ShareStoryImage'
+import BottomNav from '@/components/BottomNav'
 import type { Plan, Profile, InvitacionPendiente } from '@/types/planes'
+
+type Tab = 'planes' | 'historias'
 
 function ProfileAvatar({ profile, size = 48 }: { profile: Profile; size?: number }) {
   const initial = profile.nombre?.[0]?.toUpperCase() ?? '?'
@@ -47,6 +50,7 @@ export default function PerfilPage() {
   const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const [activeTab, setActiveTab] = useState<Tab>('planes')
   const [profile, setProfile] = useState<Profile | null>(null)
   const [planes, setPlanes] = useState<Plan[]>([])
   const [invitaciones, setInvitaciones] = useState<InvitacionPendiente[]>([])
@@ -59,7 +63,6 @@ export default function PerfilPage() {
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null)
   const [planToComplete, setPlanToComplete] = useState<Plan | null>(null)
   const [selectedHistoria, setSelectedHistoria] = useState<Plan | null>(null)
-
   const [showHistoriaShare, setShowHistoriaShare] = useState(false)
   const [historiaToShare, setHistoriaToShare] = useState<Plan | null>(null)
 
@@ -70,7 +73,6 @@ export default function PerfilPage() {
       setProfile(prof)
       setPlanes(pl)
 
-      // Load invitations client-side for reliability
       const { data: invParts } = await supabase
         .from('plan_participantes' as never)
         .select('id, plan_id')
@@ -118,10 +120,8 @@ export default function PerfilPage() {
     const file = e.target.files?.[0]
     if (!file || !profile) return
     setUploadingFoto(true)
-    // Reset so the same file can be re-selected after an error
     if (fileInputRef.current) fileInputRef.current.value = ''
     try {
-      // Compress to JPEG at 800px max, 85% quality
       const compressed = await new Promise<Blob>((resolve, reject) => {
         const img = new Image()
         const url = URL.createObjectURL(file)
@@ -132,35 +132,20 @@ export default function PerfilPage() {
           if (width > MAX) { height = Math.round(height * MAX / width); width = MAX }
           if (height > MAX) { width = Math.round(width * MAX / height); height = MAX }
           const canvas = document.createElement('canvas')
-          canvas.width = width
-          canvas.height = height
+          canvas.width = width; canvas.height = height
           canvas.getContext('2d')!.drawImage(img, 0, 0, width, height)
           canvas.toBlob(b => b ? resolve(b) : reject(new Error('Canvas toBlob failed')), 'image/jpeg', 0.85)
         }
         img.onerror = reject
         img.src = url
       })
-
       const path = `avatar-${profile.id}.jpg`
-      console.log('[avatar] uploading', path, compressed.size, 'bytes')
-
-      const { error: upError } = await supabase.storage
-        .from('avatars')
-        .upload(path, compressed, { upsert: true, contentType: 'image/jpeg' })
-
-      if (upError) { console.error('[avatar] storage error:', upError); throw upError }
-
+      const { error: upError } = await supabase.storage.from('avatars').upload(path, compressed, { upsert: true, contentType: 'image/jpeg' })
+      if (upError) throw upError
       const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
       const urlWithBust = `${publicUrl}?t=${Date.now()}`
-      console.log('[avatar] public URL:', urlWithBust)
-
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ foto_perfil_url: urlWithBust })
-        .eq('id', profile.id)
-
-      if (updateError) { console.error('[avatar] profile update error:', updateError); throw updateError }
-
+      const { error: updateError } = await supabase.from('profiles').update({ foto_perfil_url: urlWithBust }).eq('id', profile.id)
+      if (updateError) throw updateError
       setProfile(prev => prev ? { ...prev, foto_perfil_url: urlWithBust } : prev)
     } catch (err) {
       console.error('[avatar] upload failed:', err)
@@ -189,12 +174,7 @@ export default function PerfilPage() {
     await fetchData()
   }
 
-  const handleCompletarPlan = async (
-    id: string,
-    descripcion: string,
-    fotoUrl: string | null,
-    fechaMomento: string | null
-  ) => {
+  const handleCompletarPlan = async (id: string, descripcion: string, fotoUrl: string | null, fechaMomento: string | null) => {
     await completarPlan(id, descripcion, fotoUrl, fechaMomento)
     setPlanToComplete(null)
     setSelectedPlan(null)
@@ -239,30 +219,18 @@ export default function PerfilPage() {
   return (
     <div
       className="flex flex-col bg-[#0A0A0A] overflow-hidden"
-      style={{
-        height: '100dvh',
-        paddingTop: 'env(safe-area-inset-top, 0px)',
-      }}
+      style={{ height: '100dvh', paddingTop: 'env(safe-area-inset-top, 0px)' }}
     >
-      {/* ── Brand bar ──────────────────────────────────────── */}
-      <div
-        className="flex-shrink-0 flex items-center justify-center border-b border-[#1A1A1A]"
-        style={{ height: 32 }}
-      >
-        <span style={{
-          fontSize: 11, fontWeight: 700, letterSpacing: '0.2em',
-          color: '#E8692A', textTransform: 'uppercase', fontFamily: 'system-ui, sans-serif',
-        }}>
+      {/* ── Brand bar ─────────────────────────────────────── */}
+      <div className="flex-shrink-0 flex items-center justify-center border-b border-[#1A1A1A]" style={{ height: 32 }}>
+        <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.2em', color: '#E8692A', textTransform: 'uppercase' }}>
           LIVESTORY
         </span>
       </div>
 
-      {/* ── Invitation banners ─────────────────────────────── */}
+      {/* ── Invitation banners ────────────────────────────── */}
       {invitaciones.length > 0 && (
-        <div
-          className="flex-shrink-0 flex gap-2 overflow-x-auto px-3 py-2"
-          style={{ scrollbarWidth: 'none' }}
-        >
+        <div className="flex-shrink-0 flex gap-2 overflow-x-auto px-3 py-2" style={{ scrollbarWidth: 'none' }}>
           {invitaciones.map(inv => (
             <div
               key={inv.participante_id}
@@ -294,61 +262,55 @@ export default function PerfilPage() {
         </div>
       )}
 
-      {/* ── Header ─────────────────────────────────────────── */}
-      <div className="flex-shrink-0 flex items-center justify-between gap-3 px-4 py-3 border-b border-[#1A1A1A]">
-        <div className="flex items-center gap-3 min-w-0">
-          {/* Avatar + camera */}
-          <div className="relative flex-shrink-0">
-            <ProfileAvatar profile={profile} size={48} />
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploadingFoto}
-              className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#E8692A] border-[1.5px] border-[#0A0A0A] flex items-center justify-center text-white active:scale-90 transition-transform disabled:opacity-60"
-              aria-label="Cambiar foto"
-            >
-              {uploadingFoto
-                ? <div className="w-2.5 h-2.5 border border-white border-t-transparent rounded-full animate-spin" />
-                : <Camera className="w-2.5 h-2.5" />
-              }
-            </button>
-            <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFotoChange} />
-          </div>
-
-          {/* Name + username copy */}
-          <div className="min-w-0">
-            <p className="font-serif text-[20px] font-bold text-[#F0F0F0] leading-tight truncate">
-              {profile.nombre}
-            </p>
-            <button
-              onClick={handleCopyUsername}
-              className="flex items-center gap-1.5 text-[13px] text-[#555555] active:text-[#E8692A] transition-colors mt-0.5"
-            >
-              {copied
-                ? <Check className="w-3 h-3 text-[#E8692A]" />
-                : <Copy className="w-3 h-3" />
-              }
-              <span>{copied ? '¡Copiado!' : `@${profile.username ?? profile.nombre}`}</span>
-            </button>
-          </div>
+      {/* ── Profile row ───────────────────────────────────── */}
+      <div className="flex-shrink-0 flex items-center gap-3 px-4 py-3 border-b border-[#1A1A1A]">
+        <div className="relative flex-shrink-0">
+          <ProfileAvatar profile={profile} size={48} />
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploadingFoto}
+            className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#E8692A] border-[1.5px] border-[#0A0A0A] flex items-center justify-center text-white active:scale-90 transition-transform disabled:opacity-60"
+            aria-label="Cambiar foto"
+          >
+            {uploadingFoto
+              ? <div className="w-2.5 h-2.5 border border-white border-t-transparent rounded-full animate-spin" />
+              : <Camera className="w-2.5 h-2.5" />
+            }
+          </button>
+          <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFotoChange} />
         </div>
 
-        {/* Logout */}
+        <div className="flex-1 min-w-0">
+          <p className="font-serif text-[20px] font-bold text-[#F0F0F0] leading-tight truncate">
+            {profile.nombre}
+          </p>
+          <button
+            onClick={handleCopyUsername}
+            className="flex items-center gap-1.5 text-[12px] text-[#555555] active:text-[#E8692A] transition-colors mt-0.5"
+          >
+            {copied ? <Check className="w-3 h-3 text-[#E8692A]" /> : <Copy className="w-3 h-3" />}
+            <span>{copied ? '¡Copiado!' : `@${profile.username ?? profile.nombre}`}</span>
+          </button>
+        </div>
+
         <button
           onClick={handleLogout}
-          className="text-[#444444] active:text-[#E8692A] transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center flex-shrink-0"
+          className="text-[#444444] active:text-[#E8692A] transition-colors flex-shrink-0 flex items-center justify-center"
+          style={{ minHeight: 44, minWidth: 44 }}
           aria-label="Cerrar sesión"
         >
           <LogOut className="w-4 h-4" />
         </button>
       </div>
 
-      {/* ── Stats bar ──────────────────────────────────────── */}
+      {/* ── Stats row ─────────────────────────────────────── */}
       <div className="flex-shrink-0 flex items-stretch border-b border-[#1A1A1A]">
-        {/* Planes pill */}
         <div className="flex-1 flex items-center justify-between px-4 py-2.5">
           <div className="flex items-baseline gap-2">
             <span className="text-[22px] font-bold text-[#F0F0F0] leading-none">{pendientes.length}</span>
-            <span className="text-[10px] uppercase tracking-[0.14em] text-[#555555]">{pendientes.length === 1 ? 'Plan' : 'Planes'}</span>
+            <span className="text-[10px] uppercase tracking-[0.14em] text-[#555555]">
+              {pendientes.length === 1 ? 'Plan' : 'Planes'}
+            </span>
           </div>
           <ShareBucketList
             planes={pendientes}
@@ -358,54 +320,46 @@ export default function PerfilPage() {
             compact
           />
         </div>
-
         <div className="w-px bg-[#1A1A1A]" />
-
-        {/* Historias pill */}
         <div className="flex-1 flex items-center justify-between px-4 py-2.5">
           <div className="flex items-baseline gap-2">
             <span className="text-[22px] font-bold text-[#F0F0F0] leading-none">{historias.length}</span>
-            <span className="text-[10px] uppercase tracking-[0.14em] text-[#555555]">{historias.length === 1 ? 'Historia' : 'Historias'}</span>
+            <span className="text-[10px] uppercase tracking-[0.14em] text-[#555555]">
+              {historias.length === 1 ? 'Historia' : 'Historias'}
+            </span>
           </div>
           <button
             onClick={historias.length > 0 ? openHistoriaShare : undefined}
             disabled={historias.length === 0}
-            className={`min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors ${
+            className={`flex items-center justify-center transition-colors ${
               historias.length > 0 ? 'text-[#E8692A] active:text-[#D4581A]' : 'text-[#2A2A2A]'
             }`}
+            style={{ minHeight: 44, minWidth: 44 }}
           >
             <Share2 className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      {/* ── Two-column body ────────────────────────────────── */}
-      <div className="flex flex-1 overflow-hidden">
+      {/* ── Tab content ───────────────────────────────────── */}
+      <div className="flex-1 overflow-hidden">
 
-        {/* Left column — Planes */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Column header */}
-          <div className="flex-shrink-0 flex items-center justify-between px-3 pt-2.5 pb-1.5">
-            <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#444444]">Mis planes</span>
-            <button
-              onClick={() => setShowNuevoPlan(true)}
-              className="w-7 h-7 rounded-lg bg-[#E8692A] flex items-center justify-center text-white active:bg-[#D4581A] transition-colors"
-              style={{ minHeight: 44, minWidth: 44 }}
-              aria-label="Añadir plan"
-            >
-              <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
-            </button>
-          </div>
-
-          {/* List */}
+        {/* PLANES tab */}
+        {activeTab === 'planes' && (
           <div
-            className="flex-1 overflow-y-auto"
-            style={{ WebkitOverflowScrolling: 'touch', paddingBottom: 'env(safe-area-inset-bottom, 16px)' } as React.CSSProperties}
+            className="h-full overflow-y-auto"
+            style={{
+              overscrollBehavior: 'contain',
+              WebkitOverflowScrolling: 'touch',
+              paddingBottom: 'calc(56px + env(safe-area-inset-bottom, 0px) + 80px)',
+            } as React.CSSProperties}
           >
             {pendientes.length === 0 ? (
-              <p className="text-[11px] text-[#333333] px-3 py-4 leading-relaxed">
-                Aún no tienes planes. ¿A qué esperas?
-              </p>
+              <div className="h-full flex flex-col items-center justify-center gap-3 px-8">
+                <ListTodo style={{ width: 48, height: 48, color: '#2A2A2A' }} strokeWidth={1} />
+                <p style={{ fontSize: 15, color: '#444444', textAlign: 'center' }}>Aún no tienes planes.</p>
+                <p style={{ fontSize: 13, color: '#333333', textAlign: 'center' }}>¿A qué esperas?</p>
+              </div>
             ) : (
               pendientes.map(plan => {
                 const isShared = plan.pareja_codigo !== profile.id
@@ -413,11 +367,14 @@ export default function PerfilPage() {
                   <button
                     key={plan.id}
                     onClick={() => setSelectedPlan(plan)}
-                    className="w-full text-left px-3 py-[14px] border-b border-[#1A1A1A] active:bg-[#111111] transition-colors min-h-[44px]"
+                    className="w-full text-left border-b border-[#1A1A1A] active:bg-[#111111] transition-colors"
+                    style={{ display: 'block', padding: 16, minHeight: 52 }}
                   >
-                    <p className="text-[13px] text-[#E0E0E0] leading-snug line-clamp-2 font-serif">{plan.titulo}</p>
+                    <p style={{ fontSize: 16, color: '#F0F0F0', fontWeight: 500, fontFamily: 'Georgia, serif', lineHeight: 1.3 }}>
+                      {plan.titulo}
+                    </p>
                     {isShared && (
-                      <p className="text-[9px] text-[#E8692A] uppercase tracking-[0.1em] mt-0.5">
+                      <p style={{ fontSize: 9, color: '#E8692A', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: 3 }}>
                         {plan.creado_por}
                       </p>
                     )}
@@ -426,41 +383,87 @@ export default function PerfilPage() {
               })
             )}
           </div>
-        </div>
+        )}
 
-        {/* Vertical divider */}
-        <div className="w-px bg-[#1A1A1A] flex-shrink-0" />
-
-        {/* Right column — Historias */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <div className="flex-shrink-0 px-3 pt-2.5 pb-1.5">
-            <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#444444]">Mis historias</span>
-          </div>
-
+        {/* HISTORIAS tab */}
+        {activeTab === 'historias' && (
           <div
-            className="flex-1 overflow-y-auto"
-            style={{ WebkitOverflowScrolling: 'touch', paddingBottom: 'env(safe-area-inset-bottom, 16px)' } as React.CSSProperties}
+            className="h-full overflow-y-auto"
+            style={{
+              overscrollBehavior: 'contain',
+              WebkitOverflowScrolling: 'touch',
+              paddingBottom: 'calc(56px + env(safe-area-inset-bottom, 0px))',
+            } as React.CSSProperties}
           >
             {historias.length === 0 ? (
-              <p className="text-[11px] text-[#333333] px-3 py-4 leading-relaxed">
-                Aquí vivirán tus recuerdos.
-              </p>
+              <div className="h-full flex flex-col items-center justify-center gap-3 px-8">
+                <p style={{ fontSize: 15, color: '#444444', textAlign: 'center' }}>Aquí vivirán tus recuerdos.</p>
+                <p style={{ fontSize: 13, color: '#333333', textAlign: 'center' }}>Completa un plan para crear tu primera historia.</p>
+              </div>
             ) : (
-              historias.map(h => (
-                <button
-                  key={h.id}
-                  onClick={() => setSelectedHistoria(h)}
-                  className="w-full text-left px-3 py-[14px] border-b border-[#1A1A1A] active:bg-[#111111] transition-colors min-h-[44px]"
-                >
-                  <p className="text-[13px] text-[#E0E0E0] leading-snug line-clamp-2 font-serif">{h.titulo}</p>
-                </button>
-              ))
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, padding: 2 }}>
+                {historias.map(h => (
+                  <button
+                    key={h.id}
+                    onClick={() => setSelectedHistoria(h)}
+                    style={{
+                      position: 'relative', aspectRatio: '3/4',
+                      overflow: 'hidden', background: '#1A1A1A', display: 'block',
+                    }}
+                  >
+                    {h.foto_url && (
+                      <img
+                        src={h.foto_url}
+                        alt=""
+                        style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    )}
+                    <div style={{
+                      position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                      background: 'linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.75) 100%)',
+                    }} />
+                    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: 8 }}>
+                      <p style={{
+                        fontSize: 13, fontWeight: 600, color: 'white', lineHeight: 1.3,
+                        display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                      } as React.CSSProperties}>
+                        {h.titulo}
+                      </p>
+                    </div>
+                  </button>
+                ))}
+              </div>
             )}
           </div>
-        </div>
+        )}
       </div>
 
-      {/* ── Modals ─────────────────────────────────────────── */}
+      {/* ── FAB ───────────────────────────────────────────── */}
+      {activeTab === 'planes' && (
+        <button
+          onClick={() => setShowNuevoPlan(true)}
+          aria-label="Añadir plan"
+          style={{
+            position: 'fixed',
+            right: 20,
+            bottom: 'calc(56px + env(safe-area-inset-bottom, 0px) + 20px)',
+            width: 56, height: 56,
+            borderRadius: '50%',
+            background: '#E8692A',
+            color: 'white',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 4px 20px rgba(232,105,42,0.4)',
+            zIndex: 10,
+          }}
+        >
+          <Plus style={{ width: 24, height: 24 }} strokeWidth={2.5} />
+        </button>
+      )}
+
+      {/* ── Bottom nav ────────────────────────────────────── */}
+      <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+
+      {/* ── Modals ────────────────────────────────────────── */}
       {showNuevoPlan && (
         <NuevoPlanModal
           currentUserId={profile.id}
@@ -503,10 +506,7 @@ export default function PerfilPage() {
           className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm"
           onClick={e => e.target === e.currentTarget && setShowHistoriaShare(false)}
         >
-          <div
-            className="w-full bg-[#141414] rounded-t-2xl shadow-2xl flex flex-col"
-            style={{ maxHeight: '70dvh' }}
-          >
+          <div className="w-full bg-[#141414] rounded-t-2xl shadow-2xl flex flex-col" style={{ maxHeight: '70dvh' }}>
             <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
               <div className="w-9 h-1 bg-[#2A2A2A] rounded-full" />
             </div>
@@ -519,7 +519,6 @@ export default function PerfilPage() {
                 <X className="w-4 h-4" />
               </button>
             </div>
-
             <div className="overflow-y-auto flex-1">
               {historias.map(h => (
                 <button
@@ -540,7 +539,6 @@ export default function PerfilPage() {
                 </button>
               ))}
             </div>
-
             {historiaToShare && (
               <div
                 className="px-5 py-4 border-t border-[#2A2A2A] flex-shrink-0"
