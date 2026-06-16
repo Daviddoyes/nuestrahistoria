@@ -51,13 +51,13 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
     if (!templateRef.current) return
     setGenerating(true)
     try {
-      let imgSrc = base64Url
+      // Convert to base64 FIRST, then wait for React to re-render before capturing
       if (plan.foto_url) {
-        imgSrc = await toBase64(plan.foto_url)
-        setBase64Url(imgSrc)
-        const dims = await getImageDimensions(imgSrc)
+        const b64 = await toBase64(plan.foto_url)
+        const dims = await getImageDimensions(b64)
         setImgDimensions(dims)
-        await new Promise(r => setTimeout(r, 200))
+        setBase64Url(b64)
+        await new Promise(r => setTimeout(r, 300))
       }
 
       const { default: html2canvas } = await import('html2canvas')
@@ -91,8 +91,6 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
     }
   }
 
-  const photoSrc = base64Url ?? plan.foto_url
-
   return (
     <>
       {/* Hidden 1080×1920 template rendered off-screen for html2canvas */}
@@ -109,10 +107,10 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
         }}
         aria-hidden="true"
       >
-        {/* Blurred background — oversized to cover blur edges */}
-        {photoSrc && (
+        {/* Blurred background — base64Url only so html2canvas can read it */}
+        {base64Url && (
           <img
-            src={photoSrc}
+            src={base64Url}
             alt=""
             style={{
               position: 'absolute',
@@ -122,12 +120,11 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
               height: '120%',
               objectFit: 'cover',
               filter: 'blur(28px)',
-              transform: 'scale(1.2)',
             }}
           />
         )}
 
-        {/* Dark overlay — also oversized to guarantee full coverage */}
+        {/* Dark overlay */}
         <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '120%', height: '120%', background: 'rgba(0,0,0,0.88)' }} />
 
         {/* Title — always exactly 80px above the photo frame */}
@@ -151,29 +148,35 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
           <span>{plan.titulo}</span>
         </div>
 
-        {/* Photo frame — mathematically centred */}
-        {photoSrc && (
-          <div
+        {/* Photo frame — margin trick instead of transform (html2canvas doesn't handle CSS transforms) */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            marginLeft: -marcoWidth / 2,
+            marginTop: -marcoHeight / 2,
+            width: marcoWidth,
+            height: marcoHeight,
+            border: '6px solid #E8692A',
+            background: '#000',
+            overflow: 'hidden',
+          } as React.CSSProperties}
+        >
+          <img
+            src={base64Url || ''}
+            alt={plan.titulo}
             style={{
               position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
+              top: 0,
+              left: 0,
               width: marcoWidth,
               height: marcoHeight,
-              border: '6px solid #E8692A',
-              background: '#000',
-              overflow: 'hidden',
+              objectFit: 'contain',
+              display: base64Url ? 'block' : 'none',
             } as React.CSSProperties}
-          >
-            <img
-              src={base64Url || plan.foto_url || ''}
-              alt={plan.titulo}
-              crossOrigin="anonymous"
-              style={{ display: 'block', width: '100%', height: '100%', objectFit: 'contain', background: '#000' }}
-            />
-          </div>
-        )}
+          />
+        </div>
 
         {/* Brand — always exactly 80px below the photo frame */}
         <div
