@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState } from 'react'
 import { Share2 } from 'lucide-react'
 import type { Plan } from '@/types/planes'
 
@@ -27,22 +27,45 @@ const getImageDimensions = (src: string): Promise<{ width: number; height: numbe
     img.src = src
   })
 
+// Fixed layout constants
+const CANVAS_W = 1080
+const CANVAS_H = 1920
+const MARCO_TOP = 400          // title lives above this
+const MARCO_BOTTOM_GAP = 300   // brand lives below marco
+const MARCO_MAX_W = 960        // max frame width
+const MARCO_MAX_H = CANVAS_H - MARCO_TOP - MARCO_BOTTOM_GAP // 1220px
+
+function calcMarco(ratio: number) {
+  let w: number, h: number
+  if (ratio > 1) {
+    // Landscape
+    w = MARCO_MAX_W
+    h = Math.round(MARCO_MAX_W / ratio)
+  } else {
+    // Portrait or square — fit height first, cap width
+    const hCandidate = MARCO_MAX_H
+    const wCandidate = Math.round(hCandidate * ratio)
+    if (wCandidate <= MARCO_MAX_W) {
+      h = hCandidate
+      w = wCandidate
+    } else {
+      w = MARCO_MAX_W
+      h = Math.round(MARCO_MAX_W / ratio)
+    }
+  }
+  const top = MARCO_TOP + Math.round((MARCO_MAX_H - h) / 2)
+  const left = Math.round((CANVAS_W - w) / 2)
+  return { w, h, top, left }
+}
+
 export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
   const templateRef = useRef<HTMLDivElement>(null)
   const [generating, setGenerating] = useState(false)
   const [base64Url, setBase64Url] = useState<string | null>(null)
   const [imgDimensions, setImgDimensions] = useState({ width: 1000, height: 750 })
 
-  useEffect(() => {
-    if (!plan.foto_url) return
-    const img = new Image()
-    img.onload = () => setImgDimensions({ width: img.naturalWidth, height: img.naturalHeight })
-    img.src = plan.foto_url
-  }, [plan.foto_url])
-
   const ratio = imgDimensions.width / imgDimensions.height
-  const marcoWidth = ratio > 1 ? 960 : ratio === 1 ? 900 : Math.round(1100 * ratio)
-  const marcoHeight = ratio > 1 ? Math.round(960 / ratio) : ratio === 1 ? 900 : 1100
+  const marco = calcMarco(ratio)
 
   const len = plan.titulo.length
   const titleFontSize = len > 60 ? 32 : len > 45 ? 38 : len > 30 ? 46 : len > 20 ? 54 : 64
@@ -51,13 +74,12 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
     if (!templateRef.current) return
     setGenerating(true)
     try {
-      // Convert to base64 FIRST, then wait for React to re-render before capturing
       if (plan.foto_url) {
-        const b64 = await toBase64(plan.foto_url)
-        const dims = await getImageDimensions(b64)
+        const imgSrc = await toBase64(plan.foto_url)
+        setBase64Url(imgSrc)
+        const dims = await getImageDimensions(imgSrc)
         setImgDimensions(dims)
-        setBase64Url(b64)
-        await new Promise(r => setTimeout(r, 300))
+        await new Promise(r => setTimeout(r, 400))
       }
 
       const { default: html2canvas } = await import('html2canvas')
@@ -100,14 +122,14 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
           position: 'fixed',
           left: '-9999px',
           top: 0,
-          width: 1080,
-          height: 1920,
+          width: CANVAS_W,
+          height: CANVAS_H,
           background: '#0A0A0A',
           overflow: 'hidden',
         }}
         aria-hidden="true"
       >
-        {/* Blurred background — base64Url only so html2canvas can read it */}
+        {/* LAYER 1 — Blurred background */}
         {base64Url && (
           <img
             src={base64Url}
@@ -119,21 +141,31 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
               width: '120%',
               height: '120%',
               objectFit: 'cover',
-              filter: 'blur(28px)',
+              filter: 'blur(30px)',
+              transform: 'scale(1.1)',
             }}
           />
         )}
 
-        {/* Dark overlay */}
-        <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '120%', height: '120%', background: 'rgba(0,0,0,0.88)' }} />
-
-        {/* Title — always exactly 80px above the photo frame */}
+        {/* LAYER 2 — Dark overlay */}
         <div
           style={{
             position: 'absolute',
-            bottom: (1920 - marcoHeight) / 2 + 80,
-            left: 60,
-            right: 60,
+            top: '-10%',
+            left: '-10%',
+            width: '120%',
+            height: '120%',
+            background: 'rgba(0,0,0,0.85)',
+          }}
+        />
+
+        {/* LAYER 3 — Title, fixed at top: 180px */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 180,
+            left: 80,
+            right: 80,
             textAlign: 'center',
             fontFamily: 'Georgia, serif',
             fontSize: titleFontSize,
@@ -141,57 +173,57 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
             color: '#FFFFFF',
             lineHeight: 1.3,
             wordBreak: 'break-word',
-            whiteSpace: 'normal',
+            zIndex: 2,
           } as React.CSSProperties}
         >
-          <span style={{ color: '#E8692A', fontFamily: 'Georgia, serif' }}>✓ </span>
-          <span>{plan.titulo}</span>
+          <span style={{ color: '#E8692A' }}>✓ </span>
+          {plan.titulo}
         </div>
 
-        {/* Photo frame — margin trick instead of transform (html2canvas doesn't handle CSS transforms) */}
+        {/* LAYER 4 — Photo frame, centred in available zone */}
         <div
           style={{
             position: 'absolute',
-            top: '50%',
-            left: '50%',
-            marginLeft: -marcoWidth / 2,
-            marginTop: -marcoHeight / 2,
-            width: marcoWidth,
-            height: marcoHeight,
+            top: marco.top,
+            left: marco.left,
+            width: marco.w,
+            height: marco.h,
             border: '6px solid #E8692A',
             background: '#000',
             overflow: 'hidden',
+            zIndex: 2,
           } as React.CSSProperties}
         >
-          <img
-            src={base64Url || ''}
-            alt={plan.titulo}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: marcoWidth,
-              height: marcoHeight,
-              objectFit: 'contain',
-              display: base64Url ? 'block' : 'none',
-            } as React.CSSProperties}
-          />
+          {base64Url && (
+            <img
+              src={base64Url}
+              alt={plan.titulo}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: marco.w,
+                height: marco.h,
+              }}
+            />
+          )}
         </div>
 
-        {/* Brand — always exactly 80px below the photo frame */}
+        {/* LAYER 5 — Brand, fixed at bottom: 120px */}
         <div
           style={{
             position: 'absolute',
-            top: (1920 + marcoHeight) / 2 + 80,
-            left: 60,
-            right: 60,
+            bottom: 120,
+            left: 0,
+            right: 0,
             textAlign: 'center',
-            fontSize: 28,
-            letterSpacing: '0.28em',
+            fontSize: 24,
+            letterSpacing: '0.3em',
             color: '#E8692A',
             fontWeight: 700,
-            textTransform: 'uppercase',
             fontFamily: 'system-ui, sans-serif',
+            textTransform: 'uppercase',
+            zIndex: 2,
           } as React.CSSProperties}
         >
           LIVESTORY.APP
