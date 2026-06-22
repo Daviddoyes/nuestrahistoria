@@ -27,22 +27,18 @@ const getImageDimensions = (src: string): Promise<{ width: number; height: numbe
     img.src = src
   })
 
-// Fixed layout constants
 const CANVAS_W = 1080
 const CANVAS_H = 1920
-const MARCO_TOP = 400          // title lives above this
-const MARCO_BOTTOM_GAP = 300   // brand lives below marco
-const MARCO_MAX_W = 960        // max frame width
-const MARCO_MAX_H = CANVAS_H - MARCO_TOP - MARCO_BOTTOM_GAP // 1220px
+const CENTRO_Y = 960   // frame always centred on this vertical midpoint
+const MARCO_MAX_W = 960
+const MARCO_MAX_H = 1220
 
 function calcMarco(ratio: number) {
   let w: number, h: number
   if (ratio > 1) {
-    // Landscape
     w = MARCO_MAX_W
     h = Math.round(MARCO_MAX_W / ratio)
   } else {
-    // Portrait or square — fit height first, cap width
     const hCandidate = MARCO_MAX_H
     const wCandidate = Math.round(hCandidate * ratio)
     if (wCandidate <= MARCO_MAX_W) {
@@ -53,9 +49,11 @@ function calcMarco(ratio: number) {
       h = Math.round(MARCO_MAX_W / ratio)
     }
   }
-  const top = MARCO_TOP + Math.round((MARCO_MAX_H - h) / 2)
+  const top = Math.round(CENTRO_Y - h / 2)
   const left = Math.round((CANVAS_W - w) / 2)
-  return { w, h, top, left }
+  const tituloBottom = CANVAS_H - top + 80   // 80px above top edge of frame
+  const brandTop = top + h + 80              // 80px below bottom edge of frame
+  return { w, h, top, left, tituloBottom, brandTop }
 }
 
 export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
@@ -159,11 +157,11 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
           }}
         />
 
-        {/* LAYER 3 — Title, fixed at top: 180px */}
+        {/* LAYER 3 — Title, 80px above the frame top edge */}
         <div
           style={{
             position: 'absolute',
-            top: 180,
+            bottom: marco.tituloBottom,
             left: 80,
             right: 80,
             textAlign: 'center',
@@ -180,7 +178,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
           {plan.titulo}
         </div>
 
-        {/* LAYER 4 — Photo frame, centred in available zone */}
+        {/* LAYER 4 — Photo frame, centred on y=960 */}
         <div
           style={{
             position: 'absolute',
@@ -209,11 +207,11 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
           )}
         </div>
 
-        {/* LAYER 5 — Brand, fixed at bottom: 120px */}
+        {/* LAYER 5 — Brand, 80px below the frame bottom edge */}
         <div
           style={{
             position: 'absolute',
-            bottom: 120,
+            top: marco.brandTop,
             left: 0,
             right: 0,
             textAlign: 'center',
