@@ -9,6 +9,7 @@ export async function proxy(request: NextRequest) {
     pathname === '/' ||
     pathname.startsWith('/reset-password') ||
     pathname.startsWith('/pricing') ||
+    pathname.startsWith('/admin') ||
     pathname.startsWith('/api/')
 
   if (isPublic) {
