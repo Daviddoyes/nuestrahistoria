@@ -23,79 +23,71 @@ const CON_QUIEN_OPTIONS: { id: CompaniaId; icon: string; label: string }[] = [
   { id: 'solo', icon: '🙋', label: 'Solo/a' },
 ]
 
-const PLANES_SUGERIDOS: Record<InterId, { titulo: string; descripcion: string }[]> = {
+const PLANES_SUGERIDOS: Record<InterId, { titulo: string }[]> = {
   viajes: [
-    { titulo: 'Ver el amanecer en Santorini', descripcion: 'El más famoso del mundo' },
-    { titulo: 'Road trip por la costa de Croacia', descripcion: 'Mar cristalino y pueblos medievales' },
-    { titulo: 'Ver la Aurora Boreal en Noruega', descripcion: 'Un espectáculo natural único' },
-    { titulo: 'Perderse por los mercados de Marrakech', descripcion: 'Colores, especias y cultura' },
-    { titulo: 'Visitar Kioto en primavera', descripcion: 'Los cerezos en flor' },
+    { titulo: 'Visitar la Torre Eiffel' },
+    { titulo: 'Visitar la Sagrada Família' },
+    { titulo: 'Visitar el Empire State' },
+    { titulo: 'Visitar el Big Ben' },
+    { titulo: 'Subir al campo base del Everest' },
+    { titulo: 'Hacer surf en Marruecos' },
+    { titulo: 'Hacer surf en Tenerife' },
+    { titulo: 'Ir de fiesta en Ibiza' },
   ],
   gastronomia: [
-    { titulo: 'Comer en un restaurante con estrella Michelin', descripcion: 'Alta cocina' },
-    { titulo: 'Probar cocina Thai auténtica en Bangkok', descripcion: 'Los sabores originales' },
-    { titulo: 'Aprender a hacer pasta fresca en Italia', descripcion: 'Un taller en Bolonia' },
-    { titulo: 'Hacer una ruta de pintxos en San Sebastián', descripcion: 'La mejor ciudad gastronómica' },
-    { titulo: 'Catar vinos en La Rioja', descripcion: 'Entre viñedos' },
+    { titulo: 'Probar cocina india' },
+    { titulo: 'Probar cocina libanesa' },
+    { titulo: 'Probar cocina tailandesa' },
   ],
   musica: [
-    { titulo: 'Asistir a Tomorrowland', descripcion: 'El festival más grande del mundo' },
-    { titulo: 'Ver un concierto en el Madison Square Garden', descripcion: 'Icónico' },
-    { titulo: 'Bailar en el Carnaval de Río', descripcion: 'La fiesta más grande del planeta' },
-    { titulo: 'Asistir a la ópera en el Teatro alla Scala', descripcion: 'Milán' },
-    { titulo: 'Ver un show de Jazz en Nueva Orleans', descripcion: 'En su ciudad natal' },
+    { titulo: 'Asistir a Tomorrowland' },
+    { titulo: 'Ir de fiesta en Ibiza' },
   ],
   deporte: [
-    { titulo: 'Correr una maratón', descripcion: '42km de puro logro personal' },
-    { titulo: 'Hacer surf en Nazaré', descripcion: 'Las olas más grandes del mundo' },
-    { titulo: 'Escalar el Mont Blanc', descripcion: 'El techo de Europa occidental' },
-    { titulo: 'Completar un Ironman', descripcion: 'El reto definitivo' },
-    { titulo: 'Hacer un Hyrox', descripcion: 'El fitness race más popular' },
+    { titulo: 'Saltar de un avión' },
+    { titulo: 'Montar a caballo' },
+    { titulo: 'Hacer una ruta en kayak' },
+    { titulo: 'Pilotar una moto de agua' },
+    { titulo: 'Subir un 3000m' },
+    { titulo: 'Acabar una maratón' },
+    { titulo: 'Practicar ski' },
+    { titulo: 'Practicar kite surf' },
+    { titulo: 'Hacer surf en Marruecos' },
+    { titulo: 'Hacer surf en Tenerife' },
+    { titulo: 'Realizar 1000m a nado' },
+    { titulo: 'Realizar una carrera 10K' },
+    { titulo: 'Participar en un Hyrox' },
+    { titulo: 'Puenting' },
+    { titulo: 'Paintball' },
+    { titulo: 'Karting' },
+    { titulo: 'Conducir un Ferrari' },
   ],
   cultura: [
-    { titulo: 'Ver la Capilla Sixtina', descripcion: 'Roma, la obra maestra de Miguel Ángel' },
-    { titulo: 'Visitar el Museo del Louvre', descripcion: 'París, el museo más visitado' },
-    { titulo: 'Ver un espectáculo en Broadway', descripcion: 'Nueva York' },
-    { titulo: 'Visitar Machu Picchu', descripcion: 'La ciudad perdida de los Incas' },
-    { titulo: 'Ver el Taj Mahal al amanecer', descripcion: 'India' },
+    { titulo: 'Visitar la Torre Eiffel' },
+    { titulo: 'Visitar la Sagrada Família' },
+    { titulo: 'Visitar el Empire State' },
+    { titulo: 'Visitar el Big Ben' },
+    { titulo: 'Asistir a un retiro espiritual' },
+    { titulo: 'Ayudar a un comedor social' },
+    { titulo: 'Graduarme en la universidad' },
+    { titulo: 'Montar mi propia empresa' },
+    { titulo: 'Comprarme un coche' },
   ],
 }
 
-const PLANES_POR_COMPANIA: Record<CompaniaId, { titulo: string; descripcion: string }[]> = {
-  pareja: [
-    { titulo: 'Escapada romántica a París', descripcion: 'La ciudad del amor' },
-    { titulo: 'Cena con estrellas Michelin', descripcion: 'Una noche especial' },
-    { titulo: 'Ver un atardecer en Santorini', descripcion: 'Inolvidable' },
-  ],
-  amigos: [
-    { titulo: 'Road trip sin destino fijo', descripcion: 'Solo vosotros y la carretera' },
-    { titulo: 'Festival de música', descripcion: 'Vivir la música en directo' },
-    { titulo: 'Viaje a Tailandia', descripcion: 'Aventura en grupo' },
-  ],
-  familia: [
-    { titulo: 'Viaje a Disneyland', descripcion: 'La magia para todos' },
-    { titulo: 'Reunión familiar en la playa', descripcion: 'Un verano juntos' },
-    { titulo: 'Ruta por los pueblos de España', descripcion: 'Descubrir los orígenes' },
-  ],
-  solo: [
-    { titulo: 'Viaje solo a Japón', descripcion: 'Descubrirte a ti mismo' },
-    { titulo: 'Retiro de meditación', descripcion: 'Conectar contigo' },
-    { titulo: 'Hacer el Camino de Santiago solo', descripcion: 'Un reto personal' },
-  ],
-}
-
-function getSugeridos(intereses: InterId[], compania: CompaniaId[]) {
-  const pool: { titulo: string; descripcion: string }[] = []
+function getSugeridos(intereses: InterId[]) {
+  const pool: { titulo: string }[] = []
   for (const id of intereses) pool.push(...PLANES_SUGERIDOS[id])
-  for (const c of compania) pool.push(...PLANES_POR_COMPANIA[c])
+  // Shuffle
   for (let i = pool.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
     ;[pool[i], pool[j]] = [pool[j], pool[i]]
   }
+  // Dedupe by title, take first 5
   const seen = new Set<string>()
-  const result: { titulo: string; descripcion: string }[] = []
+  const result: { titulo: string }[] = []
   for (const p of pool) {
-    if (!seen.has(p.titulo) && result.length < 4) { seen.add(p.titulo); result.push(p) }
+    if (!seen.has(p.titulo) && result.length < 5) { seen.add(p.titulo); result.push(p) }
   }
   return result
 }
@@ -133,7 +125,7 @@ export default function OnboardingPage() {
   const [conQuien, setConQuien] = useState<CompaniaId[]>([])
 
   // Screen 4 — planes sugeridos
-  const [sugeridos, setSugeridos] = useState<{ titulo: string; descripcion: string }[]>([])
+  const [sugeridos, setSugeridos] = useState<{ titulo: string }[]>([])
   const [addedPlans, setAddedPlans] = useState<Set<number>>(new Set())
   const [addingPlan, setAddingPlan] = useState<number | null>(null)
   const [finishing, setFinishing] = useState(false)
@@ -190,7 +182,7 @@ export default function OnboardingPage() {
   }, [username, checkUsername])
 
   const advance = (next: number) => {
-    if (next === 4) setSugeridos(getSugeridos(intereses, conQuien))
+    if (next === 4) setSugeridos(getSugeridos(intereses))
     setScreen(next)
   }
 
@@ -198,7 +190,7 @@ export default function OnboardingPage() {
     setConQuien(prev => prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id])
   }
 
-  const handleAddPlan = async (plan: { titulo: string; descripcion: string }, idx: number) => {
+  const handleAddPlan = async (plan: { titulo: string }, idx: number) => {
     setAddingPlan(idx)
     let cq: ConQuien = 'todos'
     if (conQuien.length === 1) {
@@ -500,9 +492,6 @@ export default function OnboardingPage() {
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <p style={{ fontSize: 14, fontWeight: 600, color: added ? '#888888' : '#F0F0F0', lineHeight: 1.3, margin: 0 }}>
                         {plan.titulo}
-                      </p>
-                      <p style={{ fontSize: 12, color: '#666666', marginTop: 3, marginBottom: 0 }}>
-                        {plan.descripcion}
                       </p>
                     </div>
                     <button
