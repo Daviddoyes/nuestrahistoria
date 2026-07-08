@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { X, Check, Trash2, LogOut } from 'lucide-react'
-import { leavePlan } from '@/lib/actions'
+import { X, Check, Trash2, LogOut, Globe, Copy } from 'lucide-react'
+import { leavePlan, setPlanPublico } from '@/lib/actions'
 import { createClient } from '@/lib/supabase/client'
 import SharePlanImage from './SharePlanImage'
 import type { Plan } from '@/types/planes'
@@ -60,6 +60,12 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
   const [resultados, setResultados] = useState<Usuario[]>([])
   const [invitadosPendientes, setInvitadosPendientes] = useState<Usuario[]>([])
   const [invitando, setInvitando] = useState(false)
+
+  const [publico, setPublico] = useState<boolean>(plan.publico ?? false)
+  const [togglingPublico, setTogglingPublico] = useState(false)
+  const [linkCopiado, setLinkCopiado] = useState(false)
+
+  const planUrl = `https://livestory.app/plan/${plan.id}`
 
   useEffect(() => {
     const cargarParticipantes = async () => {
@@ -144,6 +150,26 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
     onDeleted()
   }
 
+  const handleTogglePublico = async () => {
+    const next = !publico
+    setTogglingPublico(true)
+    setPublico(next) // optimistic
+    const result = await setPlanPublico(plan.id, next)
+    setTogglingPublico(false)
+    if (!result.success) {
+      setPublico(!next) // revert on failure
+      return
+    }
+    onUpdate()
+  }
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(planUrl).then(() => {
+      setLinkCopiado(true)
+      setTimeout(() => setLinkCopiado(false), 2000)
+    })
+  }
+
   const myRole = participantes.find(p => p.user_id === currentUserId)?.estado
   const isOwner = myRole === 'owner' || plan.pareja_codigo === currentUserId
   const isParticipant = myRole === 'aceptado' && plan.pareja_codigo !== currentUserId
@@ -187,6 +213,51 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Public toggle — owner only */}
+          {isOwner && (
+            <div className="mb-6">
+              <div className="flex items-center justify-between min-h-[44px]">
+                <div className="flex items-center gap-2">
+                  <Globe className="w-4 h-4 text-[#E8692A]" />
+                  <span className="text-sm text-[#F0F0F0]">{publico ? 'Público' : 'Privado'}</span>
+                </div>
+                <button
+                  role="switch"
+                  aria-checked={publico}
+                  aria-label="Plan público"
+                  onClick={handleTogglePublico}
+                  disabled={togglingPublico}
+                  className="relative rounded-full transition-colors disabled:opacity-50"
+                  style={{
+                    width: 44, height: 26,
+                    background: publico ? '#E8692A' : '#2A2A2A',
+                    flexShrink: 0,
+                  }}
+                >
+                  <span
+                    className="absolute top-[3px] rounded-full bg-white transition-all"
+                    style={{ width: 20, height: 20, left: publico ? 21 : 3 }}
+                  />
+                </button>
+              </div>
+
+              {publico && (
+                <div className="mt-3 space-y-3">
+                  <p className="text-xs text-[#666666] leading-relaxed">
+                    Cualquiera con el link puede solicitar unirse. Compártelo en tus Instagram Stories.
+                  </p>
+                  <button
+                    onClick={handleCopyLink}
+                    className="w-full py-3 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] text-sm font-medium min-h-[44px] flex items-center justify-center gap-2 active:bg-[#222222] transition-colors"
+                  >
+                    {linkCopiado ? <Check className="w-4 h-4 text-[#E8692A]" /> : <Copy className="w-4 h-4" />}
+                    {linkCopiado ? '¡Link copiado!' : 'Copiar link del plan'}
+                  </button>
+                </div>
+              )}
             </div>
           )}
 

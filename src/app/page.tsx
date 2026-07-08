@@ -39,6 +39,14 @@ export default function AuthPage() {
       return
     }
 
+    // Return the user to a pending destination (e.g. a public plan link)
+    const redirect = localStorage.getItem('post_login_redirect')
+    if (redirect) {
+      localStorage.removeItem('post_login_redirect')
+      router.push(redirect)
+      return
+    }
+
     const { data: profile } = await supabase
       .from('profiles')
       .select('pareja_id, onboarding_completado')

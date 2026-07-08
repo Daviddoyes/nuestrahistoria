@@ -13,6 +13,8 @@ export type Plan = {
   con_quien: ConQuien
   orden: number
   created_at: string
+  publico?: boolean
+  descripcion_publica?: string | null
 }
 
 export type NewPlan = Omit<Plan, 'id' | 'created_at'>
@@ -40,7 +42,7 @@ export type PlanParticipante = {
   plan_id: string
   user_id: string
   nombre_usuario: string | null
-  estado: 'owner' | 'invitado' | 'aceptado' | 'pendiente'
+  estado: 'owner' | 'invitado' | 'aceptado' | 'pendiente' | 'solicitado' | 'rechazado'
   foto_url: string | null
   historia_descripcion: string | null
   fecha_momento: string | null
@@ -52,4 +54,25 @@ export type InvitacionPendiente = {
   plan_id: string
   plan_titulo: string
   invitado_por: string
+}
+
+export type SolicitudPendiente = {
+  participante_id: string
+  plan_id: string
+  plan_titulo: string
+  nombre_usuario: string
+  foto_perfil_url: string | null
+}
+
+export type PublicPlan = {
+  id: string
+  titulo: string
+  descripcion_publica: string | null
+  creador_nombre: string
+  creador_username: string | null
+  creador_foto: string | null
+  participantes: { nombre: string; foto: string | null }[]
+  // Viewer context, computed server-side
+  loggedIn: boolean
+  viewerEstado: 'participante' | 'solicitado' | 'ninguno'
 }

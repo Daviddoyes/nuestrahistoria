@@ -10,6 +10,7 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith('/reset-password') ||
     pathname.startsWith('/pricing') ||
     pathname.startsWith('/admin') ||
+    pathname.startsWith('/plan') ||
     pathname.startsWith('/api/')
 
   if (isPublic) {

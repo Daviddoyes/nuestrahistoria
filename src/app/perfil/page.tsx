@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { Camera, LogOut, Plus, Copy, Check, X, Share2, ListTodo, ChevronRight } from 'lucide-react'
+import { Camera, LogOut, Plus, Copy, Check, X, Share2, ListTodo, ChevronRight, Globe } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import {
   getMyData,
@@ -11,6 +11,8 @@ import {
   deletePlan,
   acceptInvitation,
   rejectInvitation,
+  getSolicitudes,
+  resolverSolicitud,
 } from '@/lib/actions'
 import NuevoPlanModal from '@/components/NuevoPlanModal'
 import PlanDetailModal from '@/components/PlanDetailModal'
@@ -19,7 +21,7 @@ import CompletarPlanModal from '@/components/CompletarPlanModal'
 import ShareBucketList from '@/components/ShareBucketList'
 import ShareStoryImage from '@/components/ShareStoryImage'
 import BottomNav from '@/components/BottomNav'
-import type { Plan, Profile, InvitacionPendiente } from '@/types/planes'
+import type { Plan, Profile, InvitacionPendiente, SolicitudPendiente } from '@/types/planes'
 
 type Tab = 'planes' | 'historias'
 
@@ -54,6 +56,8 @@ export default function PerfilPage() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [planes, setPlanes] = useState<Plan[]>([])
   const [invitaciones, setInvitaciones] = useState<InvitacionPendiente[]>([])
+  const [solicitudes, setSolicitudes] = useState<SolicitudPendiente[]>([])
+  const [processingSol, setProcessingSol] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [uploadingFoto, setUploadingFoto] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -120,6 +124,10 @@ export default function PerfilPage() {
       } else {
         setInvitaciones([])
       }
+
+      // Join requests for plans owned by the current user
+      const sols = await getSolicitudes()
+      setSolicitudes(sols)
     } catch (e) {
       console.error(e)
     } finally {
@@ -222,6 +230,14 @@ export default function PerfilPage() {
     setProcessingInv(null)
   }
 
+  const handleResolverSolicitud = async (participanteId: string, aceptar: boolean) => {
+    setProcessingSol(participanteId)
+    await resolverSolicitud(participanteId, aceptar)
+    setSolicitudes(prev => prev.filter(s => s.participante_id !== participanteId))
+    setProcessingSol(null)
+    if (aceptar) await fetchData()
+  }
+
   const openHistoriaShare = () => {
     setHistoriaToShare(historias[0] ?? null)
     setShowHistoriaShare(true)
@@ -282,6 +298,48 @@ export default function PerfilPage() {
           ))}
         </div>
       )}
+
+      {/* ── Join request banner (one at a time) ───────────── */}
+      {solicitudes.length > 0 && (() => {
+        const sol = solicitudes[0]
+        return (
+          <div className="flex-shrink-0 px-3 py-2">
+            <div
+              className="bg-[#1A1A1A] rounded-xl px-3.5 py-3"
+              style={{ borderLeft: '3px solid #E8692A' }}
+            >
+              {solicitudes.length > 1 && (
+                <p className="text-[10px] uppercase tracking-[0.12em] text-[#666666] mb-2">
+                  1 de {solicitudes.length} solicitudes pendientes
+                </p>
+              )}
+              <div className="flex items-center gap-2.5">
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] text-[#666666] leading-snug">
+                    <span className="text-[#F0F0F0] font-medium">{sol.nombre_usuario}</span> quiere unirse a:
+                  </p>
+                  <p className="text-sm font-medium text-[#F0F0F0] truncate mt-0.5">{sol.plan_titulo}</p>
+                </div>
+                <button
+                  onClick={() => handleResolverSolicitud(sol.participante_id, false)}
+                  disabled={processingSol === sol.participante_id}
+                  className="w-9 h-9 rounded-lg border border-[#2A2A2A] flex items-center justify-center text-[#555555] active:text-[#C97B7B] active:bg-[#8B3A3A]/10 disabled:opacity-40 flex-shrink-0"
+                  aria-label="Rechazar"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => handleResolverSolicitud(sol.participante_id, true)}
+                  disabled={processingSol === sol.participante_id}
+                  className="px-3.5 h-9 rounded-lg bg-[#E8692A] text-white text-xs font-semibold active:bg-[#D4581A] disabled:opacity-40 flex-shrink-0 whitespace-nowrap"
+                >
+                  Aceptar
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
 
       {/* ── Profile row ───────────────────────────────────── */}
       <div className="flex-shrink-0 flex items-center gap-3 px-4 py-3 border-b border-[#1A1A1A]">
@@ -402,8 +460,11 @@ export default function PerfilPage() {
                       }}
                     >
                       <div style={{ flex: 1, minWidth: 0, paddingRight: 8 }}>
-                        <p style={{ fontSize: 15, color: '#F0F0F0', fontWeight: 500, lineHeight: 1.4 }}>
-                          {plan.titulo}
+                        <p style={{ fontSize: 15, color: '#F0F0F0', fontWeight: 500, lineHeight: 1.4, display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                          <span>{plan.titulo}</span>
+                          {plan.publico && (
+                            <Globe size={12} color="#E8692A" aria-label="Plan público" style={{ flexShrink: 0 }} />
+                          )}
                         </p>
                         {isShared && (
                           <p style={{ fontSize: 9, color: '#E8692A', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: 3 }}>

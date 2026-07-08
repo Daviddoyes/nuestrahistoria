@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { createServiceRoleClient } from '@/lib/supabase-server'
-import type { Plan, Profile, ConQuien, InvitacionPendiente } from '@/types/planes'
+import type { Plan, Profile, ConQuien, InvitacionPendiente, SolicitudPendiente, PublicPlan } from '@/types/planes'
 
 export async function getMyData(): Promise<{
   planes: Plan[]
@@ -314,6 +314,296 @@ export async function leavePlan(planId: string): Promise<void> {
     .eq('plan_id', planId)
     .eq('user_id', user.id)
   revalidatePath('/perfil')
+}
+
+// ─────────────────────────────────────────────────────────────
+// Public plans
+// ─────────────────────────────────────────────────────────────
+
+export async function setPlanPublico(
+  planId: string,
+  publico: boolean
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const serverSupa = await createServerClient()
+    const { data: { user } } = await serverSupa.auth.getUser()
+    if (!user) return { success: false, error: 'No autenticado' }
+
+    const service = createServiceRoleClient()
+
+    // Only the owner of the plan may change its visibility
+    const { data: plan } = await service
+      .from('planes')
+      .select('pareja_codigo')
+      .eq('id', planId)
+      .single()
+
+    if (!plan || (plan as { pareja_codigo: string }).pareja_codigo !== user.id) {
+      return { success: false, error: 'No autorizado' }
+    }
+
+    const { error } = await service
+      .from('planes')
+      .update({ publico })
+      .eq('id', planId)
+
+    if (error) return { success: false, error: error.message }
+
+    revalidatePath('/perfil')
+    revalidatePath(`/plan/${planId}`)
+    return { success: true }
+  } catch (e) {
+    return { success: false, error: String(e) }
+  }
+}
+
+export async function getPublicPlan(planId: string): Promise<PublicPlan | null> {
+  const service = createServiceRoleClient()
+
+  const { data: plan } = await service
+    .from('planes')
+    .select('id, titulo, publico, descripcion_publica, pareja_codigo, creado_por')
+    .eq('id', planId)
+    .single()
+
+  const p = plan as {
+    id: string
+    titulo: string
+    publico: boolean | null
+    descripcion_publica: string | null
+    pareja_codigo: string
+    creado_por: string
+  } | null
+
+  // Not public or non-existent → treat as unavailable
+  if (!p || !p.publico) return null
+
+  // Creator profile
+  const { data: creador } = await service
+    .from('profiles')
+    .select('nombre, username, foto_perfil_url')
+    .eq('id', p.pareja_codigo)
+    .single()
+
+  const creadorProfile = creador as
+    | { nombre: string | null; username: string | null; foto_perfil_url: string | null }
+    | null
+
+  // Members who have joined (owner + accepted)
+  const { data: parts } = await service
+    .from('plan_participantes')
+    .select('user_id, nombre_usuario, estado')
+    .eq('plan_id', planId)
+
+  const allParts = (parts ?? []) as {
+    user_id: string
+    nombre_usuario: string | null
+    estado: string
+  }[]
+
+  const miembros = allParts.filter(pt => pt.estado === 'owner' || pt.estado === 'aceptado')
+
+  // Attach avatars
+  const fotoMap: Record<string, string | null> = {}
+  const miembroIds = miembros.map(m => m.user_id)
+  if (miembroIds.length > 0) {
+    const { data: perfiles } = await service
+      .from('profiles')
+      .select('id, foto_perfil_url')
+      .in('id', miembroIds)
+    for (const pf of (perfiles ?? []) as { id: string; foto_perfil_url: string | null }[]) {
+      fotoMap[pf.id] = pf.foto_perfil_url
+    }
+  }
+
+  const participantes = miembros.map(m => ({
+    nombre: m.nombre_usuario ?? 'Usuario',
+    foto: fotoMap[m.user_id] ?? null,
+  }))
+
+  // Viewer context
+  const serverSupa = await createServerClient()
+  const { data: { user } } = await serverSupa.auth.getUser()
+
+  let viewerEstado: PublicPlan['viewerEstado'] = 'ninguno'
+  if (user) {
+    const mine = allParts.find(pt => pt.user_id === user.id)
+    if (mine) {
+      if (mine.estado === 'owner' || mine.estado === 'aceptado') viewerEstado = 'participante'
+      else if (mine.estado === 'solicitado') viewerEstado = 'solicitado'
+    }
+  }
+
+  return {
+    id: p.id,
+    titulo: p.titulo,
+    descripcion_publica: p.descripcion_publica,
+    creador_nombre: creadorProfile?.nombre ?? p.creado_por ?? 'Alguien',
+    creador_username: creadorProfile?.username ?? null,
+    creador_foto: creadorProfile?.foto_perfil_url ?? null,
+    participantes,
+    loggedIn: !!user,
+    viewerEstado,
+  }
+}
+
+export async function requestJoinPlan(
+  planId: string
+): Promise<{ success: boolean; estado?: PublicPlan['viewerEstado']; error?: string; needsLogin?: boolean }> {
+  try {
+    const serverSupa = await createServerClient()
+    const { data: { user } } = await serverSupa.auth.getUser()
+    if (!user) return { success: false, needsLogin: true }
+
+    const service = createServiceRoleClient()
+
+    // Plan must exist and be public
+    const { data: plan } = await service
+      .from('planes')
+      .select('publico')
+      .eq('id', planId)
+      .single()
+
+    if (!plan || !(plan as { publico: boolean | null }).publico) {
+      return { success: false, error: 'Este plan no está disponible.' }
+    }
+
+    // Already related to this plan?
+    const { data: existing } = await service
+      .from('plan_participantes')
+      .select('id, estado')
+      .eq('plan_id', planId)
+      .eq('user_id', user.id)
+      .maybeSingle()
+
+    const ex = existing as { id: string; estado: string } | null
+    if (ex) {
+      if (ex.estado === 'owner' || ex.estado === 'aceptado') {
+        return { success: true, estado: 'participante' }
+      }
+      // Re-activate a previous request/rejection as a fresh request
+      await service
+        .from('plan_participantes')
+        .update({ estado: 'solicitado' })
+        .eq('id', ex.id)
+      return { success: true, estado: 'solicitado' }
+    }
+
+    const { data: profile } = await service
+      .from('profiles')
+      .select('nombre')
+      .eq('id', user.id)
+      .single()
+
+    const { error } = await service.from('plan_participantes').insert({
+      plan_id: planId,
+      user_id: user.id,
+      nombre_usuario: (profile as { nombre: string | null } | null)?.nombre ?? user.email ?? 'Usuario',
+      estado: 'solicitado',
+    })
+
+    if (error) return { success: false, error: error.message }
+
+    revalidatePath(`/plan/${planId}`)
+    return { success: true, estado: 'solicitado' }
+  } catch (e) {
+    return { success: false, error: String(e) }
+  }
+}
+
+export async function getSolicitudes(): Promise<SolicitudPendiente[]> {
+  const serverSupa = await createServerClient()
+  const { data: { user } } = await serverSupa.auth.getUser()
+  if (!user) return []
+
+  const service = createServiceRoleClient()
+
+  // Plans owned by the current user
+  const { data: ownPlanes } = await service
+    .from('planes')
+    .select('id, titulo')
+    .eq('pareja_codigo', user.id)
+
+  const planes = (ownPlanes ?? []) as { id: string; titulo: string }[]
+  if (planes.length === 0) return []
+
+  const planIds = planes.map(p => p.id)
+  const tituloMap = Object.fromEntries(planes.map(p => [p.id, p.titulo]))
+
+  const { data: solicitudes } = await service
+    .from('plan_participantes')
+    .select('id, plan_id, user_id, nombre_usuario')
+    .eq('estado', 'solicitado')
+    .in('plan_id', planIds)
+
+  const rows = (solicitudes ?? []) as {
+    id: string
+    plan_id: string
+    user_id: string
+    nombre_usuario: string | null
+  }[]
+  if (rows.length === 0) return []
+
+  // Avatars for requesters
+  const userIds = [...new Set(rows.map(r => r.user_id))]
+  const { data: perfiles } = await service
+    .from('profiles')
+    .select('id, foto_perfil_url')
+    .in('id', userIds)
+  const fotoMap = Object.fromEntries(
+    ((perfiles ?? []) as { id: string; foto_perfil_url: string | null }[]).map(pf => [pf.id, pf.foto_perfil_url])
+  )
+
+  return rows.map(r => ({
+    participante_id: r.id,
+    plan_id: r.plan_id,
+    plan_titulo: tituloMap[r.plan_id] ?? 'Plan',
+    nombre_usuario: r.nombre_usuario ?? 'Alguien',
+    foto_perfil_url: fotoMap[r.user_id] ?? null,
+  }))
+}
+
+export async function resolverSolicitud(
+  participanteId: string,
+  aceptar: boolean
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const serverSupa = await createServerClient()
+    const { data: { user } } = await serverSupa.auth.getUser()
+    if (!user) return { success: false, error: 'No autenticado' }
+
+    const service = createServiceRoleClient()
+
+    // Verify the request belongs to a plan owned by the current user
+    const { data: row } = await service
+      .from('plan_participantes')
+      .select('plan_id')
+      .eq('id', participanteId)
+      .single()
+
+    const planId = (row as { plan_id: string } | null)?.plan_id
+    if (!planId) return { success: false, error: 'Solicitud no encontrada' }
+
+    const { data: plan } = await service
+      .from('planes')
+      .select('pareja_codigo')
+      .eq('id', planId)
+      .single()
+
+    if (!plan || (plan as { pareja_codigo: string }).pareja_codigo !== user.id) {
+      return { success: false, error: 'No autorizado' }
+    }
+
+    await service
+      .from('plan_participantes')
+      .update({ estado: aceptar ? 'aceptado' : 'rechazado' })
+      .eq('id', participanteId)
+
+    revalidatePath('/perfil')
+    return { success: true }
+  } catch (e) {
+    return { success: false, error: String(e) }
+  }
 }
 
 export async function searchUsers(
