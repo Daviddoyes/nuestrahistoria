@@ -1,23 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createServiceRoleClient } from '@/lib/supabase-server'
+import { resolveMagicToken } from '@/lib/subscription'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
-// Given an email, create a Stripe Billing Portal session and return its URL.
+// Create a Stripe Billing Portal session. Requires a valid magic-link token —
+// the email is derived from the token, never trusted from the request body.
 export async function POST(request: NextRequest) {
   try {
-    const { email } = await request.json()
+    const { token } = await request.json()
 
-    if (!email || typeof email !== 'string') {
-      return NextResponse.json({ error: 'Introduce un email válido' }, { status: 400 })
+    const email = await resolveMagicToken(token)
+    if (!email) {
+      return NextResponse.json({ error: 'Enlace no válido o caducado' }, { status: 401 })
     }
 
     const service = createServiceRoleClient()
     const { data: profile } = await service
       .from('profiles')
       .select('stripe_customer_id')
-      .eq('email', email.trim().toLowerCase())
+      .eq('email', email)
       .maybeSingle()
 
     if (!profile?.stripe_customer_id) {

@@ -1,25 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createServiceRoleClient } from '@/lib/supabase-server'
+import { resolveMagicToken } from '@/lib/subscription'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
-// Given an email, cancel the user's subscription at the end of the current period.
-// The user keeps access until their renewal date; the webhook flips the plan to
-// 'free' when Stripe finally deletes the subscription.
+// Cancel the subscription at period end. Requires a valid magic-link token — the
+// email is derived from the token, never trusted from the request body. The user
+// keeps access until their renewal date; the webhook flips the plan to 'free' when
+// Stripe finally deletes the subscription.
 export async function POST(request: NextRequest) {
   try {
-    const { email } = await request.json()
+    const { token } = await request.json()
 
-    if (!email || typeof email !== 'string') {
-      return NextResponse.json({ error: 'Introduce un email válido' }, { status: 400 })
+    const email = await resolveMagicToken(token)
+    if (!email) {
+      return NextResponse.json({ error: 'Enlace no válido o caducado' }, { status: 401 })
     }
 
     const service = createServiceRoleClient()
     const { data: profile } = await service
       .from('profiles')
       .select('stripe_subscription_id')
-      .eq('email', email.trim().toLowerCase())
+      .eq('email', email)
       .maybeSingle()
 
     if (!profile?.stripe_subscription_id) {

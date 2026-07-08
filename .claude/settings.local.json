@@ -36,7 +36,14 @@
       "Bash(node -e \"const fs=require\\('fs'\\); const s=fs.statSync\\('public/apple-splash-screen.png'\\); console.log\\('size:', s.size, 'bytes'\\)\")",
       "Bash(node -e \"const l = require\\('lucide-react'\\); console.log\\('BookImage:', !!l.BookImage, 'Images:', !!l.Images, 'GalleryVertical:', !!l.GalleryVertical\\)\")",
       "Bash(find node_modules/next/dist/docs/01-app/03-api-reference -iname *route*)",
-      "Bash(npx eslint *)"
+      "Bash(npx eslint *)",
+      "Bash(ls prisma *)",
+      "Bash(ls supabase *)",
+      "Bash(ls node_modules/resend)",
+      "Bash(ls node_modules/.prisma)",
+      "Bash(git rm *)",
+      "Bash(npx next *)",
+      "Bash(git check-ignore *)"
     ]
   }
 }
