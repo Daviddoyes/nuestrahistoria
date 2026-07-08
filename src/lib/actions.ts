@@ -502,7 +502,12 @@ export async function requestJoinPlan(
       estado: 'solicitado',
     })
 
-    if (error) return { success: false, error: error.message }
+    if (error) {
+      // Most likely cause: a CHECK constraint on plan_participantes.estado that
+      // doesn't allow 'solicitado'. Surface it instead of failing silently.
+      console.error('[requestJoinPlan] insert failed:', error.message)
+      return { success: false, error: error.message }
+    }
 
     revalidatePath(`/plan/${planId}`)
     return { success: true, estado: 'solicitado' }
@@ -525,16 +530,19 @@ export async function getSolicitudes(): Promise<SolicitudPendiente[]> {
     .eq('pareja_codigo', user.id)
 
   const planes = (ownPlanes ?? []) as { id: string; titulo: string }[]
+  console.log('[solicitudes] user:', user.id, 'planes propios:', planes.length)
   if (planes.length === 0) return []
 
   const planIds = planes.map(p => p.id)
   const tituloMap = Object.fromEntries(planes.map(p => [p.id, p.titulo]))
 
-  const { data: solicitudes } = await service
+  const { data: solicitudes, error: solError } = await service
     .from('plan_participantes')
     .select('id, plan_id, user_id, nombre_usuario')
     .eq('estado', 'solicitado')
     .in('plan_id', planIds)
+
+  console.log('[solicitudes]', solicitudes, solError ?? '')
 
   const rows = (solicitudes ?? []) as {
     id: string

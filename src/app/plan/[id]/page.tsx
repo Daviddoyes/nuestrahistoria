@@ -30,6 +30,7 @@ export default function PublicPlanPage({ params }: { params: Promise<{ id: strin
   const [estado, setEstado] = useState<PublicPlan['viewerEstado']>('ninguno')
   const [joining, setJoining] = useState(false)
   const [justSubmitted, setJustSubmitted] = useState(false)
+  const [joinError, setJoinError] = useState<string | null>(null)
 
   useEffect(() => {
     let active = true
@@ -51,9 +52,14 @@ export default function PublicPlanPage({ params }: { params: Promise<{ id: strin
 
   const handleSolicitar = async () => {
     setJoining(true)
+    setJoinError(null)
     const result = await requestJoinPlan(id)
     setJoining(false)
     if (result.needsLogin) { handleUnete(); return }
+    if (!result.success) {
+      setJoinError(result.error ?? 'No se pudo enviar la solicitud. Inténtalo de nuevo.')
+      return
+    }
     if (result.success && result.estado) {
       setEstado(result.estado)
       if (result.estado === 'solicitado') setJustSubmitted(true)
@@ -159,13 +165,20 @@ export default function PublicPlanPage({ params }: { params: Promise<{ id: strin
           )}
 
           {plan.loggedIn && estado === 'ninguno' && (
-            <button
-              onClick={handleSolicitar}
-              disabled={joining}
-              className="w-full py-4 bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl text-sm font-semibold min-h-[44px] transition-colors"
-            >
-              {joining ? 'Enviando...' : 'Solicitar unirme'}
-            </button>
+            <>
+              <button
+                onClick={handleSolicitar}
+                disabled={joining}
+                className="w-full py-4 bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl text-sm font-semibold min-h-[44px] transition-colors"
+              >
+                {joining ? 'Enviando...' : 'Solicitar unirme'}
+              </button>
+              {joinError && (
+                <p className="mt-3 text-sm text-[#C97B7B] bg-[#8B3A3A]/20 px-3 py-2 rounded-lg text-center">
+                  {joinError}
+                </p>
+              )}
+            </>
           )}
         </div>
       </div>
