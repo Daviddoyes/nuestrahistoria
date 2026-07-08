@@ -276,20 +276,6 @@ export default function AuthPage() {
           )}
         </div>
 
-        <footer className="w-full max-w-sm mx-auto mt-12 pt-6 border-t border-[#1A1A1A]">
-          <nav className="flex items-center justify-center gap-x-5 gap-y-2 flex-wrap text-xs text-[#666666]">
-            <a href="/cuenta" className="active:text-[#E8692A] transition-colors">
-              Gestionar suscripción
-            </a>
-            <a href="/privacidad" className="active:text-[#E8692A] transition-colors">
-              Privacidad
-            </a>
-            <a href="/terminos" className="active:text-[#E8692A] transition-colors">
-              Términos
-            </a>
-          </nav>
-        </footer>
-
       </main>
 
       {/* Forgot password modal */}
