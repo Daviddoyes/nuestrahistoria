@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { X, Check, Trash2, LogOut, Globe, Copy } from 'lucide-react'
-import { leavePlan, setPlanPublico } from '@/lib/actions'
+import { X, Check, Trash2, LogOut, Globe, Copy, Pencil } from 'lucide-react'
+import { leavePlan, setPlanPublico, updatePlanDescripcion } from '@/lib/actions'
 import { createClient } from '@/lib/supabase/client'
 import SharePlanImage from './SharePlanImage'
 import type { Plan } from '@/types/planes'
@@ -60,6 +60,11 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
   const [resultados, setResultados] = useState<Usuario[]>([])
   const [invitadosPendientes, setInvitadosPendientes] = useState<Usuario[]>([])
   const [invitando, setInvitando] = useState(false)
+
+  const [descripcion, setDescripcion] = useState<string | null>(plan.descripcion ?? null)
+  const [editandoDesc, setEditandoDesc] = useState(false)
+  const [descDraft, setDescDraft] = useState('')
+  const [guardandoDesc, setGuardandoDesc] = useState(false)
 
   const [publico, setPublico] = useState<boolean>(plan.publico ?? false)
   const [togglingPublico, setTogglingPublico] = useState(false)
@@ -170,6 +175,22 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
     })
   }
 
+  const handleStartEditDesc = () => {
+    setDescDraft(descripcion ?? '')
+    setEditandoDesc(true)
+  }
+
+  const handleSaveDesc = async () => {
+    const value = descDraft.trim() || null
+    setGuardandoDesc(true)
+    const result = await updatePlanDescripcion(plan.id, value)
+    setGuardandoDesc(false)
+    if (!result.success) return
+    setDescripcion(value)
+    setEditandoDesc(false)
+    onUpdate()
+  }
+
   const myRole = participantes.find(p => p.user_id === currentUserId)?.estado
   const isOwner = myRole === 'owner' || plan.pareja_codigo === currentUserId
   const isParticipant = myRole === 'aceptado' && plan.pareja_codigo !== currentUserId
@@ -194,7 +215,64 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
           style={{ paddingBottom: 'max(3rem, env(safe-area-inset-bottom, 0px))' }}
         >
           <p className="text-[10px] uppercase tracking-[0.15em] text-[#E8692A] mb-3">Plan pendiente</p>
-          <h2 className="font-serif text-2xl font-bold text-[#F0F0F0] leading-snug mb-6">{plan.titulo}</h2>
+          <h2 className="font-serif text-2xl font-bold text-[#F0F0F0] leading-snug mb-4">{plan.titulo}</h2>
+
+          {/* Description */}
+          {editandoDesc ? (
+            <div className="mb-6">
+              <textarea
+                value={descDraft}
+                onChange={e => setDescDraft(e.target.value)}
+                placeholder="Cuéntanos más sobre este plan..."
+                rows={3}
+                autoFocus
+                className="w-full px-4 py-3 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-sm resize-none"
+              />
+              <div className="flex gap-3 mt-3">
+                <button
+                  type="button"
+                  onClick={() => setEditandoDesc(false)}
+                  disabled={guardandoDesc}
+                  className="flex-1 py-3 rounded-xl border border-[#2A2A2A] text-[#666666] active:bg-[#1A1A1A] text-sm min-h-[44px] disabled:opacity-40"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSaveDesc}
+                  disabled={guardandoDesc}
+                  className="flex-1 py-3 rounded-xl bg-[#E8692A] active:bg-[#D4581A] text-white text-sm font-semibold min-h-[44px] disabled:opacity-40"
+                >
+                  {guardandoDesc ? 'Guardando...' : 'Guardar'}
+                </button>
+              </div>
+            </div>
+          ) : descripcion ? (
+            <div className="flex items-start gap-2 mb-6">
+              <p style={{ color: '#999999', fontSize: 14, lineHeight: 1.6 }} className="flex-1 whitespace-pre-wrap">
+                {descripcion}
+              </p>
+              {isOwner && (
+                <button
+                  type="button"
+                  onClick={handleStartEditDesc}
+                  aria-label="Editar descripción"
+                  className="flex-shrink-0 p-1.5 -mr-1 text-[#666666] active:text-[#E8692A]"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+          ) : isOwner ? (
+            <button
+              type="button"
+              onClick={handleStartEditDesc}
+              className="flex items-center gap-1.5 mb-6 text-[13px] text-[#666666] active:text-[#E8692A]"
+            >
+              <Pencil className="w-3.5 h-3.5" />
+              Añadir descripción
+            </button>
+          ) : null}
 
           <div className="h-px bg-[#2A2A2A] mb-6" />
 

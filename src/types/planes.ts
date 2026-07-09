@@ -67,6 +67,7 @@ export type SolicitudPendiente = {
 export type PublicPlan = {
   id: string
   titulo: string
+  descripcion: string | null
   descripcion_publica: string | null
   creador_nombre: string
   creador_username: string | null

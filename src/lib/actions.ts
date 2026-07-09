@@ -176,6 +176,43 @@ export async function addPlan(
   }
 }
 
+export async function updatePlanDescripcion(
+  id: string,
+  descripcion: string | null
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const serverSupa = await createServerClient()
+    const { data: { user } } = await serverSupa.auth.getUser()
+    if (!user) return { success: false, error: 'No autenticado' }
+
+    const service = createServiceRoleClient()
+
+    // Only the owner of the plan may edit its description
+    const { data: plan } = await service
+      .from('planes')
+      .select('pareja_codigo')
+      .eq('id', id)
+      .single()
+
+    if (!plan || (plan as { pareja_codigo: string }).pareja_codigo !== user.id) {
+      return { success: false, error: 'No autorizado' }
+    }
+
+    const { error } = await service
+      .from('planes')
+      .update({ descripcion })
+      .eq('id', id)
+
+    if (error) return { success: false, error: error.message }
+
+    revalidatePath('/perfil')
+    revalidatePath(`/plan/${id}`)
+    return { success: true }
+  } catch (e) {
+    return { success: false, error: String(e) }
+  }
+}
+
 export async function completarPlan(
   id: string,
   historiaDescripcion: string,
@@ -362,7 +399,7 @@ export async function getPublicPlan(planId: string): Promise<PublicPlan | null> 
 
   const { data: plan } = await service
     .from('planes')
-    .select('id, titulo, publico, descripcion_publica, pareja_codigo, creado_por')
+    .select('id, titulo, publico, descripcion, descripcion_publica, pareja_codigo, creado_por')
     .eq('id', planId)
     .single()
 
@@ -370,6 +407,7 @@ export async function getPublicPlan(planId: string): Promise<PublicPlan | null> 
     id: string
     titulo: string
     publico: boolean | null
+    descripcion: string | null
     descripcion_publica: string | null
     pareja_codigo: string
     creado_por: string
@@ -437,6 +475,7 @@ export async function getPublicPlan(planId: string): Promise<PublicPlan | null> 
   return {
     id: p.id,
     titulo: p.titulo,
+    descripcion: p.descripcion,
     descripcion_publica: p.descripcion_publica,
     creador_nombre: creadorProfile?.nombre ?? p.creado_por ?? 'Alguien',
     creador_username: creadorProfile?.username ?? null,

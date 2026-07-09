@@ -9,7 +9,7 @@ type InvitadoResult = { id: string; nombre: string; username: string; foto_perfi
 type Props = {
   currentUserId: string
   onClose: () => void
-  onSubmit: (titulo: string, invitadoIds: string[]) => Promise<void>
+  onSubmit: (titulo: string, descripcion: string, invitadoIds: string[]) => Promise<void>
 }
 
 function Avatar({ item }: { item: InvitadoResult }) {
@@ -26,6 +26,7 @@ function Avatar({ item }: { item: InvitadoResult }) {
 export default function NuevoPlanModal({ currentUserId, onClose, onSubmit }: Props) {
   const supabase = useMemo(() => createClient(), [])
   const [titulo, setTitulo] = useState('')
+  const [descripcion, setDescripcion] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -67,7 +68,7 @@ export default function NuevoPlanModal({ currentUserId, onClose, onSubmit }: Pro
     setLoading(true)
     setError('')
     try {
-      await onSubmit(titulo.trim(), invitados.map(i => i.id))
+      await onSubmit(titulo.trim(), descripcion.trim(), invitados.map(i => i.id))
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al guardar el plan')
     } finally {
@@ -107,6 +108,20 @@ export default function NuevoPlanModal({ currentUserId, onClose, onSubmit }: Pro
               placeholder="¿Qué quieres vivir?"
               className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-base"
               autoFocus
+            />
+          </div>
+
+          <div>
+            <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-1.5">
+              Descripción
+              <span className="text-[#444444] normal-case tracking-normal ml-1">(opcional)</span>
+            </label>
+            <textarea
+              value={descripcion}
+              onChange={e => setDescripcion(e.target.value)}
+              placeholder="Cuéntanos más sobre este plan..."
+              rows={3}
+              className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-base resize-none"
             />
           </div>
 

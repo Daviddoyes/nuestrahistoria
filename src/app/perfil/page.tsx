@@ -196,8 +196,8 @@ export default function PerfilPage() {
     router.push('/')
   }
 
-  const handleAddPlan = async (titulo: string, invitadoIds: string[]) => {
-    const result = await addPlan(titulo, null, 'todos', invitadoIds)
+  const handleAddPlan = async (titulo: string, descripcion: string, invitadoIds: string[]) => {
+    const result = await addPlan(titulo, descripcion.trim() || null, 'todos', invitadoIds)
     if (!result.success) throw new Error(result.error ?? 'Error al añadir el plan')
     setShowNuevoPlan(false)
     await fetchData()

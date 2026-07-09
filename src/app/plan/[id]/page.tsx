@@ -116,8 +116,8 @@ export default function PublicPlanPage({ params }: { params: Promise<{ id: strin
         <p className="text-[10px] uppercase tracking-[0.15em] text-[#E8692A] mb-3">Plan</p>
         <h1 className="font-serif text-3xl font-bold text-[#F0F0F0] leading-snug mb-4">{plan.titulo}</h1>
 
-        {plan.descripcion_publica && (
-          <p className="text-[15px] text-[#999999] leading-relaxed mb-6">{plan.descripcion_publica}</p>
+        {(plan.descripcion || plan.descripcion_publica) && (
+          <p className="text-[15px] text-[#999999] leading-relaxed mb-6">{plan.descripcion || plan.descripcion_publica}</p>
         )}
 
         <div className="h-px bg-[#2A2A2A] my-6" />
