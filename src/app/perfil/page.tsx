@@ -260,7 +260,7 @@ export default function PerfilPage() {
     >
       {/* ── Brand bar ─────────────────────────────────────── */}
       <div className="flex-shrink-0 flex items-center justify-center border-b border-[#1A1A1A]" style={{ height: 32 }}>
-        <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.2em', color: '#E8692A', textTransform: 'uppercase' }}>
+        <span style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 13, fontWeight: 600, letterSpacing: '0.2em', color: '#E8692A', textTransform: 'uppercase' }}>
           LIVESTORY
         </span>
       </div>
@@ -360,12 +360,12 @@ export default function PerfilPage() {
         </div>
 
         <div className="flex-1 min-w-0">
-          <p className="font-serif text-[20px] font-bold text-[#F0F0F0] leading-tight truncate">
+          <p className="font-serif text-[20px] font-bold text-[#F0F0F0] tracking-[-0.02em] leading-[1.2] truncate">
             {profile.nombre}
           </p>
           <button
             onClick={handleCopyUsername}
-            className="flex items-center gap-1.5 text-[12px] text-[#555555] active:text-[#E8692A] transition-colors mt-0.5"
+            className="flex items-center gap-1.5 text-[13px] font-light text-[#666666] active:text-[#E8692A] transition-colors mt-0.5"
           >
             {copied ? <Check className="w-3 h-3 text-[#E8692A]" /> : <Copy className="w-3 h-3" />}
             <span>{copied ? '¡Copiado!' : `@${profile.username ?? profile.nombre}`}</span>
@@ -387,7 +387,7 @@ export default function PerfilPage() {
         <div className="flex-1 flex items-center justify-between px-4 py-2.5">
           <div className="flex items-baseline gap-2">
             <span className="text-[22px] font-bold text-[#F0F0F0] leading-none">{pendientes.length}</span>
-            <span className="text-[10px] uppercase tracking-[0.14em] text-[#555555]">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#666666]">
               {pendientes.length === 1 ? 'Plan' : 'Planes'}
             </span>
           </div>
@@ -403,7 +403,7 @@ export default function PerfilPage() {
         <div className="flex-1 flex items-center justify-between px-4 py-2.5">
           <div className="flex items-baseline gap-2">
             <span className="text-[22px] font-bold text-[#F0F0F0] leading-none">{historias.length}</span>
-            <span className="text-[10px] uppercase tracking-[0.14em] text-[#555555]">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#666666]">
               {historias.length === 1 ? 'Historia' : 'Historias'}
             </span>
           </div>

@@ -89,7 +89,7 @@ export default function SharePlanImage({ plan }: Props) {
             color: '#E8692A',
             fontWeight: 700,
             textTransform: 'uppercase',
-            fontFamily: 'system-ui, sans-serif',
+            fontFamily: 'var(--font-inter), system-ui, sans-serif',
           }}
         >
           LIVESTORY
@@ -112,7 +112,7 @@ export default function SharePlanImage({ plan }: Props) {
           {/* Title */}
           <div
             style={{
-              fontFamily: 'Georgia, serif',
+              fontFamily: 'var(--font-playfair), Georgia, serif',
               fontSize: 62,
               fontWeight: 700,
               color: '#F0F0F0',
@@ -139,7 +139,7 @@ export default function SharePlanImage({ plan }: Props) {
               letterSpacing: '0.22em',
               color: '#666666',
               textTransform: 'uppercase',
-              fontFamily: 'system-ui, sans-serif',
+              fontFamily: 'var(--font-inter), system-ui, sans-serif',
             }}
           >
             En mi bucket list
@@ -157,7 +157,7 @@ export default function SharePlanImage({ plan }: Props) {
             fontSize: 15,
             color: '#E8692A',
             letterSpacing: '0.08em',
-            fontFamily: 'system-ui, sans-serif',
+            fontFamily: 'var(--font-inter), system-ui, sans-serif',
           }}
         >
           livestory.app

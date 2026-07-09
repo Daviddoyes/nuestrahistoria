@@ -165,7 +165,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
             left: 80,
             right: 80,
             textAlign: 'center',
-            fontFamily: 'Georgia, serif',
+            fontFamily: 'var(--font-playfair), Georgia, serif',
             fontSize: titleFontSize,
             fontWeight: 700,
             color: '#FFFFFF',
@@ -219,7 +219,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
             letterSpacing: '0.3em',
             color: '#E8692A',
             fontWeight: 700,
-            fontFamily: 'system-ui, sans-serif',
+            fontFamily: 'var(--font-inter), system-ui, sans-serif',
             textTransform: 'uppercase',
             zIndex: 2,
           } as React.CSSProperties}

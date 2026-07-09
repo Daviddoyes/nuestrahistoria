@@ -77,7 +77,7 @@ export default function PublicPlanPage({ params }: { params: Promise<{ id: strin
   if (!plan) {
     return (
       <div className="min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center px-8">
-        <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.2em', color: '#E8692A', textTransform: 'uppercase' }}>
+        <span style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 13, fontWeight: 600, letterSpacing: '0.2em', color: '#E8692A', textTransform: 'uppercase' }}>
           LIVESTORY
         </span>
         <p className="mt-6 text-[15px] text-[#666666] text-center">Este plan no está disponible.</p>
@@ -92,7 +92,7 @@ export default function PublicPlanPage({ params }: { params: Promise<{ id: strin
     >
       {/* Brand bar */}
       <div className="flex-shrink-0 flex items-center justify-center border-b border-[#1A1A1A]" style={{ height: 40 }}>
-        <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.22em', color: '#E8692A', textTransform: 'uppercase' }}>
+        <span style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 13, fontWeight: 600, letterSpacing: '0.2em', color: '#E8692A', textTransform: 'uppercase' }}>
           LIVESTORY
         </span>
       </div>
@@ -107,17 +107,17 @@ export default function PublicPlanPage({ params }: { params: Promise<{ id: strin
           <div className="min-w-0">
             <p className="text-[15px] text-[#F0F0F0] font-medium leading-tight truncate">{plan.creador_nombre}</p>
             {plan.creador_username && (
-              <p className="text-[12px] text-[#555555] mt-0.5 truncate">@{plan.creador_username}</p>
+              <p className="text-[13px] font-light text-[#666666] mt-0.5 truncate">@{plan.creador_username}</p>
             )}
           </div>
         </div>
 
         {/* Title */}
         <p className="text-[10px] uppercase tracking-[0.15em] text-[#E8692A] mb-3">Plan</p>
-        <h1 className="font-serif text-3xl font-bold text-[#F0F0F0] leading-snug mb-4">{plan.titulo}</h1>
+        <h1 className="font-serif text-3xl font-bold text-[#F0F0F0] tracking-[-0.02em] leading-[1.2] mb-4">{plan.titulo}</h1>
 
         {(plan.descripcion || plan.descripcion_publica) && (
-          <p className="text-[15px] text-[#999999] leading-relaxed mb-6">{plan.descripcion || plan.descripcion_publica}</p>
+          <p className="text-[15px] font-light text-[#C0C0C0] leading-[1.7] mb-6">{plan.descripcion || plan.descripcion_publica}</p>
         )}
 
         <div className="h-px bg-[#2A2A2A] my-6" />

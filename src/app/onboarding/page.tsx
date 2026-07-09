@@ -362,7 +362,7 @@ export default function OnboardingPage() {
               <h1 className="font-serif text-3xl font-bold text-[#F0F0F0] leading-tight mb-5">
                 Hola, {nombre}.
               </h1>
-              <p style={{ fontFamily: 'Georgia, serif', color: '#999999', fontSize: 16, lineHeight: 1.7, textAlign: 'center' }}>
+              <p style={{ fontFamily: 'var(--font-playfair), Georgia, serif', color: '#999999', fontSize: 16, lineHeight: 1.7, textAlign: 'center' }}>
                 Las redes están llenas de vidas perfectas.<br />
                 Livestory es para los que prefieren vivirlas.
               </p>

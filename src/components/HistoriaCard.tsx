@@ -64,7 +64,7 @@ export default function HistoriaCard({ plan, onDelete, isOwner, onUpdate }: Prop
           <span className="text-[#E8692A]/60 text-[10px] uppercase tracking-widest font-medium block mb-1.5">
             Historia
           </span>
-          <h3 className="font-serif font-semibold text-white text-base leading-snug mb-1.5">
+          <h3 className="font-medium text-white text-[15px] tracking-[-0.01em] leading-[1.5] mb-1.5">
             {plan.titulo}
           </h3>
           {plan.historia_descripcion && (

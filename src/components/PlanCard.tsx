@@ -65,7 +65,7 @@ export default function PlanCard({ plan, onCompletar, onDelete }: Props) {
       <div className="flex items-start justify-between gap-3">
         {/* Content */}
         <div className="flex-1 min-w-0 py-0.5">
-          <h3 className="font-serif font-semibold text-[#F0F0F0] text-base leading-snug mb-1.5">
+          <h3 className="font-medium text-[#F0F0F0] text-[15px] tracking-[-0.01em] leading-[1.5] mb-1.5">
             {plan.titulo}
           </h3>
           {plan.descripcion && (

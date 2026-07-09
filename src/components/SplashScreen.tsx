@@ -51,7 +51,7 @@ export default function SplashScreen() {
           color: '#E8692A',
           fontSize: 56,
           fontWeight: 700,
-          fontFamily: 'Georgia, serif',
+          fontFamily: 'var(--font-playfair), Georgia, serif',
           letterSpacing: '-0.02em',
         }}
       >
@@ -63,7 +63,7 @@ export default function SplashScreen() {
           fontSize: 11,
           letterSpacing: '0.3em',
           textTransform: 'uppercase',
-          fontFamily: 'system-ui, sans-serif',
+          fontFamily: 'var(--font-inter), system-ui, sans-serif',
         }}
       >
         LIVESTORY

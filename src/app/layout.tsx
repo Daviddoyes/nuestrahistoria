@@ -1,13 +1,19 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import SplashScreen from "@/components/SplashScreen";
 import InstallBanner from "@/components/InstallBanner";
 
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-playfair',
+  weight: ['400', '600', '700'],
+});
+
 const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
+  subsets: ['latin'],
+  variable: '--font-inter',
+  weight: ['300', '400', '500', '600', '700'],
 });
 
 export const viewport: Viewport = {
@@ -38,12 +44,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${inter.variable} h-full`}>
+    <html lang="es" className="h-full">
       <head>
         <meta name="mobile-web-app-capable" content="yes" />
         <link rel="apple-touch-startup-image" href="/apple-splash-screen.png" />
       </head>
-      <body className="min-h-full antialiased">
+      <body className={`${playfair.variable} ${inter.variable} min-h-full antialiased`}>
         <SplashScreen />
         {children}
         <InstallBanner />

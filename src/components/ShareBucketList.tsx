@@ -81,7 +81,7 @@ export default function ShareBucketList({ planes, nombre, username, fotoPerfil, 
         {/* ── TOP: brand + title ── */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 40 }}>
           <p style={{
-            fontFamily: 'system-ui, sans-serif', fontSize: 16, fontWeight: 700,
+            fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: 16, fontWeight: 700,
             letterSpacing: '0.32em', color: '#E8692A', textTransform: 'uppercase',
             margin: 0,
           }}>
@@ -89,7 +89,7 @@ export default function ShareBucketList({ planes, nombre, username, fotoPerfil, 
           </p>
           <div style={{ width: '100%', height: 1, background: '#E8692A' }} />
           <p style={{
-            fontFamily: 'Georgia, serif', fontSize: 76, fontWeight: 700,
+            fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 76, fontWeight: 700,
             color: '#F0F0F0', margin: 0, lineHeight: 1.1, textAlign: 'center',
           }}>
             MY PLAN LIST
@@ -107,7 +107,7 @@ export default function ShareBucketList({ planes, nombre, username, fotoPerfil, 
                 <div style={{ height: 1, background: '#2A2A2A', margin: '36px 0' }} />
               )}
               <p style={{
-                fontFamily: 'Georgia, serif', fontSize: titleSize,
+                fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: titleSize,
                 fontWeight: 600, color: '#F0F0F0', lineHeight: 1.35,
                 margin: 0, textAlign: 'center', wordBreak: 'break-word',
               }}>
@@ -121,7 +121,7 @@ export default function ShareBucketList({ planes, nombre, username, fotoPerfil, 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 40 }}>
           <div style={{ width: '100%', height: 1, background: '#E8692A' }} />
           <p style={{
-            fontFamily: 'system-ui, sans-serif', fontSize: 20, fontWeight: 700,
+            fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: 20, fontWeight: 700,
             letterSpacing: '0.28em', color: '#E8692A', textTransform: 'uppercase',
             margin: 0,
           }}>
