@@ -557,6 +557,9 @@ export default function PerfilPage() {
         {/* EXPLORAR tab */}
         {activeTab === 'explorar' && (
           <ExplorarFeed
+            profile={profile}
+            pendientes={pendientes}
+            historias={historias}
             onOpenPlan={plan => setSelectedHistoria(plan)}
             onPlanCopiado={fetchData}
           />

@@ -3,13 +3,17 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Plus, Check, Compass } from 'lucide-react'
 import { getPlanesPublicos, copiarPlan } from '@/lib/actions'
-import type { PlanExplorar } from '@/types/planes'
+import SugerenciasIA from './SugerenciasIA'
+import type { PlanExplorar, Plan, Profile } from '@/types/planes'
 
 const CATEGORIAS = ['Todos', 'Viajes', 'Deporte', 'Gastronomía', 'Cultura', 'Aventura'] as const
 
 type Props = {
+  profile: Profile
+  pendientes: Plan[]
+  historias: Plan[]
   onOpenPlan: (plan: PlanExplorar) => void
-  /** Se llama tras copiar un plan, para refrescar la lista del usuario. */
+  /** Se llama tras copiar o añadir un plan, para refrescar la lista del usuario. */
   onPlanCopiado: () => void
 }
 
@@ -28,7 +32,7 @@ function AutorAvatar({ nombre, foto }: { nombre: string; foto: string | null }) 
   )
 }
 
-export default function ExplorarFeed({ onOpenPlan, onPlanCopiado }: Props) {
+export default function ExplorarFeed({ profile, pendientes, historias, onOpenPlan, onPlanCopiado }: Props) {
   const [planes, setPlanes] = useState<PlanExplorar[]>([])
   const [categoria, setCategoria] = useState<string>('Todos')
   const [loading, setLoading] = useState(true)
@@ -69,7 +73,21 @@ export default function ExplorarFeed({ onOpenPlan, onPlanCopiado }: Props) {
         paddingBottom: 'calc(56px + env(safe-area-inset-bottom, 0px))',
       } as React.CSSProperties}
     >
-      {/* Chips de categoría */}
+      {/* 1 — Ideas para ti (IA) */}
+      <SugerenciasIA
+        profile={profile}
+        pendientes={pendientes}
+        historias={historias}
+        onPlanAnadido={onPlanCopiado}
+      />
+
+      {/* 2 — Separador */}
+      <div className="flex items-center gap-3 px-3 pt-5 pb-1">
+        <p className="text-[10px] uppercase tracking-[0.15em] text-[#666666]">Descubre</p>
+        <div className="flex-1 h-px bg-[#1A1A1A]" />
+      </div>
+
+      {/* 3 — Chips de categoría */}
       <div
         className="flex gap-2 overflow-x-auto px-3 py-3"
         style={{ scrollbarWidth: 'none' }}

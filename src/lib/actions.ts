@@ -793,6 +793,79 @@ export async function getPlanesPublicos(): Promise<PlanExplorar[]> {
   })
 }
 
+/**
+ * La IA devuelve la categoría en minúsculas y sin tildes ('gastronomia'); los
+ * chips de Explorar usan la forma con tilde. Guardamos siempre la del chip.
+ */
+const CATEGORIA_CANONICA: Record<string, string> = {
+  viajes: 'Viajes',
+  deporte: 'Deporte',
+  gastronomia: 'Gastronomía',
+  'gastronomía': 'Gastronomía',
+  cultura: 'Cultura',
+  aventura: 'Aventura',
+}
+
+// No se exporta: en un módulo 'use server' todo lo exportado debe ser async.
+function normalizarCategoria(categoria: string | null | undefined): string | null {
+  if (!categoria) return null
+  return CATEGORIA_CANONICA[categoria.trim().toLowerCase()] ?? null
+}
+
+/** Añade a la lista del usuario un plan sugerido por la IA (no existe en la BD). */
+export async function crearPlanDesdeSugerencia(
+  titulo: string,
+  categoria: string | null
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const serverSupa = await createServerClient()
+    const { data: { user } } = await serverSupa.auth.getUser()
+    if (!user) return { success: false, error: 'No autenticado' }
+
+    const limpio = titulo.trim()
+    if (!limpio) return { success: false, error: 'Título vacío' }
+
+    const service = createServiceRoleClient()
+    const { data: profile } = await service
+      .from('profiles')
+      .select('nombre')
+      .eq('id', user.id)
+      .single()
+
+    const nombre = (profile as { nombre: string | null } | null)?.nombre ?? user.email ?? 'Usuario'
+
+    const { data: nuevoPlan, error } = await service
+      .from('planes')
+      .insert({
+        titulo: limpio.slice(0, 200),
+        descripcion: null,
+        categoria: normalizarCategoria(categoria),
+        creado_por: nombre,
+        pareja_codigo: user.id,
+        estado: 'pendiente',
+        publico: false,
+        con_quien: 'solo',
+        orden: 0,
+      })
+      .select('id')
+      .single()
+
+    if (error || !nuevoPlan) return { success: false, error: error?.message ?? 'Error al crear el plan' }
+
+    await service.from('plan_participantes').insert({
+      plan_id: (nuevoPlan as { id: string }).id,
+      user_id: user.id,
+      nombre_usuario: nombre,
+      estado: 'owner',
+    })
+
+    revalidatePath('/perfil')
+    return { success: true }
+  } catch (e) {
+    return { success: false, error: String(e) }
+  }
+}
+
 /** Copia un plan público a la lista del usuario actual, como pendiente. */
 export async function copiarPlan(planId: string): Promise<{ success: boolean; error?: string }> {
   try {
