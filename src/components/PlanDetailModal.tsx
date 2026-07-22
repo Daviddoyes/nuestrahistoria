@@ -5,6 +5,7 @@ import { X, Check, Trash2, LogOut, Globe, Copy, Pencil } from 'lucide-react'
 import { leavePlan, setPlanPublico, updatePlanDescripcion } from '@/lib/actions'
 import { createClient } from '@/lib/supabase/client'
 import SharePlanImage from './SharePlanImage'
+import PlanMomentos from './PlanMomentos'
 import type { Plan } from '@/types/planes'
 
 type Participante = {
@@ -194,6 +195,7 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
   const myRole = participantes.find(p => p.user_id === currentUserId)?.estado
   const isOwner = myRole === 'owner' || plan.pareja_codigo === currentUserId
   const isParticipant = myRole === 'aceptado' && plan.pareja_codigo !== currentUserId
+  const canSubirMomento = isOwner || myRole === 'aceptado'
 
   return (
     <>
@@ -293,6 +295,13 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
               </div>
             </div>
           )}
+
+          {/* Momentos — fotos del proceso */}
+          <PlanMomentos
+            planId={plan.id}
+            currentUserId={currentUserId}
+            canUpload={canSubirMomento}
+          />
 
           {/* Public toggle — owner only */}
           {isOwner && (

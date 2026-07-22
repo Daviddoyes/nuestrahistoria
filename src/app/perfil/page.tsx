@@ -21,9 +21,10 @@ import CompletarPlanModal from '@/components/CompletarPlanModal'
 import ShareBucketList from '@/components/ShareBucketList'
 import ShareStoryImage from '@/components/ShareStoryImage'
 import BottomNav from '@/components/BottomNav'
-import type { Plan, Profile, InvitacionPendiente, SolicitudPendiente } from '@/types/planes'
+import ExplorarFeed from '@/components/ExplorarFeed'
+import type { Plan, Profile, InvitacionPendiente, SolicitudPendiente, Notificacion } from '@/types/planes'
 
-type Tab = 'planes' | 'historias'
+type Tab = 'planes' | 'explorar' | 'historias'
 
 function ProfileAvatar({ profile, size = 48 }: { profile: Profile; size?: number }) {
   const initial = profile.nombre?.[0]?.toUpperCase() ?? '?'
@@ -57,6 +58,7 @@ export default function PerfilPage() {
   const [planes, setPlanes] = useState<Plan[]>([])
   const [invitaciones, setInvitaciones] = useState<InvitacionPendiente[]>([])
   const [solicitudes, setSolicitudes] = useState<SolicitudPendiente[]>([])
+  const [notificaciones, setNotificaciones] = useState<Notificacion[]>([])
   const [processingSol, setProcessingSol] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [uploadingFoto, setUploadingFoto] = useState(false)
@@ -128,6 +130,16 @@ export default function PerfilPage() {
       // Join requests for plans owned by the current user
       const sols = await getSolicitudes()
       setSolicitudes(sols)
+
+      // Unread notifications (new momentos on shared plans)
+      const { data: notifs } = await supabase
+        .from('notificaciones')
+        .select('*')
+        .eq('user_id', prof.id)
+        .eq('leida', false)
+        .order('created_at', { ascending: false })
+        .limit(10)
+      setNotificaciones((notifs ?? []) as Notificacion[])
     } catch (e) {
       console.error(e)
     } finally {
@@ -238,6 +250,19 @@ export default function PerfilPage() {
     if (aceptar) await fetchData()
   }
 
+  const marcarNotifLeida = async (id: string) => {
+    setNotificaciones(prev => prev.filter(n => n.id !== id))
+    await supabase.from('notificaciones').update({ leida: true }).eq('id', id)
+  }
+
+  const abrirNotificacion = async (notif: Notificacion) => {
+    const plan = planes.find(p => p.id === notif.plan_id)
+    await marcarNotifLeida(notif.id)
+    if (!plan) return
+    if (plan.estado === 'hecho') setSelectedHistoria(plan)
+    else setSelectedPlan(plan)
+  }
+
   const openHistoriaShare = () => {
     setHistoriaToShare(historias[0] ?? null)
     setShowHistoriaShare(true)
@@ -340,6 +365,34 @@ export default function PerfilPage() {
           </div>
         )
       })()}
+
+      {/* ── Nuevos momentos ───────────────────────────────── */}
+      {notificaciones.length > 0 && (
+        <div className="flex-shrink-0 flex gap-2 overflow-x-auto px-3 py-2" style={{ scrollbarWidth: 'none' }}>
+          {notificaciones.map(notif => (
+            <div
+              key={notif.id}
+              className="flex-shrink-0 bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl px-3 py-2.5 flex items-center gap-2.5"
+              style={{ minWidth: 260, maxWidth: 300 }}
+            >
+              <Camera className="w-4 h-4 text-[#E8692A] flex-shrink-0" />
+              <button
+                onClick={() => abrirNotificacion(notif)}
+                className="flex-1 min-w-0 text-left active:opacity-70 transition-opacity"
+              >
+                <p className="text-xs text-[#F0F0F0] leading-snug line-clamp-2">{notif.mensaje}</p>
+              </button>
+              <button
+                onClick={() => marcarNotifLeida(notif.id)}
+                aria-label="Descartar"
+                className="w-8 h-8 rounded-lg border border-[#2A2A2A] flex items-center justify-center text-[#555555] active:text-[#F0F0F0] flex-shrink-0"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* ── Profile row ───────────────────────────────────── */}
       <div className="flex-shrink-0 flex items-center gap-3 px-4 py-3 border-b border-[#1A1A1A]">
@@ -501,6 +554,14 @@ export default function PerfilPage() {
           </div>
         )}
 
+        {/* EXPLORAR tab */}
+        {activeTab === 'explorar' && (
+          <ExplorarFeed
+            onOpenPlan={plan => setSelectedHistoria(plan)}
+            onPlanCopiado={fetchData}
+          />
+        )}
+
         {/* HISTORIAS tab */}
         {activeTab === 'historias' && (
           <div
@@ -611,7 +672,7 @@ export default function PerfilPage() {
         <HistoriaDetailModal
           plan={selectedHistoria}
           onClose={() => setSelectedHistoria(null)}
-          isOwner={true}
+          isOwner={selectedHistoria.pareja_codigo === profile.id}
           onUpdate={fetchData}
         />
       )}

@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { createServiceRoleClient } from '@/lib/supabase-server'
-import type { Plan, Profile, ConQuien, InvitacionPendiente, SolicitudPendiente, PublicPlan } from '@/types/planes'
+import type { Plan, Profile, ConQuien, InvitacionPendiente, SolicitudPendiente, PublicPlan, PlanExplorar } from '@/types/planes'
 
 export async function getMyData(): Promise<{
   planes: Plan[]
@@ -220,6 +220,17 @@ export async function completarPlan(
   fechaMomento: string | null
 ) {
   const service = createServiceRoleClient()
+
+  // Freeze the momentos into the plan so the story slideshow doesn't depend on
+  // rows that could be deleted later. Cronological order = the order they'll play.
+  const { data: momentos } = await service
+    .from('plan_momentos')
+    .select('foto_url')
+    .eq('plan_id', id)
+    .order('created_at', { ascending: true })
+
+  const momentosUrls = ((momentos ?? []) as { foto_url: string }[]).map(m => m.foto_url)
+
   const { error } = await service
     .from('planes')
     .update({
@@ -227,6 +238,7 @@ export async function completarPlan(
       historia_descripcion: historiaDescripcion,
       foto_url: fotoUrl,
       fecha_momento: fechaMomento,
+      momentos_urls: momentosUrls,
     })
     .eq('id', id)
   if (error) throw new Error(error.message)
@@ -250,7 +262,29 @@ export async function updateOrden(updates: { id: string; orden: number }[]) {
   revalidatePath('/perfil')
 }
 
+/**
+ * El feed de Explorar muestra historias de otra gente, así que estas dos
+ * acciones son alcanzables sobre planes ajenos: hay que comprobar el dueño.
+ */
+async function assertOwner(planId: string) {
+  const serverSupa = await createServerClient()
+  const { data: { user } } = await serverSupa.auth.getUser()
+  if (!user) throw new Error('No autenticado')
+
+  const service = createServiceRoleClient()
+  const { data: plan } = await service
+    .from('planes')
+    .select('pareja_codigo')
+    .eq('id', planId)
+    .single()
+
+  if (!plan || (plan as { pareja_codigo: string }).pareja_codigo !== user.id) {
+    throw new Error('No autorizado')
+  }
+}
+
 export async function updateHistoriaDescripcion(id: string, descripcion: string) {
+  await assertOwner(id)
   const service = createServiceRoleClient()
   const { error } = await service
     .from('planes')
@@ -261,10 +295,11 @@ export async function updateHistoriaDescripcion(id: string, descripcion: string)
 }
 
 export async function revertirHistoria(id: string) {
+  await assertOwner(id)
   const service = createServiceRoleClient()
   const { error } = await service
     .from('planes')
-    .update({ estado: 'pendiente', foto_url: null, historia_descripcion: null, fecha_momento: null })
+    .update({ estado: 'pendiente', foto_url: null, historia_descripcion: null, fecha_momento: null, momentos_urls: null })
     .eq('id', id)
   if (error) throw new Error(error.message)
   revalidatePath('/perfil')
@@ -645,6 +680,173 @@ export async function resolverSolicitud(
       .from('plan_participantes')
       .update({ estado: aceptar ? 'aceptado' : 'rechazado' })
       .eq('id', participanteId)
+
+    revalidatePath('/perfil')
+    return { success: true }
+  } catch (e) {
+    return { success: false, error: String(e) }
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// Momentos + notificaciones
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * Avisa al resto de participantes del plan (owner + aceptados) de que alguien
+ * ha subido una foto. Va por el service role porque la RLS de `notificaciones`
+ * solo deja escribir filas propias, y aquí se escriben las de los demás.
+ */
+export async function notificarNuevoMomento(planId: string): Promise<void> {
+  const serverSupa = await createServerClient()
+  const { data: { user } } = await serverSupa.auth.getUser()
+  if (!user) return
+
+  const service = createServiceRoleClient()
+
+  const { data: plan } = await service
+    .from('planes')
+    .select('titulo')
+    .eq('id', planId)
+    .single()
+  if (!plan) return
+
+  const { data: profile } = await service
+    .from('profiles')
+    .select('nombre')
+    .eq('id', user.id)
+    .single()
+
+  const nombre = (profile as { nombre: string | null } | null)?.nombre ?? 'Alguien'
+  const titulo = (plan as { titulo: string }).titulo
+
+  const { data: parts } = await service
+    .from('plan_participantes')
+    .select('user_id, estado')
+    .eq('plan_id', planId)
+    .in('estado', ['owner', 'aceptado'])
+
+  const destinatarios = [
+    ...new Set(
+      ((parts ?? []) as { user_id: string }[])
+        .map(p => p.user_id)
+        .filter(id => id !== user.id)
+    ),
+  ]
+
+  if (destinatarios.length === 0) return
+
+  await service.from('notificaciones').insert(
+    destinatarios.map(userId => ({
+      user_id: userId,
+      tipo: 'nuevo_momento',
+      mensaje: `${nombre} añadió una foto a ${titulo}`,
+      plan_id: planId,
+    }))
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// Explorar
+// ─────────────────────────────────────────────────────────────
+
+/** Historias públicas de todo el mundo, para el feed de Explorar. */
+export async function getPlanesPublicos(): Promise<PlanExplorar[]> {
+  const serverSupa = await createServerClient()
+  const { data: { user } } = await serverSupa.auth.getUser()
+
+  const service = createServiceRoleClient()
+
+  const { data: planes } = await service
+    .from('planes')
+    .select('*')
+    .eq('publico', true)
+    .eq('estado', 'hecho')
+    .order('created_at', { ascending: false })
+    .limit(20)
+
+  const rows = (planes ?? []) as Plan[]
+  if (rows.length === 0) return []
+
+  // El autor es el dueño del plan: `pareja_codigo` es su id, más fiable que
+  // cruzar por `creado_por`, que es solo el nombre mostrado.
+  const autorIds = [...new Set(rows.map(p => p.pareja_codigo))]
+  const { data: perfiles } = await service
+    .from('profiles')
+    .select('id, nombre, username, foto_perfil_url')
+    .in('id', autorIds)
+
+  const autorMap = Object.fromEntries(
+    ((perfiles ?? []) as { id: string; nombre: string | null; username: string | null; foto_perfil_url: string | null }[])
+      .map(pf => [pf.id, pf])
+  )
+
+  return rows.map(p => {
+    const autor = autorMap[p.pareja_codigo]
+    return {
+      ...p,
+      autor_nombre: autor?.nombre ?? p.creado_por ?? 'Alguien',
+      autor_username: autor?.username ?? null,
+      autor_foto: autor?.foto_perfil_url ?? null,
+      es_mio: !!user && p.pareja_codigo === user.id,
+    }
+  })
+}
+
+/** Copia un plan público a la lista del usuario actual, como pendiente. */
+export async function copiarPlan(planId: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    const serverSupa = await createServerClient()
+    const { data: { user } } = await serverSupa.auth.getUser()
+    if (!user) return { success: false, error: 'No autenticado' }
+
+    const service = createServiceRoleClient()
+
+    const { data: original } = await service
+      .from('planes')
+      .select('titulo, descripcion, categoria, publico')
+      .eq('id', planId)
+      .single()
+
+    const orig = original as
+      | { titulo: string; descripcion: string | null; categoria: string | null; publico: boolean | null }
+      | null
+
+    if (!orig || !orig.publico) return { success: false, error: 'Este plan no está disponible.' }
+
+    const { data: profile } = await service
+      .from('profiles')
+      .select('nombre')
+      .eq('id', user.id)
+      .single()
+
+    const nombre = (profile as { nombre: string | null } | null)?.nombre ?? user.email ?? 'Usuario'
+
+    const { data: nuevoPlan, error } = await service
+      .from('planes')
+      .insert({
+        titulo: orig.titulo,
+        descripcion: orig.descripcion,
+        categoria: orig.categoria,
+        creado_por: nombre,
+        pareja_codigo: user.id,
+        estado: 'pendiente',
+        publico: false,
+        con_quien: 'solo',
+        orden: 0,
+      })
+      .select('id')
+      .single()
+
+    if (error || !nuevoPlan) return { success: false, error: error?.message ?? 'Error al copiar el plan' }
+
+    // Sin la fila de owner el plan copiado aparecería sin participantes.
+    await service.from('plan_participantes').insert({
+      plan_id: (nuevoPlan as { id: string }).id,
+      user_id: user.id,
+      nombre_usuario: nombre,
+      estado: 'owner',
+    })
 
     revalidatePath('/perfil')
     return { success: true }

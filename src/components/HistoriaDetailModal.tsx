@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { X, Calendar, User, Pencil, Trash2 } from 'lucide-react'
+import { useState, useEffect, useMemo } from 'react'
+import { X, Calendar, User, Pencil, Trash2, Play, Pause, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { Plan } from '@/types/planes'
 import { updateHistoriaDescripcion, revertirHistoria } from '@/lib/actions'
 import ShareStoryImage from './ShareStoryImage'
@@ -28,6 +28,27 @@ export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }
   const [saveError, setSaveError] = useState('')
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [deleting, setDeleting] = useState(false)
+
+  // Portada primero, después los momentos en orden cronológico.
+  const fotos = useMemo(
+    () => [plan.foto_url, ...(plan.momentos_urls ?? [])].filter((u): u is string => !!u),
+    [plan.foto_url, plan.momentos_urls]
+  )
+  const esSlideshow = fotos.length > 1
+
+  const [indice, setIndice] = useState(0)
+  const [reproduciendo, setReproduciendo] = useState(true)
+
+  useEffect(() => {
+    if (!esSlideshow || !reproduciendo) return
+    const id = setInterval(() => setIndice(i => (i + 1) % fotos.length), 2000)
+    return () => clearInterval(id)
+  }, [esSlideshow, reproduciendo, fotos.length])
+
+  const irA = (i: number) => {
+    setReproduciendo(false)
+    setIndice((i + fotos.length) % fotos.length)
+  }
 
   const close = () => {
     if (closing) return
@@ -93,8 +114,65 @@ export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }
           overscrollBehavior: 'contain',
         } as React.CSSProperties}
       >
-        {/* Photo — full width, natural height */}
-        {plan.foto_url ? (
+        {/* Slideshow si el plan acumuló momentos; si no, la portada a pelo */}
+        {esSlideshow ? (
+          <div style={{ position: 'relative', width: '100%', aspectRatio: '4/5', background: '#000', overflow: 'hidden' }}>
+            {fotos.map((url, i) => (
+              <img
+                key={url}
+                src={url}
+                alt=""
+                style={{
+                  position: 'absolute', inset: 0,
+                  width: '100%', height: '100%', objectFit: 'cover',
+                  opacity: i === indice ? 1 : 0,
+                  transition: 'opacity 500ms ease',
+                }}
+              />
+            ))}
+
+            {/* Anterior / siguiente */}
+            <button
+              onClick={() => irA(indice - 1)}
+              aria-label="Foto anterior"
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/40 text-white/70 active:bg-black/60 active:text-white"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => irA(indice + 1)}
+              aria-label="Foto siguiente"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/40 text-white/70 active:bg-black/60 active:text-white"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+
+            {/* Pausa / play */}
+            <button
+              onClick={() => setReproduciendo(p => !p)}
+              aria-label={reproduciendo ? 'Pausar' : 'Reproducir'}
+              className="absolute left-3 bottom-3 w-9 h-9 flex items-center justify-center rounded-full bg-black/40 text-white/70 active:bg-black/60 active:text-white"
+            >
+              {reproduciendo ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+            </button>
+
+            {/* Puntos */}
+            <div className="absolute bottom-4 left-0 right-0 flex items-center justify-center gap-1.5 pointer-events-none">
+              {fotos.map((_, i) => (
+                <span
+                  key={i}
+                  style={{
+                    width: i === indice ? 16 : 6,
+                    height: 6,
+                    borderRadius: 3,
+                    background: i === indice ? '#E8692A' : 'rgba(255,255,255,0.45)',
+                    transition: 'width 300ms ease, background 300ms ease',
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        ) : plan.foto_url ? (
           <div style={{ width: '100%', background: '#000' }}>
             <img
               src={plan.foto_url}

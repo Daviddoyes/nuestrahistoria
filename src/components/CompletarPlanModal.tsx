@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { X, ImagePlus } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 import type { Plan } from '@/types/planes'
 
 type Props = {
@@ -11,6 +12,8 @@ type Props = {
 }
 
 export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
+  const supabase = useMemo(() => createClient(), [])
+  const [momentos, setMomentos] = useState<string[]>([])
   const [descripcion, setDescripcion] = useState('')
   const [fechaMomento, setFechaMomento] = useState(() => new Date().toISOString().split('T')[0])
   const [foto, setFoto] = useState<File | null>(null)
@@ -18,6 +21,18 @@ export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const cargarMomentos = async () => {
+      const { data } = await supabase
+        .from('plan_momentos')
+        .select('foto_url')
+        .eq('plan_id', plan.id)
+        .order('created_at', { ascending: true })
+      setMomentos(((data ?? []) as { foto_url: string }[]).map(m => m.foto_url))
+    }
+    cargarMomentos()
+  }, [plan.id, supabase])
 
   const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -114,9 +129,32 @@ export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
             <p className="font-medium text-[#F0F0F0] text-sm">{plan.titulo}</p>
           </div>
 
+          {momentos.length > 0 && (
+            <div>
+              <p className="text-[13px] text-[#C0C0C0] mb-2 leading-snug">
+                Tu historia incluirá {momentos.length === 1
+                  ? 'esta foto del proceso'
+                  : `estas ${momentos.length} fotos del proceso`}
+              </p>
+              <div className="flex gap-1.5 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
+                {momentos.map((url, i) => (
+                  <img
+                    key={i}
+                    src={url}
+                    alt=""
+                    style={{
+                      width: 52, height: 52, objectFit: 'cover',
+                      borderRadius: 6, flexShrink: 0, background: '#1A1A1A',
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
           <div>
             <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-1.5">
-              La foto del momento
+              La foto de portada
             </label>
 
             {/* Photo picker */}
@@ -134,7 +172,7 @@ export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
               ) : (
                 <div className="flex flex-col items-center justify-center p-8 text-[#444444]">
                   <ImagePlus className="w-8 h-8 mb-1.5" />
-                  <p className="text-sm">Seleccionar foto</p>
+                  <p className="text-sm">Seleccionar portada</p>
                   <p className="text-xs text-[#E8692A]/70 mt-0.5">Obligatoria</p>
                 </div>
               )}

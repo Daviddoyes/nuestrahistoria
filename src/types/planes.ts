@@ -15,6 +15,9 @@ export type Plan = {
   created_at: string
   publico?: boolean
   descripcion_publica?: string | null
+  /** URLs de los momentos, en orden cronológico. Se congela al completar el plan. */
+  momentos_urls?: string[] | null
+  categoria?: string | null
 }
 
 export type NewPlan = Omit<Plan, 'id' | 'created_at'>
@@ -62,6 +65,34 @@ export type SolicitudPendiente = {
   plan_titulo: string
   nombre_usuario: string
   foto_perfil_url: string | null
+}
+
+export type PlanMomento = {
+  id: string
+  plan_id: string
+  user_id: string
+  nombre_usuario: string | null
+  foto_url: string
+  descripcion: string | null
+  created_at: string
+}
+
+export type Notificacion = {
+  id: string
+  user_id: string
+  tipo: string
+  mensaje: string
+  plan_id: string | null
+  leida: boolean
+  created_at: string
+}
+
+/** Plan público completado, tal y como se muestra en la pestaña Explorar. */
+export type PlanExplorar = Plan & {
+  autor_nombre: string
+  autor_username: string | null
+  autor_foto: string | null
+  es_mio: boolean
 }
 
 export type PublicPlan = {
