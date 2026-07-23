@@ -4,7 +4,7 @@ Script **local** para poblar la tabla `experiencias` de Supabase. **No forma
 parte de la app Next.js** y no se despliega en Vercel: se ejecuta a mano desde
 tu máquina cuando quieras ampliar la biblioteca.
 
-Hace dos cosas:
+Hace tres cosas:
 
 1. **Fase 1 — Google Places.** Busca tipos de plan (karting, surf, museos…) en
    España y varias ciudades de Europa, se queda solo con los lugares de rating
@@ -12,9 +12,21 @@ Hace dos cosas:
    editorial para cada uno. Se guardan como `verificada: true`.
 2. **Fase 2 — Icónicas.** Inserta una lista fija de experiencias globales
    (Tomorrowland, maratón de Nueva York, Camino de Santiago…).
+3. **Fase 3 — Festivales de España.** Lista curada de festivales; Claude solo
+   redacta la descripción. `categoria: 'musica'`, `es_generico: false`.
 
-Antes de insertar comprueba que no exista ya una experiencia con el mismo
-`titulo` + `ciudad`, así que puedes ejecutarlo varias veces sin duplicar.
+El control de duplicados va por **`lugar_nombre` + `ciudad`** (el nombre real
+del sitio, estable entre ejecuciones), no por el título —que Claude regenera
+cada vez—. En la Fase 1 el chequeo ocurre *antes* de llamar a Claude, así que
+relanzar no gasta tokens redactando lugares que ya existen.
+
+## Ejecutar solo algunas fases
+
+```bash
+node index.mjs        # todas las fases
+node index.mjs 3      # solo festivales
+node index.mjs 1 3    # Fase 1 y Fase 3
+```
 
 ## Requisitos
 

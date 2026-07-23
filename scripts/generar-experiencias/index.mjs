@@ -219,15 +219,28 @@ async function redactarDescripcionFestival(fest) {
 
 let total = 0
 
-async function insertar(exp) {
-  const { data: existe } = await supabase
+// Comprobación previa (por lugar) para saltar ANTES de llamar a Claude y no
+// gastar tokens redactando lugares que ya existen.
+async function yaExisteLugar(lugarNombre, ciudad) {
+  const { data } = await supabase
     .from('experiencias')
     .select('id')
-    .eq('titulo', exp.titulo)
-    .eq('ciudad', exp.ciudad)
-    .maybeSingle()
+    .eq('ciudad', ciudad)
+    .eq('lugar_nombre', lugarNombre)
+    .limit(1)
+  return !!(data && data.length > 0)
+}
 
-  if (existe) {
+async function insertar(exp) {
+  // Dedup por lugar_nombre+ciudad: el nombre real (de Google, o del festival)
+  // es estable entre ejecuciones. El titulo NO —lo regenera Claude cada vez— así
+  // que usarlo como clave dejaba colar el mismo sitio con títulos distintos.
+  const q = supabase.from('experiencias').select('id').eq('ciudad', exp.ciudad)
+  const { data: existe } = exp.lugar_nombre
+    ? await q.eq('lugar_nombre', exp.lugar_nombre).limit(1)
+    : await q.eq('titulo', exp.titulo).limit(1)
+
+  if (existe && existe.length > 0) {
     console.log(`  – Duplicada, saltada: ${exp.titulo} (${exp.ciudad})`)
     return false
   }
@@ -275,6 +288,11 @@ async function fase1() {
 
       for (const place of buenos) {
         try {
+          const nombre = place.displayName?.text
+          if (nombre && await yaExisteLugar(nombre, ciudad)) {
+            console.log(`  – Ya existe, saltada: ${nombre}`)
+            continue
+          }
           const detalle = await redactarDetalle({
             place, categoria: busqueda.categoria, subcategoria: busqueda.subcategoria, ciudad,
           })
@@ -320,8 +338,13 @@ async function fase2() {
 async function fase3() {
   console.log('\n══ FASE 3 — Festivales de España ══\n')
   for (const fest of FESTIVALES_ESPANA) {
-    console.log(`Redactando ${fest.titulo} (${fest.ciudad})...`)
+    const lugarNombre = fest.titulo.replace(/^Asistir a(l)? /, '')
     try {
+      if (await yaExisteLugar(lugarNombre, fest.ciudad)) {
+        console.log(`  – Ya existe, saltado: ${lugarNombre} (${fest.ciudad})`)
+        continue
+      }
+      console.log(`Redactando ${fest.titulo} (${fest.ciudad})...`)
       const descripcion = await redactarDescripcionFestival(fest)
       if (!descripcion) { console.log('  – Sin descripción, saltado'); continue }
 
@@ -335,7 +358,7 @@ async function fase3() {
         dificultad: 'facil',
         duracion: null,
         tags: fest.tags,
-        lugar_nombre: fest.titulo.replace(/^Asistir a(l)? /, ''),
+        lugar_nombre: lugarNombre,
         lugar_direccion: `${fest.ciudad}, ${fest.provincia}`,
         latitud: fest.lat,
         longitud: fest.lng,
@@ -352,9 +375,15 @@ async function fase3() {
 // ── Main ─────────────────────────────────────────────────────
 
 async function main() {
-  await fase1()
-  await fase2()
-  await fase3()
+  // Selector de fases: `node index.mjs` corre todas; `node index.mjs 3` solo la 3;
+  // `node index.mjs 1 3` la 1 y la 3.
+  const pedidas = process.argv.slice(2).filter(a => ['1', '2', '3'].includes(a))
+  const fases = pedidas.length ? pedidas : ['1', '2', '3']
+  console.log(`Fases a ejecutar: ${fases.join(', ')}`)
+
+  if (fases.includes('1')) await fase1()
+  if (fases.includes('2')) await fase2()
+  if (fases.includes('3')) await fase3()
   console.log(`\nTotal generadas: ${total} experiencias`)
 }
 
