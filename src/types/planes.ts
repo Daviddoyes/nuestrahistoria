@@ -40,6 +40,31 @@ export type Profile = {
   con_quien_vive?: string[]
 }
 
+export type CategoriaExperiencia = 'viajes' | 'deporte' | 'gastronomia' | 'cultura' | 'aventura' | 'musica'
+export type Dificultad = 'facil' | 'medio' | 'dificil'
+
+/** Fila de la biblioteca de experiencias curada desde /admin. */
+export type Experiencia = {
+  id: string
+  titulo: string
+  descripcion: string | null
+  categoria: string
+  subcategoria: string | null
+  ciudad: string | null
+  pais: string | null
+  lugar_nombre: string | null
+  lugar_direccion: string | null
+  dificultad: string | null
+  duracion: string | null
+  tags: string[] | null
+  verificada: boolean
+  veces_anadida: number
+  created_at: string
+}
+
+/** Experiencia recién generada por la IA, aún sin guardar (sin id). */
+export type ExperienciaGenerada = Omit<Experiencia, 'id' | 'verificada' | 'veces_anadida' | 'created_at'>
+
 export type PlanParticipante = {
   id: string
   plan_id: string
