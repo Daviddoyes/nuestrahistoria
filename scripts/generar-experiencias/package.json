@@ -1,0 +1,13 @@
+{
+  "name": "generar-experiencias",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node index.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.113.0",
+    "@supabase/supabase-js": "^2.105.3",
+    "dotenv": "^16.4.5"
+  }
+}
