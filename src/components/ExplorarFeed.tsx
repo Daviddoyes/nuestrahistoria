@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Plus, Check, Compass } from 'lucide-react'
 import { getPlanesPublicos, copiarPlan } from '@/lib/actions'
 import SugerenciasIA from './SugerenciasIA'
+import CercaDeTi from './CercaDeTi'
 import type { PlanExplorar, Plan, Profile } from '@/types/planes'
 
 const CATEGORIAS = ['Todos', 'Viajes', 'Deporte', 'Gastronomía', 'Cultura', 'Aventura'] as const
@@ -81,7 +82,10 @@ export default function ExplorarFeed({ profile, pendientes, historias, onOpenPla
         onPlanAnadido={onPlanCopiado}
       />
 
-      {/* 2 — Separador */}
+      {/* 2 — Cerca de ti (geolocalización; se oculta solo si no hay ubicación) */}
+      <CercaDeTi onPlanAnadido={onPlanCopiado} />
+
+      {/* 3 — Separador */}
       <div className="flex items-center gap-3 px-3 pt-5 pb-1">
         <p className="text-[10px] uppercase tracking-[0.15em] text-[#666666]">Descubre</p>
         <div className="flex-1 h-px bg-[#1A1A1A]" />

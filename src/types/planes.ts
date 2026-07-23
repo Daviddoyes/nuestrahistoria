@@ -57,6 +57,9 @@ export type Experiencia = {
   dificultad: string | null
   duracion: string | null
   tags: string[] | null
+  latitud: number | null
+  longitud: number | null
+  es_generico: boolean
   verificada: boolean
   veces_anadida: number
   created_at: string
