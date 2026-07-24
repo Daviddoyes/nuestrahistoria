@@ -372,18 +372,157 @@ async function fase3() {
   }
 }
 
+// ── FASE 4 — Migración experiencias → gooals + gooal_lugares ──
+
+// Subcategorías que representan ACTIVIDADES repetibles (Fase 1): se agrupan en
+// un gooal genérico con muchos lugares. El resto (festival, maraton, camino…)
+// son eventos únicos → un gooal propio cada uno. Agrupar por subcategoria a
+// secas juntaría los ~27 festivales bajo un solo gooal "festival", que es justo
+// lo que no queremos.
+const SUBCATS_GENERICAS = new Set([
+  'karting', 'paintball', 'escalada', 'paracaidismo', 'tirolina', 'puenting',
+  'crossfit', 'surf', 'ski', 'padel', 'michelin', 'mercado', 'cocina', 'museo', 'teatro',
+])
+
+const TITULO_SCHEMA = {
+  type: 'object',
+  properties: { titulo: { type: 'string' } },
+  required: ['titulo'],
+  additionalProperties: false,
+}
+
+async function generarTituloGenerico(subcategoria, ejemplo) {
+  const message = await anthropic.messages.create({
+    model: 'claude-sonnet-5',
+    max_tokens: 100,
+    thinking: { type: 'disabled' },
+    output_config: { effort: 'low', format: { type: 'json_schema', schema: TITULO_SCHEMA } },
+    messages: [{
+      role: 'user',
+      content: `Genera un título genérico en español para este tipo de experiencia: "${subcategoria}".
+Ejemplo de lugar: "${ejemplo.titulo}".
+El título debe ser en infinitivo, corto (2-4 palabras) y aspiracional.
+Ejemplos: "Practicar Karting", "Hacer Paintball", "Escalar en Roca".`,
+    }],
+  })
+  const texto = message.content.find(b => b.type === 'text')?.text
+  return texto ? JSON.parse(texto).titulo.trim() : null
+}
+
+// Upsert idempotente: devuelve el gooal existente o lo crea. La constraint UNIQUE
+// sobre titulo hace de clave.
+async function upsertGooal(g) {
+  const { data, error } = await supabase
+    .from('gooals')
+    .upsert(g, { onConflict: 'titulo' })
+    .select('id')
+    .single()
+  if (error) { console.error(`  ✗ Gooal "${g.titulo}": ${error.message}`); return null }
+  return data.id
+}
+
+async function insertarLugar(gooalId, exp) {
+  const nombre = exp.lugar_nombre || exp.titulo
+  const { data: existe } = await supabase
+    .from('gooal_lugares')
+    .select('id')
+    .eq('gooal_id', gooalId)
+    .eq('nombre_lugar', nombre)
+    .eq('ciudad', exp.ciudad ?? '')
+    .limit(1)
+  if (existe && existe.length > 0) return false
+
+  const { error } = await supabase.from('gooal_lugares').insert({
+    gooal_id: gooalId,
+    nombre_lugar: nombre,
+    ciudad: exp.ciudad,
+    pais: exp.pais,
+    latitud: exp.latitud,
+    longitud: exp.longitud,
+    rating: null,
+    direccion: exp.lugar_direccion,
+  })
+  if (error) { console.error(`  ✗ Lugar "${nombre}": ${error.message}`); return false }
+  return true
+}
+
+async function fase4() {
+  console.log('\n══ FASE 4 — Migración a gooals ══\n')
+
+  const { data: experiencias, error } = await supabase
+    .from('experiencias')
+    .select('*')
+    .eq('verificada', true)
+  if (error) { console.error(error.message); return }
+
+  const genericos = {} // subcategoria -> exps[]
+  const unicos = []
+  for (const exp of experiencias) {
+    if (exp.subcategoria && SUBCATS_GENERICAS.has(exp.subcategoria)) {
+      ;(genericos[exp.subcategoria] ??= []).push(exp)
+    } else {
+      unicos.push(exp)
+    }
+  }
+
+  let gooalsCreados = 0
+  let lugaresCreados = 0
+
+  // Gooals genéricos (una actividad, muchos lugares).
+  for (const [subcat, exps] of Object.entries(genericos)) {
+    const titulo = await generarTituloGenerico(subcat, exps[0])
+    if (!titulo) { console.log(`  – Sin título para "${subcat}", saltado`); continue }
+
+    const gooalId = await upsertGooal({
+      titulo,
+      categoria: exps[0].categoria,
+      subcategoria: subcat,
+      descripcion: exps[0].descripcion,
+      tags: exps[0].tags,
+      dificultad: exps[0].dificultad,
+    })
+    if (!gooalId) continue
+    gooalsCreados++
+    console.log(`  ✓ Gooal genérico: ${titulo} (${exps.length} lugares)`)
+
+    for (const exp of exps) {
+      if (await insertarLugar(gooalId, exp)) lugaresCreados++
+    }
+    await sleep(PAUSA_MS)
+  }
+
+  // Gooals únicos (festivales, eventos icónicos): uno por experiencia.
+  for (const exp of unicos) {
+    const gooalId = await upsertGooal({
+      titulo: exp.titulo,
+      categoria: exp.categoria,
+      subcategoria: exp.subcategoria,
+      descripcion: exp.descripcion,
+      tags: exp.tags,
+      dificultad: exp.dificultad,
+    })
+    if (!gooalId) continue
+    gooalsCreados++
+    if (await insertarLugar(gooalId, exp)) lugaresCreados++
+  }
+
+  console.log(`\n✓ Migración completada: ${gooalsCreados} gooals, ${lugaresCreados} lugares nuevos`)
+}
+
 // ── Main ─────────────────────────────────────────────────────
 
 async function main() {
-  // Selector de fases: `node index.mjs` corre todas; `node index.mjs 3` solo la 3;
-  // `node index.mjs 1 3` la 1 y la 3.
-  const pedidas = process.argv.slice(2).filter(a => ['1', '2', '3'].includes(a))
+  // Selector de fases. Sin argumentos corre 1-3 (generación). La Fase 4
+  // (migración a gooals) es opt-in: `node index.mjs 4`, para no re-migrar en
+  // cada generación. Ejemplos: `node index.mjs 3`, `node index.mjs 1 4`.
+  const pedidas = process.argv.slice(2).filter(a => ['1', '2', '3', '4'].includes(a))
   const fases = pedidas.length ? pedidas : ['1', '2', '3']
   console.log(`Fases a ejecutar: ${fases.join(', ')}`)
 
   if (fases.includes('1')) await fase1()
   if (fases.includes('2')) await fase2()
   if (fases.includes('3')) await fase3()
+  if (fases.includes('4')) await fase4()
   console.log(`\nTotal generadas: ${total} experiencias`)
 }
 

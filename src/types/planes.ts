@@ -68,6 +68,41 @@ export type Experiencia = {
 /** Experiencia recién generada por la IA, aún sin guardar (sin id). */
 export type ExperienciaGenerada = Omit<Experiencia, 'id' | 'verificada' | 'veces_anadida' | 'created_at'>
 
+/** Concepto genérico de la nueva arquitectura ("Practicar Karting"). */
+export type Gooal = {
+  id: string
+  titulo: string
+  categoria: string
+  subcategoria: string | null
+  descripcion: string | null
+  imagen_url: string | null
+  tags: string[] | null
+  dificultad: string | null
+  duracion: string | null
+  veces_añadido: number
+  created_at: string
+}
+
+/** Un sitio real donde conseguir un gooal. */
+export type GooalLugar = {
+  id: string
+  gooal_id: string
+  nombre_lugar: string
+  ciudad: string | null
+  pais: string | null
+  latitud: number | null
+  longitud: number | null
+  rating: number | null
+  direccion: string | null
+  created_at: string
+}
+
+/** Lugar con su gooal embebido (join de gooal_lugares → gooals) y distancia calculada. */
+export type LugarConGooal = GooalLugar & {
+  gooals: Gooal | null
+  distancia?: number
+}
+
 export type PlanParticipante = {
   id: string
   plan_id: string

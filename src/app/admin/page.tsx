@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { RefreshCw, LogOut } from 'lucide-react'
 import ExperienciasSection from '@/components/admin/ExperienciasSection'
+import GooalsSection from '@/components/admin/GooalsSection'
 
 const ADMIN_PASSWORD = 'LivestoryAdmin2024'
 const STORAGE_KEY = 'admin_auth'
@@ -379,7 +380,12 @@ export default function AdminPage() {
 
           <Divider />
 
-          {/* ── Section 5: Biblioteca de experiencias ── */}
+          {/* ── Section 5: Gooals ── */}
+          <GooalsSection />
+
+          <Divider />
+
+          {/* ── Section 6: Biblioteca de experiencias (legado, fuente de la migración) ── */}
           <ExperienciasSection />
 
         </div>
