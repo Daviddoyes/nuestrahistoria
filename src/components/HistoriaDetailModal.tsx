@@ -99,8 +99,8 @@ export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }
       <button
         onClick={close}
         aria-label="Cerrar"
-        className="fixed right-4 z-[60] w-9 h-9 flex items-center justify-center rounded-full bg-black/50 text-white/60 active:bg-black/70 active:text-white transition-colors"
-        style={{ top: 'calc(env(safe-area-inset-top, 0px) + 1rem)' }}
+        className="fixed right-4 z-[70] w-9 h-9 flex items-center justify-center rounded-full bg-black/50 text-white/60 active:bg-black/70 active:text-white transition-colors"
+        style={{ top: 'calc(env(safe-area-inset-top, 0px) + 52px)' }}
       >
         <X className="w-4 h-4" />
       </button>

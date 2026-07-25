@@ -73,7 +73,7 @@ Cada experiencia debe ser:
 
 Reglas de los campos:
 - titulo: en español, en infinitivo o como nombre del plan, menos de 70 caracteres.
-- descripcion: una o dos frases evocadoras en español.
+- descripcion: 2-3 frases aspiracionales en español. NO menciones nombres de empresas, locales, marcas ni lugares específicos. Habla solo de la experiencia: sensaciones, emociones, lo que se vive. Tono inspirador y cercano.
 - categoria: exactamente "${categoria}".
 - subcategoria: "${tipo}".
 - dificultad: "facil", "medio" o "dificil".

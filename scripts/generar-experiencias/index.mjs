@@ -171,7 +171,7 @@ Valoración: ${place.rating}★ (${place.userRatingCount} reseñas)
 
 Devuelve:
 - titulo: en español, tipo "Karting en ${ciudad}" o el nombre del plan, menos de 70 caracteres.
-- descripcion: 2-3 frases evocadoras en español, sin inventar datos que no tengas.
+- descripcion: 2-3 frases aspiracionales en español. NO menciones nombres de empresas, locales, marcas ni lugares específicos. Habla solo de la experiencia: sensaciones, emociones, lo que se vive. Tono inspirador y cercano.
 - dificultad: "facil", "medio" o "dificil".
 - duracion: p.ej. "2-3 horas".
 - tags: máximo 5 etiquetas en minúsculas.`

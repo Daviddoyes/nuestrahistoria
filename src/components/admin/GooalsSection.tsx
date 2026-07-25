@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, Fragment } from 'react'
-import { Plus, MapPin, ChevronDown, ChevronRight, X } from 'lucide-react'
+import { Plus, MapPin, ChevronDown, ChevronRight, X, Sparkles, Check } from 'lucide-react'
 import type { Gooal, GooalLugar } from '@/types/planes'
 
 const ADMIN_HEADER = { 'Content-Type': 'application/json', 'X-Admin-Key': 'LivestoryAdmin2024' }
@@ -136,6 +136,8 @@ export default function GooalsSection() {
   const [lugares, setLugares] = useState<Record<string, GooalLugar[]>>({})
   const [showNuevo, setShowNuevo] = useState(false)
   const [lugarPara, setLugarPara] = useState<GooalRow | null>(null)
+  const [regenerando, setRegenerando] = useState<string | null>(null)
+  const [regenerado, setRegenerado] = useState<string[]>([])
 
   const cargar = useCallback(async () => {
     setLoading(true); setError('')
@@ -153,6 +155,23 @@ export default function GooalsSection() {
   }, [])
 
   useEffect(() => { cargar() }, [cargar])
+
+  const regenerarDesc = async (id: string) => {
+    setRegenerando(id)
+    try {
+      const res = await fetch('/api/admin/regenerar-descripcion', {
+        method: 'POST', headers: ADMIN_HEADER, body: JSON.stringify({ gooalId: id }),
+      })
+      if (res.ok) {
+        setRegenerado(prev => [...prev, id])
+        setTimeout(() => setRegenerado(prev => prev.filter(x => x !== id)), 2000)
+      }
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setRegenerando(null)
+    }
+  }
 
   const toggleLugares = async (id: string) => {
     if (expandido === id) { setExpandido(null); return }
@@ -225,12 +244,28 @@ export default function GooalsSection() {
                     <td style={{ padding: '10px 14px 10px 0', color: '#F0F0F0', textAlign: 'center' }}>{g.num_lugares}</td>
                     <td style={{ padding: '10px 14px 10px 0', color: '#F0F0F0', textAlign: 'center' }}>{g.veces_añadido}</td>
                     <td style={{ padding: '10px 0' }}>
-                      <button
-                        onClick={() => setLugarPara(g)}
-                        style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 10px', borderRadius: 7, background: '#1A1A1A', border: '1px solid #2A2A2A', color: '#888888', fontSize: 11, cursor: 'pointer', whiteSpace: 'nowrap' }}
-                      >
-                        <MapPin style={{ width: 12, height: 12 }} /> Añadir lugar
-                      </button>
+                      <div style={{ display: 'flex', gap: 6 }}>
+                        <button
+                          onClick={() => setLugarPara(g)}
+                          style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 10px', borderRadius: 7, background: '#1A1A1A', border: '1px solid #2A2A2A', color: '#888888', fontSize: 11, cursor: 'pointer', whiteSpace: 'nowrap' }}
+                        >
+                          <MapPin style={{ width: 12, height: 12 }} /> Añadir lugar
+                        </button>
+                        <button
+                          onClick={() => regenerarDesc(g.id)}
+                          disabled={regenerando === g.id}
+                          title="Regenerar descripción sin nombres de empresas"
+                          style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 10px', borderRadius: 7, background: '#1A1A1A', border: '1px solid #2A2A2A', color: regenerado.includes(g.id) ? '#10B981' : '#E8692A', fontSize: 11, cursor: 'pointer', whiteSpace: 'nowrap', opacity: regenerando === g.id ? 0.5 : 1 }}
+                        >
+                          {regenerando === g.id
+                            ? <span style={{ width: 12, height: 12, border: '2px solid #E8692A', borderTopColor: 'transparent', borderRadius: '50%', display: 'inline-block' }} className="animate-spin" />
+                            : regenerado.includes(g.id)
+                              ? <Check style={{ width: 12, height: 12 }} />
+                              : <Sparkles style={{ width: 12, height: 12 }} />
+                          }
+                          {regenerado.includes(g.id) ? 'Hecho' : 'Regenerar desc.'}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                   {abierto && (

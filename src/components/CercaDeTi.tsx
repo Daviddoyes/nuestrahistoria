@@ -20,6 +20,7 @@ export default function CercaDeTi({ onPlanAnadido }: Props) {
   const [cercanos, setCercanos] = useState<LugarConGooal[]>([])
   const [anadiendo, setAnadiendo] = useState<string | null>(null)
   const [anadidos, setAnadidos] = useState<string[]>([])
+  const [addError, setAddError] = useState('')
   const [detalle, setDetalle] = useState<Gooal | null>(null)
 
   // Pide ubicación al montar. Denegada → null y no se muestra nada.
@@ -64,11 +65,20 @@ export default function CercaDeTi({ onPlanAnadido }: Props) {
 
   const handleAnadir = async (gooal: Gooal) => {
     setAnadiendo(gooal.id)
-    const result = await crearPlanDesdeSugerencia(gooal.titulo, gooal.categoria)
-    setAnadiendo(null)
-    if (!result.success) return
-    setAnadidos(prev => [...prev, gooal.id])
-    onPlanAnadido()
+    setAddError('')
+    try {
+      const result = await crearPlanDesdeSugerencia(gooal.titulo, gooal.categoria)
+      if (!result.success) throw new Error(result.error || 'No se pudo añadir')
+      setAnadidos(prev => [...prev, gooal.id])
+      onPlanAnadido()
+      setTimeout(() => setAnadidos(prev => prev.filter(id => id !== gooal.id)), 2000)
+    } catch (err) {
+      console.error('[añadir plan]', err)
+      setAddError('No se pudo añadir. Inténtalo otra vez.')
+      setTimeout(() => setAddError(''), 3000)
+    } finally {
+      setAnadiendo(null)
+    }
   }
 
   if (!ubicacion || cercanos.length === 0) return null
@@ -146,6 +156,10 @@ export default function CercaDeTi({ onPlanAnadido }: Props) {
           )
         })}
       </div>
+
+      {addError && (
+        <p className="px-3 mt-2 text-xs text-[#C97B7B]">{addError}</p>
+      )}
 
       {detalle && (
         <GooalDetailModal

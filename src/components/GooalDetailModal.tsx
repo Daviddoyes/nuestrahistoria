@@ -35,16 +35,12 @@ export default function GooalDetailModal({ gooal, userLocation, onClose, onAdded
         .select('*')
         .eq('gooal_id', gooal.id)
 
-      let filas = (data ?? []) as GooalLugar[]
+      const filas = (data ?? []) as GooalLugar[]
       if (userLocation) {
-        filas = filas
-          .map(l => ({
-            ...l,
-            _d: l.latitud != null && l.longitud != null
-              ? distanciaKm(userLocation.lat, userLocation.lng, Number(l.latitud), Number(l.longitud))
-              : Infinity,
-          }))
-          .sort((a, b) => a._d - b._d)
+        const dist = (l: GooalLugar) => l.latitud != null && l.longitud != null
+          ? distanciaKm(userLocation.lat, userLocation.lng, Number(l.latitud), Number(l.longitud))
+          : Infinity
+        filas.sort((a, b) => dist(a) - dist(b))
       }
       setLugares(filas)
     }
@@ -73,8 +69,8 @@ export default function GooalDetailModal({ gooal, userLocation, onClose, onAdded
       <button
         onClick={close}
         aria-label="Volver"
-        className="fixed left-4 z-[60] w-9 h-9 flex items-center justify-center rounded-full bg-black/50 text-white/60 active:bg-black/70 active:text-white transition-colors"
-        style={{ top: 'calc(env(safe-area-inset-top, 0px) + 1rem)' }}
+        className="fixed left-4 z-[70] w-9 h-9 flex items-center justify-center rounded-full bg-black/50 text-white/60 active:bg-black/70 active:text-white transition-colors"
+        style={{ top: 'calc(env(safe-area-inset-top, 0px) + 52px)' }}
       >
         <ArrowLeft className="w-4 h-4" />
       </button>
@@ -83,14 +79,14 @@ export default function GooalDetailModal({ gooal, userLocation, onClose, onAdded
       <button
         onClick={close}
         aria-label="Cerrar"
-        className="fixed right-4 z-[60] w-9 h-9 flex items-center justify-center rounded-full bg-black/50 text-white/60 active:bg-black/70 active:text-white transition-colors"
-        style={{ top: 'calc(env(safe-area-inset-top, 0px) + 1rem)' }}
+        className="fixed right-4 z-[70] w-9 h-9 flex items-center justify-center rounded-full bg-black/50 text-white/60 active:bg-black/70 active:text-white transition-colors"
+        style={{ top: 'calc(env(safe-area-inset-top, 0px) + 52px)' }}
       >
         <X className="w-4 h-4" />
       </button>
 
       <div className={`fixed inset-0 z-50 bg-[#0A0A0A] overflow-y-auto ${closing ? 'modal-slide-down' : 'modal-slide-up'}`}>
-        <div className="px-6 pt-16" style={{ paddingBottom: 'max(3rem, env(safe-area-inset-bottom, 0px))' }}>
+        <div className="px-6" style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 100px)', paddingBottom: 'max(3rem, env(safe-area-inset-bottom, 0px))' }}>
           <span
             style={{
               fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em',

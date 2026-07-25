@@ -1,11 +1,68 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { Sparkles, Plus, Check } from 'lucide-react'
+import { Sparkles, Plus, Check, X, ArrowLeft } from 'lucide-react'
 import { crearPlanDesdeSugerencia } from '@/lib/actions'
 import type { Profile, Plan } from '@/types/planes'
 
-type Sugerencia = { titulo: string; categoria: string; emoji: string }
+type Sugerencia = { titulo: string; categoria: string; emoji: string; descripcion?: string }
+
+// Modal de detalle de una idea (al tocar la card, no el +).
+function SugerenciaDetalle({
+  sug, adding, added, onAdd, onClose,
+}: { sug: Sugerencia; adding: boolean; added: boolean; onAdd: () => void; onClose: () => void }) {
+  return (
+    <>
+      <button
+        onClick={onClose}
+        aria-label="Volver"
+        className="fixed left-4 z-[70] w-9 h-9 flex items-center justify-center rounded-full bg-black/50 text-white/60 active:bg-black/70 active:text-white transition-colors"
+        style={{ top: 'calc(env(safe-area-inset-top, 0px) + 52px)' }}
+      >
+        <ArrowLeft className="w-4 h-4" />
+      </button>
+      <button
+        onClick={onClose}
+        aria-label="Cerrar"
+        className="fixed right-4 z-[70] w-9 h-9 flex items-center justify-center rounded-full bg-black/50 text-white/60 active:bg-black/70 active:text-white transition-colors"
+        style={{ top: 'calc(env(safe-area-inset-top, 0px) + 52px)' }}
+      >
+        <X className="w-4 h-4" />
+      </button>
+
+      <div className="fixed inset-0 z-50 bg-[#0A0A0A] modal-slide-up overflow-y-auto">
+        <div
+          className="px-6 flex flex-col items-center text-center"
+          style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 120px)', paddingBottom: 'max(3rem, env(safe-area-inset-bottom, 0px))' }}
+        >
+          <span style={{ fontSize: 72, lineHeight: 1 }}>{sug.emoji}</span>
+          <h2 className="font-serif text-3xl font-bold text-[#F0F0F0] leading-tight mt-6">{sug.titulo}</h2>
+          <span
+            className="mt-4"
+            style={{
+              fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em',
+              color: '#E8692A', background: 'rgba(232,105,42,0.2)', borderRadius: 6, padding: '4px 10px',
+            }}
+          >
+            {sug.categoria}
+          </span>
+          {sug.descripcion && (
+            <p style={{ color: '#999999', fontSize: 15, lineHeight: 1.6 }} className="mt-6">{sug.descripcion}</p>
+          )}
+
+          <button
+            onClick={onAdd}
+            disabled={adding || added}
+            className="w-full max-w-sm mt-10 py-4 bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-60 text-white rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors"
+          >
+            {added ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+            {added ? 'Añadido a tu lista' : adding ? 'Añadiendo...' : 'Añadir a mi lista'}
+          </button>
+        </div>
+      </div>
+    </>
+  )
+}
 
 type Props = {
   profile: Profile
@@ -68,6 +125,8 @@ export default function SugerenciasIA({ profile, pendientes, historias, onPlanAn
   const [error, setError] = useState('')
   const [anadiendo, setAnadiendo] = useState<string | null>(null)
   const [anadidos, setAnadidos] = useState<string[]>([])
+  const [addError, setAddError] = useState('')
+  const [detalle, setDetalle] = useState<Sugerencia | null>(null)
   const [usadas, setUsadas] = useState(0)
 
   useEffect(() => { setUsadas(generacionesRecientes().length) }, [])
@@ -119,11 +178,21 @@ export default function SugerenciasIA({ profile, pendientes, historias, onPlanAn
 
   const handleAnadir = async (sug: Sugerencia) => {
     setAnadiendo(sug.titulo)
-    const result = await crearPlanDesdeSugerencia(sug.titulo, sug.categoria)
-    setAnadiendo(null)
-    if (!result.success) return
-    setAnadidos(prev => [...prev, sug.titulo])
-    onPlanAnadido()
+    setAddError('')
+    try {
+      const result = await crearPlanDesdeSugerencia(sug.titulo, sug.categoria)
+      if (!result.success) throw new Error(result.error || 'No se pudo añadir')
+      setAnadidos(prev => [...prev, sug.titulo])
+      onPlanAnadido()
+      // ✓ durante 2 s y vuelve al estado normal.
+      setTimeout(() => setAnadidos(prev => prev.filter(t => t !== sug.titulo)), 2000)
+    } catch (err) {
+      console.error('[añadir plan]', err)
+      setAddError('No se pudo añadir. Inténtalo otra vez.')
+      setTimeout(() => setAddError(''), 3000)
+    } finally {
+      setAnadiendo(null)
+    }
   }
 
   const mostrarCargando = loadingIA && sugerencias.length === 0
@@ -188,9 +257,10 @@ export default function SugerenciasIA({ profile, pendientes, historias, onPlanAn
             return (
               <div
                 key={sug.titulo}
-                className="flex-shrink-0 flex flex-col"
+                onClick={() => setDetalle(sug)}
+                className="flex-shrink-0 flex flex-col active:opacity-80 transition-opacity"
                 style={{
-                  width: 160, minHeight: 150,
+                  width: 160, minHeight: 150, cursor: 'pointer',
                   background: '#141414', border: '1px solid #2A2A2A',
                   borderRadius: 16, padding: 16,
                 }}
@@ -220,7 +290,7 @@ export default function SugerenciasIA({ profile, pendientes, historias, onPlanAn
 
                   <button
                     type="button"
-                    onClick={() => { if (!yaAnadido) handleAnadir(sug) }}
+                    onClick={e => { e.stopPropagation(); if (!yaAnadido) handleAnadir(sug) }}
                     disabled={anadiendo === sug.titulo || yaAnadido}
                     aria-label={yaAnadido ? 'Añadido a tus planes' : 'Añadir a mis planes'}
                     style={{
@@ -243,6 +313,20 @@ export default function SugerenciasIA({ profile, pendientes, historias, onPlanAn
             )
           })}
         </div>
+      )}
+
+      {addError && (
+        <p className="px-3 mt-2 text-xs text-[#C97B7B]">{addError}</p>
+      )}
+
+      {detalle && (
+        <SugerenciaDetalle
+          sug={detalle}
+          adding={anadiendo === detalle.titulo}
+          added={anadidos.includes(detalle.titulo)}
+          onAdd={() => handleAnadir(detalle)}
+          onClose={() => setDetalle(null)}
+        />
       )}
     </div>
   )

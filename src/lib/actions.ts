@@ -804,6 +804,8 @@ const CATEGORIA_CANONICA: Record<string, string> = {
   'gastronomía': 'Gastronomía',
   cultura: 'Cultura',
   aventura: 'Aventura',
+  musica: 'Música',
+  'música': 'Música',
 }
 
 // No se exporta: en un módulo 'use server' todo lo exportado debe ser async.
@@ -850,7 +852,10 @@ export async function crearPlanDesdeSugerencia(
       .select('id')
       .single()
 
-    if (error || !nuevoPlan) return { success: false, error: error?.message ?? 'Error al crear el plan' }
+    if (error || !nuevoPlan) {
+      console.error('[crearPlan] error:', error)
+      return { success: false, error: error?.message ?? 'Error al crear el plan' }
+    }
 
     await service.from('plan_participantes').insert({
       plan_id: (nuevoPlan as { id: string }).id,

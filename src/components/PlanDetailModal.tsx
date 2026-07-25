@@ -202,8 +202,8 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
       <button
         onClick={onClose}
         aria-label="Cerrar"
-        className="fixed right-4 z-[60] w-9 h-9 flex items-center justify-center rounded-full bg-black/50 text-white/60 active:bg-black/70 active:text-white transition-colors"
-        style={{ top: 'calc(env(safe-area-inset-top, 0px) + 1rem)' }}
+        className="fixed right-4 z-[70] w-9 h-9 flex items-center justify-center rounded-full bg-black/50 text-white/60 active:bg-black/70 active:text-white transition-colors"
+        style={{ top: 'calc(env(safe-area-inset-top, 0px) + 52px)' }}
       >
         <X className="w-4 h-4" />
       </button>
@@ -213,8 +213,8 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
         style={{ WebkitOverflowScrolling: 'touch' } as React.CSSProperties}
       >
         <div
-          className="px-6 pt-16"
-          style={{ paddingBottom: 'max(3rem, env(safe-area-inset-bottom, 0px))' }}
+          className="px-6"
+          style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 100px)', paddingBottom: 'max(3rem, env(safe-area-inset-bottom, 0px))' }}
         >
           <p className="text-[10px] uppercase tracking-[0.15em] text-[#E8692A] mb-3">Plan pendiente</p>
           <h2 className="font-serif text-2xl font-bold text-[#F0F0F0] leading-snug mb-4">{plan.titulo}</h2>
