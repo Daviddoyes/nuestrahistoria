@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { X, MapPin, Plus, Check } from 'lucide-react'
+import { X, ArrowLeft, MapPin, Plus, Check } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { crearPlanDesdeSugerencia } from '@/lib/actions'
 import { distanciaKm, CAT_COLOR } from '@/lib/geo'
@@ -11,7 +11,7 @@ type Props = {
   gooal: Gooal
   userLocation: { lat: number; lng: number } | null
   onClose: () => void
-  onAdded: () => void
+  onAdded?: () => void
 }
 
 export default function GooalDetailModal({ gooal, userLocation, onClose, onAdded }: Props) {
@@ -19,6 +19,14 @@ export default function GooalDetailModal({ gooal, userLocation, onClose, onAdded
   const [lugares, setLugares] = useState<GooalLugar[]>([])
   const [anadiendo, setAnadiendo] = useState(false)
   const [anadido, setAnadido] = useState(false)
+  const [closing, setClosing] = useState(false)
+
+  // Cierre con animación slide-down antes de desmontar (0.28s de la clase).
+  const close = () => {
+    if (closing) return
+    setClosing(true)
+    setTimeout(onClose, 260)
+  }
 
   useEffect(() => {
     const cargar = async () => {
@@ -49,7 +57,7 @@ export default function GooalDetailModal({ gooal, userLocation, onClose, onAdded
     setAnadiendo(false)
     if (!result.success) return
     setAnadido(true)
-    onAdded()
+    onAdded?.()
   }
 
   const color = CAT_COLOR[gooal.categoria] ?? '#666666'
@@ -61,8 +69,19 @@ export default function GooalDetailModal({ gooal, userLocation, onClose, onAdded
 
   return (
     <>
+      {/* Volver — arriba a la izquierda */}
       <button
-        onClick={onClose}
+        onClick={close}
+        aria-label="Volver"
+        className="fixed left-4 z-[60] w-9 h-9 flex items-center justify-center rounded-full bg-black/50 text-white/60 active:bg-black/70 active:text-white transition-colors"
+        style={{ top: 'calc(env(safe-area-inset-top, 0px) + 1rem)' }}
+      >
+        <ArrowLeft className="w-4 h-4" />
+      </button>
+
+      {/* Cerrar — arriba a la derecha */}
+      <button
+        onClick={close}
         aria-label="Cerrar"
         className="fixed right-4 z-[60] w-9 h-9 flex items-center justify-center rounded-full bg-black/50 text-white/60 active:bg-black/70 active:text-white transition-colors"
         style={{ top: 'calc(env(safe-area-inset-top, 0px) + 1rem)' }}
@@ -70,7 +89,7 @@ export default function GooalDetailModal({ gooal, userLocation, onClose, onAdded
         <X className="w-4 h-4" />
       </button>
 
-      <div className="fixed inset-0 z-50 bg-[#0A0A0A] modal-slide-up overflow-y-auto">
+      <div className={`fixed inset-0 z-50 bg-[#0A0A0A] overflow-y-auto ${closing ? 'modal-slide-down' : 'modal-slide-up'}`}>
         <div className="px-6 pt-16" style={{ paddingBottom: 'max(3rem, env(safe-area-inset-bottom, 0px))' }}>
           <span
             style={{

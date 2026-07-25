@@ -281,7 +281,13 @@ export default function PerfilPage() {
   return (
     <div
       className="flex flex-col bg-[#0A0A0A] overflow-hidden"
-      style={{ height: '100dvh', paddingTop: 'env(safe-area-inset-top, 0px)' }}
+      style={{
+        height: '100dvh',
+        paddingTop: 'env(safe-area-inset-top, 0px)',
+        // Reserva para el bottom nav fijo; la barra de perfil (último hijo del
+        // flex) queda justo encima de esa reserva.
+        paddingBottom: 'calc(56px + env(safe-area-inset-bottom, 0px))',
+      }}
     >
       {/* ── Brand bar ─────────────────────────────────────── */}
       <div className="flex-shrink-0 flex items-center justify-center border-b border-[#1A1A1A]" style={{ height: 32 }}>
@@ -394,85 +400,6 @@ export default function PerfilPage() {
         </div>
       )}
 
-      {/* ── Profile row ───────────────────────────────────── */}
-      <div className="flex-shrink-0 flex items-center gap-3 px-4 py-3 border-b border-[#1A1A1A]">
-        <div className="relative flex-shrink-0">
-          <ProfileAvatar profile={profile} size={48} />
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploadingFoto}
-            className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#E8692A] border-[1.5px] border-[#0A0A0A] flex items-center justify-center text-white active:scale-90 transition-transform disabled:opacity-60"
-            aria-label="Cambiar foto"
-          >
-            {uploadingFoto
-              ? <div className="w-2.5 h-2.5 border border-white border-t-transparent rounded-full animate-spin" />
-              : <Camera className="w-2.5 h-2.5" />
-            }
-          </button>
-          <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFotoChange} />
-        </div>
-
-        <div className="flex-1 min-w-0">
-          <p className="font-serif text-[20px] font-bold text-[#F0F0F0] tracking-[-0.02em] leading-[1.2] truncate">
-            {profile.nombre}
-          </p>
-          <button
-            onClick={handleCopyUsername}
-            className="flex items-center gap-1.5 text-[13px] font-light text-[#666666] active:text-[#E8692A] transition-colors mt-0.5"
-          >
-            {copied ? <Check className="w-3 h-3 text-[#E8692A]" /> : <Copy className="w-3 h-3" />}
-            <span>{copied ? '¡Copiado!' : `@${profile.username ?? profile.nombre}`}</span>
-          </button>
-        </div>
-
-        <button
-          onClick={handleLogout}
-          className="text-[#444444] active:text-[#E8692A] transition-colors flex-shrink-0 flex items-center justify-center"
-          style={{ minHeight: 44, minWidth: 44 }}
-          aria-label="Cerrar sesión"
-        >
-          <LogOut className="w-4 h-4" />
-        </button>
-      </div>
-
-      {/* ── Stats row ─────────────────────────────────────── */}
-      <div className="flex-shrink-0 flex items-stretch border-b border-[#1A1A1A]">
-        <div className="flex-1 flex items-center justify-between px-4 py-2.5">
-          <div className="flex items-baseline gap-2">
-            <span className="text-[22px] font-bold text-[#F0F0F0] leading-none">{pendientes.length}</span>
-            <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#666666]">
-              {pendientes.length === 1 ? 'Plan' : 'Planes'}
-            </span>
-          </div>
-          <ShareBucketList
-            planes={pendientes}
-            nombre={profile.nombre || ''}
-            username={profile.username}
-            fotoPerfil={profile.foto_perfil_url}
-            compact
-          />
-        </div>
-        <div className="w-px bg-[#1A1A1A]" />
-        <div className="flex-1 flex items-center justify-between px-4 py-2.5">
-          <div className="flex items-baseline gap-2">
-            <span className="text-[22px] font-bold text-[#F0F0F0] leading-none">{historias.length}</span>
-            <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#666666]">
-              {historias.length === 1 ? 'Historia' : 'Historias'}
-            </span>
-          </div>
-          <button
-            onClick={historias.length > 0 ? openHistoriaShare : undefined}
-            disabled={historias.length === 0}
-            className={`flex items-center justify-center transition-colors ${
-              historias.length > 0 ? 'text-[#E8692A] active:text-[#D4581A]' : 'text-[#2A2A2A]'
-            }`}
-            style={{ minHeight: 44, minWidth: 44 }}
-          >
-            <Share2 className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-
       {/* ── Tab content ───────────────────────────────────── */}
       <div className="flex-1 overflow-hidden">
 
@@ -483,7 +410,7 @@ export default function PerfilPage() {
             style={{
               overscrollBehavior: 'contain',
               WebkitOverflowScrolling: 'touch',
-              paddingBottom: 'calc(56px + env(safe-area-inset-bottom, 0px) + 80px)',
+              paddingBottom: '84px', // hueco para el FAB (nav y barra de perfil ya están fuera del scroll)
             } as React.CSSProperties}
           >
             {pendientes.length === 0 ? (
@@ -572,7 +499,7 @@ export default function PerfilPage() {
             style={{
               overscrollBehavior: 'contain',
               WebkitOverflowScrolling: 'touch',
-              paddingBottom: 'calc(56px + env(safe-area-inset-bottom, 0px))',
+              paddingBottom: '12px',
             } as React.CSSProperties}
           >
             {historias.length === 0 ? (
@@ -618,6 +545,77 @@ export default function PerfilPage() {
         )}
       </div>
 
+      {/* ── Barra de perfil (discreta, abajo del todo) ────── */}
+      <div className="flex-shrink-0 border-t border-[#1A1A1A] bg-[#0A0A0A]" style={{ padding: '8px 0' }}>
+        <div className="flex items-center gap-3 px-4">
+          <div className="relative flex-shrink-0">
+            <ProfileAvatar profile={profile} size={48} />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploadingFoto}
+              className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#E8692A] border-[1.5px] border-[#0A0A0A] flex items-center justify-center text-white active:scale-90 transition-transform disabled:opacity-60"
+              aria-label="Cambiar foto"
+            >
+              {uploadingFoto
+                ? <div className="w-2.5 h-2.5 border border-white border-t-transparent rounded-full animate-spin" />
+                : <Camera className="w-2.5 h-2.5" />
+              }
+            </button>
+            <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFotoChange} />
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <p className="font-serif text-[16px] font-bold text-[#F0F0F0] leading-tight truncate">
+              {profile.nombre}
+            </p>
+            <button
+              onClick={handleCopyUsername}
+              className="flex items-center gap-1 text-[12px] font-light text-[#666666] active:text-[#E8692A] transition-colors"
+            >
+              {copied ? <Check className="w-3 h-3 text-[#E8692A]" /> : <Copy className="w-3 h-3" />}
+              <span className="truncate">{copied ? '¡Copiado!' : `@${profile.username ?? profile.nombre}`}</span>
+            </button>
+            <p className="text-[11px] text-[#666666] mt-0.5">
+              <span className="text-[#F0F0F0] font-semibold">{pendientes.length}</span> {pendientes.length === 1 ? 'Plan' : 'Planes'}
+              <span className="mx-1.5 text-[#2A2A2A]">·</span>
+              <span className="text-[#F0F0F0] font-semibold">{historias.length}</span> {historias.length === 1 ? 'Historia' : 'Historias'}
+            </p>
+          </div>
+
+          {/* Compartir — la lista de planes, o la historia si estás en esa pestaña */}
+          {activeTab === 'historias' ? (
+            <button
+              onClick={historias.length > 0 ? openHistoriaShare : undefined}
+              disabled={historias.length === 0}
+              className={`flex items-center justify-center transition-colors flex-shrink-0 ${
+                historias.length > 0 ? 'text-[#E8692A] active:text-[#D4581A]' : 'text-[#2A2A2A]'
+              }`}
+              style={{ minHeight: 44, minWidth: 44 }}
+              aria-label="Compartir historia"
+            >
+              <Share2 className="w-4 h-4" />
+            </button>
+          ) : (
+            <ShareBucketList
+              planes={pendientes}
+              nombre={profile.nombre || ''}
+              username={profile.username}
+              fotoPerfil={profile.foto_perfil_url}
+              compact
+            />
+          )}
+
+          <button
+            onClick={handleLogout}
+            className="text-[#444444] active:text-[#E8692A] transition-colors flex-shrink-0 flex items-center justify-center"
+            style={{ minHeight: 44, minWidth: 44 }}
+            aria-label="Cerrar sesión"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
       {/* ── FAB ───────────────────────────────────────────── */}
       {activeTab === 'planes' && (
         <button
@@ -626,7 +624,8 @@ export default function PerfilPage() {
           style={{
             position: 'fixed',
             right: 20,
-            bottom: 'calc(56px + env(safe-area-inset-bottom, 0px) + 20px)',
+            // Por encima del bottom nav (56) y de la barra de perfil (~84).
+            bottom: 'calc(56px + env(safe-area-inset-bottom, 0px) + 92px)',
             width: 56, height: 56,
             borderRadius: '50%',
             background: '#E8692A',

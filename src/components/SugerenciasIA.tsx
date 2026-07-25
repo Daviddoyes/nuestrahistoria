@@ -18,6 +18,33 @@ type Props = {
 // volveríamos a llamar a la IA —y a pagarla— en cada visita.
 const CACHE_KEY = 'gooals:sugerencias'
 
+// Límite de regeneraciones manuales: 3 cada 30 días. La generación automática
+// del primer render NO cuenta (si contara, visitar en 3 sesiones distintas
+// agotaría el cupo sin pulsar nada).
+const LIMITE_GEN = 3
+const VENTANA_MS = 30 * 24 * 60 * 60 * 1000
+const KEY_GEN = 'ia_generaciones'
+
+function generacionesRecientes(): number[] {
+  try {
+    const arr = JSON.parse(localStorage.getItem(KEY_GEN) || '[]') as number[]
+    const desde = Date.now() - VENTANA_MS
+    return arr.filter(t => t > desde)
+  } catch {
+    return []
+  }
+}
+
+function registrarGeneracion(): number[] {
+  const recientes = [...generacionesRecientes(), Date.now()]
+  try {
+    localStorage.setItem(KEY_GEN, JSON.stringify(recientes))
+  } catch {
+    // localStorage bloqueado: el límite no se persiste, pero no rompemos nada.
+  }
+  return recientes
+}
+
 function leerCache(): Sugerencia[] | null {
   try {
     const raw = sessionStorage.getItem(CACHE_KEY)
@@ -41,12 +68,18 @@ export default function SugerenciasIA({ profile, pendientes, historias, onPlanAn
   const [error, setError] = useState('')
   const [anadiendo, setAnadiendo] = useState<string | null>(null)
   const [anadidos, setAnadidos] = useState<string[]>([])
+  const [usadas, setUsadas] = useState(0)
+
+  useEffect(() => { setUsadas(generacionesRecientes().length) }, [])
 
   // Los planes cambian al añadir uno; sin la ref el efecto se relanzaría.
   const contexto = useRef({ profile, pendientes, historias })
   contexto.current = { profile, pendientes, historias }
 
-  const generarSugerencias = useCallback(async () => {
+  // manual = pulsó "Generar nuevas" (cuenta para el límite). Sin argumento es
+  // la carga automática, que ni comprueba ni consume cupo.
+  const generarSugerencias = useCallback(async (manual = false) => {
+    if (manual && generacionesRecientes().length >= LIMITE_GEN) return
     const { profile: p, pendientes: pl, historias: h } = contexto.current
     setLoadingIA(true)
     setError('')
@@ -66,6 +99,7 @@ export default function SugerenciasIA({ profile, pendientes, historias, onPlanAn
       const { planes } = (await res.json()) as { planes: Sugerencia[] }
       setSugerencias(planes ?? [])
       guardarCache(planes ?? [])
+      if (manual) setUsadas(registrarGeneracion().length)
     } catch (err) {
       console.error('[sugerencias]', err)
       setError('No se pudieron generar ideas ahora mismo.')
@@ -99,15 +133,22 @@ export default function SugerenciasIA({ profile, pendientes, historias, onPlanAn
       <div className="flex items-center justify-between px-3 mb-2.5">
         <p className="text-[10px] uppercase tracking-[0.15em] text-[#666666]">Ideas para ti</p>
         {sugerencias.length > 0 && (
-          <button
-            type="button"
-            onClick={generarSugerencias}
-            disabled={loadingIA}
-            className="flex items-center gap-1.5 text-[12px] text-[#E8692A] active:text-[#D4581A] disabled:opacity-40 min-h-[44px]"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            {loadingIA ? 'Generando...' : 'Generar nuevas'}
-          </button>
+          usadas >= LIMITE_GEN ? (
+            <span className="text-[11px] text-[#666666]">{LIMITE_GEN}/{LIMITE_GEN} generaciones usadas este mes</span>
+          ) : (
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] text-[#666666]">{usadas}/{LIMITE_GEN}</span>
+              <button
+                type="button"
+                onClick={() => generarSugerencias(true)}
+                disabled={loadingIA}
+                className="flex items-center gap-1.5 text-[12px] text-[#E8692A] active:text-[#D4581A] disabled:opacity-40 min-h-[44px]"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                {loadingIA ? 'Generando...' : 'Generar nuevas'}
+              </button>
+            </div>
+          )
         )}
       </div>
 
@@ -133,7 +174,7 @@ export default function SugerenciasIA({ profile, pendientes, historias, onPlanAn
           <p className="text-xs text-[#666666] mb-2">{error}</p>
           <button
             type="button"
-            onClick={generarSugerencias}
+            onClick={() => generarSugerencias(false)}
             className="flex items-center gap-1.5 text-[13px] text-[#E8692A] active:text-[#D4581A] min-h-[44px]"
           >
             <Sparkles className="w-3.5 h-3.5" />
