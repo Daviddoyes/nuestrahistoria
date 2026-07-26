@@ -31,7 +31,7 @@ for (const [k, v] of Object.entries({ GOOGLE_PLACES_API_KEY, ANTHROPIC_API_KEY, 
 const MIN_RATING = 4.0
 const MIN_RESENAS = 50
 // Top-N lugares por búsqueda+ciudad. Sin esto serían miles de llamadas a Claude.
-const MAX_POR_BUSQUEDA = 2
+const MAX_POR_BUSQUEDA = 5
 // Pausa entre llamadas a Claude, para no saturar la API.
 const PAUSA_MS = 400
 
@@ -85,6 +85,41 @@ const BUSQUEDAS_LOCALES = [
   // CULTURA — espacios físicos
   { query: 'museo arte galería', categoria: 'cultura', subcategoria: 'museo', tipo_lugar: 'museum' },
   { query: 'teatro ópera auditorio', categoria: 'cultura', subcategoria: 'teatro', tipo_lugar: 'performing_arts_theater' },
+
+  // MONTAÑA Y NATURALEZA
+  { query: 'cumbre pico montaña senderismo', categoria: 'aventura', subcategoria: 'senderismo' },
+  { query: 'parque nacional reserva natural', categoria: 'aventura', subcategoria: 'naturaleza' },
+  { query: 'lago laguna senderismo ruta', categoria: 'aventura', subcategoria: 'ruta_lago' },
+
+  // MONUMENTOS Y CULTURA URBANA
+  { query: 'catedral basílica monumento histórico', categoria: 'cultura', subcategoria: 'monumento' },
+  { query: 'castillo fortaleza medieval', categoria: 'cultura', subcategoria: 'castillo' },
+  { query: 'museo historia arte nacional', categoria: 'cultura', subcategoria: 'museo_historia' },
+  { query: 'palacio real histórico visita', categoria: 'cultura', subcategoria: 'palacio' },
+  { query: 'plaza mayor casco histórico', categoria: 'cultura', subcategoria: 'casco_historico' },
+
+  // COMPETICIONES Y RUNNING
+  { query: 'carrera popular 10k 5k running', categoria: 'deporte', subcategoria: 'carrera_10k' },
+  { query: 'media maratón carrera popular', categoria: 'deporte', subcategoria: 'media_maraton' },
+  { query: 'maratón ciudad carrera oficial', categoria: 'deporte', subcategoria: 'maraton' },
+  { query: 'triatlón competición swimming cycling running', categoria: 'deporte', subcategoria: 'triatlon' },
+  { query: 'ironman triatlón sprint competición', categoria: 'deporte', subcategoria: 'ironman' },
+  { query: 'hyrox fitness race competición', categoria: 'deporte', subcategoria: 'hyrox' },
+  { query: 'spartan race obstacle course', categoria: 'deporte', subcategoria: 'spartan' },
+  { query: 'ciclismo ruta cicloturismo', categoria: 'deporte', subcategoria: 'ciclismo' },
+  { query: 'natación piscina olímpica', categoria: 'deporte', subcategoria: 'natacion' },
+  { query: 'golf campo 18 hoyos', categoria: 'deporte', subcategoria: 'golf' },
+
+  // GASTRONOMÍA AMPLIADA
+  { query: 'bodega viñedo enoturismo cata vinos', categoria: 'gastronomia', subcategoria: 'enoturismo' },
+  { query: 'destilería cervecería artesanal visita', categoria: 'gastronomia', subcategoria: 'cerveceria' },
+
+  // WELLNESS
+  { query: 'balneario termas spa aguas termales', categoria: 'cultura', subcategoria: 'spa' },
+
+  // MOTOR Y VELOCIDAD
+  { query: 'circuito automovilismo formula racing', categoria: 'aventura', subcategoria: 'circuito_motor' },
+  { query: 'moto GP circuito carreras motos', categoria: 'aventura', subcategoria: 'moto_racing' },
 ]
 
 // includedType de la Places API (New) que son válidos (Table A). Los que NO lo
