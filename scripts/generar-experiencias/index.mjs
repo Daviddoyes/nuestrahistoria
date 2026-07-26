@@ -538,11 +538,13 @@ async function fase4() {
 
 // ── FASE 5 — Limpieza de lugares con nombre de empresa ───────
 
-// Palabras/sufijos típicos de empresa u organizador. 'CAT' y '.com' se tratan
-// aparte para no cargarse "Mercat…"/"Catalunya" ni nombres legítimos.
+// Solo términos INEQUÍVOCOS de empresa u organizador. Se quitaron a propósito
+// 'Club', 'Center', 'Centre' y 'Sports': en España/Cataluña muchos recintos
+// físicos legítimos se llaman "Club de Pádel X" o "Centro Deportivo Y", así que
+// esos keywords borraban sitios reales, no solo intermediarios. 'CAT' y '.com'
+// van aparte para no tocar "Mercat…"/"Catalunya".
 const KEYWORDS_EMPRESA = [
-  'S.L.', 'S.A.', 'Adventures', 'Sports', 'School', 'Club',
-  'Academy', 'Center', 'Centre', 'GROUP',
+  'S.L.', 'S.A.', 'GROUP', 'School', 'Academy', 'Adventures',
 ]
 
 function pareceEmpresa(nombre) {
