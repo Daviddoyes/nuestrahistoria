@@ -19,6 +19,7 @@ export default function GooalDetailModal({ gooal, userLocation, onClose, onAdded
   const [lugares, setLugares] = useState<GooalLugar[]>([])
   const [anadiendo, setAnadiendo] = useState(false)
   const [anadido, setAnadido] = useState(false)
+  const [error, setError] = useState('')
   const [closing, setClosing] = useState(false)
 
   // Cierre con animación slide-down antes de desmontar (0.28s de la clase).
@@ -49,11 +50,21 @@ export default function GooalDetailModal({ gooal, userLocation, onClose, onAdded
 
   const handleAnadir = async () => {
     setAnadiendo(true)
-    const result = await crearPlanDesdeSugerencia(gooal.titulo, gooal.categoria)
-    setAnadiendo(false)
-    if (!result.success) return
-    setAnadido(true)
-    onAdded?.()
+    setError('')
+    try {
+      const result = await crearPlanDesdeSugerencia(gooal.titulo, gooal.categoria)
+      if (result.success) {
+        setAnadido(true)
+        onAdded?.()
+      } else {
+        setError(result.error || 'Error al añadir el plan')
+      }
+    } catch (e) {
+      console.error('[añadir plan]', e)
+      setError('Error al añadir el plan')
+    } finally {
+      setAnadiendo(false)
+    }
   }
 
   const color = CAT_COLOR[gooal.categoria] ?? '#666666'
@@ -96,24 +107,24 @@ export default function GooalDetailModal({ gooal, userLocation, onClose, onAdded
             {gooal.categoria}
           </span>
 
-          <h2 className="font-serif text-3xl font-bold text-[#F0F0F0] leading-tight mt-4 mb-4">
+          <h2 className="font-serif text-3xl font-bold text-[#F0F0F0] leading-tight mt-4 mb-6">
             {gooal.titulo}
           </h2>
-
-          {gooal.descripcion && (
-            <p style={{ color: '#999999', fontSize: 15, lineHeight: 1.6 }} className="mb-6">
-              {gooal.descripcion}
-            </p>
-          )}
 
           <button
             onClick={handleAnadir}
             disabled={anadiendo || anadido}
-            className="w-full py-4 bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-60 text-white rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors mb-8"
+            className="w-full py-4 bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-60 text-white rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors"
           >
             {anadido ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
             {anadido ? 'Añadido a tu lista' : anadiendo ? 'Añadiendo...' : 'Añadir a mi lista'}
           </button>
+
+          {error && (
+            <p style={{ color: '#C97B7B', fontSize: 13 }} className="mt-3">{error}</p>
+          )}
+
+          <div className="mb-8" />
 
           <p className="text-[10px] uppercase tracking-[0.15em] text-[#666666] mb-4">
             Dónde conseguirlo

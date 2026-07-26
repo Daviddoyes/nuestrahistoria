@@ -479,7 +479,6 @@ export default function PerfilPage() {
             profile={profile}
             pendientes={pendientes}
             historias={historias}
-            onOpenPlan={plan => setSelectedHistoria(plan)}
             onPlanCopiado={fetchData}
           />
         )}
