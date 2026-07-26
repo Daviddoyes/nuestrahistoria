@@ -25,6 +25,12 @@ import type { Plan, Profile, InvitacionPendiente, SolicitudPendiente, Notificaci
 
 type Tab = 'planes' | 'historias' | 'explorar' | 'perfil'
 
+const PLAZO_BADGE: Record<string, { label: string; color: string; bg: string }> = {
+  corto: { label: 'Este mes', color: '#4CAF50', bg: 'rgba(76,175,80,0.18)' },
+  medio: { label: 'Este año', color: '#2196F3', bg: 'rgba(33,150,243,0.18)' },
+  largo: { label: 'Algún día', color: '#999999', bg: 'rgba(102,102,102,0.22)' },
+}
+
 function ProfileAvatar({ profile, size = 48 }: { profile: Profile; size?: number }) {
   const initial = profile.nombre?.[0]?.toUpperCase() ?? '?'
   if (profile.foto_perfil_url) {
@@ -205,11 +211,12 @@ export default function PerfilPage() {
     router.push('/')
   }
 
-  const handleAddPlan = async (titulo: string, descripcion: string, invitadoIds: string[]) => {
+  const handleAddPlan = async (titulo: string, descripcion: string, invitadoIds: string[]): Promise<string | null> => {
     const result = await addPlan(titulo, descripcion.trim() || null, 'todos', invitadoIds)
     if (!result.success) throw new Error(result.error ?? 'Error al añadir el plan')
-    setShowNuevoPlan(false)
     await fetchData()
+    // El plan queda creado; NuevoPlanModal muestra el wizard y cierra al terminar.
+    return result.planId ?? null
   }
 
   const handleCompletarPlan = async (id: string, descripcion: string, fotoUrl: string | null, fechaMomento: string | null) => {
@@ -438,6 +445,17 @@ export default function PerfilPage() {
                             <Globe size={12} color="#E8692A" aria-label="Plan público" style={{ flexShrink: 0 }} />
                           )}
                         </p>
+                        {plan.fecha_plazo && PLAZO_BADGE[plan.fecha_plazo] && (
+                          <span style={{
+                            display: 'inline-block', marginTop: 5,
+                            fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em',
+                            padding: '2px 7px', borderRadius: 6,
+                            color: PLAZO_BADGE[plan.fecha_plazo].color,
+                            background: PLAZO_BADGE[plan.fecha_plazo].bg,
+                          }}>
+                            {PLAZO_BADGE[plan.fecha_plazo].label}
+                          </span>
+                        )}
                         {isShared && (
                           <p style={{ fontSize: 9, color: '#E8692A', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: 3 }}>
                             {plan.creado_por}

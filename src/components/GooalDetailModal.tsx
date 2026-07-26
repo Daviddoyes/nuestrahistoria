@@ -5,6 +5,7 @@ import { X, ArrowLeft, MapPin, Plus, Check } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { crearPlanDesdeSugerencia } from '@/lib/actions'
 import { distanciaKm, CAT_COLOR } from '@/lib/geo'
+import PlanWizard from './PlanWizard'
 import type { Gooal, GooalLugar } from '@/types/planes'
 
 type Props = {
@@ -21,6 +22,7 @@ export default function GooalDetailModal({ gooal, userLocation, onClose, onAdded
   const [anadido, setAnadido] = useState(false)
   const [error, setError] = useState('')
   const [closing, setClosing] = useState(false)
+  const [planCreado, setPlanCreado] = useState<{ id: string; titulo: string } | null>(null)
 
   // Cierre con animación slide-down antes de desmontar (0.28s de la clase).
   const close = () => {
@@ -56,6 +58,7 @@ export default function GooalDetailModal({ gooal, userLocation, onClose, onAdded
       if (result.success) {
         setAnadido(true)
         onAdded?.()
+        if (result.planId) setPlanCreado({ id: result.planId, titulo: gooal.titulo })
       } else {
         setError(result.error || 'Error al añadir el plan')
       }
@@ -161,6 +164,14 @@ export default function GooalDetailModal({ gooal, userLocation, onClose, onAdded
           )}
         </div>
       </div>
+
+      {planCreado && (
+        <PlanWizard
+          planId={planCreado.id}
+          planTitulo={planCreado.titulo}
+          onClose={() => { setPlanCreado(null); onClose() }}
+        />
+      )}
     </>
   )
 }

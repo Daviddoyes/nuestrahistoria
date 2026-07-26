@@ -3,13 +3,15 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { X, Search, UserPlus } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import PlanWizard from './PlanWizard'
 
 type InvitadoResult = { id: string; nombre: string; username: string; foto_perfil_url: string | null }
 
 type Props = {
   currentUserId: string
   onClose: () => void
-  onSubmit: (titulo: string, descripcion: string, invitadoIds: string[]) => Promise<void>
+  /** Devuelve el id del plan creado (o null) para lanzar el wizard. */
+  onSubmit: (titulo: string, descripcion: string, invitadoIds: string[]) => Promise<string | null>
 }
 
 function Avatar({ item }: { item: InvitadoResult }) {
@@ -34,6 +36,7 @@ export default function NuevoPlanModal({ currentUserId, onClose, onSubmit }: Pro
   const [searchResults, setSearchResults] = useState<InvitadoResult[]>([])
   const [searching, setSearching] = useState(false)
   const [invitados, setInvitados] = useState<InvitadoResult[]>([])
+  const [planCreado, setPlanCreado] = useState<{ id: string; titulo: string } | null>(null)
   const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
@@ -68,7 +71,9 @@ export default function NuevoPlanModal({ currentUserId, onClose, onSubmit }: Pro
     setLoading(true)
     setError('')
     try {
-      await onSubmit(titulo.trim(), descripcion.trim(), invitados.map(i => i.id))
+      const planId = await onSubmit(titulo.trim(), descripcion.trim(), invitados.map(i => i.id))
+      if (planId) setPlanCreado({ id: planId, titulo: titulo.trim() })
+      else onClose()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al guardar el plan')
     } finally {
@@ -234,6 +239,14 @@ export default function NuevoPlanModal({ currentUserId, onClose, onSubmit }: Pro
           </div>
         </form>
       </div>
+
+      {planCreado && (
+        <PlanWizard
+          planId={planCreado.id}
+          planTitulo={planCreado.titulo}
+          onClose={onClose}
+        />
+      )}
     </div>
   )
 }

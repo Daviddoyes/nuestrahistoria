@@ -111,7 +111,7 @@ export async function addPlan(
   descripcion: string | null,
   conQuien: ConQuien = 'todos',
   invitadoIds: string[] = []
-): Promise<{ success: boolean; error?: string }> {
+): Promise<{ success: boolean; error?: string; planId?: string }> {
   try {
     const serverSupa = await createServerClient()
     const { data: { user } } = await serverSupa.auth.getUser()
@@ -168,6 +168,45 @@ export async function addPlan(
         )
       }
     }
+
+    revalidatePath('/perfil')
+    return { success: true, planId: newPlan.id }
+  } catch (e) {
+    return { success: false, error: String(e) }
+  }
+}
+
+/**
+ * Guarda la configuración elegida en el PlanWizard (plazo + visibilidad).
+ * Solo el dueño del plan puede tocarlo.
+ */
+export async function actualizarConfigPlan(
+  planId: string,
+  fechaPlazo: string | null,
+  publico: boolean
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const serverSupa = await createServerClient()
+    const { data: { user } } = await serverSupa.auth.getUser()
+    if (!user) return { success: false, error: 'No autenticado' }
+
+    const service = createServiceRoleClient()
+    const { data: plan } = await service
+      .from('planes')
+      .select('pareja_codigo')
+      .eq('id', planId)
+      .single()
+
+    if (!plan || (plan as { pareja_codigo: string }).pareja_codigo !== user.id) {
+      return { success: false, error: 'No autorizado' }
+    }
+
+    const { error } = await service
+      .from('planes')
+      .update({ fecha_plazo: fechaPlazo, publico })
+      .eq('id', planId)
+
+    if (error) return { success: false, error: error.message }
 
     revalidatePath('/perfil')
     return { success: true }
@@ -818,7 +857,7 @@ function normalizarCategoria(categoria: string | null | undefined): string | nul
 export async function crearPlanDesdeSugerencia(
   titulo: string,
   categoria: string | null
-): Promise<{ success: boolean; error?: string }> {
+): Promise<{ success: boolean; error?: string; planId?: string }> {
   try {
     const serverSupa = await createServerClient()
     const { data: { user } } = await serverSupa.auth.getUser()
@@ -865,7 +904,7 @@ export async function crearPlanDesdeSugerencia(
     })
 
     revalidatePath('/perfil')
-    return { success: true }
+    return { success: true, planId: (nuevoPlan as { id: string }).id }
   } catch (e) {
     return { success: false, error: String(e) }
   }

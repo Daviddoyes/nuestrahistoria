@@ -18,6 +18,8 @@ export type Plan = {
   /** URLs de los momentos, en orden cronológico. Se congela al completar el plan. */
   momentos_urls?: string[] | null
   categoria?: string | null
+  /** Plazo elegido en el wizard: 'corto' | 'medio' | 'largo' | null. */
+  fecha_plazo?: string | null
 }
 
 export type NewPlan = Omit<Plan, 'id' | 'created_at'>
