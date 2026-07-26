@@ -4,28 +4,32 @@ Script **local** para poblar la tabla `experiencias` de Supabase. **No forma
 parte de la app Next.js** y no se despliega en Vercel: se ejecuta a mano desde
 tu máquina cuando quieras ampliar la biblioteca.
 
-Hace tres cosas:
+Fases:
 
-1. **Fase 1 — Google Places.** Busca tipos de plan (karting, surf, museos…) en
-   España y varias ciudades de Europa, se queda solo con los lugares de rating
-   ≥ 4.0 y ≥ 50 reseñas, y le pide a Claude un título y una descripción
-   editorial para cada uno. Se guardan como `verificada: true`.
-2. **Fase 2 — Icónicas.** Inserta una lista fija de experiencias globales
-   (Tomorrowland, maratón de Nueva York, Camino de Santiago…).
-3. **Fase 3 — Festivales de España.** Lista curada de festivales; Claude solo
-   redacta la descripción. `categoria: 'musica'`, `es_generico: false`.
+1. **Fase 1 — Lugares físicos (Google Places → `gooal_lugares`).** Busca el
+   SITIO donde se hace cada actividad (rocódromo, playa de surf, estación de
+   esquí, museo…), no el proveedor que la organiza. Se queda con los de rating
+   ≥ 4.0 y ≥ 50 reseñas y los inserta **directamente en `gooal_lugares`**,
+   buscando el gooal por `subcategoria` (y creándolo si no existe). El
+   `nombre_lugar` es siempre `displayName` de Google Maps. No usa Claude.
+2. **Fase 2 — Icónicas.** Lista fija de experiencias globales → `experiencias`.
+3. **Fase 3 — Festivales de España.** Lista curada; Claude redacta la
+   descripción → `experiencias`.
+4. **Fase 4 — Migración.** Pasa las `experiencias` verificadas a `gooals` +
+   `gooal_lugares` (genéricas agrupadas, eventos únicos uno a uno). Opt-in.
+5. **Fase 5 — Limpieza.** Borra de `gooal_lugares` los sitios cuyo nombre parece
+   de empresa (`S.L.`, `Club`, `Sports`, `Academy`, `.com`…). Opt-in.
 
-El control de duplicados va por **`lugar_nombre` + `ciudad`** (el nombre real
-del sitio, estable entre ejecuciones), no por el título —que Claude regenera
-cada vez—. En la Fase 1 el chequeo ocurre *antes* de llamar a Claude, así que
-relanzar no gasta tokens redactando lugares que ya existen.
+Dedup: Fase 1 y Fase 4 evitan duplicar por `gooal_id` + `nombre_lugar`; las
+fases 2-3 por `lugar_nombre` + `ciudad`. Relanzar es idempotente.
 
 ## Ejecutar solo algunas fases
 
 ```bash
-node index.mjs        # todas las fases
-node index.mjs 3      # solo festivales
-node index.mjs 1 3    # Fase 1 y Fase 3
+node index.mjs        # fases 1-3 (por defecto)
+node index.mjs 1      # solo lugares físicos → gooal_lugares
+node index.mjs 4      # solo migración experiencias → gooals
+node index.mjs 5      # solo limpieza de nombres de empresa
 ```
 
 ## Requisitos

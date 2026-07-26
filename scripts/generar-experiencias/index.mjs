@@ -58,23 +58,42 @@ const CIUDADES = [
   { ciudad: 'Londres', pais: 'Reino Unido' },
 ]
 
+// Buscamos el LUGAR físico donde se hace la actividad, no el proveedor que la
+// organiza. Las queries apuntan a sitios (rocódromo, playa, estación), y donde
+// el includedType del sitio es válido en la Places API (New) lo usamos para
+// afinar (ver INCLUDED_TYPE_VALIDOS).
 const BUSQUEDAS_LOCALES = [
-  { query: 'karting circuit', categoria: 'aventura', subcategoria: 'karting' },
-  { query: 'paintball', categoria: 'aventura', subcategoria: 'paintball' },
-  { query: 'indoor climbing wall escalada', categoria: 'aventura', subcategoria: 'escalada' },
-  { query: 'paracaidismo skydiving', categoria: 'aventura', subcategoria: 'paracaidismo' },
-  { query: 'tirolina zip line', categoria: 'aventura', subcategoria: 'tirolina' },
-  { query: 'puenting bungee jumping', categoria: 'aventura', subcategoria: 'puenting' },
-  { query: 'crossfit box gym', categoria: 'deporte', subcategoria: 'crossfit' },
-  { query: 'surf school escuela surf', categoria: 'deporte', subcategoria: 'surf' },
-  { query: 'ski resort estacion ski', categoria: 'deporte', subcategoria: 'ski' },
-  { query: 'padel club', categoria: 'deporte', subcategoria: 'padel' },
-  { query: 'restaurante estrella michelin', categoria: 'gastronomia', subcategoria: 'michelin' },
-  { query: 'mercado gastronómico food market', categoria: 'gastronomia', subcategoria: 'mercado' },
-  { query: 'cooking class taller cocina', categoria: 'gastronomia', subcategoria: 'cocina' },
-  { query: 'museo arte museum', categoria: 'cultura', subcategoria: 'museo' },
-  { query: 'teatro opera house', categoria: 'cultura', subcategoria: 'teatro' },
+  // AVENTURA — lugares físicos, no empresas
+  { query: 'puente via ferrata barranquismo', categoria: 'aventura', subcategoria: 'puenting', tipo_lugar: 'natural_feature' },
+  { query: 'circuito karting circuit', categoria: 'aventura', subcategoria: 'karting', tipo_lugar: 'establishment' },
+  { query: 'rocódromo escalada indoor', categoria: 'aventura', subcategoria: 'escalada', tipo_lugar: 'gym' },
+  { query: 'zona paracaidismo aeródromo skydiving', categoria: 'aventura', subcategoria: 'paracaidismo', tipo_lugar: 'airport' },
+  { query: 'tirolina parque aventura', categoria: 'aventura', subcategoria: 'tirolina', tipo_lugar: 'amusement_park' },
+
+  // DEPORTE — spots y zonas, no academias
+  { query: 'playa surf spot olas', categoria: 'deporte', subcategoria: 'surf', tipo_lugar: 'natural_feature' },
+  { query: 'estación de esquí pistas', categoria: 'deporte', subcategoria: 'ski', tipo_lugar: 'ski_resort' },
+  { query: 'bahía playa tranquila kayak', categoria: 'deporte', subcategoria: 'kayak', tipo_lugar: 'natural_feature' },
+  { query: 'playa alquiler moto de agua jetski', categoria: 'deporte', subcategoria: 'moto_agua', tipo_lugar: 'natural_feature' },
+  { query: 'box crossfit gimnasio funcional', categoria: 'deporte', subcategoria: 'crossfit', tipo_lugar: 'gym' },
+  { query: 'club padel pistas', categoria: 'deporte', subcategoria: 'padel', tipo_lugar: 'sports_complex' },
+
+  // GASTRONOMÍA — restaurantes y mercados reales
+  { query: 'restaurante estrella michelin', categoria: 'gastronomia', subcategoria: 'michelin', tipo_lugar: 'restaurant' },
+  { query: 'mercado alimentación gourmet', categoria: 'gastronomia', subcategoria: 'mercado', tipo_lugar: 'food_market' },
+
+  // CULTURA — espacios físicos
+  { query: 'museo arte galería', categoria: 'cultura', subcategoria: 'museo', tipo_lugar: 'museum' },
+  { query: 'teatro ópera auditorio', categoria: 'cultura', subcategoria: 'teatro', tipo_lugar: 'performing_arts_theater' },
 ]
+
+// includedType de la Places API (New) que son válidos (Table A). Los que NO lo
+// son (natural_feature, establishment, food_market) devolverían 400 si se
+// enviaran, así que se omiten: la query en texto ya afina la búsqueda.
+const INCLUDED_TYPE_VALIDOS = new Set([
+  'gym', 'airport', 'amusement_park', 'ski_resort',
+  'sports_complex', 'restaurant', 'museum', 'performing_arts_theater',
+])
 
 const ICONICAS = [
   // Festivales música
@@ -124,16 +143,19 @@ const FESTIVALES_ESPANA = [
 
 // ── Google Places ────────────────────────────────────────────
 
-async function buscarLugares(query, ciudad) {
+async function buscarLugares(query, ciudad, tipoLugar) {
+  const body = { textQuery: `${query} en ${ciudad}`, languageCode: 'es' }
+  if (INCLUDED_TYPE_VALIDOS.has(tipoLugar)) body.includedType = tipoLugar
+
   const res = await fetch('https://places.googleapis.com/v1/places:searchText', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'X-Goog-Api-Key': GOOGLE_PLACES_API_KEY,
       'X-Goog-FieldMask':
-        'places.displayName,places.formattedAddress,places.rating,places.userRatingCount,places.location,places.photos',
+        'places.displayName,places.formattedAddress,places.rating,places.userRatingCount,places.location',
     },
-    body: JSON.stringify({ textQuery: `${query} en ${ciudad}`, languageCode: 'es' }),
+    body: JSON.stringify(body),
   })
 
   if (!res.ok) {
@@ -145,50 +167,23 @@ async function buscarLugares(query, ciudad) {
   return data.places ?? []
 }
 
-// ── Claude: redacta el detalle editorial de un lugar real ────
-
-const DETALLE_SCHEMA = {
-  type: 'object',
-  properties: {
-    titulo: { type: 'string' },
-    descripcion: { type: 'string' },
-    dificultad: { type: 'string', enum: ['facil', 'medio', 'dificil'] },
-    duracion: { type: 'string' },
-    tags: { type: 'array', items: { type: 'string' } },
-  },
-  required: ['titulo', 'descripcion', 'dificultad', 'duracion', 'tags'],
-  additionalProperties: false,
+// Extrae ciudad y país de un formattedAddress de Google (en español, porque
+// pedimos languageCode 'es'). Heurístico: el país es el último segmento; la
+// ciudad, el que sigue al código postal, o el antepenúltimo como fallback.
+function extraerPais(addr) {
+  const parts = (addr || '').split(',').map(s => s.trim()).filter(Boolean)
+  return parts.length ? parts[parts.length - 1] : null
 }
 
-async function redactarDetalle({ place, categoria, subcategoria, ciudad }) {
-  const prompt = `Vas a describir una experiencia real para una app de bucket list.
-
-Lugar: ${place.displayName?.text}
-Dirección: ${place.formattedAddress}
-Ciudad: ${ciudad}
-Categoría: ${categoria} / ${subcategoria}
-Valoración: ${place.rating}★ (${place.userRatingCount} reseñas)
-
-Devuelve:
-- titulo: en español, tipo "Karting en ${ciudad}" o el nombre del plan, menos de 70 caracteres.
-- descripcion: 2-3 frases aspiracionales en español. NO menciones nombres de empresas, locales, marcas ni lugares específicos. Habla solo de la experiencia: sensaciones, emociones, lo que se vive. Tono inspirador y cercano.
-- dificultad: "facil", "medio" o "dificil".
-- duracion: p.ej. "2-3 horas".
-- tags: máximo 5 etiquetas en minúsculas.`
-
-  const message = await anthropic.messages.create({
-    model: 'claude-sonnet-5',
-    max_tokens: 1024,
-    thinking: { type: 'disabled' },
-    output_config: { effort: 'low', format: { type: 'json_schema', schema: DETALLE_SCHEMA } },
-    messages: [{ role: 'user', content: prompt }],
-  })
-
-  if (message.stop_reason === 'refusal') return null
-  const texto = message.content.find(b => b.type === 'text')?.text
-  if (!texto) return null
-  const d = JSON.parse(texto)
-  return { ...d, tags: Array.isArray(d.tags) ? d.tags.slice(0, 5) : [] }
+function extraerCiudad(addr) {
+  const parts = (addr || '').split(',').map(s => s.trim()).filter(Boolean)
+  for (const p of parts) {
+    const m = p.match(/^\d{4,5}\s+(.+)$/) // "43840 Salou" → "Salou"
+    if (m) return m[1]
+  }
+  if (parts.length >= 3) return parts[parts.length - 3]
+  if (parts.length >= 2) return parts[parts.length - 2]
+  return null
 }
 
 const DESC_SCHEMA = {
@@ -261,67 +256,99 @@ async function insertar(exp) {
   return true
 }
 
-// ── FASE 1 ───────────────────────────────────────────────────
+// ── FASE 1 — Lugares físicos directos a gooal_lugares ────────
+
+// Cache subcategoria -> gooalId para no repetir el lookup en cada ciudad.
+const gooalPorSubcat = new Map()
+
+// Busca el gooal por subcategoria; si no existe (p.ej. kayak, moto_agua, que no
+// venían de la migración) lo crea con un título genérico. Así ningún lugar se
+// pierde por falta de gooal destino.
+async function obtenerOCrearGooal(subcategoria, categoria) {
+  if (gooalPorSubcat.has(subcategoria)) return gooalPorSubcat.get(subcategoria)
+
+  const { data } = await supabase
+    .from('gooals')
+    .select('id')
+    .eq('subcategoria', subcategoria)
+    .limit(1)
+
+  let id = data && data.length ? data[0].id : null
+  if (!id) {
+    const titulo = await generarTituloGenerico(subcategoria, { titulo: subcategoria })
+    if (titulo) {
+      id = await upsertGooal({ titulo, categoria, subcategoria })
+      if (id) console.log(`  + Gooal creado: ${titulo} (${subcategoria})`)
+    }
+  }
+  gooalPorSubcat.set(subcategoria, id)
+  return id
+}
+
+async function insertarLugarDesdePlace(gooalId, place, ciudadFallback, paisFallback) {
+  const nombre = place.displayName?.text // SIEMPRE el nombre del sitio en Google Maps
+  if (!nombre) return false
+
+  const { data: existe } = await supabase
+    .from('gooal_lugares')
+    .select('id')
+    .eq('gooal_id', gooalId)
+    .eq('nombre_lugar', nombre)
+    .limit(1)
+  if (existe && existe.length > 0) return false
+
+  const ciudad = extraerCiudad(place.formattedAddress) || ciudadFallback
+  const { error } = await supabase.from('gooal_lugares').insert({
+    gooal_id: gooalId,
+    nombre_lugar: nombre,
+    ciudad,
+    pais: extraerPais(place.formattedAddress) || paisFallback,
+    latitud: place.location?.latitude ?? null,
+    longitud: place.location?.longitude ?? null,
+    rating: place.rating ?? null,
+    direccion: place.formattedAddress ?? null,
+  })
+  if (error) { console.error(`  ✗ ${nombre}: ${error.message}`); return false }
+
+  console.log(`✓ Lugar añadido: ${nombre}${ciudad ? `, ${ciudad}` : ''}${place.rating ? ` (${place.rating}★)` : ''}`)
+  return true
+}
 
 async function fase1() {
-  console.log('\n══ FASE 1 — Google Places ══\n')
+  console.log('\n══ FASE 1 — Lugares físicos → gooal_lugares ══\n')
+  let añadidos = 0
 
   for (const busqueda of BUSQUEDAS_LOCALES) {
+    const gooalId = await obtenerOCrearGooal(busqueda.subcategoria, busqueda.categoria)
+    if (!gooalId) { console.log(`  – Sin gooal para "${busqueda.subcategoria}", saltado`); continue }
+
     for (const { ciudad, pais } of CIUDADES) {
       console.log(`Buscando ${busqueda.subcategoria} en ${ciudad}...`)
 
       let lugares
       try {
-        lugares = await buscarLugares(busqueda.query, ciudad)
+        lugares = await buscarLugares(busqueda.query, ciudad, busqueda.tipo_lugar)
       } catch (err) {
         console.error(`  ✗ Fallo de red: ${err.message}`)
         continue
       }
 
-      const buenos = lugares.filter(p => {
-        const ok = (p.rating ?? 0) >= MIN_RATING && (p.userRatingCount ?? 0) >= MIN_RESENAS
-        if (!ok && p.rating != null) {
-          console.log(`  ✗ Saltada: ${p.displayName?.text} rating ${p.rating} / ${p.userRatingCount ?? 0} reseñas`)
-        }
-        return ok
-      }).slice(0, MAX_POR_BUSQUEDA)
+      const buenos = lugares
+        .filter(p => (p.rating ?? 0) >= MIN_RATING && (p.userRatingCount ?? 0) >= MIN_RESENAS)
+        .slice(0, MAX_POR_BUSQUEDA)
 
       for (const place of buenos) {
         try {
-          const nombre = place.displayName?.text
-          if (nombre && await yaExisteLugar(nombre, ciudad)) {
-            console.log(`  – Ya existe, saltada: ${nombre}`)
-            continue
-          }
-          const detalle = await redactarDetalle({
-            place, categoria: busqueda.categoria, subcategoria: busqueda.subcategoria, ciudad,
-          })
-          if (!detalle) { console.log(`  – Sin detalle para ${place.displayName?.text}`); continue }
-
-          await insertar({
-            titulo: detalle.titulo,
-            categoria: busqueda.categoria,
-            subcategoria: busqueda.subcategoria,
-            ciudad,
-            pais,
-            descripcion: detalle.descripcion,
-            dificultad: detalle.dificultad,
-            duracion: detalle.duracion,
-            tags: detalle.tags,
-            lugar_nombre: place.displayName?.text ?? null,
-            lugar_direccion: place.formattedAddress ?? null,
-            latitud: place.location?.latitude ?? null,
-            longitud: place.location?.longitude ?? null,
-            verificada: true, // viene de Google Places con buena valoración
-            _rating: place.rating,
-          })
+          if (await insertarLugarDesdePlace(gooalId, place, ciudad, pais)) añadidos++
         } catch (err) {
           console.error(`  ✗ Error con ${place.displayName?.text}: ${err.message}`)
         }
-        await sleep(PAUSA_MS)
       }
+      await sleep(PAUSA_MS)
     }
   }
+
+  console.log(`\nFase 1: ${añadidos} lugares nuevos en gooal_lugares`)
 }
 
 // ── FASE 2 ───────────────────────────────────────────────────
@@ -509,13 +536,55 @@ async function fase4() {
   console.log(`\n✓ Migración completada: ${gooalsCreados} gooals, ${lugaresCreados} lugares nuevos`)
 }
 
+// ── FASE 5 — Limpieza de lugares con nombre de empresa ───────
+
+// Palabras/sufijos típicos de empresa u organizador. 'CAT' y '.com' se tratan
+// aparte para no cargarse "Mercat…"/"Catalunya" ni nombres legítimos.
+const KEYWORDS_EMPRESA = [
+  'S.L.', 'S.A.', 'Adventures', 'Sports', 'School', 'Club',
+  'Academy', 'Center', 'Centre', 'GROUP',
+]
+
+function pareceEmpresa(nombre) {
+  const n = nombre || ''
+  if (KEYWORDS_EMPRESA.some(k => n.includes(k))) return true
+  if (/\bCAT\b/.test(n)) return true // 'CAT' como palabra suelta, no dentro de "Mercat"
+  if (/\.com/i.test(n)) return true
+  return false
+}
+
+async function fase5() {
+  console.log('\n══ FASE 5 — Limpieza de nombres de empresa ══\n')
+
+  const { data, error } = await supabase
+    .from('gooal_lugares')
+    .select('id, nombre_lugar')
+    .limit(5000)
+  if (error) { console.error(error.message); return }
+
+  const aBorrar = (data ?? []).filter(r => pareceEmpresa(r.nombre_lugar))
+  console.log(`Lugares con pinta de empresa: ${aBorrar.length}`)
+  for (const r of aBorrar.slice(0, 25)) console.log(`  – ${r.nombre_lugar}`)
+  if (aBorrar.length === 0) return
+
+  const ids = aBorrar.map(r => r.id)
+  let borrados = 0
+  for (let i = 0; i < ids.length; i += 100) {
+    const lote = ids.slice(i, i + 100)
+    const { error: delErr } = await supabase.from('gooal_lugares').delete().in('id', lote)
+    if (delErr) { console.error('  ✗', delErr.message); return }
+    borrados += lote.length
+  }
+  console.log(`\n✓ Eliminados ${borrados} lugares con nombre de empresa`)
+}
+
 // ── Main ─────────────────────────────────────────────────────
 
 async function main() {
-  // Selector de fases. Sin argumentos corre 1-3 (generación). La Fase 4
-  // (migración a gooals) es opt-in: `node index.mjs 4`, para no re-migrar en
-  // cada generación. Ejemplos: `node index.mjs 3`, `node index.mjs 1 4`.
-  const pedidas = process.argv.slice(2).filter(a => ['1', '2', '3', '4'].includes(a))
+  // Selector de fases. Sin argumentos corre 1-3. Las fases 4 (migración) y 5
+  // (limpieza de empresas) son opt-in: `node index.mjs 4`, `node index.mjs 5`.
+  // Fase 1 ahora escribe directamente en gooal_lugares (no en experiencias).
+  const pedidas = process.argv.slice(2).filter(a => ['1', '2', '3', '4', '5'].includes(a))
   const fases = pedidas.length ? pedidas : ['1', '2', '3']
   console.log(`Fases a ejecutar: ${fases.join(', ')}`)
 
@@ -523,7 +592,8 @@ async function main() {
   if (fases.includes('2')) await fase2()
   if (fases.includes('3')) await fase3()
   if (fases.includes('4')) await fase4()
-  console.log(`\nTotal generadas: ${total} experiencias`)
+  if (fases.includes('5')) await fase5()
+  console.log(`\nTotal experiencias insertadas (fases 2-3): ${total}`)
 }
 
 main().catch(err => {
