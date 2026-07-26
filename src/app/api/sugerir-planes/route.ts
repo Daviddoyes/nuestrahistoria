@@ -53,7 +53,9 @@ que este usuario querría añadir a su bucket list.
 Los planes deben ser variados, concretos y aspiracionales.
 NO repitas planes que ya tiene.
 Escribe los títulos en español, en infinitivo y de menos de 60 caracteres.
-Cada plan lleva un único emoji representativo.`
+Cada plan lleva un único emoji representativo.
+
+IMPORTANTE: Los títulos deben ser neutros, sin mencionar con quién se hace el plan. No incluyas 'en pareja', 'con amigos', 'en familia', 'solo', 'con tu pareja' ni ninguna referencia a compañía. El usuario decide con quién hacerlo después.`
 
   try {
     const anthropic = new Anthropic()
