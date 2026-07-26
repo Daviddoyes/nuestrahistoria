@@ -120,6 +120,16 @@ const BUSQUEDAS_LOCALES = [
   // MOTOR Y VELOCIDAD
   { query: 'circuito automovilismo formula racing', categoria: 'aventura', subcategoria: 'circuito_motor' },
   { query: 'moto GP circuito carreras motos', categoria: 'aventura', subcategoria: 'moto_racing' },
+
+  // INSTALACIONES DEPORTIVAS Y OCIO (ángulos extra + nuevas subcategorías)
+  { query: 'campo golf', categoria: 'deporte', subcategoria: 'golf' },
+  { query: 'velódromo ciclismo pista', categoria: 'deporte', subcategoria: 'ciclismo' },
+  { query: 'piscina olímpica natación', categoria: 'deporte', subcategoria: 'natacion' },
+  { query: 'estadio fútbol', categoria: 'cultura', subcategoria: 'futbol' },
+  { query: 'hipódromo carreras caballos', categoria: 'aventura', subcategoria: 'hipica' },
+  { query: 'bodega viñedo enoturismo', categoria: 'gastronomia', subcategoria: 'enoturismo' },
+  { query: 'spa balneario termal', categoria: 'cultura', subcategoria: 'spa' },
+  { query: 'casino juego', categoria: 'cultura', subcategoria: 'casino' },
 ]
 
 // includedType de la Places API (New) que son válidos (Table A). Los que NO lo
