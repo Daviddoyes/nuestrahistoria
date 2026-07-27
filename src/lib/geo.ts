@@ -12,6 +12,6 @@ export const CAT_COLOR: Record<string, string> = {
   deporte: '#10B981',
   gastronomia: '#F59E0B',
   cultura: '#8B5CF6',
-  aventura: '#E8692A',
+  aventura: '#1DE9B6',
   musica: '#EC4899',
 }

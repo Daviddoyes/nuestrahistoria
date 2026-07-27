@@ -92,7 +92,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
         canvas.toBlob(b => b ? resolve(b) : reject(new Error('toBlob failed')), 'image/png')
       })
 
-      const file = new File([blob], 'livestory-historia.png', { type: 'image/png' })
+      const file = new File([blob], 'gooals-historia.png', { type: 'image/png' })
 
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({ files: [file], title: plan.titulo })
@@ -100,7 +100,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = 'livestory-historia.png'
+        a.download = 'gooals-historia.png'
         a.click()
         URL.revokeObjectURL(url)
       }
@@ -174,7 +174,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
             zIndex: 2,
           } as React.CSSProperties}
         >
-          <span style={{ color: '#E8692A' }}>✓ </span>
+          <span style={{ color: '#1DE9B6' }}>✓ </span>
           {plan.titulo}
         </div>
 
@@ -186,7 +186,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
             left: marco.left,
             width: marco.w,
             height: marco.h,
-            border: '6px solid #E8692A',
+            border: '6px solid #1DE9B6',
             background: '#000',
             overflow: 'hidden',
             zIndex: 2,
@@ -217,14 +217,14 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
             textAlign: 'center',
             fontSize: 24,
             letterSpacing: '0.3em',
-            color: '#E8692A',
+            color: '#1DE9B6',
             fontWeight: 700,
             fontFamily: 'var(--font-inter), system-ui, sans-serif',
             textTransform: 'uppercase',
             zIndex: 2,
           } as React.CSSProperties}
         >
-          LIVESTORY.APP
+          GooALS.APP
         </div>
       </div>
 
@@ -234,7 +234,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
           onClick={e => { e.stopPropagation(); handleShare() }}
           disabled={generating}
           aria-label={generating ? 'Preparando imagen...' : 'Compartir historia'}
-          className="w-8 h-8 rounded-lg bg-black/40 flex items-center justify-center text-white/50 active:bg-[#E8692A]/80 active:text-white disabled:opacity-40 transition-colors"
+          className="w-8 h-8 rounded-lg bg-black/40 flex items-center justify-center text-[#0A0A0A]/50 active:bg-[#1DE9B6]/80 active:text-[#0A0A0A] disabled:opacity-40 transition-colors"
         >
           <Share2 className="w-3.5 h-3.5" />
         </button>
@@ -242,7 +242,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
         <button
           onClick={handleShare}
           disabled={generating}
-          className="flex items-center gap-2 text-sm text-[#666666] active:text-[#E8692A] disabled:opacity-40 transition-colors py-1"
+          className="flex items-center gap-2 text-sm text-[#666666] active:text-[#1DE9B6] disabled:opacity-40 transition-colors py-1"
         >
           <Share2 className="w-4 h-4" />
           {generating ? 'Preparando imagen...' : 'Compartir historia'}

@@ -37,7 +37,7 @@ function MiniAvatar({ p, size = 22 }: { p: Participante; size?: number }) {
   )
 }
 
-const borderColor = (conQuien: string) => conQuien === 'solo' ? '#555555' : '#E8692A'
+const borderColor = (conQuien: string) => conQuien === 'solo' ? '#555555' : '#1DE9B6'
 
 export default function PlanCard({ plan, onCompletar, onDelete }: Props) {
   const supabase = useMemo(() => createClient(), [])
@@ -79,7 +79,7 @@ export default function PlanCard({ plan, onCompletar, onDelete }: Props) {
           <button
             onClick={onCompletar}
             aria-label="Marcar como hecho"
-            className="w-11 h-11 rounded-xl border border-[#2A2A2A] flex items-center justify-center text-[#444444] active:bg-[#E8692A] active:text-white active:border-[#E8692A] transition-colors"
+            className="w-11 h-11 rounded-xl border border-[#2A2A2A] flex items-center justify-center text-[#444444] active:bg-[#1DE9B6] active:text-[#0A0A0A] active:border-[#1DE9B6] transition-colors"
           >
             <Check className="w-5 h-5" />
           </button>

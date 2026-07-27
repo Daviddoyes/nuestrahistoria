@@ -17,7 +17,7 @@ const inter = Inter({
 });
 
 export const viewport: Viewport = {
-  themeColor: '#0A0A0A',
+  themeColor: '#1DE9B6',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
@@ -26,12 +26,12 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: "Livestory",
+  title: "GooALS",
   description: "Convierte tus intenciones en recuerdos.",
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Livestory',
+    title: 'GooALS',
   },
   icons: {
     apple: [{ url: '/icon-512.png', sizes: '512x512', type: 'image/png' }],

@@ -31,7 +31,7 @@ export default function BottomNav({ activeTab, onTabChange, fotoPerfil }: Props)
             onClick={() => onTabChange(id)}
             style={{ height: 56 }}
             className={`flex-1 flex flex-col items-center justify-center gap-1 active:bg-[#141414] transition-colors ${
-              activo ? 'text-[#E8692A]' : 'text-[#444444]'
+              activo ? 'text-[#1DE9B6]' : 'text-[#444444]'
             }`}
           >
             {id === 'perfil' && fotoPerfil ? (
@@ -40,7 +40,7 @@ export default function BottomNav({ activeTab, onTabChange, fotoPerfil }: Props)
                 alt=""
                 style={{
                   width: 24, height: 24, borderRadius: '50%', objectFit: 'cover',
-                  border: activo ? '1.5px solid #E8692A' : '1.5px solid transparent',
+                  border: activo ? '1.5px solid #1DE9B6' : '1.5px solid transparent',
                 }}
               />
             ) : (

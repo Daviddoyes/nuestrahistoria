@@ -71,7 +71,7 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
   const [togglingPublico, setTogglingPublico] = useState(false)
   const [linkCopiado, setLinkCopiado] = useState(false)
 
-  const planUrl = `https://livestory.app/plan/${plan.id}`
+  const planUrl = `https://gooals.app/plan/${plan.id}`
 
   useEffect(() => {
     const cargarParticipantes = async () => {
@@ -216,7 +216,7 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
           className="px-6"
           style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 100px)', paddingBottom: 'max(3rem, env(safe-area-inset-bottom, 0px))' }}
         >
-          <p className="text-[10px] uppercase tracking-[0.15em] text-[#E8692A] mb-3">Plan pendiente</p>
+          <p className="text-[10px] uppercase tracking-[0.15em] text-[#1DE9B6] mb-3">Plan pendiente</p>
           <h2 className="font-serif text-2xl font-bold text-[#F0F0F0] leading-snug mb-4">{plan.titulo}</h2>
 
           {/* Description */}
@@ -228,7 +228,7 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
                 placeholder="Cuéntanos más sobre este plan..."
                 rows={3}
                 autoFocus
-                className="w-full px-4 py-3 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-sm resize-none"
+                className="w-full px-4 py-3 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#1DE9B6] text-sm resize-none"
               />
               <div className="flex gap-3 mt-3">
                 <button
@@ -243,7 +243,7 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
                   type="button"
                   onClick={handleSaveDesc}
                   disabled={guardandoDesc}
-                  className="flex-1 py-3 rounded-xl bg-[#E8692A] active:bg-[#D4581A] text-white text-sm font-semibold min-h-[44px] disabled:opacity-40"
+                  className="flex-1 py-3 rounded-xl bg-[#1DE9B6] active:bg-[#00BFA5] text-[#0A0A0A] text-sm font-semibold min-h-[44px] disabled:opacity-40"
                 >
                   {guardandoDesc ? 'Guardando...' : 'Guardar'}
                 </button>
@@ -259,7 +259,7 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
                   type="button"
                   onClick={handleStartEditDesc}
                   aria-label="Editar descripción"
-                  className="flex-shrink-0 p-1.5 -mr-1 text-[#666666] active:text-[#E8692A]"
+                  className="flex-shrink-0 p-1.5 -mr-1 text-[#666666] active:text-[#1DE9B6]"
                 >
                   <Pencil className="w-3.5 h-3.5" />
                 </button>
@@ -269,7 +269,7 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
             <button
               type="button"
               onClick={handleStartEditDesc}
-              className="flex items-center gap-1.5 mb-6 text-[13px] text-[#666666] active:text-[#E8692A]"
+              className="flex items-center gap-1.5 mb-6 text-[13px] text-[#666666] active:text-[#1DE9B6]"
             >
               <Pencil className="w-3.5 h-3.5" />
               Añadir descripción
@@ -308,7 +308,7 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
             <div className="mb-6">
               <div className="flex items-center justify-between min-h-[44px]">
                 <div className="flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-[#E8692A]" />
+                  <Globe className="w-4 h-4 text-[#1DE9B6]" />
                   <span className="text-sm text-[#F0F0F0]">{publico ? 'Público' : 'Privado'}</span>
                 </div>
                 <button
@@ -320,7 +320,7 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
                   className="relative rounded-full transition-colors disabled:opacity-50"
                   style={{
                     width: 44, height: 26,
-                    background: publico ? '#E8692A' : '#2A2A2A',
+                    background: publico ? '#1DE9B6' : '#2A2A2A',
                     flexShrink: 0,
                   }}
                 >
@@ -340,7 +340,7 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
                     onClick={handleCopyLink}
                     className="w-full py-3 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] text-sm font-medium min-h-[44px] flex items-center justify-center gap-2 active:bg-[#222222] transition-colors"
                   >
-                    {linkCopiado ? <Check className="w-4 h-4 text-[#E8692A]" /> : <Copy className="w-4 h-4" />}
+                    {linkCopiado ? <Check className="w-4 h-4 text-[#1DE9B6]" /> : <Copy className="w-4 h-4" />}
                     {linkCopiado ? '¡Link copiado!' : 'Copiar link del plan'}
                   </button>
                 </div>
@@ -358,7 +358,7 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
                 {invitadosPendientes.map(u => (
                   <div key={u.id} style={{
                     display: 'flex', alignItems: 'center', gap: 6,
-                    background: '#2A2A2A', border: '1px solid #E8692A',
+                    background: '#2A2A2A', border: '1px solid #1DE9B6',
                     borderRadius: 20, padding: '5px 10px 5px 12px',
                   }}>
                     <span style={{ fontSize: 13, color: '#F0F0F0' }}>{u.nombre}</span>
@@ -384,7 +384,7 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
                 value={busqueda}
                 onChange={e => setBusqueda(e.target.value)}
                 placeholder="Buscar por nombre o @usuario"
-                className="w-full px-4 py-3 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-sm"
+                className="w-full px-4 py-3 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#1DE9B6] text-sm"
               />
 
               {resultados.length > 0 && (
@@ -422,9 +422,9 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
                     >
                       <div style={{
                         width: 32, height: 32, borderRadius: '50%',
-                        background: '#E8692A', display: 'flex',
+                        background: '#1DE9B6', display: 'flex',
                         alignItems: 'center', justifyContent: 'center',
-                        color: '#fff', fontSize: 14, fontWeight: 700,
+                        color: '#0A0A0A', fontSize: 14, fontWeight: 700,
                         flexShrink: 0,
                       }}>
                         {usuario.nombre?.[0]?.toUpperCase() || '?'}
@@ -444,7 +444,7 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
               <button
                 onClick={handleInvitar}
                 disabled={invitando}
-                className="w-full mt-3 py-3 bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl text-sm font-semibold min-h-[44px] transition-colors"
+                className="w-full mt-3 py-3 bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-40 disabled:cursor-not-allowed text-[#0A0A0A] rounded-xl text-sm font-semibold min-h-[44px] transition-colors"
               >
                 {invitando ? 'Invitando...' : `Invitar ${invitadosPendientes.length === 1 ? 'a 1 persona' : `a ${invitadosPendientes.length} personas`}`}
               </button>
@@ -462,7 +462,7 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
           <div className="space-y-3">
             <button
               onClick={onCompletar}
-              className="w-full py-4 bg-[#E8692A] active:bg-[#D4581A] text-white rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors"
+              className="w-full py-4 bg-[#1DE9B6] active:bg-[#00BFA5] text-[#0A0A0A] rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors"
             >
               <Check className="w-4 h-4" />
               Marcar como hecho

@@ -120,10 +120,10 @@ export default function PlanMomentos({ planId, currentUserId, canUpload }: Props
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={subiendo}
-            className="flex items-center gap-1.5 text-[13px] text-[#E8692A] active:text-[#D4581A] disabled:opacity-40 min-h-[44px]"
+            className="flex items-center gap-1.5 text-[13px] text-[#1DE9B6] active:text-[#00BFA5] disabled:opacity-40 min-h-[44px]"
           >
             {subiendo
-              ? <span className="w-3.5 h-3.5 border border-[#E8692A] border-t-transparent rounded-full animate-spin" />
+              ? <span className="w-3.5 h-3.5 border border-[#1DE9B6] border-t-transparent rounded-full animate-spin" />
               : <Camera className="w-3.5 h-3.5" />
             }
             {subiendo ? 'Subiendo...' : 'Añadir foto'}

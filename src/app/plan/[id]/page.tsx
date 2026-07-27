@@ -69,7 +69,7 @@ export default function PublicPlanPage({ params }: { params: Promise<{ id: strin
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
-        <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#E8692A] rounded-full animate-spin" />
+        <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#1DE9B6] rounded-full animate-spin" />
       </div>
     )
   }
@@ -77,8 +77,8 @@ export default function PublicPlanPage({ params }: { params: Promise<{ id: strin
   if (!plan) {
     return (
       <div className="min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center px-8">
-        <span style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 13, fontWeight: 600, letterSpacing: '0.2em', color: '#E8692A', textTransform: 'uppercase' }}>
-          LIVESTORY
+        <span style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 13, fontWeight: 600, letterSpacing: '0.2em', color: '#1DE9B6', textTransform: 'uppercase' }}>
+          GooALS
         </span>
         <p className="mt-6 text-[15px] text-[#666666] text-center">Este plan no está disponible.</p>
       </div>
@@ -92,8 +92,8 @@ export default function PublicPlanPage({ params }: { params: Promise<{ id: strin
     >
       {/* Brand bar */}
       <div className="flex-shrink-0 flex items-center justify-center border-b border-[#1A1A1A]" style={{ height: 40 }}>
-        <span style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 13, fontWeight: 600, letterSpacing: '0.2em', color: '#E8692A', textTransform: 'uppercase' }}>
-          LIVESTORY
+        <span style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 13, fontWeight: 600, letterSpacing: '0.2em', color: '#1DE9B6', textTransform: 'uppercase' }}>
+          GooALS
         </span>
       </div>
 
@@ -113,7 +113,7 @@ export default function PublicPlanPage({ params }: { params: Promise<{ id: strin
         </div>
 
         {/* Title */}
-        <p className="text-[10px] uppercase tracking-[0.15em] text-[#E8692A] mb-3">Plan</p>
+        <p className="text-[10px] uppercase tracking-[0.15em] text-[#1DE9B6] mb-3">Plan</p>
         <h1 className="font-serif text-3xl font-bold text-[#F0F0F0] tracking-[-0.02em] leading-[1.2] mb-4">{plan.titulo}</h1>
 
         {(plan.descripcion || plan.descripcion_publica) && (
@@ -146,7 +146,7 @@ export default function PublicPlanPage({ params }: { params: Promise<{ id: strin
           {!plan.loggedIn && (
             <button
               onClick={handleUnete}
-              className="w-full py-4 bg-[#E8692A] active:bg-[#D4581A] text-white rounded-xl text-sm font-semibold min-h-[44px] transition-colors"
+              className="w-full py-4 bg-[#1DE9B6] active:bg-[#00BFA5] text-[#0A0A0A] rounded-xl text-sm font-semibold min-h-[44px] transition-colors"
             >
               Únete al plan
             </button>
@@ -169,7 +169,7 @@ export default function PublicPlanPage({ params }: { params: Promise<{ id: strin
               <button
                 onClick={handleSolicitar}
                 disabled={joining}
-                className="w-full py-4 bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl text-sm font-semibold min-h-[44px] transition-colors"
+                className="w-full py-4 bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-40 disabled:cursor-not-allowed text-[#0A0A0A] rounded-xl text-sm font-semibold min-h-[44px] transition-colors"
               >
                 {joining ? 'Enviando...' : 'Solicitar unirme'}
               </button>

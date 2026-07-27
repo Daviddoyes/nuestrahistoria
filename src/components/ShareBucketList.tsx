@@ -44,14 +44,14 @@ export default function ShareBucketList({ planes, nombre, username, fotoPerfil, 
         canvas.toBlob(b => b ? resolve(b) : reject(new Error('toBlob failed')), 'image/png')
       })
 
-      const file = new File([blob], 'livestory-planes.png', { type: 'image/png' })
+      const file = new File([blob], 'gooals-planes.png', { type: 'image/png' })
       if (navigator.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file], title: 'Mi lista de planes — Livestory' })
+        await navigator.share({ files: [file], title: 'Mi lista de planes — GooALS' })
       } else {
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = 'livestory-planes.png'
+        a.download = 'gooals-planes.png'
         a.click()
         URL.revokeObjectURL(url)
       }
@@ -82,12 +82,12 @@ export default function ShareBucketList({ planes, nombre, username, fotoPerfil, 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 40 }}>
           <p style={{
             fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: 16, fontWeight: 700,
-            letterSpacing: '0.32em', color: '#E8692A', textTransform: 'uppercase',
+            letterSpacing: '0.32em', color: '#1DE9B6', textTransform: 'uppercase',
             margin: 0,
           }}>
-            LIVESTORY
+            GooALS
           </p>
-          <div style={{ width: '100%', height: 1, background: '#E8692A' }} />
+          <div style={{ width: '100%', height: 1, background: '#1DE9B6' }} />
           <p style={{
             fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 76, fontWeight: 700,
             color: '#F0F0F0', margin: 0, lineHeight: 1.1, textAlign: 'center',
@@ -119,13 +119,13 @@ export default function ShareBucketList({ planes, nombre, username, fotoPerfil, 
 
         {/* ── BOTTOM: footer ── */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 40 }}>
-          <div style={{ width: '100%', height: 1, background: '#E8692A' }} />
+          <div style={{ width: '100%', height: 1, background: '#1DE9B6' }} />
           <p style={{
             fontFamily: 'var(--font-inter), system-ui, sans-serif', fontSize: 20, fontWeight: 700,
-            letterSpacing: '0.28em', color: '#E8692A', textTransform: 'uppercase',
+            letterSpacing: '0.28em', color: '#1DE9B6', textTransform: 'uppercase',
             margin: 0,
           }}>
-            LIVESTORY.APP
+            GooALS.APP
           </p>
         </div>
       </div>
@@ -134,11 +134,11 @@ export default function ShareBucketList({ planes, nombre, username, fotoPerfil, 
         <button
           onClick={handleShare}
           disabled={generating || top5.length === 0}
-          className="flex items-center justify-center min-h-[44px] min-w-[44px] text-[#E8692A] active:text-[#D4581A] disabled:text-[#2A2A2A] disabled:cursor-not-allowed transition-colors"
+          className="flex items-center justify-center min-h-[44px] min-w-[44px] text-[#1DE9B6] active:text-[#00BFA5] disabled:text-[#2A2A2A] disabled:cursor-not-allowed transition-colors"
           aria-label="Compartir lista de planes"
         >
           {generating ? (
-            <div className="w-4 h-4 border border-[#E8692A] border-t-transparent rounded-full animate-spin" />
+            <div className="w-4 h-4 border border-[#1DE9B6] border-t-transparent rounded-full animate-spin" />
           ) : (
             <Share2 className="w-4 h-4" />
           )}

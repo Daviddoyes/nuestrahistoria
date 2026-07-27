@@ -18,7 +18,7 @@ export default function Icon() {
       >
         <span
           style={{
-            color: '#E8692A',
+            color: '#1DE9B6',
             fontSize: 14,
             fontWeight: 700,
             fontFamily: 'system-ui, sans-serif',

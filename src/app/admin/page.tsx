@@ -46,7 +46,7 @@ type AdminData = {
 function MetricCard({ value, label, sub }: { value: string | number; label: string; sub?: string }) {
   return (
     <div style={{ background: '#141414', border: '1px solid #2A2A2A', borderRadius: 12, padding: 16 }}>
-      <p style={{ fontSize: 30, fontWeight: 700, color: '#E8692A', lineHeight: 1 }}>{value}</p>
+      <p style={{ fontSize: 30, fontWeight: 700, color: '#1DE9B6', lineHeight: 1 }}>{value}</p>
       <p style={{ fontSize: 11, color: '#666666', marginTop: 6, lineHeight: 1.3 }}>{label}</p>
       {sub && <p style={{ fontSize: 10, color: '#444444', marginTop: 3 }}>{sub}</p>}
     </div>
@@ -82,9 +82,9 @@ function BarChart({ items }: { items: BarItem[] }) {
             {item.name}
           </span>
           <div style={{ flex: 1, height: 20, background: '#1A1A1A', borderRadius: 3, overflow: 'hidden' }}>
-            <div style={{ height: '100%', background: '#E8692A', borderRadius: 3, width: `${(item.count / max) * 100}%` }} />
+            <div style={{ height: '100%', background: '#1DE9B6', borderRadius: 3, width: `${(item.count / max) * 100}%` }} />
           </div>
-          <span style={{ fontSize: 12, color: '#E8692A', fontWeight: 600, width: 24, textAlign: 'right', flexShrink: 0 }}>
+          <span style={{ fontSize: 12, color: '#1DE9B6', fontWeight: 600, width: 24, textAlign: 'right', flexShrink: 0 }}>
             {item.count}
           </span>
         </div>
@@ -99,10 +99,10 @@ function ConversionRow({ label, value, total }: { label: string; value: number; 
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
         <span style={{ fontSize: 12, color: '#C0C0C0' }}>{label}</span>
-        <span style={{ fontSize: 12, fontWeight: 600, color: '#E8692A' }}>{pct}% ({value})</span>
+        <span style={{ fontSize: 12, fontWeight: 600, color: '#1DE9B6' }}>{pct}% ({value})</span>
       </div>
       <div style={{ height: 6, background: '#1A1A1A', borderRadius: 3, overflow: 'hidden' }}>
-        <div style={{ height: '100%', background: '#E8692A', borderRadius: 3, width: `${pct}%` }} />
+        <div style={{ height: '100%', background: '#1DE9B6', borderRadius: 3, width: `${pct}%` }} />
       </div>
     </div>
   )
@@ -167,10 +167,10 @@ export default function AdminPage() {
       <div style={{ minHeight: '100dvh', background: '#0A0A0A', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px' }}>
         <div style={{ width: '100%', maxWidth: 340 }}>
           <div style={{ textAlign: 'center', marginBottom: 32 }}>
-            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.25em', color: '#E8692A', textTransform: 'uppercase', marginBottom: 8 }}>
-              LIVESTORY ADMIN
+            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.25em', color: '#1DE9B6', textTransform: 'uppercase', marginBottom: 8 }}>
+              GooALS ADMIN
             </p>
-            <div style={{ width: 40, height: 1, background: '#E8692A', margin: '0 auto' }} />
+            <div style={{ width: 40, height: 1, background: '#1DE9B6', margin: '0 auto' }} />
           </div>
           <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <input
@@ -191,7 +191,7 @@ export default function AdminPage() {
             )}
             <button
               type="submit"
-              style={{ padding: '14px 0', borderRadius: 12, background: '#E8692A', color: '#fff', fontWeight: 600, fontSize: 15, border: 'none', cursor: 'pointer' }}
+              style={{ padding: '14px 0', borderRadius: 12, background: '#1DE9B6', color: '#0A0A0A', fontWeight: 600, fontSize: 15, border: 'none', cursor: 'pointer' }}
             >
               Entrar
             </button>
@@ -207,8 +207,8 @@ export default function AdminPage() {
 
       {/* Header */}
       <div style={{ position: 'sticky', top: 0, zIndex: 10, background: '#0A0A0A', borderBottom: '1px solid #1A1A1A', padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.25em', color: '#E8692A', textTransform: 'uppercase' }}>
-          LIVESTORY ADMIN
+        <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.25em', color: '#1DE9B6', textTransform: 'uppercase' }}>
+          GooALS ADMIN
         </p>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <button
@@ -237,7 +237,7 @@ export default function AdminPage() {
 
       {loading && !data && (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 200 }}>
-          <div className="w-6 h-6 border-2 border-[#2A2A2A] border-t-[#E8692A] rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-[#2A2A2A] border-t-[#1DE9B6] rounded-full animate-spin" />
         </div>
       )}
 
@@ -288,7 +288,7 @@ export default function AdminPage() {
               {data.newUsersByDay.map(d => (
                 <div key={d.date} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid #1A1A1A' }}>
                   <span style={{ fontSize: 13, color: '#C0C0C0' }}>{d.label}</span>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: '#E8692A' }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: '#1DE9B6' }}>
                     {d.count} {d.count === 1 ? 'usuario' : 'usuarios'}
                   </span>
                 </div>
@@ -324,7 +324,7 @@ export default function AdminPage() {
                       key={h}
                       style={{
                         textAlign: 'left', fontSize: 9, textTransform: 'uppercase',
-                        letterSpacing: '0.14em', color: '#E8692A', fontWeight: 600,
+                        letterSpacing: '0.14em', color: '#1DE9B6', fontWeight: 600,
                         paddingBottom: 8, paddingRight: 14, whiteSpace: 'nowrap',
                       }}
                     >
@@ -360,7 +360,7 @@ export default function AdminPage() {
                             key={int}
                             style={{
                               fontSize: 9, padding: '2px 6px', borderRadius: 20,
-                              background: 'rgba(232,105,42,0.1)', color: '#E8692A',
+                              background: 'rgba(29,233,182,0.1)', color: '#1DE9B6',
                               whiteSpace: 'nowrap',
                             }}
                           >

@@ -10,7 +10,7 @@ const DIFICULTADES = ['facil', 'medio', 'dificil'] as const
 
 const CAT_COLOR: Record<string, string> = {
   viajes: '#3B82F6', deporte: '#10B981', gastronomia: '#F59E0B',
-  cultura: '#8B5CF6', aventura: '#E8692A', musica: '#EC4899',
+  cultura: '#8B5CF6', aventura: '#1DE9B6', musica: '#EC4899',
 }
 
 type GooalRow = Gooal & { num_lugares: number }
@@ -23,7 +23,7 @@ const labelStyle: React.CSSProperties = {
   fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#666666', marginBottom: 5, display: 'block',
 }
 const btnPrimary: React.CSSProperties = {
-  padding: '12px 0', borderRadius: 10, background: '#E8692A', color: '#fff',
+  padding: '12px 0', borderRadius: 10, background: '#1DE9B6', color: '#0A0A0A',
   fontWeight: 600, fontSize: 14, border: 'none', cursor: 'pointer', width: '100%',
 }
 
@@ -35,7 +35,7 @@ function ModalShell({ title, onClose, children }: { title: string; onClose: () =
     >
       <div style={{ width: '100%', maxWidth: 440, maxHeight: '88vh', overflowY: 'auto', background: '#141414', border: '1px solid #2A2A2A', borderRadius: 16, padding: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-          <p style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8692A', fontWeight: 700 }}>{title}</p>
+          <p style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#1DE9B6', fontWeight: 700 }}>{title}</p>
           <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#666666', cursor: 'pointer', padding: 4 }}>
             <X style={{ width: 16, height: 16 }} />
           </button>
@@ -189,16 +189,16 @@ export default function GooalsSection() {
     <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 16 }}>
         <div>
-          <p style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#E8692A', fontWeight: 700, marginBottom: 6 }}>
+          <p style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#1DE9B6', fontWeight: 700, marginBottom: 6 }}>
             Gooals
           </p>
           <span style={{ fontSize: 12, color: '#888888' }}>
-            <span style={{ color: '#E8692A', fontWeight: 700 }}>{gooals.length}</span> {gooals.length === 1 ? 'gooal' : 'gooals'}
+            <span style={{ color: '#1DE9B6', fontWeight: 700 }}>{gooals.length}</span> {gooals.length === 1 ? 'gooal' : 'gooals'}
           </span>
         </div>
         <button
           onClick={() => setShowNuevo(true)}
-          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 12px', borderRadius: 10, background: '#E8692A', color: '#fff', fontSize: 12, fontWeight: 600, border: 'none', cursor: 'pointer' }}
+          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 12px', borderRadius: 10, background: '#1DE9B6', color: '#0A0A0A', fontSize: 12, fontWeight: 600, border: 'none', cursor: 'pointer' }}
         >
           <Plus style={{ width: 13, height: 13 }} /> Nuevo gooal
         </button>
@@ -211,7 +211,7 @@ export default function GooalsSection() {
           <thead>
             <tr>
               {['', 'Título', 'Categoría', 'Lugares', 'Añadido', ''].map((h, i) => (
-                <th key={i} style={{ textAlign: 'left', fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.14em', color: '#E8692A', fontWeight: 600, paddingBottom: 8, paddingRight: 14, whiteSpace: 'nowrap' }}>
+                <th key={i} style={{ textAlign: 'left', fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.14em', color: '#1DE9B6', fontWeight: 600, paddingBottom: 8, paddingRight: 14, whiteSpace: 'nowrap' }}>
                   {h}
                 </th>
               ))}
@@ -255,10 +255,10 @@ export default function GooalsSection() {
                           onClick={() => regenerarDesc(g.id)}
                           disabled={regenerando === g.id}
                           title="Regenerar descripción sin nombres de empresas"
-                          style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 10px', borderRadius: 7, background: '#1A1A1A', border: '1px solid #2A2A2A', color: regenerado.includes(g.id) ? '#10B981' : '#E8692A', fontSize: 11, cursor: 'pointer', whiteSpace: 'nowrap', opacity: regenerando === g.id ? 0.5 : 1 }}
+                          style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 10px', borderRadius: 7, background: '#1A1A1A', border: '1px solid #2A2A2A', color: regenerado.includes(g.id) ? '#10B981' : '#1DE9B6', fontSize: 11, cursor: 'pointer', whiteSpace: 'nowrap', opacity: regenerando === g.id ? 0.5 : 1 }}
                         >
                           {regenerando === g.id
-                            ? <span style={{ width: 12, height: 12, border: '2px solid #E8692A', borderTopColor: 'transparent', borderRadius: '50%', display: 'inline-block' }} className="animate-spin" />
+                            ? <span style={{ width: 12, height: 12, border: '2px solid #1DE9B6', borderTopColor: 'transparent', borderRadius: '50%', display: 'inline-block' }} className="animate-spin" />
                             : regenerado.includes(g.id)
                               ? <Check style={{ width: 12, height: 12 }} />
                               : <Sparkles style={{ width: 12, height: 12 }} />
@@ -279,7 +279,7 @@ export default function GooalsSection() {
                           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                             {lugares[g.id].map(l => (
                               <div key={l.id} style={{ fontSize: 12, color: '#C0C0C0', display: 'flex', gap: 8 }}>
-                                <MapPin style={{ width: 12, height: 12, color: '#E8692A', flexShrink: 0, marginTop: 2 }} />
+                                <MapPin style={{ width: 12, height: 12, color: '#1DE9B6', flexShrink: 0, marginTop: 2 }} />
                                 <span>
                                   <span style={{ color: '#F0F0F0' }}>{l.nombre_lugar}</span>
                                   {' · '}{[l.ciudad, l.pais].filter(Boolean).join(', ')}

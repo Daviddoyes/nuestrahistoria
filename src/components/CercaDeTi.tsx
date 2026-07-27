@@ -85,7 +85,7 @@ export default function CercaDeTi({ onPlanAnadido }: Props) {
 
   return (
     <div className="pt-3">
-      <p className="px-3 mb-2.5 text-[10px] uppercase tracking-[0.15em] text-[#E8692A]">
+      <p className="px-3 mb-2.5 text-[10px] uppercase tracking-[0.15em] text-[#1DE9B6]">
         📍 Cerca de ti
       </p>
 
@@ -138,8 +138,8 @@ export default function CercaDeTi({ onPlanAnadido }: Props) {
                   aria-label={yaAnadido ? 'Añadido a tus planes' : 'Añadir a mis planes'}
                   style={{
                     width: 30, height: 30, borderRadius: '50%', flexShrink: 0,
-                    background: yaAnadido ? '#2A2A2A' : '#E8692A',
-                    color: yaAnadido ? '#E8692A' : '#FFFFFF',
+                    background: yaAnadido ? '#2A2A2A' : '#1DE9B6',
+                    color: yaAnadido ? '#1DE9B6' : '#FFFFFF',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}
                   className="active:scale-90 transition-transform disabled:opacity-70"

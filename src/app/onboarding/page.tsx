@@ -243,7 +243,7 @@ export default function OnboardingPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
-        <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#E8692A] rounded-full animate-spin" />
+        <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#1DE9B6] rounded-full animate-spin" />
       </div>
     )
   }
@@ -268,7 +268,7 @@ export default function OnboardingPage() {
         {Array.from({ length: TOTAL }).map((_, i) => (
           <div key={i} style={{
             width: i === screen ? 24 : 8, height: 8, borderRadius: 4,
-            background: i <= screen ? '#E8692A' : '#2A2A2A',
+            background: i <= screen ? '#1DE9B6' : '#2A2A2A',
             transition: 'width 0.3s ease, background 0.3s ease',
           }} />
         ))}
@@ -287,13 +287,13 @@ export default function OnboardingPage() {
         <div style={screenStyle}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 28 }}>
             <div>
-              <div className="w-10 h-10 rounded-full bg-[#E8692A] flex items-center justify-center mb-6">
-                <span className="text-white font-bold text-sm tracking-wide">LS</span>
+              <div className="w-10 h-10 rounded-full bg-[#1DE9B6] flex items-center justify-center mb-6">
+                <span className="text-[#0A0A0A] font-bold text-sm tracking-wide">G</span>
               </div>
               <h1 className="font-serif text-3xl font-bold text-[#F0F0F0] leading-tight mb-2">
                 ¿Cómo te llaman?
               </h1>
-              <p className="text-sm text-[#666666]">Elige tu nombre y usuario en Livestory</p>
+              <p className="text-sm text-[#666666]">Elige tu nombre y usuario en GooALS</p>
             </div>
 
             <div className="space-y-4">
@@ -306,7 +306,7 @@ export default function OnboardingPage() {
                   value={nombre}
                   onChange={e => setNombre(e.target.value)}
                   placeholder="Escribe tu nombre"
-                  className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-base"
+                  className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#1DE9B6] text-base"
                 />
               </div>
 
@@ -329,7 +329,7 @@ export default function OnboardingPage() {
                     className={`w-full pl-8 pr-4 py-3.5 rounded-xl border bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none text-base ${
                       username.length >= 3
                         ? usernameValido ? 'border-[#3A7A3A] focus:border-[#4CAF50]' : 'border-[#8B3A3A] focus:border-[#C97B7B]'
-                        : 'border-[#2A2A2A] focus:border-[#E8692A]'
+                        : 'border-[#2A2A2A] focus:border-[#1DE9B6]'
                     }`}
                   />
                 </div>
@@ -349,7 +349,7 @@ export default function OnboardingPage() {
           <button
             onClick={() => advance(1)}
             disabled={!nombre.trim() || !usernameValido || username.length < 3 || checkingUsername}
-            className="w-full bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 text-white font-semibold py-3.5 rounded-xl text-base mt-4"
+            className="w-full bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-40 text-[#0A0A0A] font-semibold py-3.5 rounded-xl text-base mt-4"
           >
             Continuar
           </button>
@@ -364,7 +364,7 @@ export default function OnboardingPage() {
               </h1>
               <p style={{ fontFamily: 'var(--font-playfair), Georgia, serif', color: '#999999', fontSize: 16, lineHeight: 1.7, textAlign: 'center' }}>
                 Las redes están llenas de vidas perfectas.<br />
-                Livestory es para los que prefieren vivirlas.
+                GooALS es para los que prefieren vivirlas.
               </p>
             </div>
             <div>
@@ -378,11 +378,11 @@ export default function OnboardingPage() {
                 onChange={e => setEdad(e.target.value)}
                 placeholder="Tu edad"
                 min={1} max={120}
-                className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-base"
+                className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#1DE9B6] text-base"
               />
             </div>
           </div>
-          <button onClick={() => advance(2)} className="w-full bg-[#E8692A] active:bg-[#D4581A] text-white font-semibold py-3.5 rounded-xl text-base mt-4">
+          <button onClick={() => advance(2)} className="w-full bg-[#1DE9B6] active:bg-[#00BFA5] text-[#0A0A0A] font-semibold py-3.5 rounded-xl text-base mt-4">
             Continuar
           </button>
         </div>
@@ -405,14 +405,14 @@ export default function OnboardingPage() {
                     onClick={() => setIntereses(prev => prev.includes(item.id) ? prev.filter(i => i !== item.id) : [...prev, item.id])}
                     style={{
                       padding: '16px 12px', borderRadius: 16,
-                      border: `2px solid ${sel ? '#E8692A' : '#2A2A2A'}`,
-                      background: sel ? 'rgba(232,105,42,0.1)' : '#1A1A1A',
+                      border: `2px solid ${sel ? '#1DE9B6' : '#2A2A2A'}`,
+                      background: sel ? 'rgba(29,233,182,0.1)' : '#1A1A1A',
                       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
                       transition: 'border-color 0.15s, background 0.15s', cursor: 'pointer',
                     }}
                   >
                     <span style={{ fontSize: 28 }}>{item.icon}</span>
-                    <span style={{ fontSize: 12, fontWeight: 500, color: sel ? '#E8692A' : '#A0A0A0', textAlign: 'center', lineHeight: 1.2 }}>
+                    <span style={{ fontSize: 12, fontWeight: 500, color: sel ? '#1DE9B6' : '#A0A0A0', textAlign: 'center', lineHeight: 1.2 }}>
                       {item.label}
                     </span>
                   </button>
@@ -423,7 +423,7 @@ export default function OnboardingPage() {
           <button
             onClick={() => advance(3)}
             disabled={intereses.length === 0}
-            className="w-full bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 text-white font-semibold py-3.5 rounded-xl text-base mt-4"
+            className="w-full bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-40 text-[#0A0A0A] font-semibold py-3.5 rounded-xl text-base mt-4"
           >
             Continuar
           </button>
@@ -447,14 +447,14 @@ export default function OnboardingPage() {
                     onClick={() => toggleConQuien(item.id)}
                     style={{
                       padding: '20px 12px', borderRadius: 16,
-                      border: `2px solid ${sel ? '#E8692A' : '#2A2A2A'}`,
-                      background: sel ? 'rgba(232,105,42,0.1)' : '#1A1A1A',
+                      border: `2px solid ${sel ? '#1DE9B6' : '#2A2A2A'}`,
+                      background: sel ? 'rgba(29,233,182,0.1)' : '#1A1A1A',
                       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10,
                       transition: 'border-color 0.15s, background 0.15s', cursor: 'pointer',
                     }}
                   >
                     <span style={{ fontSize: 32 }}>{item.icon}</span>
-                    <span style={{ fontSize: 13, fontWeight: 500, color: sel ? '#E8692A' : '#A0A0A0', textAlign: 'center' }}>
+                    <span style={{ fontSize: 13, fontWeight: 500, color: sel ? '#1DE9B6' : '#A0A0A0', textAlign: 'center' }}>
                       {item.label}
                     </span>
                   </button>
@@ -465,7 +465,7 @@ export default function OnboardingPage() {
           <button
             onClick={() => advance(4)}
             disabled={conQuien.length === 0}
-            className="w-full bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 text-white font-semibold py-3.5 rounded-xl text-base mt-4"
+            className="w-full bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-40 text-[#0A0A0A] font-semibold py-3.5 rounded-xl text-base mt-4"
           >
             Continuar
           </button>
@@ -499,7 +499,7 @@ export default function OnboardingPage() {
                       disabled={added || adding}
                       style={{
                         flexShrink: 0, padding: '8px 14px', borderRadius: 10,
-                        background: added ? 'transparent' : '#E8692A',
+                        background: added ? 'transparent' : '#1DE9B6',
                         color: added ? '#555555' : '#FFFFFF',
                         fontSize: 12, fontWeight: 600,
                         border: added ? '1px solid #3A3A3A' : 'none',
@@ -515,14 +515,14 @@ export default function OnboardingPage() {
             </div>
           </div>
           {finishError && (
-            <p style={{ fontSize: 12, color: '#E8692A', textAlign: 'center', marginTop: 8, flexShrink: 0, padding: '0 4px' }}>
+            <p style={{ fontSize: 12, color: '#1DE9B6', textAlign: 'center', marginTop: 8, flexShrink: 0, padding: '0 4px' }}>
               Error: {finishError}
             </p>
           )}
           <button
             onClick={handleFinish}
             disabled={finishing}
-            className="w-full bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 text-white font-semibold py-3.5 rounded-xl text-base mt-4"
+            className="w-full bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-40 text-[#0A0A0A] font-semibold py-3.5 rounded-xl text-base mt-4"
             style={{ flexShrink: 0 }}
           >
             {finishing ? 'Guardando...' : 'Empezar a vivir →'}

@@ -165,7 +165,7 @@ export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }
                     width: i === indice ? 16 : 6,
                     height: 6,
                     borderRadius: 3,
-                    background: i === indice ? '#E8692A' : 'rgba(255,255,255,0.45)',
+                    background: i === indice ? '#1DE9B6' : 'rgba(255,255,255,0.45)',
                     transition: 'width 300ms ease, background 300ms ease',
                   }}
                 />
@@ -189,7 +189,7 @@ export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }
           className="px-6 pt-6"
           style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 6rem)' }}
         >
-          <p className="text-[10px] uppercase tracking-[0.15em] text-[#E8692A] mb-3">
+          <p className="text-[10px] uppercase tracking-[0.15em] text-[#1DE9B6] mb-3">
             Historia
           </p>
 
@@ -223,7 +223,7 @@ export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }
                 onChange={e => setEditText(e.target.value)}
                 rows={6}
                 autoFocus
-                className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] resize-none text-base leading-relaxed"
+                className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#1DE9B6] resize-none text-base leading-relaxed"
               />
               {saveError && (
                 <p className="text-sm text-[#C97B7B] bg-[#8B3A3A]/20 px-3 py-2 rounded-lg">
@@ -240,7 +240,7 @@ export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="flex-1 py-3 rounded-xl bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-40 text-white text-sm font-semibold transition-colors"
+                  className="flex-1 py-3 rounded-xl bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-40 text-[#0A0A0A] text-sm font-semibold transition-colors"
                 >
                   {saving ? 'Guardando...' : 'Guardar'}
                 </button>
@@ -270,7 +270,7 @@ export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }
                 <button
                   onClick={handleEdit}
                   aria-label="Editar descripción"
-                  className="absolute top-0 right-0 p-1 text-[#444444] active:text-[#E8692A] transition-colors"
+                  className="absolute top-0 right-0 p-1 text-[#444444] active:text-[#1DE9B6] transition-colors"
                 >
                   <Pencil className="w-3.5 h-3.5" />
                 </button>

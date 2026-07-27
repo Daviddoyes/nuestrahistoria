@@ -27,7 +27,7 @@ export default function UserMenu({ nombre, fotoPerfil }: UserMenuProps) {
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="w-8 h-8 rounded-full overflow-hidden bg-[#E8692A] text-white font-semibold text-sm flex items-center justify-center active:scale-95 transition-transform"
+        className="w-8 h-8 rounded-full overflow-hidden bg-[#1DE9B6] text-[#0A0A0A] font-semibold text-sm flex items-center justify-center active:scale-95 transition-transform"
         aria-label="Menú de usuario"
       >
         {fotoPerfil ? (

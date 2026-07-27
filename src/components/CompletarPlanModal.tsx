@@ -173,7 +173,7 @@ export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
                 <div className="flex flex-col items-center justify-center p-8 text-[#444444]">
                   <ImagePlus className="w-8 h-8 mb-1.5" />
                   <p className="text-sm">Seleccionar portada</p>
-                  <p className="text-xs text-[#E8692A]/70 mt-0.5">Obligatoria</p>
+                  <p className="text-xs text-[#1DE9B6]/70 mt-0.5">Obligatoria</p>
                 </div>
               )}
             </div>
@@ -206,7 +206,7 @@ export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
               onChange={e => setDescripcion(e.target.value)}
               placeholder="Cuéntanos cómo fue este plan..."
               rows={4}
-              className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] resize-none text-base"
+              className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#1DE9B6] resize-none text-base"
             />
           </div>
 
@@ -220,7 +220,7 @@ export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
               onChange={e => setFechaMomento(e.target.value)}
               max={new Date().toISOString().split('T')[0]}
               style={{ colorScheme: 'dark' }}
-              className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] focus:outline-none focus:border-[#E8692A] text-base"
+              className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] focus:outline-none focus:border-[#1DE9B6] text-base"
             />
           </div>
 
@@ -242,7 +242,7 @@ export default function CompletarPlanModal({ plan, onClose, onSubmit }: Props) {
             <button
               type="submit"
               disabled={loading || !foto}
-              className="flex-1 bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-30 disabled:cursor-not-allowed text-white py-3.5 rounded-xl transition-colors text-sm font-semibold min-h-[44px]"
+              className="flex-1 bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-30 disabled:cursor-not-allowed text-[#0A0A0A] py-3.5 rounded-xl transition-colors text-sm font-semibold min-h-[44px]"
             >
               {loading ? 'Subiendo...' : 'Convertir en historia'}
             </button>

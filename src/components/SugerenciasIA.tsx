@@ -41,7 +41,7 @@ function SugerenciaDetalle({
             className="mt-4"
             style={{
               fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em',
-              color: '#E8692A', background: 'rgba(232,105,42,0.2)', borderRadius: 6, padding: '4px 10px',
+              color: '#1DE9B6', background: 'rgba(29,233,182,0.2)', borderRadius: 6, padding: '4px 10px',
             }}
           >
             {sug.categoria}
@@ -53,7 +53,7 @@ function SugerenciaDetalle({
           <button
             onClick={onAdd}
             disabled={adding || added}
-            className="w-full max-w-sm mt-10 py-4 bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-60 text-white rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors"
+            className="w-full max-w-sm mt-10 py-4 bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-60 text-[#0A0A0A] rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors"
           >
             {added ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
             {added ? 'Añadido a tu lista' : adding ? 'Añadiendo...' : 'Añadir a mi lista'}
@@ -211,7 +211,7 @@ export default function SugerenciasIA({ profile, pendientes, historias, onPlanAn
                 type="button"
                 onClick={() => generarSugerencias(true)}
                 disabled={loadingIA}
-                className="flex items-center gap-1.5 text-[12px] text-[#E8692A] active:text-[#D4581A] disabled:opacity-40 min-h-[44px]"
+                className="flex items-center gap-1.5 text-[12px] text-[#1DE9B6] active:text-[#00BFA5] disabled:opacity-40 min-h-[44px]"
               >
                 <Sparkles className="w-3.5 h-3.5" />
                 {loadingIA ? 'Generando...' : 'Generar nuevas'}
@@ -244,7 +244,7 @@ export default function SugerenciasIA({ profile, pendientes, historias, onPlanAn
           <button
             type="button"
             onClick={() => generarSugerencias(false)}
-            className="flex items-center gap-1.5 text-[13px] text-[#E8692A] active:text-[#D4581A] min-h-[44px]"
+            className="flex items-center gap-1.5 text-[13px] text-[#1DE9B6] active:text-[#00BFA5] min-h-[44px]"
           >
             <Sparkles className="w-3.5 h-3.5" />
             Reintentar
@@ -281,7 +281,7 @@ export default function SugerenciasIA({ profile, pendientes, historias, onPlanAn
                   <span
                     style={{
                       fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em',
-                      color: '#E8692A', background: 'rgba(232,105,42,0.2)',
+                      color: '#1DE9B6', background: 'rgba(29,233,182,0.2)',
                       borderRadius: 6, padding: '3px 7px',
                     }}
                   >
@@ -295,8 +295,8 @@ export default function SugerenciasIA({ profile, pendientes, historias, onPlanAn
                     aria-label={yaAnadido ? 'Añadido a tus planes' : 'Añadir a mis planes'}
                     style={{
                       width: 30, height: 30, borderRadius: '50%', flexShrink: 0,
-                      background: yaAnadido ? '#2A2A2A' : '#E8692A',
-                      color: yaAnadido ? '#E8692A' : '#FFFFFF',
+                      background: yaAnadido ? '#2A2A2A' : '#1DE9B6',
+                      color: yaAnadido ? '#1DE9B6' : '#FFFFFF',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}
                     className="active:scale-90 transition-transform disabled:opacity-70"

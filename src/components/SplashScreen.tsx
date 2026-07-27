@@ -48,7 +48,7 @@ export default function SplashScreen() {
     >
       <span
         style={{
-          color: '#E8692A',
+          color: '#1DE9B6',
           fontSize: 56,
           fontWeight: 700,
           fontFamily: 'var(--font-playfair), Georgia, serif',
@@ -66,7 +66,7 @@ export default function SplashScreen() {
           fontFamily: 'var(--font-inter), system-ui, sans-serif',
         }}
       >
-        LIVESTORY
+        GooALS
       </span>
     </div>
   )

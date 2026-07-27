@@ -44,9 +44,9 @@ function ProfileAvatar({ profile, size = 48 }: { profile: Profile; size?: number
   }
   return (
     <div style={{
-      width: size, height: size, borderRadius: '50%', background: '#E8692A',
+      width: size, height: size, borderRadius: '50%', background: '#1DE9B6',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      fontSize: size * 0.4, fontWeight: 700, color: '#fff', flexShrink: 0,
+      fontSize: size * 0.4, fontWeight: 700, color: '#0A0A0A', flexShrink: 0,
     }}>
       {initial}
     </div>
@@ -270,7 +270,7 @@ export default function PerfilPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
-        <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#E8692A] rounded-full animate-spin" />
+        <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#1DE9B6] rounded-full animate-spin" />
       </div>
     )
   }
@@ -290,8 +290,8 @@ export default function PerfilPage() {
     >
       {/* ── Brand bar ─────────────────────────────────────── */}
       <div className="flex-shrink-0 flex items-center justify-center border-b border-[#1A1A1A]" style={{ height: 32 }}>
-        <span style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 13, fontWeight: 600, letterSpacing: '0.2em', color: '#E8692A', textTransform: 'uppercase' }}>
-          LIVESTORY
+        <span style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 13, fontWeight: 600, letterSpacing: '0.2em', color: '#1DE9B6', textTransform: 'uppercase' }}>
+          GooALS
         </span>
       </div>
 
@@ -320,7 +320,7 @@ export default function PerfilPage() {
               <button
                 onClick={() => handleAccept(inv.participante_id)}
                 disabled={processingInv === inv.participante_id}
-                className="px-3 h-8 rounded-lg bg-[#E8692A] text-white text-xs font-semibold active:bg-[#D4581A] disabled:opacity-40 flex-shrink-0 whitespace-nowrap"
+                className="px-3 h-8 rounded-lg bg-[#1DE9B6] text-[#0A0A0A] text-xs font-semibold active:bg-[#00BFA5] disabled:opacity-40 flex-shrink-0 whitespace-nowrap"
               >
                 Aceptar
               </button>
@@ -336,7 +336,7 @@ export default function PerfilPage() {
           <div className="flex-shrink-0 px-3 py-2">
             <div
               className="bg-[#1A1A1A] rounded-xl px-3.5 py-3"
-              style={{ borderLeft: '3px solid #E8692A' }}
+              style={{ borderLeft: '3px solid #1DE9B6' }}
             >
               {solicitudes.length > 1 && (
                 <p className="text-[10px] uppercase tracking-[0.12em] text-[#666666] mb-2">
@@ -361,7 +361,7 @@ export default function PerfilPage() {
                 <button
                   onClick={() => handleResolverSolicitud(sol.participante_id, true)}
                   disabled={processingSol === sol.participante_id}
-                  className="px-3.5 h-9 rounded-lg bg-[#E8692A] text-white text-xs font-semibold active:bg-[#D4581A] disabled:opacity-40 flex-shrink-0 whitespace-nowrap"
+                  className="px-3.5 h-9 rounded-lg bg-[#1DE9B6] text-[#0A0A0A] text-xs font-semibold active:bg-[#00BFA5] disabled:opacity-40 flex-shrink-0 whitespace-nowrap"
                 >
                   Aceptar
                 </button>
@@ -380,7 +380,7 @@ export default function PerfilPage() {
               className="flex-shrink-0 bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl px-3 py-2.5 flex items-center gap-2.5"
               style={{ minWidth: 260, maxWidth: 300 }}
             >
-              <Camera className="w-4 h-4 text-[#E8692A] flex-shrink-0" />
+              <Camera className="w-4 h-4 text-[#1DE9B6] flex-shrink-0" />
               <button
                 onClick={() => abrirNotificacion(notif)}
                 className="flex-1 min-w-0 text-left active:opacity-70 transition-opacity"
@@ -433,7 +433,7 @@ export default function PerfilPage() {
                         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                         margin: '6px 12px', width: 'calc(100% - 24px)',
                         background: '#141414', borderRadius: 12,
-                        borderLeft: '3px solid #E8692A',
+                        borderLeft: '3px solid #1DE9B6',
                         padding: '16px 16px 16px 20px',
                         minHeight: 52,
                       }}
@@ -442,7 +442,7 @@ export default function PerfilPage() {
                         <p style={{ fontSize: 15, color: '#F0F0F0', fontWeight: 500, lineHeight: 1.4, display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                           <span>{plan.titulo}</span>
                           {plan.publico && (
-                            <Globe size={12} color="#E8692A" aria-label="Plan público" style={{ flexShrink: 0 }} />
+                            <Globe size={12} color="#1DE9B6" aria-label="Plan público" style={{ flexShrink: 0 }} />
                           )}
                         </p>
                         {plan.fecha_plazo && PLAZO_BADGE[plan.fecha_plazo] && (
@@ -457,7 +457,7 @@ export default function PerfilPage() {
                           </span>
                         )}
                         {isShared && (
-                          <p style={{ fontSize: 9, color: '#E8692A', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: 3 }}>
+                          <p style={{ fontSize: 9, color: '#1DE9B6', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: 3 }}>
                             {plan.creado_por}
                           </p>
                         )}
@@ -566,7 +566,7 @@ export default function PerfilPage() {
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploadingFoto}
-                  className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-[#E8692A] border-2 border-[#0A0A0A] flex items-center justify-center text-white active:scale-90 transition-transform disabled:opacity-60"
+                  className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-[#1DE9B6] border-2 border-[#0A0A0A] flex items-center justify-center text-[#0A0A0A] active:scale-90 transition-transform disabled:opacity-60"
                   aria-label="Cambiar foto"
                 >
                   {uploadingFoto
@@ -582,9 +582,9 @@ export default function PerfilPage() {
               </p>
               <button
                 onClick={handleCopyUsername}
-                className="flex items-center gap-1.5 text-[13px] font-light text-[#666666] active:text-[#E8692A] transition-colors mt-1"
+                className="flex items-center gap-1.5 text-[13px] font-light text-[#666666] active:text-[#1DE9B6] transition-colors mt-1"
               >
-                {copied ? <Check className="w-3 h-3 text-[#E8692A]" /> : <Copy className="w-3 h-3" />}
+                {copied ? <Check className="w-3 h-3 text-[#1DE9B6]" /> : <Copy className="w-3 h-3" />}
                 <span>{copied ? '¡Copiado!' : `@${profile.username ?? profile.nombre}`}</span>
               </button>
 
@@ -639,10 +639,10 @@ export default function PerfilPage() {
             bottom: 'calc(56px + env(safe-area-inset-bottom, 0px) + 20px)',
             width: 56, height: 56,
             borderRadius: '50%',
-            background: '#E8692A',
-            color: 'white',
+            background: '#1DE9B6',
+            color: '#0A0A0A',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: '0 4px 20px rgba(232,105,42,0.4)',
+            boxShadow: '0 4px 20px rgba(29,233,182,0.4)',
             zIndex: 10,
           }}
         >

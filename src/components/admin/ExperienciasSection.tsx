@@ -14,7 +14,7 @@ const CAT_COLOR: Record<string, string> = {
   deporte: '#10B981',
   gastronomia: '#F59E0B',
   cultura: '#8B5CF6',
-  aventura: '#E8692A',
+  aventura: '#1DE9B6',
   musica: '#EC4899',
 }
 
@@ -48,7 +48,7 @@ function ModalShell({ title, onClose, children }: { title: string; onClose: () =
         background: '#141414', border: '1px solid #2A2A2A', borderRadius: 16, padding: 20,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-          <p style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8692A', fontWeight: 700 }}>{title}</p>
+          <p style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#1DE9B6', fontWeight: 700 }}>{title}</p>
           <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#666666', cursor: 'pointer', padding: 4 }}>
             <X style={{ width: 16, height: 16 }} />
           </button>
@@ -67,7 +67,7 @@ const labelStyle: React.CSSProperties = {
   fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#666666', marginBottom: 5, display: 'block',
 }
 const btnPrimary: React.CSSProperties = {
-  padding: '12px 0', borderRadius: 10, background: '#E8692A', color: '#fff',
+  padding: '12px 0', borderRadius: 10, background: '#1DE9B6', color: '#0A0A0A',
   fontWeight: 600, fontSize: 14, border: 'none', cursor: 'pointer', width: '100%',
 }
 
@@ -292,14 +292,14 @@ function GenerarModal({ onClose, onSaved }: { onClose: () => void; onSaved: () =
                   onClick={() => toggle(i)}
                   style={{
                     textAlign: 'left', display: 'flex', gap: 10, alignItems: 'flex-start',
-                    background: sel ? 'rgba(232,105,42,0.08)' : '#1A1A1A',
-                    border: `1px solid ${sel ? '#E8692A' : '#2A2A2A'}`,
+                    background: sel ? 'rgba(29,233,182,0.08)' : '#1A1A1A',
+                    border: `1px solid ${sel ? '#1DE9B6' : '#2A2A2A'}`,
                     borderRadius: 10, padding: 12, cursor: 'pointer',
                   }}
                 >
                   <div style={{
                     width: 20, height: 20, borderRadius: 5, flexShrink: 0, marginTop: 1,
-                    background: sel ? '#E8692A' : 'transparent', border: `1.5px solid ${sel ? '#E8692A' : '#444444'}`,
+                    background: sel ? '#1DE9B6' : 'transparent', border: `1.5px solid ${sel ? '#1DE9B6' : '#444444'}`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}>
                     {sel && <Check style={{ width: 13, height: 13, color: '#fff' }} strokeWidth={3} />}
@@ -395,7 +395,7 @@ export default function ExperienciasSection() {
       {/* Header */}
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 16 }}>
         <div>
-          <p style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#E8692A', fontWeight: 700, marginBottom: 6 }}>
+          <p style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#1DE9B6', fontWeight: 700, marginBottom: 6 }}>
             Biblioteca de experiencias
           </p>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -407,7 +407,7 @@ export default function ExperienciasSection() {
         <div style={{ display: 'flex', gap: 8 }}>
           <button
             onClick={() => setShowGenerar(true)}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 12px', borderRadius: 10, background: '#E8692A', color: '#fff', fontSize: 12, fontWeight: 600, border: 'none', cursor: 'pointer' }}
+            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 12px', borderRadius: 10, background: '#1DE9B6', color: '#0A0A0A', fontSize: 12, fontWeight: 600, border: 'none', cursor: 'pointer' }}
           >
             <Sparkles style={{ width: 13, height: 13 }} /> Generar con IA
           </button>
@@ -428,7 +428,7 @@ export default function ExperienciasSection() {
           <thead>
             <tr>
               {['Título', 'Categoría', 'Ciudad / País', 'Dificultad', 'Verificada', 'Añadida', 'Acciones'].map(h => (
-                <th key={h} style={{ textAlign: 'left', fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.14em', color: '#E8692A', fontWeight: 600, paddingBottom: 8, paddingRight: 14, whiteSpace: 'nowrap' }}>
+                <th key={h} style={{ textAlign: 'left', fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.14em', color: '#1DE9B6', fontWeight: 600, paddingBottom: 8, paddingRight: 14, whiteSpace: 'nowrap' }}>
                   {h}
                 </th>
               ))}
@@ -527,7 +527,7 @@ export default function ExperienciasSection() {
   )
 }
 
-function Stat({ label, value, color = '#E8692A' }: { label: string; value: number; color?: string }) {
+function Stat({ label, value, color = '#1DE9B6' }: { label: string; value: number; color?: string }) {
   return (
     <span style={{ fontSize: 12, color: '#888888' }}>
       <span style={{ color, fontWeight: 700 }}>{value}</span> {label}

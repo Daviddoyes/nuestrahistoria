@@ -25,7 +25,7 @@ function Avatar({ item }: { item: PerfilResult }) {
     return <img src={item.foto_perfil_url} alt="" className="w-7 h-7 rounded-full object-cover flex-shrink-0" />
   }
   return (
-    <div className="w-7 h-7 rounded-full bg-[#E8692A] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+    <div className="w-7 h-7 rounded-full bg-[#1DE9B6] flex items-center justify-center text-[#0A0A0A] text-xs font-bold flex-shrink-0">
       {item.nombre?.[0]?.toUpperCase() ?? '?'}
     </div>
   )
@@ -49,7 +49,7 @@ export default function PlanWizard({ planId, planTitulo, onClose }: Props) {
   const [invitados, setInvitados] = useState<PerfilResult[]>([])
   const debounce = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const planUrl = `https://livestory.app/plan/${planId}`
+  const planUrl = `https://gooals.app/plan/${planId}`
 
   useEffect(() => {
     const q = query.trim()
@@ -119,7 +119,7 @@ export default function PlanWizard({ planId, planTitulo, onClose }: Props) {
         <div className="flex items-center justify-between px-5 pt-4 pb-1">
           <div className="flex items-center gap-1.5">
             {[1, 2].map(n => (
-              <span key={n} style={{ width: 7, height: 7, borderRadius: '50%', background: paso === n ? '#E8692A' : '#2A2A2A', transition: 'background 0.2s' }} />
+              <span key={n} style={{ width: 7, height: 7, borderRadius: '50%', background: paso === n ? '#1DE9B6' : '#2A2A2A', transition: 'background 0.2s' }} />
             ))}
           </div>
           <button
@@ -146,7 +146,7 @@ export default function PlanWizard({ planId, planTitulo, onClose }: Props) {
                     key={p.label}
                     onClick={() => elegirPlazo(p.valor)}
                     disabled={guardando}
-                    className="py-4 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] text-sm font-medium active:bg-[#222222] active:border-[#E8692A] disabled:opacity-50 transition-colors min-h-[44px]"
+                    className="py-4 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] text-sm font-medium active:bg-[#222222] active:border-[#1DE9B6] disabled:opacity-50 transition-colors min-h-[44px]"
                   >
                     {p.label}
                   </button>
@@ -167,14 +167,14 @@ export default function PlanWizard({ planId, planTitulo, onClose }: Props) {
                       onClick={onClose}
                       className="w-full flex items-center gap-3 p-4 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] active:bg-[#222222] transition-colors text-left min-h-[44px]"
                     >
-                      <UserIcon className="w-5 h-5 text-[#E8692A] flex-shrink-0" />
+                      <UserIcon className="w-5 h-5 text-[#1DE9B6] flex-shrink-0" />
                       <span className="text-sm font-medium text-[#F0F0F0]">Solo</span>
                     </button>
                     <button
                       onClick={() => setModo('invitar')}
                       className="w-full flex items-center gap-3 p-4 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] active:bg-[#222222] transition-colors text-left min-h-[44px]"
                     >
-                      <Users className="w-5 h-5 text-[#E8692A] flex-shrink-0" />
+                      <Users className="w-5 h-5 text-[#1DE9B6] flex-shrink-0" />
                       <span className="text-sm font-medium text-[#F0F0F0]">Invitar a alguien</span>
                     </button>
                     <button
@@ -182,7 +182,7 @@ export default function PlanWizard({ planId, planTitulo, onClose }: Props) {
                       disabled={guardando}
                       className="w-full flex items-center gap-3 p-4 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] active:bg-[#222222] disabled:opacity-50 transition-colors text-left min-h-[44px]"
                     >
-                      <Globe className="w-5 h-5 text-[#E8692A] flex-shrink-0" />
+                      <Globe className="w-5 h-5 text-[#1DE9B6] flex-shrink-0" />
                       <span className="text-sm font-medium text-[#F0F0F0]">{guardando ? 'Guardando...' : 'Hacerlo público'}</span>
                     </button>
                   </div>
@@ -199,10 +199,10 @@ export default function PlanWizard({ planId, planTitulo, onClose }: Props) {
                   {invitados.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-3">
                       {invitados.map(item => (
-                        <div key={item.id} className="flex items-center gap-1.5 bg-[#1A1A1A] border border-[#E8692A] rounded-full pl-1 pr-2.5 py-1">
+                        <div key={item.id} className="flex items-center gap-1.5 bg-[#1A1A1A] border border-[#1DE9B6] rounded-full pl-1 pr-2.5 py-1">
                           <Avatar item={item} />
                           <span className="text-xs text-[#F0F0F0]">{item.nombre}</span>
-                          <Check className="w-3 h-3 text-[#E8692A]" />
+                          <Check className="w-3 h-3 text-[#1DE9B6]" />
                         </div>
                       ))}
                     </div>
@@ -216,7 +216,7 @@ export default function PlanWizard({ planId, planTitulo, onClose }: Props) {
                       onChange={e => setQuery(e.target.value)}
                       placeholder="Busca por @usuario"
                       autoFocus
-                      className="w-full pl-9 pr-4 py-3 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-sm"
+                      className="w-full pl-9 pr-4 py-3 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#1DE9B6] text-sm"
                     />
 
                     {(buscando || resultados.length > 0) && (
@@ -235,7 +235,7 @@ export default function PlanWizard({ planId, planTitulo, onClose }: Props) {
                                 <p className="text-sm font-medium text-[#F0F0F0] truncate">{item.nombre}</p>
                                 <p className="text-xs text-[#666666]">@{item.username}</p>
                               </div>
-                              <UserPlus className="w-4 h-4 text-[#E8692A] flex-shrink-0" />
+                              <UserPlus className="w-4 h-4 text-[#1DE9B6] flex-shrink-0" />
                             </div>
                           )
                         })}
@@ -245,7 +245,7 @@ export default function PlanWizard({ planId, planTitulo, onClose }: Props) {
 
                   <button
                     onClick={onClose}
-                    className="w-full mt-5 py-3.5 rounded-xl bg-[#E8692A] active:bg-[#D4581A] text-white text-sm font-semibold min-h-[44px]"
+                    className="w-full mt-5 py-3.5 rounded-xl bg-[#1DE9B6] active:bg-[#00BFA5] text-[#0A0A0A] text-sm font-semibold min-h-[44px]"
                   >
                     Listo
                   </button>
@@ -262,12 +262,12 @@ export default function PlanWizard({ planId, planTitulo, onClose }: Props) {
                     onClick={copiarLink}
                     className="w-full py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] text-sm font-medium min-h-[44px] flex items-center justify-center gap-2 active:bg-[#222222] transition-colors"
                   >
-                    {linkCopiado ? <Check className="w-4 h-4 text-[#E8692A]" /> : <Copy className="w-4 h-4" />}
+                    {linkCopiado ? <Check className="w-4 h-4 text-[#1DE9B6]" /> : <Copy className="w-4 h-4" />}
                     {linkCopiado ? '¡Link copiado!' : 'Copiar link del plan'}
                   </button>
                   <button
                     onClick={onClose}
-                    className="w-full mt-3 py-3.5 rounded-xl bg-[#E8692A] active:bg-[#D4581A] text-white text-sm font-semibold min-h-[44px]"
+                    className="w-full mt-3 py-3.5 rounded-xl bg-[#1DE9B6] active:bg-[#00BFA5] text-[#0A0A0A] text-sm font-semibold min-h-[44px]"
                   >
                     Listo
                   </button>

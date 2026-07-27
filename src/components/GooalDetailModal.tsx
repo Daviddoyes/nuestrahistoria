@@ -117,7 +117,7 @@ export default function GooalDetailModal({ gooal, userLocation, onClose, onAdded
           <button
             onClick={handleAnadir}
             disabled={anadiendo || anadido}
-            className="w-full py-4 bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-60 text-white rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors"
+            className="w-full py-4 bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-60 text-[#0A0A0A] rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors"
           >
             {anadido ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
             {anadido ? 'Añadido a tu lista' : anadiendo ? 'Añadiendo...' : 'Añadir a mi lista'}
@@ -145,7 +145,7 @@ export default function GooalDetailModal({ gooal, userLocation, onClose, onAdded
                     className="flex items-start gap-3 p-4 rounded-xl"
                     style={{ background: '#141414', border: '1px solid #2A2A2A' }}
                   >
-                    <MapPin className="w-4 h-4 text-[#E8692A] flex-shrink-0 mt-0.5" />
+                    <MapPin className="w-4 h-4 text-[#1DE9B6] flex-shrink-0 mt-0.5" />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-[#F0F0F0] font-medium">{l.nombre_lugar}</p>
                       <p className="text-xs text-[#666666] mt-0.5">
@@ -153,7 +153,7 @@ export default function GooalDetailModal({ gooal, userLocation, onClose, onAdded
                       </p>
                     </div>
                     {dist != null && (
-                      <span className="text-xs text-[#E8692A] font-semibold flex-shrink-0 whitespace-nowrap">
+                      <span className="text-xs text-[#1DE9B6] font-semibold flex-shrink-0 whitespace-nowrap">
                         a {Math.round(dist)} km
                       </span>
                     )}

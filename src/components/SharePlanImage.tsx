@@ -31,7 +31,7 @@ export default function SharePlanImage({ plan }: Props) {
         canvas.toBlob(b => b ? resolve(b) : reject(new Error('toBlob failed')), 'image/png')
       })
 
-      const file = new File([blob], 'mi-plan-livestory.png', { type: 'image/png' })
+      const file = new File([blob], 'mi-plan-gooals.png', { type: 'image/png' })
 
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({ files: [file], title: plan.titulo })
@@ -39,7 +39,7 @@ export default function SharePlanImage({ plan }: Props) {
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = 'mi-plan-livestory.png'
+        a.download = 'mi-plan-gooals.png'
         a.click()
         URL.revokeObjectURL(url)
       }
@@ -86,13 +86,13 @@ export default function SharePlanImage({ plan }: Props) {
             textAlign: 'center',
             fontSize: 12,
             letterSpacing: '0.3em',
-            color: '#E8692A',
+            color: '#1DE9B6',
             fontWeight: 700,
             textTransform: 'uppercase',
             fontFamily: 'var(--font-inter), system-ui, sans-serif',
           }}
         >
-          LIVESTORY
+          GooALS
         </div>
 
         {/* Center block */}
@@ -155,12 +155,12 @@ export default function SharePlanImage({ plan }: Props) {
             right: 0,
             textAlign: 'center',
             fontSize: 15,
-            color: '#E8692A',
+            color: '#1DE9B6',
             letterSpacing: '0.08em',
             fontFamily: 'var(--font-inter), system-ui, sans-serif',
           }}
         >
-          livestory.app
+          gooals.app
         </div>
       </div>
 
@@ -169,7 +169,7 @@ export default function SharePlanImage({ plan }: Props) {
         onClick={handleShare}
         disabled={generating}
         aria-label={generating ? 'Generando imagen...' : 'Compartir plan'}
-        className="flex items-center gap-1 text-[10px] text-[#666666] active:text-[#E8692A] disabled:opacity-40 transition-colors shrink-0"
+        className="flex items-center gap-1 text-[10px] text-[#666666] active:text-[#1DE9B6] disabled:opacity-40 transition-colors shrink-0"
       >
         <Share2 className="w-3 h-3" />
         {generating ? 'Generando…' : ''}

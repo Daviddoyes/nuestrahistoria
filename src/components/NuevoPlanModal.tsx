@@ -19,7 +19,7 @@ function Avatar({ item }: { item: InvitadoResult }) {
     return <img src={item.foto_perfil_url} alt="" className="w-7 h-7 rounded-full object-cover flex-shrink-0" />
   }
   return (
-    <div className="w-7 h-7 rounded-full bg-[#E8692A] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+    <div className="w-7 h-7 rounded-full bg-[#1DE9B6] flex items-center justify-center text-[#0A0A0A] text-xs font-bold flex-shrink-0">
       {item.nombre?.[0]?.toUpperCase() ?? '?'}
     </div>
   )
@@ -111,7 +111,7 @@ export default function NuevoPlanModal({ currentUserId, onClose, onSubmit }: Pro
               value={titulo}
               onChange={e => setTitulo(e.target.value)}
               placeholder="¿Qué quieres vivir?"
-              className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-base"
+              className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#1DE9B6] text-base"
               autoFocus
             />
           </div>
@@ -126,7 +126,7 @@ export default function NuevoPlanModal({ currentUserId, onClose, onSubmit }: Pro
               onChange={e => setDescripcion(e.target.value)}
               placeholder="Cuéntanos más sobre este plan..."
               rows={3}
-              className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-base resize-none"
+              className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#1DE9B6] text-base resize-none"
             />
           </div>
 
@@ -148,7 +148,7 @@ export default function NuevoPlanModal({ currentUserId, onClose, onSubmit }: Pro
                     <button
                       type="button"
                       onClick={() => removeInvitado(item.id)}
-                      className="text-[#444444] active:text-[#E8692A] ml-0.5 p-0.5"
+                      className="text-[#444444] active:text-[#1DE9B6] ml-0.5 p-0.5"
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -165,7 +165,7 @@ export default function NuevoPlanModal({ currentUserId, onClose, onSubmit }: Pro
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   placeholder="Busca por @usuario"
-                  className="w-full pl-9 pr-4 py-3 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#E8692A] text-sm"
+                  className="w-full pl-9 pr-4 py-3 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#1DE9B6] text-sm"
                 />
               </div>
 
@@ -205,7 +205,7 @@ export default function NuevoPlanModal({ currentUserId, onClose, onSubmit }: Pro
                           <p className="text-sm font-medium text-[#F0F0F0] truncate">{item.nombre}</p>
                           <p className="text-xs text-[#666666]">@{item.username}</p>
                         </div>
-                        <UserPlus className="w-4 h-4 text-[#E8692A] flex-shrink-0" />
+                        <UserPlus className="w-4 h-4 text-[#1DE9B6] flex-shrink-0" />
                       </div>
                     )
                   })}
@@ -232,7 +232,7 @@ export default function NuevoPlanModal({ currentUserId, onClose, onSubmit }: Pro
             <button
               type="submit"
               disabled={!titulo.trim() || loading}
-              className="flex-1 bg-[#E8692A] active:bg-[#D4581A] disabled:opacity-30 disabled:cursor-not-allowed text-white py-3.5 rounded-xl text-sm font-semibold min-h-[44px]"
+              className="flex-1 bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-30 disabled:cursor-not-allowed text-[#0A0A0A] py-3.5 rounded-xl text-sm font-semibold min-h-[44px]"
             >
               {loading ? 'Guardando...' : 'Añadir plan'}
             </button>
