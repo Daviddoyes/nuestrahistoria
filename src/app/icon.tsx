@@ -19,12 +19,12 @@ export default function Icon() {
         <span
           style={{
             color: '#1DE9B6',
-            fontSize: 14,
+            fontSize: 20,
             fontWeight: 700,
             fontFamily: 'system-ui, sans-serif',
           }}
         >
-          LS
+          G
         </span>
       </div>
     ),
