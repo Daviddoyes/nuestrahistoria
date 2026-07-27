@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { Sparkles, Plus, Check, X, ArrowLeft } from 'lucide-react'
+import { Sparkles, Plus, Check, X } from 'lucide-react'
 import { crearPlanDesdeSugerencia } from '@/lib/actions'
 import type { Profile, Plan } from '@/types/planes'
 
@@ -13,32 +13,40 @@ function SugerenciaDetalle({
 }: { sug: Sugerencia; adding: boolean; added: boolean; onAdd: () => void; onClose: () => void }) {
   return (
     <>
-      <button
+      {/* Backdrop: toca fuera para cerrar */}
+      <div
+        className="fixed inset-0 z-50 bg-black/60"
         onClick={onClose}
-        aria-label="Volver"
-        className="fixed left-4 z-[70] w-9 h-9 flex items-center justify-center rounded-full bg-black/50 text-white/60 active:bg-black/70 active:text-white transition-colors"
-        style={{ top: 'calc(env(safe-area-inset-top, 0px) + 52px)' }}
-      >
-        <ArrowLeft className="w-4 h-4" />
-      </button>
-      <button
-        onClick={onClose}
-        aria-label="Cerrar"
-        className="fixed right-4 z-[70] w-9 h-9 flex items-center justify-center rounded-full bg-black/50 text-white/60 active:bg-black/70 active:text-white transition-colors"
-        style={{ top: 'calc(env(safe-area-inset-top, 0px) + 52px)' }}
-      >
-        <X className="w-4 h-4" />
-      </button>
+        aria-hidden
+      />
 
-      <div className="fixed inset-0 z-50 bg-[#0A0A0A] modal-slide-up overflow-y-auto">
-        <div
-          className="px-6 flex flex-col items-center text-center"
-          style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 120px)', paddingBottom: 'max(3rem, env(safe-area-inset-bottom, 0px))' }}
+      {/* Bottom sheet */}
+      <div
+        className="fixed inset-x-0 bottom-0 z-[60] bg-[#0A0A0A] modal-slide-up flex flex-col"
+        style={{
+          maxHeight: '60vh',
+          borderTopLeftRadius: 20, borderTopRightRadius: 20,
+          paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom, 0px))',
+        }}
+      >
+        <button
+          onClick={onClose}
+          aria-label="Cerrar"
+          className="absolute right-4 top-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 text-white/50 active:bg-white/10 active:text-white transition-colors"
         >
-          <span style={{ fontSize: 72, lineHeight: 1 }}>{sug.emoji}</span>
-          <h2 className=" text-3xl font-bold text-[#F0F0F0] leading-tight mt-6">{sug.titulo}</h2>
+          <X className="w-4 h-4" />
+        </button>
+
+        {/* Asa del sheet */}
+        <div className="flex justify-center pt-3 pb-1">
+          <span style={{ width: 36, height: 4, borderRadius: 2, background: '#333' }} />
+        </div>
+
+        <div className="px-6 pt-4 overflow-y-auto flex flex-col items-center text-center">
+          <span style={{ fontSize: 48, lineHeight: 1 }}>{sug.emoji}</span>
+          <h2 className="text-2xl font-bold text-[#F0F0F0] leading-tight mt-4">{sug.titulo}</h2>
           <span
-            className="mt-4"
+            className="mt-3"
             style={{
               fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em',
               color: '#1DE9B6', background: 'rgba(29,233,182,0.2)', borderRadius: 6, padding: '4px 10px',
@@ -47,13 +55,19 @@ function SugerenciaDetalle({
             {sug.categoria}
           </span>
           {sug.descripcion && (
-            <p style={{ color: '#999999', fontSize: 15, lineHeight: 1.6 }} className="mt-6">{sug.descripcion}</p>
+            <p style={{ color: '#999999', fontSize: 15, lineHeight: 1.6 }} className="mt-5">{sug.descripcion}</p>
           )}
+          <p style={{ color: '#666666', fontSize: 13, lineHeight: 1.5 }} className="mt-4">
+            Añade este plan a tu lista y empieza a hacerlo realidad.
+          </p>
+        </div>
 
+        <div className="px-6 pt-4">
           <button
             onClick={onAdd}
             disabled={adding || added}
-            className="w-full max-w-sm mt-10 py-4 bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-60 text-[#0A0A0A] rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors"
+            className="w-full bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-60 text-[#0A0A0A] rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-colors"
+            style={{ height: 56 }}
           >
             {added ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
             {added ? 'Añadido a tu lista' : adding ? 'Añadiendo...' : 'Añadir a mi lista'}

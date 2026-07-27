@@ -25,21 +25,16 @@ import type { Plan, Profile, InvitacionPendiente, SolicitudPendiente, Notificaci
 
 type Tab = 'planes' | 'historias' | 'explorar' | 'perfil'
 
-const PLAZO_BADGE: Record<string, { label: string; color: string }> = {
-  corto: { label: 'Este mes', color: '#1DE9B6' },
-  medio: { label: 'Este año', color: '#888888' },
-  largo: { label: 'Algún día', color: '#555555' },
+// Punto de color por categoría en la card del plan.
+const CAT_DOT: Record<string, string> = {
+  aventura: '#FF6B35',
+  deporte: '#4CAF50',
+  musica: '#9C27B0',
+  cultura: '#2196F3',
+  gastronomia: '#FF9800',
 }
-
-// Fondo por categoría cuando el plan no tiene foto.
-const CAT_GRADIENT: Record<string, string> = {
-  aventura: 'linear-gradient(135deg, #1a0a00, #3d1f00)',
-  deporte: 'linear-gradient(135deg, #001a0f, #003d1f)',
-  musica: 'linear-gradient(135deg, #0d001a, #220040)',
-  cultura: 'linear-gradient(135deg, #00101a, #002a40)',
-  gastronomia: 'linear-gradient(135deg, #1a1000, #3d2800)',
-}
-const GRADIENT_DEFAULT = 'linear-gradient(135deg, #0a0a0a, #1a1a1a)'
+const DOT_DEFAULT = '#1DE9B6'
+const PLAZO_LABEL: Record<string, string> = { corto: 'Este mes', medio: 'Este año', largo: 'Algún día' }
 
 function ProfileAvatar({ profile, size = 48 }: { profile: Profile; size?: number }) {
   const initial = profile.nombre?.[0]?.toUpperCase() ?? '?'
@@ -299,8 +294,8 @@ export default function PerfilPage() {
       }}
     >
       {/* ── Brand bar ─────────────────────────────────────── */}
-      <div className="flex-shrink-0 flex items-center justify-center border-b border-[#1A1A1A]" style={{ height: 32 }}>
-        <span style={{ fontFamily: 'var(--font-inter), Inter, system-ui, sans-serif', fontSize: 13, fontWeight: 600, letterSpacing: '0.2em', color: '#1DE9B6', textTransform: 'uppercase' }}>
+      <div className="flex-shrink-0 flex items-center justify-center" style={{ height: 36 }}>
+        <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.3em', color: '#1DE9B6', textTransform: 'uppercase' }}>
           GooALS
         </span>
       </div>
@@ -438,89 +433,61 @@ export default function PerfilPage() {
                 {pendientes.map(plan => {
                   const participantes = participantesPorPlan[plan.id] ?? []
                   const showParticipants = participantes.length > 1
-                  const plazo = plan.fecha_plazo ? PLAZO_BADGE[plan.fecha_plazo] : null
-                  const fotoCard = plan.momentos_urls?.[0] || plan.foto_url || null
-                  const gradiente = (plan.categoria && CAT_GRADIENT[plan.categoria]) || GRADIENT_DEFAULT
+                  const dotColor = (plan.categoria && CAT_DOT[plan.categoria]) || DOT_DEFAULT
+                  const plazoLabel = plan.fecha_plazo ? PLAZO_LABEL[plan.fecha_plazo] : null
+                  const plazoColor = plan.fecha_plazo === 'corto' ? dotColor : plan.fecha_plazo === 'medio' ? '#666666' : '#444444'
                   return (
                     <button
                       key={plan.id}
                       onClick={() => setSelectedPlan(plan)}
-                      className="group block w-full text-left"
+                      className="w-full text-left active:opacity-70 transition-opacity"
                       style={{
-                        position: 'relative',
-                        height: 110,
-                        margin: '0 12px 8px',
-                        width: 'calc(100% - 24px)',
-                        borderRadius: 12,
-                        overflow: 'hidden',
-                        background: fotoCard ? '#0A0A0A' : gradiente,
+                        display: 'flex', alignItems: 'center', gap: 12,
+                        height: 72, margin: '0 12px 6px', width: 'calc(100% - 24px)',
+                        background: '#111111', borderRadius: 10, padding: '0 16px',
                       }}
                     >
-                      {/* Fondo: foto + overlay, o gradiente por categoría */}
-                      {fotoCard && (
-                        <>
-                          <img
-                            src={fotoCard}
-                            alt=""
-                            loading="lazy"
-                            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-                          />
-                          <div className="absolute inset-0 bg-black/[0.65] group-active:bg-black/80 transition-colors" />
-                        </>
-                      )}
+                      {/* Punto de categoría */}
+                      <span style={{ width: 8, height: 8, borderRadius: '50%', background: dotColor, flexShrink: 0 }} />
 
-                      {/* Contenido */}
-                      <div style={{ position: 'absolute', inset: 0, zIndex: 1, padding: 14, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                        {/* Fila superior: categoría + globo público */}
-                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                          {plan.categoria ? (
-                            <span style={{ fontSize: 8, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#1DE9B6' }}>
-                              {plan.categoria}
-                            </span>
-                          ) : <span />}
-                          {plan.publico && (
-                            <Globe size={12} color="rgba(29,233,182,0.6)" aria-label="Plan público" style={{ flexShrink: 0 }} />
-                          )}
-                        </div>
+                      {/* Título (1 línea con ellipsis) */}
+                      <span style={{
+                        flex: 1, minWidth: 0,
+                        fontSize: 15, fontWeight: 500, color: '#F0F0F0',
+                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                      }}>
+                        {plan.titulo}
+                      </span>
 
-                        {/* Título + fecha */}
-                        <div style={{ minWidth: 0 }}>
-                          <p style={{
-                            fontSize: 16, fontWeight: 500, color: '#FFFFFF', lineHeight: 1.4,
-                            textShadow: '0 1px 6px rgba(0,0,0,0.5)',
-                            display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
-                          } as React.CSSProperties}>
-                            {plan.titulo}
-                          </p>
-                          {plazo && (
-                            <span style={{ display: 'block', marginTop: 3, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.1em', color: plazo.color, textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>
-                              {plazo.label}
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Fila inferior: avatares de participantes (abajo derecha) */}
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', minHeight: 20 }}>
-                          {showParticipants && (
-                            <div style={{ display: 'flex' }}>
-                              {participantes.slice(0, 5).map((nombre, i) => (
-                                <div
-                                  key={i}
-                                  style={{
-                                    width: 20, height: 20, borderRadius: '50%',
-                                    background: '#2A2A2A', border: '1.5px solid rgba(10,10,10,0.6)',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    fontSize: 9, color: '#fff', fontWeight: 600,
-                                    marginLeft: i === 0 ? 0 : -6,
-                                    zIndex: participantes.length - i, position: 'relative', flexShrink: 0,
-                                  }}
-                                >
-                                  {nombre[0]?.toUpperCase() ?? '?'}
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
+                      {/* Lado derecho: fecha + avatares + público */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                        {plazoLabel && (
+                          <span style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.1em', color: plazoColor, whiteSpace: 'nowrap' }}>
+                            {plazoLabel}
+                          </span>
+                        )}
+                        {showParticipants && (
+                          <div style={{ display: 'flex' }}>
+                            {participantes.slice(0, 4).map((nombre, i) => (
+                              <div
+                                key={i}
+                                style={{
+                                  width: 18, height: 18, borderRadius: '50%',
+                                  background: '#2A2A2A', border: '1.5px solid #111111',
+                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                  fontSize: 8, color: '#fff', fontWeight: 600,
+                                  marginLeft: i === 0 ? 0 : -5,
+                                  zIndex: participantes.length - i, position: 'relative', flexShrink: 0,
+                                }}
+                              >
+                                {nombre[0]?.toUpperCase() ?? '?'}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        {plan.publico && (
+                          <Globe size={10} color="rgba(29,233,182,0.5)" aria-label="Plan público" style={{ flexShrink: 0 }} />
+                        )}
                       </div>
                     </button>
                   )
@@ -642,6 +609,46 @@ export default function PerfilPage() {
                     {historias.length === 1 ? 'Historia' : 'Historias'}
                   </span>
                 </div>
+              </div>
+
+              {/* Mis últimos logros */}
+              <div className="mt-10 w-full" style={{ maxWidth: 300 }}>
+                <p className="text-[10px] uppercase tracking-[0.15em] text-[#666666] mb-3 text-center">
+                  Mis últimos logros
+                </p>
+                {historias.length === 0 ? (
+                  <p className="text-[13px] text-[#444444] text-center leading-relaxed">
+                    Completa tu primer plan para ver tus logros.
+                  </p>
+                ) : (
+                  <div className="flex justify-center gap-3">
+                    {historias.slice(0, 3).map(h => {
+                      const foto = h.foto_url || h.momentos_urls?.[0] || null
+                      return (
+                        <button
+                          key={h.id}
+                          onClick={() => setSelectedHistoria(h)}
+                          className="active:opacity-70 transition-opacity"
+                          style={{
+                            width: 80, height: 80, borderRadius: 10, overflow: 'hidden',
+                            background: '#141414', flexShrink: 0,
+                          }}
+                        >
+                          {foto ? (
+                            <img src={foto} alt={h.titulo} loading="lazy"
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          ) : (
+                            <span style={{
+                              display: 'flex', width: '100%', height: '100%',
+                              alignItems: 'center', justifyContent: 'center',
+                              fontSize: 24, color: '#333',
+                            }}>✓</span>
+                          )}
+                        </button>
+                      )
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Compartir mi lista */}

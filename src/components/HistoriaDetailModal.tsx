@@ -156,20 +156,26 @@ export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }
               {reproduciendo ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
             </button>
 
-            {/* Puntos */}
+            {/* Puntos (máx 8; si hay más, indicador compacto) */}
             <div className="absolute bottom-4 left-0 right-0 flex items-center justify-center gap-1.5 pointer-events-none">
-              {fotos.map((_, i) => (
-                <span
-                  key={i}
-                  style={{
-                    width: i === indice ? 16 : 6,
-                    height: 6,
-                    borderRadius: 3,
-                    background: i === indice ? '#1DE9B6' : 'rgba(255,255,255,0.45)',
-                    transition: 'width 300ms ease, background 300ms ease',
-                  }}
-                />
-              ))}
+              {fotos.length > 8 ? (
+                <span style={{ fontSize: 10, letterSpacing: '0.15em', color: 'rgba(255,255,255,0.6)' }}>
+                  ●●●
+                </span>
+              ) : (
+                fotos.map((_, i) => (
+                  <span
+                    key={i}
+                    style={{
+                      width: i === indice ? 8 : 6,
+                      height: i === indice ? 8 : 6,
+                      borderRadius: '50%',
+                      background: i === indice ? '#1DE9B6' : '#333333',
+                      transition: 'all 300ms ease',
+                    }}
+                  />
+                ))
+              )}
             </div>
           </div>
         ) : plan.foto_url ? (

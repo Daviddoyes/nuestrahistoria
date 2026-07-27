@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { X, ArrowLeft, MapPin, Plus, Check } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { crearPlanDesdeSugerencia } from '@/lib/actions'
-import { distanciaKm, CAT_COLOR } from '@/lib/geo'
+import { distanciaKm, CAT_COLOR, acortarLugar } from '@/lib/geo'
 import PlanWizard from './PlanWizard'
 import type { Gooal, GooalLugar } from '@/types/planes'
 
@@ -147,7 +147,7 @@ export default function GooalDetailModal({ gooal, userLocation, onClose, onAdded
                   >
                     <MapPin className="w-4 h-4 text-[#1DE9B6] flex-shrink-0 mt-0.5" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-[#F0F0F0] font-medium">{l.nombre_lugar}</p>
+                      <p className="text-sm text-[#F0F0F0] font-medium">{acortarLugar(l.nombre_lugar)}</p>
                       <p className="text-xs text-[#666666] mt-0.5">
                         {[l.ciudad, l.pais].filter(Boolean).join(', ') || '—'}
                       </p>

@@ -7,6 +7,13 @@ export function distanciaKm(lat1: number, lng1: number, lat2: number, lng2: numb
   return Math.sqrt(dLat * dLat + dLng * dLng)
 }
 
+// Nombres de Google suelen venir largos ("Parque X | Actividades Y, Ciudad").
+// Nos quedamos con la parte antes del primer "|" o "," y limitamos a 35 chars.
+export function acortarLugar(nombre: string | null | undefined): string {
+  const corto = (nombre ?? '').split('|')[0].split(',')[0].trim()
+  return corto.length > 35 ? corto.slice(0, 35) + '...' : corto
+}
+
 export const CAT_COLOR: Record<string, string> = {
   viajes: '#3B82F6',
   deporte: '#10B981',

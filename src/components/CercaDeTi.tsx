@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { MapPin, Plus, Check } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { crearPlanDesdeSugerencia } from '@/lib/actions'
-import { distanciaKm, CAT_COLOR } from '@/lib/geo'
+import { distanciaKm, CAT_COLOR, acortarLugar } from '@/lib/geo'
 import GooalDetailModal from './GooalDetailModal'
 import type { Gooal, LugarConGooal } from '@/types/planes'
 
@@ -125,7 +125,7 @@ export default function CercaDeTi({ onPlanAnadido }: Props) {
               <div className="flex items-start gap-1 mt-2 min-w-0">
                 <MapPin className="w-3 h-3 text-[#666666] flex-shrink-0 mt-0.5" />
                 <span className="text-[11px] text-[#666666] leading-tight">
-                  <span className="text-[#888888]">{lugar.nombre_lugar}</span>
+                  <span className="text-[#888888]">{acortarLugar(lugar.nombre_lugar)}</span>
                   {lugar.distancia != null && ` — a ${Math.round(lugar.distancia)} km`}
                 </span>
               </div>

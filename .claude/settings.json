@@ -3,7 +3,11 @@
     "allow": [
       "Bash(npm run *)",
       "Bash(git commit -m ' *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "PowerShell(npx tsc --noEmit 2>&1)",
+      "Bash(git commit -m 'feat: plan description optional editable *)",
+      "PowerShell(npm run build 2>&1)",
+      "Bash(git commit -m 'feat: Playfair Display + Inter typography system *)"
     ]
   }
 }

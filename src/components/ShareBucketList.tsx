@@ -147,9 +147,12 @@ export default function ShareBucketList({ planes, nombre, username, fotoPerfil, 
         <button
           onClick={handleShare}
           disabled={generating || top5.length === 0}
-          className="flex items-center gap-2 px-4 py-2.5 border border-[#2A2A2A] rounded-xl text-sm text-[#F0F0F0] active:bg-[#1A1A1A] transition-colors disabled:opacity-40 min-h-[44px]"
+          className="flex items-center gap-2 text-[13px] text-[#666666] active:text-[#1DE9B6] transition-colors disabled:opacity-40 min-h-[44px]"
         >
-          <Share2 className="w-4 h-4 text-[#666666]" />
+          {generating
+            ? <div className="w-3.5 h-3.5 border border-[#1DE9B6] border-t-transparent rounded-full animate-spin" />
+            : <Share2 className="w-3.5 h-3.5" />
+          }
           {generating ? 'Generando...' : 'Compartir mi lista'}
         </button>
       )}
