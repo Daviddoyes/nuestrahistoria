@@ -713,7 +713,6 @@ export default function PerfilPage() {
       {/* ── Modals ────────────────────────────────────────── */}
       {showNuevoPlan && (
         <NuevoPlanModal
-          currentUserId={profile.id}
           onClose={() => setShowNuevoPlan(false)}
           onSubmit={handleAddPlan}
         />
