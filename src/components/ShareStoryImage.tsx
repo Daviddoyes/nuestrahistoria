@@ -165,7 +165,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
             left: 80,
             right: 80,
             textAlign: 'center',
-            fontFamily: 'var(--font-playfair), Georgia, serif',
+            fontFamily: 'var(--font-inter), Inter, system-ui, sans-serif',
             fontSize: titleFontSize,
             fontWeight: 700,
             color: '#FFFFFF',

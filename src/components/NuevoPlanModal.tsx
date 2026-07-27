@@ -92,7 +92,7 @@ export default function NuevoPlanModal({ currentUserId, onClose, onSubmit }: Pro
         </div>
 
         <div className="px-5 py-3 flex items-center justify-between flex-shrink-0">
-          <h2 className="font-serif font-semibold text-[#F0F0F0] text-base">Nuevo plan</h2>
+          <h2 className=" font-semibold text-[#F0F0F0] text-base">Nuevo plan</h2>
           <button
             onClick={onClose}
             className="text-[#444444] active:text-[#F0F0F0] w-10 h-10 flex items-center justify-center rounded-lg active:bg-[#1A1A1A]"

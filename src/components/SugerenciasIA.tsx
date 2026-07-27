@@ -36,7 +36,7 @@ function SugerenciaDetalle({
           style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 120px)', paddingBottom: 'max(3rem, env(safe-area-inset-bottom, 0px))' }}
         >
           <span style={{ fontSize: 72, lineHeight: 1 }}>{sug.emoji}</span>
-          <h2 className="font-serif text-3xl font-bold text-[#F0F0F0] leading-tight mt-6">{sug.titulo}</h2>
+          <h2 className=" text-3xl font-bold text-[#F0F0F0] leading-tight mt-6">{sug.titulo}</h2>
           <span
             className="mt-4"
             style={{
@@ -268,7 +268,7 @@ export default function SugerenciasIA({ profile, pendientes, historias, onPlanAn
                 <span style={{ fontSize: 40, lineHeight: 1.1 }}>{sug.emoji}</span>
 
                 <p
-                  className="font-serif"
+                  className=""
                   style={{
                     fontSize: 14, color: '#F0F0F0', lineHeight: 1.35, marginTop: 8,
                     display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',

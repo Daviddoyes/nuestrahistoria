@@ -51,7 +51,7 @@ export default function SplashScreen() {
           color: '#1DE9B6',
           fontSize: 56,
           fontWeight: 700,
-          fontFamily: 'var(--font-playfair), Georgia, serif',
+          fontFamily: 'var(--font-inter), Inter, system-ui, sans-serif',
           letterSpacing: '-0.02em',
         }}
       >

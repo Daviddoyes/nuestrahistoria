@@ -193,7 +193,7 @@ export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }
             Historia
           </p>
 
-          <h2 className="font-serif text-2xl font-bold text-[#F0F0F0] leading-snug mb-5">
+          <h2 className=" text-2xl font-bold text-[#F0F0F0] leading-snug mb-5">
             {plan.titulo}
           </h2>
 

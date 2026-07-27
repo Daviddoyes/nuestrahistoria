@@ -300,7 +300,7 @@ export default function PerfilPage() {
     >
       {/* ── Brand bar ─────────────────────────────────────── */}
       <div className="flex-shrink-0 flex items-center justify-center border-b border-[#1A1A1A]" style={{ height: 32 }}>
-        <span style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 13, fontWeight: 600, letterSpacing: '0.2em', color: '#1DE9B6', textTransform: 'uppercase' }}>
+        <span style={{ fontFamily: 'var(--font-inter), Inter, system-ui, sans-serif', fontSize: 13, fontWeight: 600, letterSpacing: '0.2em', color: '#1DE9B6', textTransform: 'uppercase' }}>
           GooALS
         </span>
       </div>
@@ -486,8 +486,7 @@ export default function PerfilPage() {
                         {/* Título + fecha */}
                         <div style={{ minWidth: 0 }}>
                           <p style={{
-                            fontFamily: 'var(--font-playfair), Georgia, serif',
-                            fontSize: 16, fontWeight: 400, color: '#FFFFFF', lineHeight: 1.25,
+                            fontSize: 16, fontWeight: 500, color: '#FFFFFF', lineHeight: 1.4,
                             textShadow: '0 1px 6px rgba(0,0,0,0.5)',
                             display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
                           } as React.CSSProperties}>
@@ -617,7 +616,7 @@ export default function PerfilPage() {
                 <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFotoChange} />
               </div>
 
-              <p className="font-serif text-[22px] font-bold text-[#F0F0F0] mt-4 text-center leading-tight">
+              <p className=" text-[22px] font-bold text-[#F0F0F0] mt-4 text-center leading-tight">
                 {profile.nombre}
               </p>
               <button

@@ -129,7 +129,7 @@ export default function AuthPage() {
             <div className="w-10 h-10 rounded-full bg-[#1DE9B6] flex items-center justify-center mb-4">
               <span className="text-[#0A0A0A] font-bold text-sm tracking-wide">G</span>
             </div>
-            <h1 className="font-serif text-3xl font-bold text-[#F0F0F0] tracking-tight">
+            <h1 className=" text-3xl font-bold text-[#F0F0F0] tracking-tight">
               GooALS
             </h1>
             <p className="text-sm text-[#666666] mt-2">Convierte tus intenciones en recuerdos.</p>
@@ -286,7 +286,7 @@ export default function AuthPage() {
             style={{ paddingBottom: 'max(2.5rem, env(safe-area-inset-bottom, 0px))' }}
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="font-serif text-lg font-semibold text-[#F0F0F0]">
+              <h2 className=" text-lg font-semibold text-[#F0F0F0]">
                 Recuperar contraseña
               </h2>
               <button

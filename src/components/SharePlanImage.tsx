@@ -112,7 +112,7 @@ export default function SharePlanImage({ plan }: Props) {
           {/* Title */}
           <div
             style={{
-              fontFamily: 'var(--font-playfair), Georgia, serif',
+              fontFamily: 'var(--font-inter), Inter, system-ui, sans-serif',
               fontSize: 62,
               fontWeight: 700,
               color: '#F0F0F0',

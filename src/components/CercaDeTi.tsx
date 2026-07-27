@@ -113,7 +113,7 @@ export default function CercaDeTi({ onPlanAnadido }: Props) {
               </span>
 
               <p
-                className="font-serif"
+                className=""
                 style={{
                   fontSize: 15, color: '#F0F0F0', lineHeight: 1.3, marginTop: 10,
                   display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',

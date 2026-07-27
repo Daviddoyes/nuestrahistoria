@@ -67,7 +67,7 @@ function dibujarTitulo(ctx: CanvasRenderingContext2D, titulo: string) {
   ctx.fillText('✓', W / 2, 200)
 
   const size = titulo.length > 45 ? 44 : titulo.length > 25 ? 54 : 64
-  ctx.font = `700 ${size}px "Playfair Display", Georgia, serif`
+  ctx.font = `700 ${size}px Inter, system-ui, sans-serif`
   ctx.fillStyle = '#F0F0F0'
   let ty = 300
   for (const l of wrapText(ctx, titulo, W - 160)) { ctx.fillText(l, W / 2, ty); ty += size + 14 }

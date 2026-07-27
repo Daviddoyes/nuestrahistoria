@@ -89,7 +89,7 @@ export default function ShareBucketList({ planes, nombre, username, fotoPerfil, 
           </p>
           <div style={{ width: '100%', height: 1, background: '#1DE9B6' }} />
           <p style={{
-            fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 76, fontWeight: 700,
+            fontFamily: 'var(--font-inter), Inter, system-ui, sans-serif', fontSize: 76, fontWeight: 700,
             color: '#F0F0F0', margin: 0, lineHeight: 1.1, textAlign: 'center',
           }}>
             MY PLAN LIST
@@ -107,7 +107,7 @@ export default function ShareBucketList({ planes, nombre, username, fotoPerfil, 
                 <div style={{ height: 1, background: '#2A2A2A', margin: '36px 0' }} />
               )}
               <p style={{
-                fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: titleSize,
+                fontFamily: 'var(--font-inter), Inter, system-ui, sans-serif', fontSize: titleSize,
                 fontWeight: 600, color: '#F0F0F0', lineHeight: 1.35,
                 margin: 0, textAlign: 'center', wordBreak: 'break-word',
               }}>

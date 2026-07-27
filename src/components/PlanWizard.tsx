@@ -135,7 +135,7 @@ export default function PlanWizard({ planId, planTitulo, onClose }: Props) {
           {/* ── PASO 1 — ¿Cuándo? ── */}
           {paso === 1 && (
             <div>
-              <h3 className="font-serif text-xl font-bold text-[#F0F0F0] leading-snug">¿Cuándo quieres hacerlo?</h3>
+              <h3 className=" text-xl font-bold text-[#F0F0F0] leading-snug">¿Cuándo quieres hacerlo?</h3>
               <p className="text-[13px] text-[#666666] mt-1.5 mb-5 leading-snug">
                 Los planes con fecha tienen 3 veces más probabilidades de cumplirse
               </p>
@@ -158,7 +158,7 @@ export default function PlanWizard({ planId, planTitulo, onClose }: Props) {
           {/* ── PASO 2 — ¿Con quién? ── */}
           {paso === 2 && (
             <div>
-              <h3 className="font-serif text-xl font-bold text-[#F0F0F0] leading-snug mb-5">¿Lo haces solo o con alguien?</h3>
+              <h3 className=" text-xl font-bold text-[#F0F0F0] leading-snug mb-5">¿Lo haces solo o con alguien?</h3>
 
               {modo === null && (
                 <>

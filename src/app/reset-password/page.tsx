@@ -66,7 +66,7 @@ export default function ResetPasswordPage() {
           <div className="w-10 h-10 rounded-full bg-[#1DE9B6] flex items-center justify-center mb-4">
             <span className="text-[#0A0A0A] font-bold text-sm tracking-wide">G</span>
           </div>
-          <h1 className="font-serif text-3xl font-bold text-[#F0F0F0] tracking-tight">
+          <h1 className=" text-3xl font-bold text-[#F0F0F0] tracking-tight">
             Nueva contraseña
           </h1>
           <p className="text-sm text-[#666666] mt-2">Elige una contraseña segura.</p>

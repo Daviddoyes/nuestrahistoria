@@ -60,7 +60,7 @@ export default function InstallBanner() {
       <div className="flex items-center gap-3 px-4 py-3">
         {/* Icon */}
         <div className="w-9 h-9 rounded-xl bg-[#0A0A0A] border border-[#2A2A2A] flex items-center justify-center shrink-0">
-          <span className="text-[#1DE9B6] font-bold text-sm font-serif">G</span>
+          <span className="text-[#1DE9B6] font-bold text-sm ">G</span>
         </div>
 
         {/* Text */}

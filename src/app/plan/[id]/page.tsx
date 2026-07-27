@@ -77,7 +77,7 @@ export default function PublicPlanPage({ params }: { params: Promise<{ id: strin
   if (!plan) {
     return (
       <div className="min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center px-8">
-        <span style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 13, fontWeight: 600, letterSpacing: '0.2em', color: '#1DE9B6', textTransform: 'uppercase' }}>
+        <span style={{ fontFamily: 'var(--font-inter), Inter, system-ui, sans-serif', fontSize: 13, fontWeight: 600, letterSpacing: '0.2em', color: '#1DE9B6', textTransform: 'uppercase' }}>
           GooALS
         </span>
         <p className="mt-6 text-[15px] text-[#666666] text-center">Este plan no está disponible.</p>
@@ -92,7 +92,7 @@ export default function PublicPlanPage({ params }: { params: Promise<{ id: strin
     >
       {/* Brand bar */}
       <div className="flex-shrink-0 flex items-center justify-center border-b border-[#1A1A1A]" style={{ height: 40 }}>
-        <span style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 13, fontWeight: 600, letterSpacing: '0.2em', color: '#1DE9B6', textTransform: 'uppercase' }}>
+        <span style={{ fontFamily: 'var(--font-inter), Inter, system-ui, sans-serif', fontSize: 13, fontWeight: 600, letterSpacing: '0.2em', color: '#1DE9B6', textTransform: 'uppercase' }}>
           GooALS
         </span>
       </div>
@@ -114,7 +114,7 @@ export default function PublicPlanPage({ params }: { params: Promise<{ id: strin
 
         {/* Title */}
         <p className="text-[10px] uppercase tracking-[0.15em] text-[#1DE9B6] mb-3">Plan</p>
-        <h1 className="font-serif text-3xl font-bold text-[#F0F0F0] tracking-[-0.02em] leading-[1.2] mb-4">{plan.titulo}</h1>
+        <h1 className=" text-3xl font-bold text-[#F0F0F0] tracking-[-0.02em] leading-[1.2] mb-4">{plan.titulo}</h1>
 
         {(plan.descripcion || plan.descripcion_publica) && (
           <p className="text-[15px] font-light text-[#C0C0C0] leading-[1.7] mb-6">{plan.descripcion || plan.descripcion_publica}</p>

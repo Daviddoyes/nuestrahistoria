@@ -110,7 +110,7 @@ export default function GooalDetailModal({ gooal, userLocation, onClose, onAdded
             {gooal.categoria}
           </span>
 
-          <h2 className="font-serif text-3xl font-bold text-[#F0F0F0] leading-tight mt-4 mb-6">
+          <h2 className="text-[26px] font-bold text-[#F0F0F0] leading-tight mt-4 mb-6">
             {gooal.titulo}
           </h2>
 

@@ -290,7 +290,7 @@ export default function OnboardingPage() {
               <div className="w-10 h-10 rounded-full bg-[#1DE9B6] flex items-center justify-center mb-6">
                 <span className="text-[#0A0A0A] font-bold text-sm tracking-wide">G</span>
               </div>
-              <h1 className="font-serif text-3xl font-bold text-[#F0F0F0] leading-tight mb-2">
+              <h1 className=" text-3xl font-bold text-[#F0F0F0] leading-tight mb-2">
                 ¿Cómo te llaman?
               </h1>
               <p className="text-sm text-[#666666]">Elige tu nombre y usuario en GooALS</p>
@@ -359,10 +359,10 @@ export default function OnboardingPage() {
         <div style={screenStyle}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 32 }}>
             <div>
-              <h1 className="font-serif text-3xl font-bold text-[#F0F0F0] leading-tight mb-5">
+              <h1 className=" text-3xl font-bold text-[#F0F0F0] leading-tight mb-5">
                 Hola, {nombre}.
               </h1>
-              <p style={{ fontFamily: 'var(--font-playfair), Georgia, serif', color: '#999999', fontSize: 16, lineHeight: 1.7, textAlign: 'center' }}>
+              <p style={{ fontFamily: 'var(--font-inter), Inter, system-ui, sans-serif', color: '#999999', fontSize: 16, lineHeight: 1.7, textAlign: 'center' }}>
                 Las redes están llenas de vidas perfectas.<br />
                 GooALS es para los que prefieren vivirlas.
               </p>
@@ -391,7 +391,7 @@ export default function OnboardingPage() {
         <div style={screenStyle}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 20 }}>
             <div>
-              <h2 className="font-serif text-2xl font-bold text-[#F0F0F0] leading-tight mb-1">
+              <h2 className=" text-2xl font-bold text-[#F0F0F0] leading-tight mb-1">
                 ¿Qué quieres vivir?
               </h2>
               <p className="text-sm text-[#666666]">Elige lo que te mueve.</p>
@@ -433,7 +433,7 @@ export default function OnboardingPage() {
         <div style={screenStyle}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 24 }}>
             <div>
-              <h2 className="font-serif text-2xl font-bold text-[#F0F0F0] leading-tight mb-1">
+              <h2 className=" text-2xl font-bold text-[#F0F0F0] leading-tight mb-1">
                 ¿Con quién mejor?
               </h2>
               <p className="text-sm text-[#666666]">Tus mejores momentos siempre tienen compañía.</p>
@@ -475,7 +475,7 @@ export default function OnboardingPage() {
         <div style={screenStyle}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 16, overflowY: 'auto', paddingTop: '1rem' }}>
             <div style={{ flexShrink: 0 }}>
-              <h2 className="font-serif text-2xl font-bold text-[#F0F0F0] leading-tight mb-1">Tu primer plan.</h2>
+              <h2 className=" text-2xl font-bold text-[#F0F0F0] leading-tight mb-1">Tu primer plan.</h2>
               <p className="text-sm text-[#666666]">Empieza hoy. No el lunes.</p>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flexShrink: 0 }}>

@@ -217,7 +217,7 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
           style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 100px)', paddingBottom: 'max(3rem, env(safe-area-inset-bottom, 0px))' }}
         >
           <p className="text-[10px] uppercase tracking-[0.15em] text-[#1DE9B6] mb-3">Plan pendiente</p>
-          <h2 className="font-serif text-2xl font-bold text-[#F0F0F0] leading-snug mb-4">{plan.titulo}</h2>
+          <h2 className=" text-2xl font-bold text-[#F0F0F0] leading-snug mb-4">{plan.titulo}</h2>
 
           {/* Description */}
           {editandoDesc ? (
