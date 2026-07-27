@@ -27,9 +27,19 @@ type Tab = 'planes' | 'historias' | 'explorar' | 'perfil'
 
 const PLAZO_BADGE: Record<string, { label: string; color: string }> = {
   corto: { label: 'Este mes', color: '#1DE9B6' },
-  medio: { label: 'Este año', color: '#666666' },
-  largo: { label: 'Algún día', color: '#444444' },
+  medio: { label: 'Este año', color: '#888888' },
+  largo: { label: 'Algún día', color: '#555555' },
 }
+
+// Fondo por categoría cuando el plan no tiene foto.
+const CAT_GRADIENT: Record<string, string> = {
+  aventura: 'linear-gradient(135deg, #1a0a00, #3d1f00)',
+  deporte: 'linear-gradient(135deg, #001a0f, #003d1f)',
+  musica: 'linear-gradient(135deg, #0d001a, #220040)',
+  cultura: 'linear-gradient(135deg, #00101a, #002a40)',
+  gastronomia: 'linear-gradient(135deg, #1a1000, #3d2800)',
+}
+const GRADIENT_DEFAULT = 'linear-gradient(135deg, #0a0a0a, #1a1a1a)'
 
 function ProfileAvatar({ profile, size = 48 }: { profile: Profile; size?: number }) {
   const initial = profile.nombre?.[0]?.toUpperCase() ?? '?'
@@ -426,58 +436,93 @@ export default function PerfilPage() {
                 </p>
 
                 {pendientes.map(plan => {
-                  const isShared = plan.pareja_codigo !== profile.id
                   const participantes = participantesPorPlan[plan.id] ?? []
                   const showParticipants = participantes.length > 1
                   const plazo = plan.fecha_plazo ? PLAZO_BADGE[plan.fecha_plazo] : null
+                  const fotoCard = plan.momentos_urls?.[0] || plan.foto_url || null
+                  const gradiente = (plan.categoria && CAT_GRADIENT[plan.categoria]) || GRADIENT_DEFAULT
                   return (
                     <button
                       key={plan.id}
                       onClick={() => setSelectedPlan(plan)}
-                      className="w-full text-left active:opacity-70 transition-opacity"
+                      className="group block w-full text-left"
                       style={{
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
-                        margin: '0 12px', width: 'calc(100% - 24px)',
-                        background: '#0F0F0F',
-                        borderRadius: 8,
-                        borderLeft: '1px solid #2A2A2A',
-                        borderBottom: '1px solid #1A1A1A',
-                        padding: '16px 18px',
+                        position: 'relative',
+                        height: 110,
+                        margin: '0 12px 8px',
+                        width: 'calc(100% - 24px)',
+                        borderRadius: 12,
+                        overflow: 'hidden',
+                        background: fotoCard ? '#0A0A0A' : gradiente,
                       }}
                     >
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{
-                          fontFamily: 'var(--font-playfair), Georgia, serif',
-                          fontSize: 15, fontWeight: 400, color: '#E0E0E0', lineHeight: 1.35,
-                          display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap',
-                        }}>
-                          <span>{plan.titulo}</span>
-                          {plan.publico && (
-                            <Globe size={11} color="#1DE9B6" aria-label="Plan público" style={{ flexShrink: 0 }} />
-                          )}
-                        </p>
-
-                        {plazo && (
-                          <span style={{
-                            display: 'block', marginTop: 5,
-                            fontSize: 8, textTransform: 'uppercase', letterSpacing: '0.12em',
-                            color: plazo.color,
-                          }}>
-                            {plazo.label}
-                          </span>
-                        )}
-
-                        {isShared && (
-                          <p style={{ fontSize: 8, color: '#1DE9B6', textTransform: 'uppercase', letterSpacing: '0.12em', marginTop: 4 }}>
-                            {plan.creado_por}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Punto turquesa: solo si tiene participantes (sustituye al chevron) */}
-                      {showParticipants && (
-                        <span style={{ width: 4, height: 4, borderRadius: '50%', background: '#1DE9B6', flexShrink: 0 }} />
+                      {/* Fondo: foto + overlay, o gradiente por categoría */}
+                      {fotoCard && (
+                        <>
+                          <img
+                            src={fotoCard}
+                            alt=""
+                            loading="lazy"
+                            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                          />
+                          <div className="absolute inset-0 bg-black/[0.65] group-active:bg-black/80 transition-colors" />
+                        </>
                       )}
+
+                      {/* Contenido */}
+                      <div style={{ position: 'absolute', inset: 0, zIndex: 1, padding: 14, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        {/* Fila superior: categoría + globo público */}
+                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                          {plan.categoria ? (
+                            <span style={{ fontSize: 8, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#1DE9B6' }}>
+                              {plan.categoria}
+                            </span>
+                          ) : <span />}
+                          {plan.publico && (
+                            <Globe size={12} color="rgba(29,233,182,0.6)" aria-label="Plan público" style={{ flexShrink: 0 }} />
+                          )}
+                        </div>
+
+                        {/* Título + fecha */}
+                        <div style={{ minWidth: 0 }}>
+                          <p style={{
+                            fontFamily: 'var(--font-playfair), Georgia, serif',
+                            fontSize: 16, fontWeight: 400, color: '#FFFFFF', lineHeight: 1.25,
+                            textShadow: '0 1px 6px rgba(0,0,0,0.5)',
+                            display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                          } as React.CSSProperties}>
+                            {plan.titulo}
+                          </p>
+                          {plazo && (
+                            <span style={{ display: 'block', marginTop: 3, fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.1em', color: plazo.color, textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>
+                              {plazo.label}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Fila inferior: avatares de participantes (abajo derecha) */}
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', minHeight: 20 }}>
+                          {showParticipants && (
+                            <div style={{ display: 'flex' }}>
+                              {participantes.slice(0, 5).map((nombre, i) => (
+                                <div
+                                  key={i}
+                                  style={{
+                                    width: 20, height: 20, borderRadius: '50%',
+                                    background: '#2A2A2A', border: '1.5px solid rgba(10,10,10,0.6)',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    fontSize: 9, color: '#fff', fontWeight: 600,
+                                    marginLeft: i === 0 ? 0 : -6,
+                                    zIndex: participantes.length - i, position: 'relative', flexShrink: 0,
+                                  }}
+                                >
+                                  {nombre[0]?.toUpperCase() ?? '?'}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </button>
                   )
                 })}
