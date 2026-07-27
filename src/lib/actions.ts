@@ -208,7 +208,9 @@ export async function actualizarConfigPlan(
 
     if (error) return { success: false, error: error.message }
 
-    revalidatePath('/perfil')
+    // Sin revalidatePath: se llama desde el PlanWizard y forzar un refresh de
+    // /perfil desmonta el wizard a mitad de flujo. La lista se refresca cuando
+    // el wizard termina, vía el evento 'plan-added'.
     return { success: true }
   } catch (e) {
     return { success: false, error: String(e) }
@@ -406,7 +408,9 @@ export async function inviteUserToPlan(
       },
       { onConflict: 'plan_id,user_id' }
     )
-    revalidatePath('/perfil')
+    // Sin revalidatePath: se invoca desde el PlanWizard al elegir un invitado y
+    // el refresh de /perfil desmontaba el wizard antes de confirmar. La lista se
+    // actualiza al cerrar el wizard, con el evento 'plan-added'.
     return { success: true }
   } catch (e) {
     return { success: false, error: String(e) }
