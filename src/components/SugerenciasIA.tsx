@@ -7,6 +7,18 @@ import type { Profile, Plan } from '@/types/planes'
 
 type Sugerencia = { titulo: string; categoria: string; emoji: string; descripcion?: string }
 
+// Misma paleta que las cards de planes: cada categoría con su color.
+const colorCategoria: Record<string, string> = {
+  aventura: '#FF6B35',
+  deporte: '#4CAF50',
+  musica: '#9C27B0',
+  cultura: '#2196F3',
+  gastronomia: '#FF9800',
+  viajes: '#E91E63',
+  default: '#1DE9B6',
+}
+const colorCat = (categoria: string) => colorCategoria[categoria] ?? colorCategoria.default
+
 // Modal de detalle de una idea (al tocar la card, no el +).
 function SugerenciaDetalle({
   sug, adding, added, onAdd, onClose,
@@ -49,7 +61,7 @@ function SugerenciaDetalle({
             className="mt-3"
             style={{
               fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em',
-              color: '#1DE9B6', background: 'rgba(29,233,182,0.2)', borderRadius: 6, padding: '4px 10px',
+              color: colorCat(sug.categoria), background: colorCat(sug.categoria) + '20', borderRadius: 6, padding: '4px 10px',
             }}
           >
             {sug.categoria}
@@ -294,8 +306,8 @@ export default function SugerenciasIA({ profile, pendientes, historias, onPlanAn
                 <div className="flex items-end justify-between mt-auto pt-3">
                   <span
                     style={{
-                      fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em',
-                      color: '#1DE9B6', background: 'rgba(29,233,182,0.2)',
+                      fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.08em',
+                      color: colorCat(sug.categoria), background: colorCat(sug.categoria) + '20',
                       borderRadius: 6, padding: '3px 7px',
                     }}
                   >
