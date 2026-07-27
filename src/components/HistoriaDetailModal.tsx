@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { X, Calendar, User, Pencil, Trash2, Play, Pause, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { Plan } from '@/types/planes'
 import { updateHistoriaDescripcion, revertirHistoria } from '@/lib/actions'
-import ShareStoryImage from './ShareStoryImage'
+import GenerarGIF from './GenerarGIF'
 
 type Props = {
   plan: Plan
@@ -212,7 +212,7 @@ export default function HistoriaDetailModal({ plan, onClose, isOwner, onUpdate }
 
           {!editing && (
             <div className="mb-6">
-              <ShareStoryImage plan={plan} descripcion={descripcion} />
+              <GenerarGIF plan={plan} descripcion={descripcion} />
             </div>
           )}
 

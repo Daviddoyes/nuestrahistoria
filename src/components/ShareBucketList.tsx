@@ -125,7 +125,7 @@ export default function ShareBucketList({ planes, nombre, username, fotoPerfil, 
             letterSpacing: '0.28em', color: '#1DE9B6', textTransform: 'uppercase',
             margin: 0,
           }}>
-            GooALS.APP
+            GooALS.app
           </p>
         </div>
       </div>

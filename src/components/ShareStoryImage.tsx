@@ -224,7 +224,7 @@ export default function ShareStoryImage({ plan, descripcion, compact }: Props) {
             zIndex: 2,
           } as React.CSSProperties}
         >
-          GooALS.APP
+          GooALS.app
         </div>
       </div>
 
