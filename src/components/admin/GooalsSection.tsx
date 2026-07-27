@@ -10,7 +10,7 @@ const DIFICULTADES = ['facil', 'medio', 'dificil'] as const
 
 const CAT_COLOR: Record<string, string> = {
   viajes: '#3B82F6', deporte: '#10B981', gastronomia: '#F59E0B',
-  cultura: '#8B5CF6', aventura: '#1DE9B6', musica: '#EC4899',
+  cultura: '#8B5CF6', aventura: '#FF6B35', musica: '#EC4899',
 }
 
 type GooalRow = Gooal & { num_lugares: number }
