@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { Sparkles, Plus, Check, X } from 'lucide-react'
 import { crearPlanDesdeSugerencia } from '@/lib/actions'
+import PlanWizard from './PlanWizard'
 import type { Profile, Plan } from '@/types/planes'
 
 type Sugerencia = { titulo: string; categoria: string; emoji: string; descripcion?: string }
@@ -153,6 +154,7 @@ export default function SugerenciasIA({ profile, pendientes, historias, onPlanAn
   const [anadidos, setAnadidos] = useState<string[]>([])
   const [addError, setAddError] = useState('')
   const [detalle, setDetalle] = useState<Sugerencia | null>(null)
+  const [planWizard, setPlanWizard] = useState<{ id: string; titulo: string } | null>(null)
   const [usadas, setUsadas] = useState(0)
 
   useEffect(() => { setUsadas(generacionesRecientes().length) }, [])
@@ -210,6 +212,10 @@ export default function SugerenciasIA({ profile, pendientes, historias, onPlanAn
       if (!result.success) throw new Error(result.error || 'No se pudo añadir')
       setAnadidos(prev => [...prev, sug.titulo])
       onPlanAnadido()
+      if (result.planId) {
+        setDetalle(null)
+        setPlanWizard({ id: result.planId, titulo: sug.titulo })
+      }
       // ✓ durante 2 s y vuelve al estado normal.
       setTimeout(() => setAnadidos(prev => prev.filter(t => t !== sug.titulo)), 2000)
     } catch (err) {
@@ -352,6 +358,14 @@ export default function SugerenciasIA({ profile, pendientes, historias, onPlanAn
           added={anadidos.includes(detalle.titulo)}
           onAdd={() => handleAnadir(detalle)}
           onClose={() => setDetalle(null)}
+        />
+      )}
+
+      {planWizard && (
+        <PlanWizard
+          planId={planWizard.id}
+          planTitulo={planWizard.titulo}
+          onClose={() => setPlanWizard(null)}
         />
       )}
     </div>

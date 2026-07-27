@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import { crearPlanDesdeSugerencia } from '@/lib/actions'
 import { distanciaKm, CAT_COLOR, acortarLugar } from '@/lib/geo'
 import GooalDetailModal from './GooalDetailModal'
+import PlanWizard from './PlanWizard'
 import type { Gooal, LugarConGooal } from '@/types/planes'
 
 type Props = {
@@ -22,6 +23,7 @@ export default function CercaDeTi({ onPlanAnadido }: Props) {
   const [anadidos, setAnadidos] = useState<string[]>([])
   const [addError, setAddError] = useState('')
   const [detalle, setDetalle] = useState<Gooal | null>(null)
+  const [planWizard, setPlanWizard] = useState<{ id: string; titulo: string } | null>(null)
 
   // Pide ubicación al montar. Denegada → null y no se muestra nada.
   useEffect(() => {
@@ -72,6 +74,7 @@ export default function CercaDeTi({ onPlanAnadido }: Props) {
       setAnadidos(prev => [...prev, gooal.id])
       onPlanAnadido()
       setTimeout(() => setAnadidos(prev => prev.filter(id => id !== gooal.id)), 2000)
+      if (result.planId) setPlanWizard({ id: result.planId, titulo: gooal.titulo })
     } catch (err) {
       console.error('[añadir plan]', err)
       setAddError('No se pudo añadir. Inténtalo otra vez.')
@@ -167,6 +170,14 @@ export default function CercaDeTi({ onPlanAnadido }: Props) {
           userLocation={ubicacion}
           onClose={() => setDetalle(null)}
           onAdded={onPlanAnadido}
+        />
+      )}
+
+      {planWizard && (
+        <PlanWizard
+          planId={planWizard.id}
+          planTitulo={planWizard.titulo}
+          onClose={() => setPlanWizard(null)}
         />
       )}
     </div>
