@@ -102,6 +102,17 @@ export default function CompartirHistoria({ plan, descripcion }: Props) {
     return <ShareStoryImage plan={plan} descripcion={descripcion ?? ''} />
   }
 
+  const descargar = (blob: Blob) => {
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'gooals-historia.png'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+
   const generar = async () => {
     setLoading(true)
     setError('')
@@ -133,15 +144,16 @@ export default function CompartirHistoria({ plan, descripcion }: Props) {
       })
 
       const file = new File([blob], 'gooals-historia.png', { type: 'image/png' })
-      if (navigator.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file], title: plan.titulo })
-      } else {
-        const u = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = u
-        a.download = 'gooals-historia.png'
-        a.click()
-        URL.revokeObjectURL(u)
+      // navigator.share puede fallar por contexto/permiso o si el usuario cancela.
+      // Ante cualquier fallo, descargamos en silencio (sin error visible).
+      try {
+        if (navigator.canShare?.({ files: [file] })) {
+          await navigator.share({ files: [file], title: plan.titulo })
+        } else {
+          descargar(blob)
+        }
+      } catch {
+        descargar(blob)
       }
       console.log('[compartir] listo')
     } catch (err) {
