@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { Camera, LogOut, Plus, Copy, Check, X, ListTodo, ChevronRight, Globe } from 'lucide-react'
+import { Camera, LogOut, Plus, Copy, Check, X, ListTodo, Globe } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import {
   getMyData,
@@ -25,10 +25,10 @@ import type { Plan, Profile, InvitacionPendiente, SolicitudPendiente, Notificaci
 
 type Tab = 'planes' | 'historias' | 'explorar' | 'perfil'
 
-const PLAZO_BADGE: Record<string, { label: string; color: string; bg: string }> = {
-  corto: { label: 'Este mes', color: '#4CAF50', bg: 'rgba(76,175,80,0.18)' },
-  medio: { label: 'Este año', color: '#2196F3', bg: 'rgba(33,150,243,0.18)' },
-  largo: { label: 'Algún día', color: '#999999', bg: 'rgba(102,102,102,0.22)' },
+const PLAZO_BADGE: Record<string, { label: string; color: string }> = {
+  corto: { label: 'Este mes', color: '#1DE9B6' },
+  medio: { label: 'Este año', color: '#666666' },
+  largo: { label: 'Algún día', color: '#444444' },
 }
 
 function ProfileAvatar({ profile, size = 48 }: { profile: Profile; size?: number }) {
@@ -419,70 +419,65 @@ export default function PerfilPage() {
                 <p style={{ fontSize: 13, color: '#333333', textAlign: 'center' }}>¿A qué esperas?</p>
               </div>
             ) : (
-              <div style={{ paddingTop: 6, paddingBottom: 6 }}>
+              <div style={{ paddingTop: 10 }}>
+                {/* Header de sección */}
+                <p style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.2em', color: '#444444', padding: '0 18px', marginBottom: 8 }}>
+                  Planes
+                </p>
+
                 {pendientes.map(plan => {
                   const isShared = plan.pareja_codigo !== profile.id
                   const participantes = participantesPorPlan[plan.id] ?? []
                   const showParticipants = participantes.length > 1
+                  const plazo = plan.fecha_plazo ? PLAZO_BADGE[plan.fecha_plazo] : null
                   return (
                     <button
                       key={plan.id}
                       onClick={() => setSelectedPlan(plan)}
                       className="w-full text-left active:opacity-70 transition-opacity"
                       style={{
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        margin: '6px 12px', width: 'calc(100% - 24px)',
-                        background: '#141414', borderRadius: 12,
-                        borderLeft: '3px solid #1DE9B6',
-                        padding: '16px 16px 16px 20px',
-                        minHeight: 52,
+                        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
+                        margin: '0 12px', width: 'calc(100% - 24px)',
+                        background: '#0F0F0F',
+                        borderRadius: 8,
+                        borderLeft: '1px solid #2A2A2A',
+                        borderBottom: '1px solid #1A1A1A',
+                        padding: '16px 18px',
                       }}
                     >
-                      <div style={{ flex: 1, minWidth: 0, paddingRight: 8 }}>
-                        <p style={{ fontSize: 15, color: '#F0F0F0', fontWeight: 500, lineHeight: 1.4, display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{
+                          fontFamily: 'var(--font-playfair), Georgia, serif',
+                          fontSize: 15, fontWeight: 400, color: '#E0E0E0', lineHeight: 1.35,
+                          display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap',
+                        }}>
                           <span>{plan.titulo}</span>
                           {plan.publico && (
-                            <Globe size={12} color="#1DE9B6" aria-label="Plan público" style={{ flexShrink: 0 }} />
+                            <Globe size={11} color="#1DE9B6" aria-label="Plan público" style={{ flexShrink: 0 }} />
                           )}
                         </p>
-                        {plan.fecha_plazo && PLAZO_BADGE[plan.fecha_plazo] && (
+
+                        {plazo && (
                           <span style={{
-                            display: 'inline-block', marginTop: 5,
-                            fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em',
-                            padding: '2px 7px', borderRadius: 6,
-                            color: PLAZO_BADGE[plan.fecha_plazo].color,
-                            background: PLAZO_BADGE[plan.fecha_plazo].bg,
+                            display: 'block', marginTop: 5,
+                            fontSize: 8, textTransform: 'uppercase', letterSpacing: '0.12em',
+                            color: plazo.color,
                           }}>
-                            {PLAZO_BADGE[plan.fecha_plazo].label}
+                            {plazo.label}
                           </span>
                         )}
+
                         {isShared && (
-                          <p style={{ fontSize: 9, color: '#1DE9B6', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: 3 }}>
+                          <p style={{ fontSize: 8, color: '#1DE9B6', textTransform: 'uppercase', letterSpacing: '0.12em', marginTop: 4 }}>
                             {plan.creado_por}
                           </p>
                         )}
-                        {showParticipants && (
-                          <div style={{ display: 'flex', marginTop: 6 }}>
-                            {participantes.slice(0, 5).map((nombre, i) => (
-                              <div
-                                key={i}
-                                style={{
-                                  width: 20, height: 20, borderRadius: '50%',
-                                  background: '#2A2A2A', border: '1.5px solid #141414',
-                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                  fontSize: 9, color: '#fff', fontWeight: 600,
-                                  marginLeft: i === 0 ? 0 : -6,
-                                  zIndex: participantes.length - i,
-                                  position: 'relative', flexShrink: 0,
-                                }}
-                              >
-                                {nombre[0]?.toUpperCase() ?? '?'}
-                              </div>
-                            ))}
-                          </div>
-                        )}
                       </div>
-                      <ChevronRight style={{ width: 16, height: 16, color: '#444444', flexShrink: 0 }} />
+
+                      {/* Punto turquesa: solo si tiene participantes (sustituye al chevron) */}
+                      {showParticipants && (
+                        <span style={{ width: 4, height: 4, borderRadius: '50%', background: '#1DE9B6', flexShrink: 0 }} />
+                      )}
                     </button>
                   )
                 })}
@@ -633,20 +628,22 @@ export default function PerfilPage() {
         <button
           onClick={() => setShowNuevoPlan(true)}
           aria-label="Añadir plan"
+          className="active:opacity-100 transition-opacity"
           style={{
             position: 'fixed',
             right: 20,
             bottom: 'calc(56px + env(safe-area-inset-bottom, 0px) + 20px)',
-            width: 56, height: 56,
+            width: 48, height: 48,
             borderRadius: '50%',
             background: '#1DE9B6',
             color: '#0A0A0A',
+            opacity: 0.9,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: '0 4px 20px rgba(29,233,182,0.4)',
+            boxShadow: '0 2px 12px rgba(29,233,182,0.2)',
             zIndex: 10,
           }}
         >
-          <Plus style={{ width: 24, height: 24 }} strokeWidth={2.5} />
+          <Plus style={{ width: 22, height: 22 }} strokeWidth={2.5} />
         </button>
       )}
 
