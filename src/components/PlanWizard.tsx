@@ -116,7 +116,6 @@ export default function PlanWizard({ planId, planTitulo, onClose }: Props) {
   return (
     <div
       className="fixed inset-0 z-[80] flex items-end justify-center bg-black/60 backdrop-blur-sm"
-      onPointerDown={e => e.target === e.currentTarget && finalizar()}
     >
       <div
         className="w-full modal-slide-up"

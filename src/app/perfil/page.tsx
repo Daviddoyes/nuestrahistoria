@@ -227,8 +227,9 @@ export default function PerfilPage() {
   const handleAddPlan = async (titulo: string, descripcion: string, invitadoIds: string[]): Promise<string | null> => {
     const result = await addPlan(titulo, descripcion.trim() || null, 'todos', invitadoIds)
     if (!result.success) throw new Error(result.error ?? 'Error al añadir el plan')
-    await fetchData()
-    // El plan queda creado; NuevoPlanModal muestra el wizard y cierra al terminar.
+    // No refrescamos aquí: el plan ya está en BD y NuevoPlanModal muestra el
+    // wizard de inmediato. La lista se refresca al terminar el wizard, cuando
+    // emite el evento 'plan-added' (ver listener más abajo).
     return result.planId ?? null
   }
 
