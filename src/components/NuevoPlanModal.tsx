@@ -84,7 +84,7 @@ export default function NuevoPlanModal({ currentUserId, onClose, onSubmit }: Pro
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm"
-      onClick={e => e.target === e.currentTarget && onClose()}
+      onPointerDown={e => e.target === e.currentTarget && onClose()}
     >
       <div className="w-full bg-[#141414] rounded-t-2xl shadow-2xl overflow-hidden max-h-[92dvh] flex flex-col">
         <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
@@ -244,7 +244,10 @@ export default function NuevoPlanModal({ currentUserId, onClose, onSubmit }: Pro
         <PlanWizard
           planId={planCreado.id}
           planTitulo={planCreado.titulo}
-          onClose={onClose}
+          onClose={() => {
+            setPlanCreado(null)
+            onClose()
+          }}
         />
       )}
     </div>

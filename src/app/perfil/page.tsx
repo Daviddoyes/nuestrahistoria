@@ -157,6 +157,14 @@ export default function PerfilPage() {
 
   useEffect(() => { fetchData() }, [fetchData])
 
+  // El PlanWizard emite 'plan-added' al terminar; refrescamos la lista para
+  // que el plan recién creado (y sus invitados) aparezcan sin recargar.
+  useEffect(() => {
+    const handler = () => fetchData()
+    window.addEventListener('plan-added', handler)
+    return () => window.removeEventListener('plan-added', handler)
+  }, [fetchData])
+
   const pendientes = planes
     .filter(p => p.estado === 'pendiente')
     .sort((a, b) => a.orden - b.orden || a.created_at.localeCompare(b.created_at))

@@ -106,10 +106,17 @@ export default function PlanWizard({ planId, planTitulo, onClose }: Props) {
     })
   }
 
+  // Cierre "de verdad" del wizard: avisa a la lista de planes para que se
+  // refresque (el plan ya existe en BD, solo faltaba reflejarlo en la UI).
+  const finalizar = () => {
+    window.dispatchEvent(new Event('plan-added'))
+    onClose()
+  }
+
   return (
     <div
       className="fixed inset-0 z-[80] flex items-end justify-center bg-black/60 backdrop-blur-sm"
-      onClick={e => e.target === e.currentTarget && onClose()}
+      onPointerDown={e => e.target === e.currentTarget && finalizar()}
     >
       <div
         className="w-full modal-slide-up"
@@ -123,7 +130,7 @@ export default function PlanWizard({ planId, planTitulo, onClose }: Props) {
             ))}
           </div>
           <button
-            onClick={onClose}
+            onClick={finalizar}
             aria-label="Cerrar"
             className="text-[#444444] active:text-[#F0F0F0] w-9 h-9 flex items-center justify-center rounded-lg active:bg-[#1A1A1A]"
           >
@@ -164,7 +171,7 @@ export default function PlanWizard({ planId, planTitulo, onClose }: Props) {
                 <>
                   <div className="space-y-3">
                     <button
-                      onClick={onClose}
+                      onClick={finalizar}
                       className="w-full flex items-center gap-3 p-4 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] active:bg-[#222222] transition-colors text-left min-h-[44px]"
                     >
                       <UserIcon className="w-5 h-5 text-[#1DE9B6] flex-shrink-0" />
@@ -187,7 +194,7 @@ export default function PlanWizard({ planId, planTitulo, onClose }: Props) {
                     </button>
                   </div>
 
-                  <button onClick={onClose} className="w-full text-center text-[13px] text-[#666666] active:text-[#888888] mt-5 min-h-[44px]">
+                  <button onClick={finalizar} className="w-full text-center text-[13px] text-[#666666] active:text-[#888888] mt-5 min-h-[44px]">
                     Ahora no
                   </button>
                 </>
@@ -244,7 +251,7 @@ export default function PlanWizard({ planId, planTitulo, onClose }: Props) {
                   </div>
 
                   <button
-                    onClick={onClose}
+                    onClick={finalizar}
                     className="w-full mt-5 py-3.5 rounded-xl bg-[#1DE9B6] active:bg-[#00BFA5] text-[#0A0A0A] text-sm font-semibold min-h-[44px]"
                   >
                     Listo
@@ -266,7 +273,7 @@ export default function PlanWizard({ planId, planTitulo, onClose }: Props) {
                     {linkCopiado ? '¡Link copiado!' : 'Copiar link del plan'}
                   </button>
                   <button
-                    onClick={onClose}
+                    onClick={finalizar}
                     className="w-full mt-3 py-3.5 rounded-xl bg-[#1DE9B6] active:bg-[#00BFA5] text-[#0A0A0A] text-sm font-semibold min-h-[44px]"
                   >
                     Listo
