@@ -31,7 +31,7 @@ for (const [k, v] of Object.entries({ GOOGLE_PLACES_API_KEY, ANTHROPIC_API_KEY, 
 const MIN_RATING = 4.0
 const MIN_RESENAS = 50
 // Top-N lugares por búsqueda+ciudad. Sin esto serían miles de llamadas a Claude.
-const MAX_POR_BUSQUEDA = 5
+const MAX_POR_BUSQUEDA = 10
 // Pausa entre llamadas a Claude, para no saturar la API.
 const PAUSA_MS = 400
 
