@@ -35,8 +35,8 @@ const CATEGORIAS: { label: string; key: string | null }[] = [
   { label: 'Viajes', key: 'viajes' },
 ]
 
-const RADIO_KM = 300
-const MAX_GOOALS = 30
+const RADIO_KM = 2000
+const MAX_GOOALS = 100
 
 export default function CercaDeTi({ onPlanAdded }: Props) {
   const supabase = useMemo(() => createClient(), [])
@@ -70,6 +70,7 @@ export default function CercaDeTi({ onPlanAdded }: Props) {
         .select('*, gooals(*)')
         .not('latitud', 'is', null)
         .not('longitud', 'is', null)
+        .limit(2000)
 
       const conDistancia = ((data ?? []) as LugarConGooal[])
         .filter(l => l.gooals && l.latitud != null && l.longitud != null)
