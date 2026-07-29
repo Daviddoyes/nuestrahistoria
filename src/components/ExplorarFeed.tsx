@@ -29,7 +29,15 @@ export default function ExplorarFeed({ profile, pendientes, historias, onPlanCop
         onPlanAnadido={onPlanCopiado}
       />
 
-      <CercaDeTi onPlanAnadido={onPlanCopiado} />
+      <div style={{ marginTop: 24 }}>
+        <p style={{
+          fontSize: 10, color: '#666666', letterSpacing: '0.15em',
+          textTransform: 'uppercase', padding: '0 16px', marginBottom: 12,
+        }}>
+          Cerca de ti
+        </p>
+        <CercaDeTi onPlanAdded={onPlanCopiado} />
+      </div>
     </div>
   )
 }
