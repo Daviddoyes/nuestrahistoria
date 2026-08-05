@@ -55,6 +55,7 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
 
   const [participantes, setParticipantes] = useState<Participante[]>([])
   const [confirming, setConfirming] = useState(false)
+  const [confirmandoCompletar, setConfirmandoCompletar] = useState(false)
   const [deletingLoading, setDeletingLoading] = useState(false)
 
   const [busqueda, setBusqueda] = useState('')
@@ -461,7 +462,7 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
           {/* Actions */}
           <div className="space-y-3">
             <button
-              onClick={onCompletar}
+              onClick={() => setConfirmandoCompletar(true)}
               className="w-full py-4 bg-[#1DE9B6] active:bg-[#00BFA5] text-[#0A0A0A] rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors"
             >
               <Check className="w-4 h-4" />
@@ -511,6 +512,43 @@ export default function PlanDetailModal({ plan, currentUserId, onClose, onComple
           </div>
         </div>
       </div>
+
+      {/* Confirmación antes de completar — por encima del modal de detalle (z-50),
+          de su botón de cerrar (z-60) y del lightbox de momentos (z-70). */}
+      {confirmandoCompletar && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="confirmar-completar-titulo"
+          className="fixed inset-0 z-[80] flex items-center justify-center px-6 bg-black/70 backdrop-blur-sm tab-fade-in"
+          onClick={e => e.target === e.currentTarget && setConfirmandoCompletar(false)}
+        >
+          <div className="w-full max-w-sm rounded-2xl border border-[#2A2A2A] bg-[#111111] p-5">
+            <p id="confirmar-completar-titulo" className="text-base font-semibold text-[#F0F0F0] text-center">
+              ¿Seguro que quieres completar este plan?
+            </p>
+            <p className="text-[13px] text-[#666666] text-center leading-relaxed mt-2">
+              Pasará a Historias y no podrás añadir más fotos del proceso.
+            </p>
+            <div className="flex gap-3 mt-5">
+              <button
+                type="button"
+                onClick={() => setConfirmandoCompletar(false)}
+                className="flex-1 py-3 rounded-xl border border-[#2A2A2A] text-[#666666] active:bg-[#1A1A1A] text-sm min-h-[44px] transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={() => { setConfirmandoCompletar(false); onCompletar() }}
+                className="flex-1 py-3 rounded-xl bg-[#1DE9B6] active:bg-[#00BFA5] text-[#0A0A0A] text-sm font-semibold min-h-[44px] transition-colors"
+              >
+                Sí, completar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }
