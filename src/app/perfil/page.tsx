@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { Camera, LogOut, Plus, Copy, Check, X, ListTodo, Globe } from 'lucide-react'
+import { Camera, LogOut, Plus, Copy, Check, X, ListTodo, Globe, UserPlus } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import {
   getMyData,
@@ -19,6 +19,7 @@ import PlanDetailModal from '@/components/PlanDetailModal'
 import HistoriaDetailModal from '@/components/HistoriaDetailModal'
 import CompletarPlanModal from '@/components/CompletarPlanModal'
 import ShareBucketList from '@/components/ShareBucketList'
+import InvitarAmigoSheet from '@/components/InvitarAmigoSheet'
 import BottomNav from '@/components/BottomNav'
 import ExplorarFeed from '@/components/ExplorarFeed'
 import type { Plan, Profile, InvitacionPendiente, SolicitudPendiente, Notificacion } from '@/types/planes'
@@ -78,6 +79,7 @@ export default function PerfilPage() {
   const [participantesPorPlan, setParticipantesPorPlan] = useState<Record<string, string[]>>({})
 
   const [showNuevoPlan, setShowNuevoPlan] = useState(false)
+  const [showInvitarAmigo, setShowInvitarAmigo] = useState(false)
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null)
   const [planToComplete, setPlanToComplete] = useState<Plan | null>(null)
   const [selectedHistoria, setSelectedHistoria] = useState<Plan | null>(null)
@@ -670,6 +672,17 @@ export default function PerfilPage() {
                 />
               </div>
 
+              {/* Invitar a un amigo */}
+              <div className="mt-4 w-full flex justify-center" style={{ maxWidth: 300 }}>
+                <button
+                  onClick={() => setShowInvitarAmigo(true)}
+                  className="flex items-center gap-2 py-3 text-[13px] text-[#1DE9B6] active:text-[#00BFA5] transition-colors min-h-[44px]"
+                >
+                  <UserPlus className="w-3.5 h-3.5" />
+                  Invitar a un amigo
+                </button>
+              </div>
+
               {/* Logout discreto */}
               <button
                 onClick={handleLogout}
@@ -716,6 +729,10 @@ export default function PerfilPage() {
           onClose={() => setShowNuevoPlan(false)}
           onSubmit={handleAddPlan}
         />
+      )}
+
+      {showInvitarAmigo && (
+        <InvitarAmigoSheet onClose={() => setShowInvitarAmigo(false)} />
       )}
 
       {selectedPlan && (

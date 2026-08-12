@@ -11,6 +11,7 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith('/pricing') ||
     pathname.startsWith('/admin') ||
     pathname.startsWith('/plan') ||
+    pathname.startsWith('/invite') ||
     pathname.startsWith('/api/')
 
   if (isPublic) {
