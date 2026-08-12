@@ -12,6 +12,7 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith('/admin') ||
     pathname.startsWith('/plan') ||
     pathname.startsWith('/invite') ||
+    pathname.startsWith('/download') ||
     pathname.startsWith('/api/')
 
   if (isPublic) {
