@@ -1,34 +1,40 @@
 'use client'
 
-import { ListTodo, BookImage, Compass, UserCircle } from 'lucide-react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { Newspaper, Compass, Trophy, User } from 'lucide-react'
 
-type Tab = 'planes' | 'historias' | 'explorar' | 'perfil'
+export type Tab = 'muro' | 'explorar' | 'mis-gooals' | 'perfil'
+
+const TABS: { id: Tab; href: string; label: string; Icon: typeof Newspaper }[] = [
+  { id: 'muro', href: '/muro', label: 'Muro', Icon: Newspaper },
+  { id: 'explorar', href: '/explorar', label: 'Explorar', Icon: Compass },
+  { id: 'mis-gooals', href: '/mis-gooals', label: 'Mis Gooals', Icon: Trophy },
+  { id: 'perfil', href: '/perfil', label: 'Perfil', Icon: User },
+]
 
 type Props = {
-  activeTab: Tab
-  onTabChange: (tab: Tab) => void
+  /** Pestaña activa. Si no se pasa, se deduce de la ruta. */
+  activeTab?: Tab
   fotoPerfil?: string | null
 }
 
-const TABS: { id: Tab; label: string; Icon: typeof ListTodo }[] = [
-  { id: 'planes', label: 'Planes', Icon: ListTodo },
-  { id: 'historias', label: 'Historias', Icon: BookImage },
-  { id: 'explorar', label: 'Explorar', Icon: Compass },
-  { id: 'perfil', label: 'Perfil', Icon: UserCircle },
-]
+export default function BottomNav({ activeTab, fotoPerfil }: Props) {
+  const pathname = usePathname()
+  const actual = activeTab ?? TABS.find(t => pathname.startsWith(t.href))?.id ?? 'muro'
 
-export default function BottomNav({ activeTab, onTabChange, fotoPerfil }: Props) {
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-20 bg-[#0A0A0A] border-t border-[#1A1A1A] flex"
       style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
     >
-      {TABS.map(({ id, label, Icon }) => {
-        const activo = activeTab === id
+      {TABS.map(({ id, href, label, Icon }) => {
+        const activo = actual === id
         return (
-          <button
+          <Link
             key={id}
-            onClick={() => onTabChange(id)}
+            href={href}
+            aria-current={activo ? 'page' : undefined}
             style={{ height: 56 }}
             className={`flex-1 flex flex-col items-center justify-center gap-1 active:bg-[#141414] transition-colors ${
               activo ? 'text-[#1DE9B6]' : 'text-[#444444]'
@@ -46,8 +52,10 @@ export default function BottomNav({ activeTab, onTabChange, fotoPerfil }: Props)
             ) : (
               <Icon className="w-6 h-6" strokeWidth={activo ? 2 : 1.5} />
             )}
-            <span className="text-[10px] uppercase tracking-wider leading-none">{label}</span>
-          </button>
+            <span className="text-[10px] uppercase tracking-wider leading-none whitespace-nowrap">
+              {label}
+            </span>
+          </Link>
         )
       })}
     </nav>

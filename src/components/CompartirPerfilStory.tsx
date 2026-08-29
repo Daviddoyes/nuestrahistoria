@@ -1,0 +1,158 @@
+'use client'
+
+import { useState } from 'react'
+import { Share2 } from 'lucide-react'
+import {
+  STORY_W, STORY_H, ACENTO, aBase64, cargarImg, drawCover, wrapText,
+  rectRedondeado, compartirCanvas,
+} from '@/lib/story-canvas'
+import { calcularNivel, progresoNivel } from '@/lib/niveles'
+import { CATEGORIA_EMOJI, CATEGORIA_LABEL } from '@/lib/gooals'
+import type { PerfilGamificado } from '@/types/gooals'
+
+type Props = { perfil: PerfilGamificado }
+
+/** Imagen 1080×1920 con las stats del perfil, lista para Stories. */
+export default function CompartirPerfilStory({ perfil }: Props) {
+  const [generando, setGenerando] = useState(false)
+  const [error, setError] = useState('')
+
+  const generar = async () => {
+    setGenerando(true)
+    setError('')
+    try {
+      const canvas = document.createElement('canvas')
+      canvas.width = STORY_W
+      canvas.height = STORY_H
+      const ctx = canvas.getContext('2d')!
+
+      ctx.fillStyle = '#0A0A0A'
+      ctx.fillRect(0, 0, STORY_W, STORY_H)
+
+      const nivel = calcularNivel(perfil.puntos)
+      const progreso = progresoNivel(perfil.puntos)
+
+      // Avatar circular centrado.
+      const avatarR = 110
+      const avatarCX = STORY_W / 2
+      const avatarCY = 380
+      if (perfil.usuario.foto_perfil_url) {
+        const img = await cargarImg(await aBase64(perfil.usuario.foto_perfil_url))
+        ctx.save()
+        ctx.beginPath()
+        ctx.arc(avatarCX, avatarCY, avatarR, 0, Math.PI * 2)
+        ctx.clip()
+        drawCover(ctx, img, avatarCX - avatarR, avatarCY - avatarR, avatarR * 2, avatarR * 2)
+        ctx.restore()
+      } else {
+        ctx.fillStyle = ACENTO
+        ctx.beginPath()
+        ctx.arc(avatarCX, avatarCY, avatarR, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.fillStyle = '#0A0A0A'
+        ctx.font = '700 96px Inter, system-ui, sans-serif'
+        ctx.textAlign = 'center'
+        ctx.textBaseline = 'middle'
+        ctx.fillText(perfil.usuario.nombre[0]?.toUpperCase() ?? '?', avatarCX, avatarCY + 4)
+        ctx.textBaseline = 'alphabetic'
+      }
+
+      ctx.strokeStyle = nivel.color
+      ctx.lineWidth = 8
+      ctx.beginPath()
+      ctx.arc(avatarCX, avatarCY, avatarR + 4, 0, Math.PI * 2)
+      ctx.stroke()
+
+      ctx.textAlign = 'center'
+      ctx.fillStyle = '#F0F0F0'
+      ctx.font = '700 60px Inter, system-ui, sans-serif'
+      const nombreLineas = wrapText(ctx, perfil.usuario.nombre, STORY_W - 160, 2)
+      let ny = 570
+      for (const l of nombreLineas) { ctx.fillText(l, STORY_W / 2, ny); ny += 68 }
+
+      if (perfil.usuario.username) {
+        ctx.fillStyle = '#666666'
+        ctx.font = '400 36px Inter, system-ui, sans-serif'
+        ctx.fillText(`@${perfil.usuario.username}`, STORY_W / 2, ny + 6)
+      }
+
+      // Puntos y nivel.
+      ctx.fillStyle = ACENTO
+      ctx.font = '700 130px Inter, system-ui, sans-serif'
+      ctx.fillText(`${perfil.puntos} pts`, STORY_W / 2, ny + 170)
+
+      ctx.fillStyle = nivel.color
+      ctx.font = '600 40px Inter, system-ui, sans-serif'
+      ctx.fillText(`Nivel: ${nivel.nombre}`, STORY_W / 2, ny + 234)
+
+      // Barra de progreso hacia el siguiente nivel.
+      const barraX = 140
+      const barraY = ny + 290
+      const barraW = STORY_W - 280
+      ctx.fillStyle = '#1A1A1A'
+      rectRedondeado(ctx, barraX, barraY, barraW, 22, 11)
+      ctx.fill()
+      ctx.fillStyle = ACENTO
+      const anchoProgreso = Math.max(22, Math.round((barraW * progreso.porcentaje) / 100))
+      rectRedondeado(ctx, barraX, barraY, anchoProgreso, 22, 11)
+      ctx.fill()
+
+      if (progreso.siguiente) {
+        ctx.fillStyle = '#888888'
+        ctx.font = '400 30px Inter, system-ui, sans-serif'
+        ctx.fillText(
+          `${perfil.puntos}/${progreso.siguiente.minPuntos} para ${progreso.siguiente.nombre}`,
+          STORY_W / 2, barraY + 66
+        )
+      }
+
+      // Categorías con algo conseguido.
+      const conProgreso = perfil.stats.filter(s => s.completados > 0).slice(0, 6)
+      let cy = barraY + 160
+      ctx.font = '500 34px Inter, system-ui, sans-serif'
+      for (const s of conProgreso) {
+        ctx.fillStyle = '#AAAAAA'
+        ctx.fillText(
+          `${CATEGORIA_EMOJI[s.categoria]}  ${CATEGORIA_LABEL[s.categoria]} · ${s.porcentaje}%`,
+          STORY_W / 2, cy
+        )
+        cy += 54
+      }
+
+      ctx.fillStyle = '#666666'
+      ctx.font = '400 32px Inter, system-ui, sans-serif'
+      ctx.fillText(
+        `${perfil.seguidores} seguidores · ${perfil.siguiendo} siguiendo`,
+        STORY_W / 2, STORY_H - 220
+      )
+
+      ctx.fillStyle = ACENTO
+      ctx.font = '700 34px Inter, system-ui, sans-serif'
+      ctx.fillText('GooALS.app', STORY_W / 2, STORY_H - 110)
+
+      await compartirCanvas(canvas, 'gooals-perfil.png', perfil.usuario.nombre)
+    } catch (err) {
+      console.error('[compartir perfil]', err)
+      setError('No se pudo generar la imagen.')
+    } finally {
+      setGenerando(false)
+    }
+  }
+
+  return (
+    <>
+      <button
+        onClick={generar}
+        disabled={generando}
+        className="w-full py-3.5 rounded-xl border border-[#2A2A2A] text-[#F0F0F0] active:bg-[#141414] transition-colors text-sm font-medium min-h-[44px] flex items-center justify-center gap-2 disabled:opacity-60"
+      >
+        {generando
+          ? <span className="w-4 h-4 border-2 border-[#1DE9B6] border-t-transparent rounded-full animate-spin" />
+          : <Share2 className="w-4 h-4" />
+        }
+        {generando ? 'Generando...' : 'Compartir perfil'}
+      </button>
+      {error && <p className="text-xs text-[#C97B7B] mt-1.5 text-center">{error}</p>}
+    </>
+  )
+}

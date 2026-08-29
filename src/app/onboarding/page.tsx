@@ -2,8 +2,12 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import { Check, Camera } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
-import type { ConQuien } from '@/types/planes'
+import { getGooalsOnboarding, anadirGooal } from '@/lib/actions'
+import { CATEGORIA_GRADIENTE, DIFICULTAD_META } from '@/lib/gooals'
+import CompletarGooalModal, { type ResultadoCompletado } from '@/components/CompletarGooalModal'
+import type { GooalV2 } from '@/types/gooals'
 
 type InterId = 'viajes' | 'gastronomia' | 'musica' | 'deporte' | 'cultura'
 type CompaniaId = 'pareja' | 'amigos' | 'familia' | 'solo'
@@ -23,73 +27,17 @@ const CON_QUIEN_OPTIONS: { id: CompaniaId; icon: string; label: string }[] = [
   { id: 'solo', icon: '🙋', label: 'Solo/a' },
 ]
 
-const PLANES_SUGERIDOS: Record<InterId, { titulo: string }[]> = {
-  viajes: [
-    { titulo: 'Visitar la Torre Eiffel' },
-    { titulo: 'Visitar la Sagrada Família' },
-    { titulo: 'Visitar el Empire State' },
-    { titulo: 'Visitar el Big Ben' },
-    { titulo: 'Subir al campo base del Everest' },
-    { titulo: 'Hacer surf en Marruecos' },
-    { titulo: 'Hacer surf en Tenerife' },
-    { titulo: 'Ir de fiesta en Ibiza' },
-  ],
-  gastronomia: [
-    { titulo: 'Probar cocina india' },
-    { titulo: 'Probar cocina libanesa' },
-    { titulo: 'Probar cocina tailandesa' },
-  ],
-  musica: [
-    { titulo: 'Asistir a Tomorrowland' },
-    { titulo: 'Ir de fiesta en Ibiza' },
-  ],
-  deporte: [
-    { titulo: 'Saltar de un avión' },
-    { titulo: 'Montar a caballo' },
-    { titulo: 'Hacer una ruta en kayak' },
-    { titulo: 'Pilotar una moto de agua' },
-    { titulo: 'Subir un 3000m' },
-    { titulo: 'Acabar una maratón' },
-    { titulo: 'Practicar ski' },
-    { titulo: 'Practicar kite surf' },
-    { titulo: 'Hacer surf en Marruecos' },
-    { titulo: 'Hacer surf en Tenerife' },
-    { titulo: 'Realizar 1000m a nado' },
-    { titulo: 'Realizar una carrera 10K' },
-    { titulo: 'Participar en un Hyrox' },
-    { titulo: 'Puenting' },
-    { titulo: 'Paintball' },
-    { titulo: 'Karting' },
-    { titulo: 'Conducir un Ferrari' },
-  ],
-  cultura: [
-    { titulo: 'Visitar la Torre Eiffel' },
-    { titulo: 'Visitar la Sagrada Família' },
-    { titulo: 'Visitar el Empire State' },
-    { titulo: 'Visitar el Big Ben' },
-    { titulo: 'Asistir a un retiro espiritual' },
-    { titulo: 'Ayudar a un comedor social' },
-    { titulo: 'Graduarme en la universidad' },
-    { titulo: 'Montar mi propia empresa' },
-    { titulo: 'Comprarme un coche' },
-  ],
+// Las categorías del catálogo v2 que cubre cada interés del onboarding.
+const CATEGORIAS_POR_INTERES: Record<InterId, string[]> = {
+  viajes: ['viajes', 'aventura'],
+  gastronomia: ['gastronomia'],
+  musica: ['musica'],
+  deporte: ['deporte'],
+  cultura: ['cultura'],
 }
 
-function getSugeridos(intereses: InterId[]) {
-  const pool: { titulo: string }[] = []
-  for (const id of intereses) pool.push(...PLANES_SUGERIDOS[id])
-  // Shuffle
-  for (let i = pool.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[pool[i], pool[j]] = [pool[j], pool[i]]
-  }
-  // Dedupe by title, take first 5
-  const seen = new Set<string>()
-  const result: { titulo: string }[] = []
-  for (const p of pool) {
-    if (!seen.has(p.titulo) && result.length < 5) { seen.add(p.titulo); result.push(p) }
-  }
-  return result
+function categoriasDe(intereses: InterId[]): string[] {
+  return [...new Set(intereses.flatMap(i => CATEGORIAS_POR_INTERES[i]))]
 }
 
 function genUsername(nombre: string) {
@@ -124,10 +72,12 @@ export default function OnboardingPage() {
   // Screen 3 — con quién
   const [conQuien, setConQuien] = useState<CompaniaId[]>([])
 
-  // Screen 4 — planes sugeridos
-  const [sugeridos, setSugeridos] = useState<{ titulo: string }[]>([])
-  const [addedPlans, setAddedPlans] = useState<Set<number>>(new Set())
-  const [addingPlan, setAddingPlan] = useState<number | null>(null)
+  // Screen 4 — "¿Ya has hecho alguno de estos?"
+  const [sugeridos, setSugeridos] = useState<GooalV2[] | null>(null)
+  const [estados, setEstados] = useState<Record<string, 'hecho' | 'quiero'>>({})
+  const [anadiendo, setAnadiendo] = useState<string | null>(null)
+  const [puntosIniciales, setPuntosIniciales] = useState(0)
+  const [completando, setCompletando] = useState<GooalV2 | null>(null)
   const [finishing, setFinishing] = useState(false)
   const [finishError, setFinishError] = useState<string | null>(null)
 
@@ -143,7 +93,7 @@ export default function OnboardingPage() {
         .single()
 
       if (!profile) { router.push('/'); return }
-      if (profile.onboarding_completado === true) { router.push('/perfil'); return }
+      if (profile.onboarding_completado === true) { router.push('/muro'); return }
 
       const n = profile.nombre || ''
       setNombre(n)
@@ -182,7 +132,13 @@ export default function OnboardingPage() {
   }, [username, checkUsername])
 
   const advance = (next: number) => {
-    if (next === 4) setSugeridos(getSugeridos(intereses))
+    // Los gooals sugeridos dependen de los intereses, así que se piden al
+    // entrar en la pantalla, no antes.
+    if (next === 4 && sugeridos === null) {
+      getGooalsOnboarding(categoriasDe(intereses))
+        .then(setSugeridos)
+        .catch(e => { console.error('[Onboarding] gooals:', e); setSugeridos([]) })
+    }
     setScreen(next)
   }
 
@@ -190,26 +146,18 @@ export default function OnboardingPage() {
     setConQuien(prev => prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id])
   }
 
-  const handleAddPlan = async (plan: { titulo: string }, idx: number) => {
-    setAddingPlan(idx)
-    let cq: ConQuien = 'todos'
-    if (conQuien.length === 1) {
-      const c = conQuien[0]
-      if (c === 'pareja') cq = 'pareja'
-      else if (c === 'amigos') cq = 'amigos'
-      else if (c === 'solo') cq = 'solo'
-    }
-    const { error } = await supabase.from('planes').insert({
-      titulo: plan.titulo,
-      descripcion: '',
-      creado_por: nombre || 'Yo',
-      pareja_codigo: userId,
-      estado: 'pendiente',
-      con_quien: cq,
-      orden: 0,
-    })
-    if (!error) setAddedPlans(prev => new Set([...prev, idx]))
-    setAddingPlan(null)
+  const handleQuiero = async (gooal: GooalV2) => {
+    setAnadiendo(gooal.id)
+    const res = await anadirGooal(gooal.id)
+    if (res.success) setEstados(prev => ({ ...prev, [gooal.id]: 'quiero' }))
+    else setFinishError(res.error ?? 'No se pudo añadir el gooal.')
+    setAnadiendo(null)
+  }
+
+  const handleHecho = (resultado: ResultadoCompletado) => {
+    if (completando) setEstados(prev => ({ ...prev, [completando.id]: 'hecho' }))
+    setPuntosIniciales(resultado.puntosTotales)
+    setCompletando(null)
   }
 
   const handleFinish = async () => {
@@ -232,7 +180,7 @@ export default function OnboardingPage() {
         .eq('id', user.id)
 
       if (error) throw error
-      router.push('/perfil')
+      router.push('/muro')
     } catch (err) {
       console.error('[Onboarding] error:', err)
       setFinishError(err instanceof Error ? err.message : JSON.stringify(err))
@@ -471,58 +419,128 @@ export default function OnboardingPage() {
           </button>
         </div>
 
-        {/* Screen 4 — Planes sugeridos */}
+        {/* Screen 4 — ¿Ya has hecho alguno de estos? */}
         <div style={screenStyle}>
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 16, overflowY: 'auto', paddingTop: '1rem' }}>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 14, overflowY: 'auto', paddingTop: '1rem', minHeight: 0 }}>
             <div style={{ flexShrink: 0 }}>
-              <h2 className=" text-2xl font-bold text-[#F0F0F0] leading-tight mb-1">Tu primer plan.</h2>
-              <p className="text-sm text-[#666666]">Empieza hoy. No el lunes.</p>
+              <h2 className="text-2xl font-bold text-[#F0F0F0] leading-tight mb-1">
+                ¿Ya has hecho alguno de estos?
+              </h2>
+              <p className="text-sm text-[#666666]">Marca lo vivido y elige lo que viene.</p>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flexShrink: 0 }}>
-              {sugeridos.map((plan, idx) => {
-                const added = addedPlans.has(idx)
-                const adding = addingPlan === idx
-                return (
-                  <div key={idx} style={{
-                    background: '#1A1A1A',
-                    border: `1px solid ${added ? '#3A3A3A' : '#2A2A2A'}`,
-                    borderRadius: 16, padding: '14px 16px',
-                    display: 'flex', alignItems: 'center', gap: 12,
-                  }}>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontSize: 14, fontWeight: 600, color: added ? '#888888' : '#F0F0F0', lineHeight: 1.3, margin: 0 }}>
-                        {plan.titulo}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => !added && !adding && handleAddPlan(plan, idx)}
-                      disabled={added || adding}
+
+            {sugeridos === null ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} style={{ height: 84, borderRadius: 16, background: '#141414' }} className="animate-pulse" />
+                ))}
+              </div>
+            ) : sugeridos.length === 0 ? (
+              <p style={{ fontSize: 13, color: '#444444', textAlign: 'center', padding: '24px 0' }}>
+                Todavía no hay gooals en el catálogo. Podrás explorarlos en cuanto los haya.
+              </p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {sugeridos.map(g => {
+                  const estado = estados[g.id]
+                  const dificultad = DIFICULTAD_META[g.dificultad]
+                  return (
+                    <div
+                      key={g.id}
                       style={{
-                        flexShrink: 0, padding: '8px 14px', borderRadius: 10,
-                        background: added ? 'transparent' : '#1DE9B6',
-                        color: added ? '#555555' : '#FFFFFF',
-                        fontSize: 12, fontWeight: 600,
-                        border: added ? '1px solid #3A3A3A' : 'none',
-                        opacity: adding ? 0.6 : 1, whiteSpace: 'nowrap',
-                        cursor: added || adding ? 'default' : 'pointer',
+                        background: '#141414',
+                        border: `1px solid ${estado ? '#3A3A3A' : '#2A2A2A'}`,
+                        borderRadius: 16, padding: 10,
+                        display: 'flex', alignItems: 'center', gap: 12,
                       }}
                     >
-                      {added ? '✓ Añadido' : adding ? '...' : 'Añadir'}
-                    </button>
-                  </div>
-                )
-              })}
-            </div>
+                      <div style={{
+                        width: 54, height: 54, borderRadius: 12, overflow: 'hidden', flexShrink: 0,
+                        background: g.imagen_url ? '#1A1A1A' : CATEGORIA_GRADIENTE[g.categoria],
+                      }}>
+                        {g.imagen_url && (
+                          <img src={g.imagen_url} alt="" loading="lazy"
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        )}
+                      </div>
+
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{
+                          fontSize: 14, fontWeight: 600, color: estado ? '#888888' : '#F0F0F0',
+                          lineHeight: 1.3, margin: 0,
+                          display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                        } as React.CSSProperties}>
+                          {g.titulo}
+                        </p>
+                        <p style={{ fontSize: 11, color: '#666666', marginTop: 3 }}>
+                          {dificultad.emoji} <span style={{ color: '#1DE9B6', fontWeight: 600 }}>+{g.puntos} pts</span>
+                        </p>
+                      </div>
+
+                      {estado ? (
+                        <span style={{
+                          flexShrink: 0, fontSize: 11, fontWeight: 600, whiteSpace: 'nowrap',
+                          color: estado === 'hecho' ? '#4CAF50' : '#1DE9B6',
+                          padding: '8px 10px',
+                        }}>
+                          {estado === 'hecho' ? '✓ Conseguido' : '✓ En tu lista'}
+                        </span>
+                      ) : (
+                        <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                          <button
+                            onClick={() => setCompletando(g)}
+                            aria-label={`Ya hice: ${g.titulo}`}
+                            style={{
+                              display: 'flex', alignItems: 'center', gap: 4,
+                              padding: '9px 11px', borderRadius: 10, border: '1px solid #2A2A2A',
+                              background: 'transparent', color: '#F0F0F0', fontSize: 11, fontWeight: 600,
+                              whiteSpace: 'nowrap', cursor: 'pointer',
+                            }}
+                          >
+                            <Camera style={{ width: 12, height: 12 }} /> Lo hice
+                          </button>
+                          <button
+                            onClick={() => handleQuiero(g)}
+                            disabled={anadiendo === g.id}
+                            aria-label={`Quiero hacer: ${g.titulo}`}
+                            style={{
+                              display: 'flex', alignItems: 'center', gap: 4,
+                              padding: '9px 11px', borderRadius: 10, border: 'none',
+                              background: '#1DE9B6', color: '#0A0A0A', fontSize: 11, fontWeight: 600,
+                              whiteSpace: 'nowrap', cursor: 'pointer',
+                              opacity: anadiendo === g.id ? 0.6 : 1,
+                            }}
+                          >
+                            <Check style={{ width: 12, height: 12 }} /> Lo quiero
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            )}
           </div>
+
+          <p style={{
+            fontSize: 15, fontWeight: 600, textAlign: 'center', marginTop: 12,
+            color: puntosIniciales > 0 ? '#1DE9B6' : '#444444', flexShrink: 0,
+          }}>
+            {puntosIniciales > 0
+              ? `¡Empiezas con ${puntosIniciales} puntos!`
+              : 'Sube una prueba de algo que ya hiciste y empiezas con puntos.'}
+          </p>
+
           {finishError && (
-            <p style={{ fontSize: 12, color: '#1DE9B6', textAlign: 'center', marginTop: 8, flexShrink: 0, padding: '0 4px' }}>
-              Error: {finishError}
+            <p style={{ fontSize: 12, color: '#C97B7B', textAlign: 'center', marginTop: 8, flexShrink: 0, padding: '0 4px' }}>
+              {finishError}
             </p>
           )}
+
           <button
             onClick={handleFinish}
             disabled={finishing}
-            className="w-full bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-40 text-[#0A0A0A] font-semibold py-3.5 rounded-xl text-base mt-4"
+            className="w-full bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-40 text-[#0A0A0A] font-semibold py-3.5 rounded-xl text-base mt-3"
             style={{ flexShrink: 0 }}
           >
             {finishing ? 'Guardando...' : 'Empezar a vivir →'}
@@ -530,6 +548,15 @@ export default function OnboardingPage() {
         </div>
 
       </div>
+
+      {completando && (
+        <CompletarGooalModal
+          gooal={completando}
+          modo="directo"
+          onClose={() => setCompletando(null)}
+          onCompletado={handleHecho}
+        />
+      )}
     </div>
   )
 }

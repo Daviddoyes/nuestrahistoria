@@ -61,3 +61,22 @@ html {
 .tab-fade-in {
   animation: tab-fade-in 0.18s ease-out both;
 }
+
+/* Celebración al completar un gooal (Fase 3). */
+@keyframes celebracion-pop {
+  0%   { transform: scale(0.6); opacity: 0; }
+  55%  { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.celebracion-pop {
+  animation: celebracion-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes barra-nivel {
+  from { width: 0; }
+}
+
+.barra-nivel {
+  animation: barra-nivel 0.7s cubic-bezier(0.32, 0.72, 0, 1) both;
+}

@@ -49,7 +49,10 @@ export async function proxy(request: NextRequest) {
   const isProtected =
     pathname.startsWith('/planes') ||
     pathname.startsWith('/onboarding') ||
-    pathname.startsWith('/perfil')
+    pathname.startsWith('/perfil') ||
+    pathname.startsWith('/muro') ||
+    pathname.startsWith('/explorar') ||
+    pathname.startsWith('/mis-gooals')
 
   if (!user && isProtected) {
     const url = request.nextUrl.clone()
