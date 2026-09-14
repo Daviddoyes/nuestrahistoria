@@ -87,37 +87,60 @@ export default function GooalV2DetailModal({
       </button>
 
       <div className={`fixed inset-0 z-[60] bg-[#0B0B0B] overflow-y-auto ${cerrando ? 'modal-slide-down' : 'modal-slide-up'}`}>
-        {/* Imagen de cabecera */}
-        <div
-          style={{
-            position: 'relative', width: '100%', aspectRatio: '4/3',
-            background: gooal.imagen_url ? '#161817' : CATEGORIA_GRADIENTE[gooal.categoria],
-          }}
-        >
-          {gooal.imagen_url && (
-            <img
-              src={gooal.imagen_url}
-              alt=""
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-            />
-          )}
+        {/*
+          Columna de al menos una pantalla: la cabecera crece para ocupar lo que
+          sobra y el contenido queda pegado abajo, junto al pulgar. Antes la
+          cabecera tenía alto fijo y debajo de los botones quedaba media pantalla
+          vacía.
+        */}
+        <div style={{ minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
           <div
             style={{
-              position: 'absolute', inset: 0,
-              background: 'linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, transparent 40%, #0B0B0B 100%)',
+              position: 'relative', width: '100%', flex: '1 0 auto',
+              // El alto de la antigua proporción 4/3, como mínimo, sin pasar de 360 px.
+              minHeight: 'min(75vw, 360px)',
+              background: gooal.imagen_url ? '#161817' : CATEGORIA_GRADIENTE[gooal.categoria],
             }}
-          />
-        </div>
+          >
+            {gooal.imagen_url && (
+              // eslint-disable-next-line @next/next/no-img-element -- imágenes del catálogo de tamaño variable
+              <img
+                src={gooal.imagen_url}
+                alt=""
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            )}
+            {/* Oscuro arriba para el botón de cerrar, y velo negro abajo para que el título se lea sobre cualquier foto o color. */}
+            <div
+              style={{
+                position: 'absolute', inset: 0,
+                background: 'linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 28%, rgba(0,0,0,0) 45%, rgba(0,0,0,0.82) 100%)',
+              }}
+            />
+            {/*
+              El título va DENTRO de la cabecera. Antes iba debajo con marginTop
+              negativo para montarse encima, pero la cabecera tiene position:
+              relative y eso la pinta por encima de lo que no está posicionado:
+              su degradado, que acababa en el color del fondo, tapaba el título.
+            */}
+            <h2
+              className="fuente-titular"
+              style={{
+                position: 'absolute', left: 24, right: 24, bottom: 18,
+                fontSize: 22, fontWeight: 700, color: '#FFFFFF', lineHeight: 1.22,
+                textShadow: '0 1px 8px rgba(0,0,0,0.45)',
+                display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+              } as React.CSSProperties}
+            >
+              {gooal.titulo}
+            </h2>
+          </div>
 
         <div
           className="px-6"
-          style={{ marginTop: -32, paddingBottom: 'max(3rem, env(safe-area-inset-bottom, 0px))' }}
+          style={{ paddingTop: 16, paddingBottom: 'max(2rem, env(safe-area-inset-bottom, 0px))' }}
         >
-          <h2 className="fuente-titular" style={{ fontSize: 24, fontWeight: 700, color: '#FFFFFF', lineHeight: 1.2 }}>
-            {gooal.titulo}
-          </h2>
-
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 14 }}>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <span style={{
               fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em',
               color, background: `${color}22`, borderRadius: 999, padding: '5px 11px',
@@ -207,6 +230,7 @@ export default function GooalV2DetailModal({
           </div>
 
           {error && <p style={{ color: '#FF5252', fontSize: 13, marginTop: 12 }}>{error}</p>}
+        </div>
         </div>
       </div>
 

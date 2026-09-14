@@ -25,9 +25,6 @@ const MapaGooals = dynamic(() => import('@/components/MapaGooals'), {
   ),
 })
 
-/** Cuánto esperamos a que el navegador resuelva la ubicación antes de rendirnos. */
-const ESPERA_UBICACION = 5000
-
 export default function MapaPage() {
   const router = useRouter()
   const [profile, setProfile] = useState<Profile | null>(null)
@@ -35,7 +32,6 @@ export default function MapaPage() {
 
   const [categoria, setCategoria] = useState<CategoriaGooal | 'todos'>('todos')
   const [misEstados, setMisEstados] = useState<Record<string, EstadoUserGooal>>({})
-  const [posicion, setPosicion] = useState<{ lat: number; lng: number } | null>(null)
   const [seleccionado, setSeleccionado] = useState<GooalV2 | null>(null)
   const [celebracion, setCelebracion] = useState<ResultadoCompletado | null>(null)
   const [aviso, setAviso] = useState('')
@@ -57,17 +53,6 @@ export default function MapaPage() {
   }, [])
 
   useEffect(() => { cargarEstados() }, [cargarEstados])
-
-  // Aquí sí se pide la ubicación al entrar: esta pantalla ES el mapa. No se
-  // espera por ella — arranca en Europa y vuela a la ciudad si llega a tiempo.
-  useEffect(() => {
-    if (!navigator.geolocation) return
-    navigator.geolocation.getCurrentPosition(
-      pos => setPosicion({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      err => console.warn('[mapa] sin ubicación:', err.message),
-      { timeout: ESPERA_UBICACION, maximumAge: 5 * 60 * 1000 },
-    )
-  }, [])
 
   // Memorizados: sin esto el mapa volvería a pedir los pines en cada rerender.
   const filtros = useMemo(() => ({ categoria, dificultad: null, busqueda: '' }), [categoria])
@@ -117,7 +102,6 @@ export default function MapaPage() {
           <MapaGooals
             filtros={filtros}
             estados={misEstados}
-            posicion={posicion}
             onSeleccionar={abrirGooal}
           />
 
