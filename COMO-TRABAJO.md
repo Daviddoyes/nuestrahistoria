@@ -115,7 +115,7 @@ npx tsc --noEmit &amp;&amp; npm run lint &amp;&amp; npm run build
   | Supabase | Base de datos PostgreSQL, autenticación y almacenamiento de ficheros.
       El esquema se aplica pegando SQL en el editor, nunca desde el código. |
   | Resend Pro | Envío de correo. Dominios ya verificados. |
-  | Stripe | Cobros y suscripciones. |
+  | Pagos | La app es gratuita. No hay pasarela de pago. |
   | API de Anthropic | Funciones de IA dentro de las apps. |
   | ElevenLabs | Voz clonada para audios y voz en off. |
   | CapCut · Canva Pro | Edición de vídeo y diseño gráfico. |

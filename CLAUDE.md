@@ -3,7 +3,9 @@
 # GooALS
 
 App de retos ("gooals") con muro social, puntos y seguidores. Next.js 16 + React
-19 + Supabase, desplegada en Vercel bajo gooals.app. Stripe para la suscripción.
+19 + Supabase, desplegada en Vercel bajo gooals.app.
+
+La app es gratuita. No hay pasarela de pago.
 
 El repo se llama `nuestrahistoria` por razones históricas: el producto es GooALS.
 

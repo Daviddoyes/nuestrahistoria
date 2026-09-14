@@ -172,6 +172,7 @@ panel de Vercel.
   uno, toca el otro.
 - `scripts/seed-gooals/` es siembra local. No forma parte de la app y no se
   despliega.
-- `.env.local` tiene claves de Stripe y la `service_role` de Supabase. No debe
+- La app es gratuita. No hay pasarela de pago.
+- `.env.local` tiene la `service_role` de Supabase y otras claves. No debe
   acabar en git — está en `.gitignore`, pero conviene mirar `git status` antes
   de un `git add -A`.

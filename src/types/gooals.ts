@@ -9,9 +9,6 @@ export type Profile = {
   username: string | null
   foto_perfil_url: string | null
   edad: number | null
-  plan: 'free' | 'premium'
-  stripe_customer_id: string | null
-  stripe_subscription_id: string | null
   created_at: string
   onboarding_completado?: boolean
   intereses?: string[]
