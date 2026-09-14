@@ -75,23 +75,23 @@ export default function InstallBanner() {
   return (
     <>
       <div
-        className="fixed left-0 right-0 z-40 bg-[#141414]"
+        className="fixed left-0 right-0 z-40 bg-[#1E2120]"
         style={{
           bottom: 0,
-          borderTop: '1px solid #1DE9B6',
+          borderTop: '1px solid #00D1A7',
           paddingBottom: 'env(safe-area-inset-bottom, 0px)',
         }}
       >
         <div className="flex items-center gap-3 px-4 py-3">
-          <div className="w-9 h-9 rounded-xl bg-[#0A0A0A] border border-[#2A2A2A] flex items-center justify-center shrink-0">
-            <span className="text-[#1DE9B6] font-bold text-sm">G</span>
+          <div className="w-9 h-9 rounded-xl bg-[#0B0B0B] border border-[#2A2E2C] flex items-center justify-center shrink-0">
+            <span className="text-[#00D1A7] font-bold text-sm">G</span>
           </div>
 
           <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-semibold text-[#F0F0F0] leading-snug">
+            <p className="text-[13px] font-semibold text-[#FFFFFF] leading-snug">
               Instala GooALS en tu móvil
             </p>
-            <p className="text-[11px] text-[#666666] leading-snug mt-0.5">
+            <p className="text-[11px] text-[#7A8A85] leading-snug mt-0.5">
               {platform === 'ios'
                 ? 'Desde Safari, en cuatro toques'
                 : 'Acceso rápido desde tu pantalla de inicio'}
@@ -101,7 +101,7 @@ export default function InstallBanner() {
           <button
             onClick={handleInstall}
             disabled={installing}
-            className="shrink-0 bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-50 text-[#0A0A0A] text-xs font-semibold px-4 py-2.5 rounded-xl min-h-[44px] transition-colors"
+            className="shrink-0 bg-[#00D1A7] active:bg-[#00B893] disabled:opacity-50 text-[#0B0B0B] text-xs font-semibold px-4 py-2.5 rounded-xl min-h-[44px] transition-colors"
           >
             {installing ? '...' : 'Instalar'}
           </button>
@@ -109,7 +109,7 @@ export default function InstallBanner() {
           <button
             onClick={dismiss}
             aria-label="No volver a mostrar"
-            className="shrink-0 w-9 h-9 flex items-center justify-center text-[#444444] active:text-[#F0F0F0] transition-colors"
+            className="shrink-0 w-9 h-9 flex items-center justify-center text-[#7A8A85] active:text-[#FFFFFF] transition-colors"
           >
             <X className="w-4 h-4" />
           </button>

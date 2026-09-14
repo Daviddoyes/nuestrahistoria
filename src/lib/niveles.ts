@@ -18,12 +18,12 @@ export type Nivel = {
 }
 
 export const NIVELES: Nivel[] = [
-  { nombre: 'Principiante', minPuntos: 0, maxPuntos: 4, color: '#666666' },
-  { nombre: 'Explorador', minPuntos: 5, maxPuntos: 24, color: '#4CAF50' },
-  { nombre: 'Aventurero', minPuntos: 25, maxPuntos: 74, color: '#2196F3' },
-  { nombre: 'Nómada', minPuntos: 75, maxPuntos: 174, color: '#9C27B0' },
-  { nombre: 'Leyenda', minPuntos: 175, maxPuntos: 399, color: '#FF9800' },
-  { nombre: 'Épico', minPuntos: 400, maxPuntos: 99999, color: '#1DE9B6' },
+  { nombre: 'Principiante', minPuntos: 0, maxPuntos: 4, color: '#7A8A85' },
+  { nombre: 'Explorador', minPuntos: 5, maxPuntos: 24, color: '#38BDF8' },
+  { nombre: 'Aventurero', minPuntos: 25, maxPuntos: 74, color: '#84CC16' },
+  { nombre: 'Nómada', minPuntos: 75, maxPuntos: 174, color: '#F59E0B' },
+  { nombre: 'Leyenda', minPuntos: 175, maxPuntos: 399, color: '#A855F7' },
+  { nombre: 'Épico', minPuntos: 400, maxPuntos: 99999, color: '#00D1A7' },
 ]
 
 export function calcularNivel(puntos: number): Nivel {

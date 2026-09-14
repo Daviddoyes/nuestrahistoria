@@ -19,7 +19,7 @@ export default function Avatar({ nombre, foto, size = 40, borde }: Props) {
         alt={nombre}
         style={{
           width: size, height: size, borderRadius: '50%', objectFit: 'cover',
-          flexShrink: 0, background: '#1A1A1A', ...estiloBorde,
+          flexShrink: 0, background: '#2A2E2C', ...estiloBorde,
         }}
       />
     )
@@ -28,9 +28,9 @@ export default function Avatar({ nombre, foto, size = 40, borde }: Props) {
   return (
     <div
       style={{
-        width: size, height: size, borderRadius: '50%', background: '#1DE9B6',
+        width: size, height: size, borderRadius: '50%', background: '#00D1A7',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: Math.round(size * 0.4), fontWeight: 700, color: '#0A0A0A',
+        fontSize: Math.round(size * 0.4), fontWeight: 700, color: '#0B0B0B',
         flexShrink: 0, ...estiloBorde,
       }}
     >

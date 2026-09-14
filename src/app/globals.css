@@ -6,8 +6,8 @@
 
 :root {
   --font-sans: var(--font-inter), Inter, system-ui, sans-serif;
-  --accent: #1DE9B6;
-  --accent-hover: #00BFA5;
+  --accent: #00D1A7;
+  --accent-hover: #00B893;
 }
 
 *,
@@ -15,6 +15,20 @@
 *::after {
   -webkit-tap-highlight-color: transparent;
   font-family: var(--font-inter), Inter, system-ui, sans-serif;
+}
+
+/*
+ * Poppins, solo para: los números grandes (perfil y celebración de puntos) y
+ * los titulares de hojas y modales. Nada más; el resto del texto es Inter.
+ *
+ * Es una clase normal y no una utilidad de Tailwind a propósito: la regla de
+ * arriba (`*`) está fuera de las capas de Tailwind, y en Tailwind v4 lo que va
+ * fuera de capas gana a cualquier utilidad. Esta clase, también fuera de capas
+ * y con más especificidad que `*`, sí gana. Va en el propio elemento del texto:
+ * por la misma regla `*`, sus hijos no la heredan.
+ */
+.fuente-titular {
+  font-family: var(--font-poppins), Poppins, system-ui, sans-serif;
 }
 
 html {
@@ -27,8 +41,8 @@ html {
     font-family: var(--font-sans);
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
-    background-color: #0A0A0A;
-    color: #F0F0F0;
+    background-color: #0B0B0B;
+    color: #FFFFFF;
     min-height: 100vh;
     min-height: -webkit-fill-available;
     overscroll-behavior: none;

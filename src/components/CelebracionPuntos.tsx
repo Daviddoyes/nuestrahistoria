@@ -27,11 +27,11 @@ export default function CelebracionPuntos({ resultado, onClose }: Props) {
     >
       <div className="celebracion-pop flex flex-col items-center text-center">
         <span style={{ fontSize: 64, lineHeight: 1 }}>🎉</span>
-        <p style={{ fontSize: 40, fontWeight: 700, color: '#1DE9B6', marginTop: 16, lineHeight: 1 }}>
+        <p className="fuente-titular" style={{ fontSize: 40, fontWeight: 700, color: '#00D1A7', marginTop: 16, lineHeight: 1 }}>
           +{resultado.puntosGanados} puntos ganados!
         </p>
-        <p style={{ fontSize: 14, color: '#888888', marginTop: 12 }}>
-          Ya llevas <span style={{ color: '#F0F0F0', fontWeight: 600 }}>{resultado.puntosTotales} pts</span>
+        <p style={{ fontSize: 14, color: '#A3B1AC', marginTop: 12 }}>
+          Ya llevas <span style={{ color: '#FFFFFF', fontWeight: 600 }}>{resultado.puntosTotales} pts</span>
         </p>
 
         {resultado.subioDeNivel && (
@@ -47,7 +47,7 @@ export default function CelebracionPuntos({ resultado, onClose }: Props) {
           </div>
         )}
 
-        <p style={{ fontSize: 11, color: '#444444', marginTop: 28 }}>Toca para continuar</p>
+        <p style={{ fontSize: 11, color: '#7A8A85', marginTop: 28 }}>Toca para continuar</p>
       </div>
     </div>
   )

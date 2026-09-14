@@ -45,17 +45,17 @@ type AdminData = {
 
 function MetricCard({ value, label, sub }: { value: string | number; label: string; sub?: string }) {
   return (
-    <div style={{ background: '#141414', border: '1px solid #2A2A2A', borderRadius: 12, padding: 16 }}>
-      <p style={{ fontSize: 30, fontWeight: 700, color: '#1DE9B6', lineHeight: 1 }}>{value}</p>
-      <p style={{ fontSize: 11, color: '#666666', marginTop: 6, lineHeight: 1.3 }}>{label}</p>
-      {sub && <p style={{ fontSize: 10, color: '#444444', marginTop: 3 }}>{sub}</p>}
+    <div style={{ background: '#1E2120', border: '1px solid #2A2E2C', borderRadius: 12, padding: 16 }}>
+      <p style={{ fontSize: 30, fontWeight: 700, color: '#00D1A7', lineHeight: 1 }}>{value}</p>
+      <p style={{ fontSize: 11, color: '#7A8A85', marginTop: 6, lineHeight: 1.3 }}>{label}</p>
+      {sub && <p style={{ fontSize: 10, color: '#7A8A85', marginTop: 3 }}>{sub}</p>}
     </div>
   )
 }
 
 function SectionTitle({ children }: { children: string }) {
   return (
-    <p style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#666666', marginBottom: 16 }}>
+    <p style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#7A8A85', marginBottom: 16 }}>
       {children}
     </p>
   )
@@ -63,28 +63,28 @@ function SectionTitle({ children }: { children: string }) {
 
 function SubTitle({ children }: { children: string }) {
   return (
-    <p style={{ fontSize: 11, color: '#888888', fontWeight: 500, marginBottom: 10 }}>{children}</p>
+    <p style={{ fontSize: 11, color: '#A3B1AC', fontWeight: 500, marginBottom: 10 }}>{children}</p>
   )
 }
 
 function Divider() {
-  return <div style={{ height: 1, background: '#1A1A1A', margin: '28px 0' }} />
+  return <div style={{ height: 1, background: '#2A2E2C', margin: '28px 0' }} />
 }
 
 function BarChart({ items }: { items: BarItem[] }) {
   const max = Math.max(...items.map(i => i.count), 1)
-  if (items.length === 0) return <p style={{ fontSize: 13, color: '#444444' }}>Sin datos</p>
+  if (items.length === 0) return <p style={{ fontSize: 13, color: '#7A8A85' }}>Sin datos</p>
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       {items.map(item => (
         <div key={item.name} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontSize: 12, color: '#C0C0C0', width: 140, flexShrink: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span style={{ fontSize: 12, color: '#A3B1AC', width: 140, flexShrink: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {item.name}
           </span>
-          <div style={{ flex: 1, height: 20, background: '#1A1A1A', borderRadius: 3, overflow: 'hidden' }}>
-            <div style={{ height: '100%', background: '#1DE9B6', borderRadius: 3, width: `${(item.count / max) * 100}%` }} />
+          <div style={{ flex: 1, height: 20, background: '#2A2E2C', borderRadius: 3, overflow: 'hidden' }}>
+            <div style={{ height: '100%', background: '#00D1A7', borderRadius: 3, width: `${(item.count / max) * 100}%` }} />
           </div>
-          <span style={{ fontSize: 12, color: '#1DE9B6', fontWeight: 600, width: 24, textAlign: 'right', flexShrink: 0 }}>
+          <span style={{ fontSize: 12, color: '#00D1A7', fontWeight: 600, width: 24, textAlign: 'right', flexShrink: 0 }}>
             {item.count}
           </span>
         </div>
@@ -98,11 +98,11 @@ function ConversionRow({ label, value, total }: { label: string; value: number; 
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-        <span style={{ fontSize: 12, color: '#C0C0C0' }}>{label}</span>
-        <span style={{ fontSize: 12, fontWeight: 600, color: '#1DE9B6' }}>{pct}% ({value})</span>
+        <span style={{ fontSize: 12, color: '#A3B1AC' }}>{label}</span>
+        <span style={{ fontSize: 12, fontWeight: 600, color: '#00D1A7' }}>{pct}% ({value})</span>
       </div>
-      <div style={{ height: 6, background: '#1A1A1A', borderRadius: 3, overflow: 'hidden' }}>
-        <div style={{ height: '100%', background: '#1DE9B6', borderRadius: 3, width: `${pct}%` }} />
+      <div style={{ height: 6, background: '#2A2E2C', borderRadius: 3, overflow: 'hidden' }}>
+        <div style={{ height: '100%', background: '#00D1A7', borderRadius: 3, width: `${pct}%` }} />
       </div>
     </div>
   )
@@ -141,26 +141,26 @@ export default function AdminPage() {
   // ── Sin permiso ──────────────────────────────────────────
   if (acceso !== 'si') {
     return (
-      <div style={{ minHeight: '100dvh', background: '#0A0A0A', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px' }}>
+      <div style={{ minHeight: '100dvh', background: '#0B0B0B', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px' }}>
         <div style={{ width: '100%', maxWidth: 340, textAlign: 'center' }}>
-          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.25em', color: '#1DE9B6', textTransform: 'uppercase', marginBottom: 8 }}>
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.25em', color: '#00D1A7', textTransform: 'uppercase', marginBottom: 8 }}>
             GooALS ADMIN
           </p>
-          <div style={{ width: 40, height: 1, background: '#1DE9B6', margin: '0 auto 28px' }} />
+          <div style={{ width: 40, height: 1, background: '#00D1A7', margin: '0 auto 28px' }} />
           {acceso === 'comprobando' ? (
-            <p style={{ fontSize: 14, color: '#666666' }}>Comprobando tu acceso...</p>
+            <p style={{ fontSize: 14, color: '#7A8A85' }}>Comprobando tu acceso...</p>
           ) : (
             <>
-              <p style={{ fontSize: 15, color: '#C0C0C0', lineHeight: 1.6, marginBottom: 10 }}>
+              <p style={{ fontSize: 15, color: '#A3B1AC', lineHeight: 1.6, marginBottom: 10 }}>
                 Esta cuenta no tiene acceso al panel.
               </p>
-              <p style={{ fontSize: 13, color: '#666666', lineHeight: 1.6 }}>
+              <p style={{ fontSize: 13, color: '#7A8A85', lineHeight: 1.6 }}>
                 Inicia sesión con una cuenta de administrador. Los permisos se
                 dan desde Supabase, en la columna <code>es_admin</code> de <code>profiles</code>.
               </p>
               <Link
                 href="/"
-                style={{ display: 'inline-block', marginTop: 24, padding: '12px 22px', borderRadius: 12, background: '#1DE9B6', color: '#0A0A0A', fontWeight: 600, fontSize: 15, textDecoration: 'none' }}
+                style={{ display: 'inline-block', marginTop: 24, padding: '12px 22px', borderRadius: 12, background: '#00D1A7', color: '#0B0B0B', fontWeight: 600, fontSize: 15, textDecoration: 'none' }}
               >
                 Ir al inicio
               </Link>
@@ -173,25 +173,25 @@ export default function AdminPage() {
 
   // ── Dashboard ────────────────────────────────────────────
   return (
-    <div style={{ minHeight: '100dvh', background: '#0A0A0A', paddingBottom: 60 }}>
+    <div style={{ minHeight: '100dvh', background: '#0B0B0B', paddingBottom: 60 }}>
 
       {/* Header */}
-      <div style={{ position: 'sticky', top: 0, zIndex: 10, background: '#0A0A0A', borderBottom: '1px solid #1A1A1A', padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.25em', color: '#1DE9B6', textTransform: 'uppercase' }}>
+      <div style={{ position: 'sticky', top: 0, zIndex: 10, background: '#0B0B0B', borderBottom: '1px solid #2A2E2C', padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.25em', color: '#00D1A7', textTransform: 'uppercase' }}>
           GooALS ADMIN
         </p>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <button
             onClick={loadData}
             disabled={loading}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#666666', background: 'none', border: 'none', cursor: 'pointer', opacity: loading ? 0.4 : 1 }}
+            style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#7A8A85', background: 'none', border: 'none', cursor: 'pointer', opacity: loading ? 0.4 : 1 }}
           >
             <RefreshCw style={{ width: 13, height: 13 }} className={loading ? 'animate-spin' : ''} />
             Actualizar
           </button>
           <Link
             href="/"
-            style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#666666', textDecoration: 'none' }}
+            style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#7A8A85', textDecoration: 'none' }}
           >
             <ArrowLeft style={{ width: 13, height: 13 }} />
             Volver a la app
@@ -200,14 +200,14 @@ export default function AdminPage() {
       </div>
 
       {error && (
-        <div style={{ margin: '16px 16px 0', padding: '12px 16px', background: 'rgba(139,58,58,0.15)', border: '1px solid rgba(139,58,58,0.4)', borderRadius: 12, fontSize: 13, color: '#C97B7B' }}>
+        <div style={{ margin: '16px 16px 0', padding: '12px 16px', background: 'rgba(255,82,82,0.14)', border: '1px solid rgba(255,82,82,0.35)', borderRadius: 12, fontSize: 13, color: '#FF5252' }}>
           {error}
         </div>
       )}
 
       {loading && !data && (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 200 }}>
-          <div className="w-6 h-6 border-2 border-[#2A2A2A] border-t-[#1DE9B6] rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-[#2A2E2C] border-t-[#00D1A7] rounded-full animate-spin" />
         </div>
       )}
 
@@ -252,13 +252,13 @@ export default function AdminPage() {
 
           <SubTitle>Nuevos usuarios — últimos 14 días</SubTitle>
           {data.newUsersByDay.length === 0 ? (
-            <p style={{ fontSize: 13, color: '#444444' }}>Sin registros recientes</p>
+            <p style={{ fontSize: 13, color: '#7A8A85' }}>Sin registros recientes</p>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
               {data.newUsersByDay.map(d => (
-                <div key={d.date} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid #1A1A1A' }}>
-                  <span style={{ fontSize: 13, color: '#C0C0C0' }}>{d.label}</span>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: '#1DE9B6' }}>
+                <div key={d.date} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid #2A2E2C' }}>
+                  <span style={{ fontSize: 13, color: '#A3B1AC' }}>{d.label}</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: '#00D1A7' }}>
                     {d.count} {d.count === 1 ? 'usuario' : 'usuarios'}
                   </span>
                 </div>
@@ -294,7 +294,7 @@ export default function AdminPage() {
                       key={h}
                       style={{
                         textAlign: 'left', fontSize: 9, textTransform: 'uppercase',
-                        letterSpacing: '0.14em', color: '#1DE9B6', fontWeight: 600,
+                        letterSpacing: '0.14em', color: '#00D1A7', fontWeight: 600,
                         paddingBottom: 8, paddingRight: 14, whiteSpace: 'nowrap',
                       }}
                     >
@@ -305,21 +305,21 @@ export default function AdminPage() {
               </thead>
               <tbody>
                 {data.users.map((u, i) => (
-                  <tr key={u.id} style={{ background: i % 2 === 0 ? '#0A0A0A' : '#141414' }}>
-                    <td style={{ padding: '10px 14px 10px 0', color: '#F0F0F0', whiteSpace: 'nowrap' }}>{u.nombre}</td>
-                    <td style={{ padding: '10px 14px 10px 0', color: '#666666', whiteSpace: 'nowrap' }}>
+                  <tr key={u.id} style={{ background: i % 2 === 0 ? '#0B0B0B' : '#1E2120' }}>
+                    <td style={{ padding: '10px 14px 10px 0', color: '#FFFFFF', whiteSpace: 'nowrap' }}>{u.nombre}</td>
+                    <td style={{ padding: '10px 14px 10px 0', color: '#7A8A85', whiteSpace: 'nowrap' }}>
                       {u.username ? `@${u.username}` : '—'}
                     </td>
-                    <td style={{ padding: '10px 14px 10px 0', color: '#666666', whiteSpace: 'nowrap' }}>{u.email}</td>
-                    <td style={{ padding: '10px 14px 10px 0', color: '#666666', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '10px 14px 10px 0', color: '#7A8A85', whiteSpace: 'nowrap' }}>{u.email}</td>
+                    <td style={{ padding: '10px 14px 10px 0', color: '#7A8A85', whiteSpace: 'nowrap' }}>
                       {u.created_at
                         ? new Date(u.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: '2-digit' })
                         : '—'}
                     </td>
-                    <td style={{ padding: '10px 14px 10px 0', color: '#F0F0F0', textAlign: 'center' }}>{u.planes_pendientes}</td>
-                    <td style={{ padding: '10px 14px 10px 0', color: '#F0F0F0', textAlign: 'center' }}>{u.historias}</td>
+                    <td style={{ padding: '10px 14px 10px 0', color: '#FFFFFF', textAlign: 'center' }}>{u.planes_pendientes}</td>
+                    <td style={{ padding: '10px 14px 10px 0', color: '#FFFFFF', textAlign: 'center' }}>{u.historias}</td>
                     <td style={{ padding: '10px 14px 10px 0', textAlign: 'center' }}>
-                      <span style={{ fontSize: 11, fontWeight: 600, color: u.onboarding_completado ? '#6BBF6B' : '#444444' }}>
+                      <span style={{ fontSize: 11, fontWeight: 600, color: u.onboarding_completado ? '#00D1A7' : '#7A8A85' }}>
                         {u.onboarding_completado ? '✓' : '—'}
                       </span>
                     </td>
@@ -330,7 +330,7 @@ export default function AdminPage() {
                             key={int}
                             style={{
                               fontSize: 9, padding: '2px 6px', borderRadius: 20,
-                              background: 'rgba(29,233,182,0.1)', color: '#1DE9B6',
+                              background: 'rgba(0,209,167,0.1)', color: '#00D1A7',
                               whiteSpace: 'nowrap',
                             }}
                           >
@@ -338,7 +338,7 @@ export default function AdminPage() {
                           </span>
                         ))}
                         {u.intereses.length > 3 && (
-                          <span style={{ fontSize: 9, color: '#444444' }}>+{u.intereses.length - 3}</span>
+                          <span style={{ fontSize: 9, color: '#7A8A85' }}>+{u.intereses.length - 3}</span>
                         )}
                       </div>
                     </td>

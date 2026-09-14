@@ -48,10 +48,10 @@ export default function PostDetailModal({ postId, onClose, onAutorClick }: Props
 
       <div className="w-full max-w-md max-h-[88vh] overflow-y-auto">
         {error ? (
-          <p className="text-sm text-[#C97B7B] bg-[#141414] px-4 py-6 rounded-2xl text-center">{error}</p>
+          <p className="text-sm text-[#FF5252] bg-[#1E2120] px-4 py-6 rounded-2xl text-center">{error}</p>
         ) : !post ? (
           <div className="flex items-center justify-center py-16">
-            <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#1DE9B6] rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-[#2A2E2C] border-t-[#00D1A7] rounded-full animate-spin" />
           </div>
         ) : (
           <MuroPostCard post={post} onAutorClick={onAutorClick} />

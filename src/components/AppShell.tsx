@@ -18,7 +18,7 @@ type Props = {
 export default function AppShell({ tab, fotoPerfil, header, children }: Props) {
   return (
     <div
-      className="flex flex-col bg-[#0A0A0A] overflow-hidden"
+      className="flex flex-col bg-[#0B0B0B] overflow-hidden"
       style={{
         height: '100dvh',
         paddingTop: 'env(safe-area-inset-top, 0px)',
@@ -26,9 +26,18 @@ export default function AppShell({ tab, fotoPerfil, header, children }: Props) {
       }}
     >
       <div className="flex-shrink-0 flex items-center justify-center" style={{ height: 36 }}>
-        <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.3em', color: '#1DE9B6', textTransform: 'uppercase' }}>
-          GooALS
-        </span>
+        {/* <img> y no next/image: es un SVG vectorial fijo, no hay nada que
+            optimizar, y next/image exige activar dangerouslyAllowSVG.
+            width/height reservan el hueco (proporción 3828×723) para que la
+            cabecera no salte al cargar. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/marca/gooals-logotipo-oscuro.svg"
+          alt="GooALS"
+          width={90}
+          height={17}
+          style={{ height: 17, width: 'auto', display: 'block' }}
+        />
       </div>
 
       {header && <div className="flex-shrink-0">{header}</div>}
@@ -48,8 +57,8 @@ export default function AppShell({ tab, fotoPerfil, header, children }: Props) {
 /** Spinner a pantalla completa mientras carga una pestaña. */
 export function PantallaCargando() {
   return (
-    <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
-      <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#1DE9B6] rounded-full animate-spin" />
+    <div className="min-h-screen bg-[#0B0B0B] flex items-center justify-center">
+      <div className="w-5 h-5 border-2 border-[#2A2E2C] border-t-[#00D1A7] rounded-full animate-spin" />
     </div>
   )
 }
@@ -60,8 +69,8 @@ export function EstadoVacio({
 }: { titulo: string; texto?: string; accion?: React.ReactNode }) {
   return (
     <div className="flex flex-col items-center justify-center gap-2 px-8 py-20 text-center">
-      <p style={{ fontSize: 15, color: '#666666' }}>{titulo}</p>
-      {texto && <p style={{ fontSize: 13, color: '#444444' }}>{texto}</p>}
+      <p style={{ fontSize: 15, color: '#7A8A85' }}>{titulo}</p>
+      {texto && <p style={{ fontSize: 13, color: '#7A8A85' }}>{texto}</p>}
       {accion && <div className="mt-4">{accion}</div>}
     </div>
   )

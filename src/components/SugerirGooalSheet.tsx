@@ -61,17 +61,17 @@ export default function SugerirGooalSheet({
         role="dialog"
         aria-label="Sugerir un gooal"
         style={{
-          width: '100%', background: '#141414',
+          width: '100%', background: '#1E2120',
           borderTopLeftRadius: 20, borderTopRightRadius: 20,
           padding: '18px 16px calc(18px + env(safe-area-inset-bottom))',
           maxHeight: '85vh', overflowY: 'auto',
         }}
       >
         <div className="flex items-start justify-between" style={{ marginBottom: 4 }}>
-          <p style={{ fontSize: 17, fontWeight: 600, color: '#F0F0F0' }}>
+          <p className="fuente-titular" style={{ fontSize: 17, fontWeight: 600, color: '#FFFFFF' }}>
             {enviado ? '¡Gracias!' : 'Sugerir un gooal'}
           </p>
-          <button onClick={onClose} aria-label="Cerrar" style={{ padding: 6, color: '#666666' }}>
+          <button onClick={onClose} aria-label="Cerrar" style={{ padding: 6, color: '#7A8A85' }}>
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -80,26 +80,26 @@ export default function SugerirGooalSheet({
           <div className="flex flex-col items-center gap-3" style={{ padding: '24px 8px 12px' }}>
             <div
               style={{
-                width: 52, height: 52, borderRadius: 999, background: 'rgba(29,233,182,0.15)',
+                width: 52, height: 52, borderRadius: 999, background: 'rgba(0,209,167,0.15)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}
             >
-              <Check className="w-7 h-7" style={{ color: '#1DE9B6' }} strokeWidth={2.5} />
+              <Check className="w-7 h-7" style={{ color: '#00D1A7' }} strokeWidth={2.5} />
             </div>
-            <p style={{ fontSize: 14, color: '#C0C0C0', textAlign: 'center', lineHeight: 1.5 }}>
+            <p style={{ fontSize: 14, color: '#A3B1AC', textAlign: 'center', lineHeight: 1.5 }}>
               La revisamos y, si encaja, la verás en el catálogo.
             </p>
             <button
               onClick={onClose}
               className="mt-2 w-full rounded-xl active:opacity-80 transition-opacity"
-              style={{ padding: '13px', fontSize: 15, fontWeight: 600, color: '#0A0A0A', background: '#1DE9B6' }}
+              style={{ padding: '13px', fontSize: 15, fontWeight: 600, color: '#0B0B0B', background: '#00D1A7' }}
             >
               Listo
             </button>
           </div>
         ) : (
           <>
-            <p style={{ fontSize: 13, color: '#666666', lineHeight: 1.5, marginBottom: 16 }}>
+            <p style={{ fontSize: 13, color: '#7A8A85', lineHeight: 1.5, marginBottom: 16 }}>
               Dinos qué experiencia falta. La revisamos a mano antes de publicarla.
             </p>
 
@@ -109,10 +109,10 @@ export default function SugerirGooalSheet({
               onChange={e => setTitulo(e.target.value.slice(0, 160))}
               rows={2}
               placeholder="Ver un eclipse total de sol"
-              className="w-full rounded-xl border border-[#2A2A2A] bg-[#0A0A0A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#1DE9B6] text-base"
+              className="w-full rounded-xl border border-[#2A2E2C] bg-[#0B0B0B] text-[#FFFFFF] placeholder-[#7A8A85] focus:outline-none focus:border-[#00D1A7] text-base"
               style={{ padding: '11px 13px', resize: 'none' }}
             />
-            <p style={{ fontSize: 11, color: '#444444', marginTop: 5, textAlign: 'right' }}>
+            <p style={{ fontSize: 11, color: '#7A8A85', marginTop: 5, textAlign: 'right' }}>
               {titulo.trim().length}/160
             </p>
 
@@ -128,9 +128,9 @@ export default function SugerirGooalSheet({
                     style={{
                       display: 'flex', alignItems: 'center', gap: 5,
                       padding: '8px 13px', borderRadius: 999, fontSize: 13, fontWeight: 500,
-                      border: `1px solid ${activo ? '#1DE9B6' : '#2A2A2A'}`,
-                      background: activo ? 'rgba(29,233,182,0.12)' : 'transparent',
-                      color: activo ? '#1DE9B6' : '#888888',
+                      border: `1px solid ${activo ? '#00D1A7' : '#2A2E2C'}`,
+                      background: activo ? 'rgba(0,209,167,0.12)' : 'transparent',
+                      color: activo ? '#00D1A7' : '#A3B1AC',
                       transition: 'all 0.2s',
                     }}
                   >
@@ -141,7 +141,7 @@ export default function SugerirGooalSheet({
             </div>
 
             {error && (
-              <p className="text-sm text-[#C97B7B] bg-[#8B3A3A]/20 rounded-lg" style={{ padding: '9px 12px', marginTop: 14 }}>
+              <p className="text-sm text-[#FF5252] bg-[rgba(255,82,82,0.14)] rounded-lg" style={{ padding: '9px 12px', marginTop: 14 }}>
                 {error}
               </p>
             )}
@@ -152,8 +152,8 @@ export default function SugerirGooalSheet({
               className="w-full rounded-xl active:opacity-80 transition-opacity"
               style={{
                 marginTop: 18, padding: '14px', fontSize: 15, fontWeight: 600,
-                color: puedeEnviar ? '#0A0A0A' : '#555555',
-                background: puedeEnviar ? '#1DE9B6' : '#1F1F1F',
+                color: puedeEnviar ? '#0B0B0B' : '#7A8A85',
+                background: puedeEnviar ? '#00D1A7' : '#2A2E2C',
                 cursor: puedeEnviar ? 'pointer' : 'default',
               }}
             >
@@ -168,5 +168,5 @@ export default function SugerirGooalSheet({
 
 const etiqueta: React.CSSProperties = {
   display: 'block', fontSize: 11, textTransform: 'uppercase',
-  letterSpacing: '0.14em', color: '#666666', marginBottom: 8,
+  letterSpacing: '0.14em', color: '#7A8A85', marginBottom: 8,
 }

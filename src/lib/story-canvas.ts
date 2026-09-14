@@ -3,7 +3,7 @@
 
 export const STORY_W = 1080
 export const STORY_H = 1920
-export const ACENTO = '#1DE9B6'
+export const ACENTO = '#00D1A7'
 
 /** Imagen remota → dataURL. Vía proxy para que el canvas no quede "tainted" por CORS. */
 export async function aBase64(url: string): Promise<string> {

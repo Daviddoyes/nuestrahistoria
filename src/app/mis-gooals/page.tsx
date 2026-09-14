@@ -51,14 +51,14 @@ export default function MisGooalsPage() {
   if (!profile) return null
 
   const tabs = (
-    <div className="flex gap-1 mx-3 mb-2 bg-[#141414] p-1 rounded-xl">
+    <div className="flex gap-1 mx-3 mb-2 bg-[#1E2120] p-1 rounded-xl">
       {(['pendientes', 'completados'] as Seccion[]).map(s => (
         <button
           key={s}
           onClick={() => setSeccion(s)}
           aria-pressed={seccion === s}
           className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-            seccion === s ? 'bg-[#1DE9B6] text-[#0A0A0A]' : 'text-[#666666]'
+            seccion === s ? 'bg-[#00D1A7] text-[#0B0B0B]' : 'text-[#7A8A85]'
           }`}
         >
           {s === 'pendientes' ? `Pendientes (${pendientes.length})` : `Completados (${completados.length})`}
@@ -71,7 +71,7 @@ export default function MisGooalsPage() {
     <>
       <AppShell tab="mis-gooals" fotoPerfil={profile.foto_perfil_url} header={tabs}>
         {error && (
-          <p className="text-sm text-[#C97B7B] bg-[#8B3A3A]/20 mx-3 px-3 py-2 rounded-lg mb-3">{error}</p>
+          <p className="text-sm text-[#FF5252] bg-[rgba(255,82,82,0.14)] mx-3 px-3 py-2 rounded-lg mb-3">{error}</p>
         )}
 
         {seccion === 'pendientes' ? (
@@ -82,7 +82,7 @@ export default function MisGooalsPage() {
               accion={
                 <button
                   onClick={() => router.push('/explorar')}
-                  className="px-5 py-3 rounded-xl bg-[#1DE9B6] active:bg-[#00BFA5] text-[#0A0A0A] text-sm font-semibold transition-colors min-h-[44px]"
+                  className="px-5 py-3 rounded-xl bg-[#00D1A7] active:bg-[#00B893] text-[#0B0B0B] text-sm font-semibold transition-colors min-h-[44px]"
                 >
                   Explorar gooals
                 </button>
@@ -133,13 +133,13 @@ function CardPendiente({ item, onCompletar }: { item: UserGooalConGooal; onCompl
     <div
       style={{
         display: 'flex', alignItems: 'center', gap: 12,
-        background: '#111111', borderRadius: 12, padding: 10, marginBottom: 8,
+        background: '#161817', borderRadius: 12, padding: 10, marginBottom: 8,
       }}
     >
       <div
         style={{
           width: 60, height: 60, borderRadius: 10, overflow: 'hidden', flexShrink: 0,
-          background: g.imagen_url ? '#1A1A1A' : CATEGORIA_GRADIENTE[g.categoria],
+          background: g.imagen_url ? '#2A2E2C' : CATEGORIA_GRADIENTE[g.categoria],
         }}
       >
         {g.imagen_url && (
@@ -154,19 +154,19 @@ function CardPendiente({ item, onCompletar }: { item: UserGooalConGooal; onCompl
 
       <div style={{ flex: 1, minWidth: 0 }}>
         <p style={{
-          fontSize: 14, fontWeight: 600, color: '#F0F0F0', lineHeight: 1.3,
+          fontSize: 14, fontWeight: 600, color: '#FFFFFF', lineHeight: 1.3,
           display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
         } as React.CSSProperties}>
           {g.titulo}
         </p>
-        <p style={{ fontSize: 11, color: '#666666', marginTop: 4 }}>
-          {CATEGORIA_LABEL[g.categoria]} · <span style={{ color: '#1DE9B6', fontWeight: 600 }}>+{g.puntos} pts</span>
+        <p style={{ fontSize: 11, color: '#7A8A85', marginTop: 4 }}>
+          {CATEGORIA_LABEL[g.categoria]} · <span style={{ color: '#00D1A7', fontWeight: 600 }}>+{g.puntos} pts</span>
         </p>
       </div>
 
       <button
         onClick={onCompletar}
-        className="flex-shrink-0 px-3.5 rounded-lg bg-[#1DE9B6] active:bg-[#00BFA5] text-[#0A0A0A] text-xs font-semibold transition-colors"
+        className="flex-shrink-0 px-3.5 rounded-lg bg-[#00D1A7] active:bg-[#00B893] text-[#0B0B0B] text-xs font-semibold transition-colors"
         style={{ minHeight: 44 }}
       >
         Completar
@@ -186,7 +186,7 @@ function CardCompletado({ item }: { item: UserGooalConGooal }) {
     <div
       style={{
         position: 'relative', aspectRatio: '3/4', borderRadius: 14, overflow: 'hidden',
-        background: g.imagen_url ? '#141414' : CATEGORIA_GRADIENTE[g.categoria],
+        background: g.imagen_url ? '#1E2120' : CATEGORIA_GRADIENTE[g.categoria],
       }}
     >
       {item.video_url ? (
@@ -228,8 +228,8 @@ function CardCompletado({ item }: { item: UserGooalConGooal }) {
           {g.titulo}
         </p>
         <p style={{ fontSize: 11, marginTop: 5 }}>
-          <span style={{ color: '#1DE9B6', fontWeight: 700 }}>+{item.puntos_ganados} pts</span>
-          {fecha && <span style={{ color: '#999999' }}> · {fecha}</span>}
+          <span style={{ color: '#00D1A7', fontWeight: 700 }}>+{item.puntos_ganados} pts</span>
+          {fecha && <span style={{ color: '#7A8A85' }}> · {fecha}</span>}
         </p>
       </div>
     </div>

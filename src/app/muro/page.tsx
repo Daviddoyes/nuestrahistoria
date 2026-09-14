@@ -37,7 +37,7 @@ export default function MuroPage() {
     <AppShell tab="muro" fotoPerfil={profile.foto_perfil_url}>
       <div style={{ padding: '10px 12px 24px' }}>
         {error && (
-          <p className="text-sm text-[#C97B7B] bg-[#8B3A3A]/20 px-3 py-2 rounded-lg mb-3">{error}</p>
+          <p className="text-sm text-[#FF5252] bg-[rgba(255,82,82,0.14)] px-3 py-2 rounded-lg mb-3">{error}</p>
         )}
 
         {posts.length === 0 && !error ? (
@@ -47,7 +47,7 @@ export default function MuroPage() {
             accion={
               <button
                 onClick={() => router.push('/explorar')}
-                className="px-5 py-3 rounded-xl bg-[#1DE9B6] active:bg-[#00BFA5] text-[#0A0A0A] text-sm font-semibold transition-colors min-h-[44px]"
+                className="px-5 py-3 rounded-xl bg-[#00D1A7] active:bg-[#00B893] text-[#0B0B0B] text-sm font-semibold transition-colors min-h-[44px]"
               >
                 Explorar gooals
               </button>

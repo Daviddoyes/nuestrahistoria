@@ -19,7 +19,7 @@ export default function MuroPostCard({ post, onAutorClick }: Props) {
   const [, startTransition] = useTransition()
 
   const gooal = post.gooal
-  const color = gooal ? CATEGORIA_COLOR[gooal.categoria] : '#666666'
+  const color = gooal ? CATEGORIA_COLOR[gooal.categoria] : '#7A8A85'
   const dificultad = gooal ? DIFICULTAD_META[gooal.dificultad] : null
 
   const handleLike = () => {
@@ -35,7 +35,7 @@ export default function MuroPostCard({ post, onAutorClick }: Props) {
   }
 
   return (
-    <article style={{ background: '#111111', borderRadius: 16, overflow: 'hidden', marginBottom: 16 }}>
+    <article style={{ background: '#161817', borderRadius: 16, overflow: 'hidden', marginBottom: 16 }}>
       {/* Cabecera: autor */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px' }}>
         <button
@@ -44,10 +44,10 @@ export default function MuroPostCard({ post, onAutorClick }: Props) {
         >
           <Avatar nombre={post.autor.nombre} foto={post.autor.foto_perfil_url} size={36} />
           <span className="min-w-0">
-            <span style={{ display: 'block', fontSize: 14, fontWeight: 600, color: '#F0F0F0', lineHeight: 1.2 }}>
+            <span style={{ display: 'block', fontSize: 14, fontWeight: 600, color: '#FFFFFF', lineHeight: 1.2 }}>
               {post.autor.nombre}
             </span>
-            <span style={{ display: 'block', fontSize: 11, color: '#666666', lineHeight: 1.3 }}>
+            <span style={{ display: 'block', fontSize: 11, color: '#7A8A85', lineHeight: 1.3 }}>
               {post.autor.username ? `@${post.autor.username} · ` : ''}{hace(post.created_at)}
             </span>
           </span>
@@ -65,7 +65,7 @@ export default function MuroPostCard({ post, onAutorClick }: Props) {
       </div>
 
       {/* Prueba: foto o vídeo a 4:5 con degradado inferior */}
-      <div style={{ position: 'relative', width: '100%', aspectRatio: '4/5', background: '#0A0A0A' }}>
+      <div style={{ position: 'relative', width: '100%', aspectRatio: '4/5', background: '#0B0B0B' }}>
         {post.video_url ? (
           <video
             src={post.video_url}
@@ -83,7 +83,7 @@ export default function MuroPostCard({ post, onAutorClick }: Props) {
             style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
           />
         ) : (
-          <div style={{ position: 'absolute', inset: 0, background: '#141414' }} />
+          <div style={{ position: 'absolute', inset: 0, background: '#1E2120' }} />
         )}
 
         <div
@@ -112,8 +112,8 @@ export default function MuroPostCard({ post, onAutorClick }: Props) {
               </span>
             )}
             <span style={{
-              fontSize: 11, fontWeight: 700, color: '#1DE9B6',
-              background: 'rgba(29,233,182,0.14)', borderRadius: 999, padding: '4px 10px',
+              fontSize: 11, fontWeight: 700, color: '#00D1A7',
+              background: 'rgba(0,209,167,0.14)', borderRadius: 999, padding: '4px 10px',
             }}>
               +{post.puntos} pts
             </span>
@@ -123,7 +123,7 @@ export default function MuroPostCard({ post, onAutorClick }: Props) {
 
       {post.descripcion && (
         <p style={{
-          fontSize: 13, color: '#A0A0A0', lineHeight: 1.5, padding: '12px 14px 0',
+          fontSize: 13, color: '#A3B1AC', lineHeight: 1.5, padding: '12px 14px 0',
           display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
         } as React.CSSProperties}>
           {post.descripcion}
@@ -137,7 +137,7 @@ export default function MuroPostCard({ post, onAutorClick }: Props) {
           aria-label={liked ? 'Quitar me gusta' : 'Me gusta'}
           aria-pressed={liked}
           className="flex items-center gap-2 transition-colors active:scale-95"
-          style={{ color: liked ? '#FF4D6D' : '#666666', fontSize: 13, minHeight: 44 }}
+          style={{ color: liked ? '#FF4D6D' : '#7A8A85', fontSize: 13, minHeight: 44 }}
         >
           <Heart className="w-5 h-5" fill={liked ? '#FF4D6D' : 'none'} strokeWidth={liked ? 0 : 1.8} />
           <span>{likes}</span>

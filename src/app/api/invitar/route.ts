@@ -10,18 +10,18 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 function inviteHtml(nombreInvitador: string, token: string) {
   return `
-      <div style="font-family: Inter, system-ui, sans-serif; max-width: 480px; margin: 0 auto; background: #0A0A0A; color: #F0F0F0; padding: 48px 32px;">
-        <p style="font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #1DE9B6; margin: 0 0 32px 0;">GooALS</p>
-        <h1 style="font-size: 28px; font-weight: 700; margin: 0 0 16px 0; color: #F0F0F0;">${nombreInvitador} quiere que vivas más.</h1>
+      <div style="font-family: Inter, system-ui, sans-serif; max-width: 480px; margin: 0 auto; background: #0B0B0B; color: #FFFFFF; padding: 48px 32px;">
+        <p style="font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #00D1A7; margin: 0 0 32px 0;">GooALS</p>
+        <h1 style="font-size: 28px; font-weight: 700; margin: 0 0 16px 0; color: #FFFFFF;">${nombreInvitador} quiere que vivas más.</h1>
         <p style="font-size: 15px; line-height: 1.7; color: #999; margin: 0 0 32px 0;">
           Te ha invitado a unirte a GooALS — la app para convertir tus intenciones en recuerdos.
           Crea tu bucket list, vívela y compártela.
         </p>
         <a href="${APP_URL}/invite/${token}"
-           style="display: inline-block; background: #1DE9B6; color: #0A0A0A; text-decoration: none; padding: 14px 32px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 8px;">
+           style="display: inline-block; background: #00D1A7; color: #0B0B0B; text-decoration: none; padding: 14px 32px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 8px;">
           Unirme a GooALS
         </a>
-        <p style="font-size: 12px; color: #444; margin: 40px 0 0 0; line-height: 1.6;">
+        <p style="font-size: 12px; color: #7A8A85; margin: 40px 0 0 0; line-height: 1.6;">
           Si no conoces a ${nombreInvitador} ignora este mensaje.
         </p>
       </div>

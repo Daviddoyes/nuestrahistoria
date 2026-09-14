@@ -245,33 +245,33 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
       className="fixed inset-0 z-[75] flex items-end justify-center bg-black/60 backdrop-blur-sm"
       onClick={e => e.target === e.currentTarget && !ocupado && onClose()}
     >
-      <div className="w-full bg-[#141414] rounded-t-2xl shadow-2xl max-h-[92vh] overflow-y-auto animate-[modal-slide-up_0.25s_ease-out]">
+      <div className="w-full bg-[#1E2120] rounded-t-2xl shadow-2xl max-h-[92vh] overflow-y-auto animate-[modal-slide-up_0.25s_ease-out]">
         <div className="flex justify-center pt-3 pb-1">
-          <div className="w-9 h-1 bg-[#2A2A2A] rounded-full" />
+          <div className="w-9 h-1 bg-[#2A2E2C] rounded-full" />
         </div>
 
-        <div className="px-5 py-3 flex items-center justify-between sticky top-0 bg-[#141414] border-b border-[#2A2A2A] z-10">
-          <h2 className="font-semibold text-[#F0F0F0] text-base">¡Lo conseguiste!</h2>
+        <div className="px-5 py-3 flex items-center justify-between sticky top-0 bg-[#1E2120] border-b border-[#2A2E2C] z-10">
+          <h2 className="fuente-titular font-semibold text-[#FFFFFF] text-base">¡Lo conseguiste!</h2>
           <button
             onClick={onClose}
             disabled={subiendo}
             aria-label="Cerrar"
-            className="text-[#444444] active:text-[#F0F0F0] w-8 h-8 flex items-center justify-center rounded-lg active:bg-[#1A1A1A] transition-colors disabled:opacity-40"
+            className="text-[#7A8A85] active:text-[#FFFFFF] w-8 h-8 flex items-center justify-center rounded-lg active:bg-[#2A2E2C] transition-colors disabled:opacity-40"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="px-5 pt-4 pb-5 space-y-4">
-          <div className="rounded-xl bg-[#1A1A1A] border border-[#2A2A2A] px-4 py-3">
-            <p className="text-[10px] uppercase tracking-[0.12em] text-[#666666] mb-1">
+          <div className="rounded-xl bg-[#2A2E2C] border border-[#2A2E2C] px-4 py-3">
+            <p className="text-[10px] uppercase tracking-[0.12em] text-[#7A8A85] mb-1">
               {CATEGORIA_LABEL[gooal.categoria]} · {dificultad.emoji} {dificultad.label}
             </p>
-            <p className="font-medium text-[#F0F0F0] text-sm">{gooal.titulo}</p>
+            <p className="font-medium text-[#FFFFFF] text-sm">{gooal.titulo}</p>
           </div>
 
           <div>
-            <p className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-1.5">
+            <p className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#7A8A85] mb-1.5">
               Tu prueba
             </p>
 
@@ -290,7 +290,7 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
             />
 
             {prueba ? (
-              <div className="w-full rounded-xl overflow-hidden border border-[#2A2A2A]" style={{ background: '#000' }}>
+              <div className="w-full rounded-xl overflow-hidden border border-[#2A2E2C]" style={{ background: '#000' }}>
                 {prueba.esVideo ? (
                   <video src={prueba.preview} controls playsInline style={{ width: '100%', display: 'block' }} />
                 ) : (
@@ -301,19 +301,19 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
             ) : (
               <label
                 htmlFor={inputId}
-                className="w-full rounded-xl border border-dashed border-[#2A2A2A] cursor-pointer flex flex-col items-center justify-center p-8 text-[#444444] active:bg-[#202020] transition-colors"
-                style={{ background: '#1A1A1A' }}
+                className="w-full rounded-xl border border-dashed border-[#2A2E2C] cursor-pointer flex flex-col items-center justify-center p-8 text-[#7A8A85] active:bg-[#1E2120] transition-colors"
+                style={{ background: '#2A2E2C' }}
               >
                 {preparando ? (
                   <>
-                    <span className="w-7 h-7 mb-2 border-2 border-[#2A2A2A] border-t-[#1DE9B6] rounded-full animate-spin" />
-                    <p className="text-sm text-[#888888]">Preparando tu prueba...</p>
+                    <span className="w-7 h-7 mb-2 border-2 border-[#2A2E2C] border-t-[#00D1A7] rounded-full animate-spin" />
+                    <p className="text-sm text-[#A3B1AC]">Preparando tu prueba...</p>
                   </>
                 ) : (
                   <>
                     <ImagePlus className="w-8 h-8 mb-1.5" />
                     <p className="text-sm">Subir foto o vídeo</p>
-                    <p className="text-xs text-[#1DE9B6]/70 mt-0.5 text-center">
+                    <p className="text-xs text-[#00D1A7]/70 mt-0.5 text-center">
                       Obligatorio · vídeo hasta {MAX_SEGUNDOS_VIDEO}s y {MAX_BYTES_VIDEO / MEGA} MB
                     </p>
                   </>
@@ -324,14 +324,14 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
             {/* El error va pegado a la zona de subida: al final del formulario
                 quedaba fuera de la pantalla en móviles pequeños. */}
             {error && (
-              <p role="alert" className="mt-2 text-sm text-[#C97B7B] bg-[#8B3A3A]/20 px-3 py-2 rounded-lg">{error}</p>
+              <p role="alert" className="mt-2 text-sm text-[#FF5252] bg-[rgba(255,82,82,0.14)] px-3 py-2 rounded-lg">{error}</p>
             )}
 
             {prueba && (
               <div className="mt-1 flex gap-4">
                 <label
                   htmlFor={inputId}
-                  className={`text-xs text-[#1DE9B6] active:text-[#00BFA5] transition-colors min-h-[44px] flex items-center cursor-pointer ${ocupado ? 'opacity-40' : ''}`}
+                  className={`text-xs text-[#00D1A7] active:text-[#00B893] transition-colors min-h-[44px] flex items-center cursor-pointer ${ocupado ? 'opacity-40' : ''}`}
                 >
                   {preparando ? 'Preparando...' : 'Cambiar'}
                 </label>
@@ -339,7 +339,7 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
                   type="button"
                   onClick={() => { cambiarPrueba(null); setError('') }}
                   disabled={ocupado}
-                  className="text-xs text-[#444444] active:text-[#666666] transition-colors min-h-[44px] flex items-center disabled:opacity-40"
+                  className="text-xs text-[#7A8A85] active:text-[#7A8A85] transition-colors min-h-[44px] flex items-center disabled:opacity-40"
                 >
                   Quitar
                 </button>
@@ -348,7 +348,7 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
           </div>
 
           <div>
-            <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-1.5">
+            <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#7A8A85] mb-1.5">
               Cuéntanos cómo fue (opcional)
             </label>
             <textarea
@@ -357,7 +357,7 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
               placeholder="Lo que viviste, con quién, qué sentiste..."
               rows={3}
               maxLength={500}
-              className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#1DE9B6] resize-none text-base"
+              className="w-full px-4 py-3.5 rounded-xl border border-[#2A2E2C] bg-[#2A2E2C] text-[#FFFFFF] placeholder-[#7A8A85] focus:outline-none focus:border-[#00D1A7] resize-none text-base"
             />
           </div>
 
@@ -366,7 +366,7 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
               type="button"
               onClick={onClose}
               disabled={subiendo}
-              className="flex-1 py-3.5 rounded-xl border border-[#2A2A2A] text-[#666666] active:bg-[#1A1A1A] transition-colors text-sm font-medium min-h-[44px] disabled:opacity-40"
+              className="flex-1 py-3.5 rounded-xl border border-[#2A2E2C] text-[#7A8A85] active:bg-[#2A2E2C] transition-colors text-sm font-medium min-h-[44px] disabled:opacity-40"
             >
               Cancelar
             </button>
@@ -375,10 +375,10 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
             <button
               type="submit"
               disabled={ocupado}
-              className={`flex-[2] bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-60 text-[#0A0A0A] py-3.5 rounded-xl transition-colors text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 ${prueba ? '' : 'opacity-50'}`}
+              className={`flex-[2] bg-[#00D1A7] active:bg-[#00B893] disabled:opacity-60 text-[#0B0B0B] py-3.5 rounded-xl transition-colors text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 ${prueba ? '' : 'opacity-50'}`}
             >
               {ocupado && (
-                <span className="w-4 h-4 border-2 border-[#0A0A0A] border-t-transparent rounded-full animate-spin" />
+                <span className="w-4 h-4 border-2 border-[#0B0B0B] border-t-transparent rounded-full animate-spin" />
               )}
               {subiendo ? 'Subiendo...' : preparando ? 'Preparando...' : `Completar y ganar ${gooal.puntos} puntos`}
             </button>

@@ -22,14 +22,14 @@ type GooalGenerado = {
 
 const inputStyle: React.CSSProperties = {
   width: '100%', boxSizing: 'border-box', padding: '11px 12px', borderRadius: 10,
-  border: '1px solid #2A2A2A', background: '#1A1A1A', color: '#F0F0F0', fontSize: 14, outline: 'none',
+  border: '1px solid #2A2E2C', background: '#2A2E2C', color: '#FFFFFF', fontSize: 14, outline: 'none',
 }
 const labelStyle: React.CSSProperties = {
-  fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#666666',
+  fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#7A8A85',
   marginBottom: 5, display: 'block',
 }
 const btnPrimary: React.CSSProperties = {
-  padding: '12px 0', borderRadius: 10, background: '#1DE9B6', color: '#0A0A0A',
+  padding: '12px 0', borderRadius: 10, background: '#00D1A7', color: '#0B0B0B',
   fontWeight: 600, fontSize: 14, border: 'none', cursor: 'pointer', width: '100%',
 }
 
@@ -52,13 +52,13 @@ function ModalShell({
     >
       <div style={{
         width: '100%', maxWidth: 460, maxHeight: '88vh', overflowY: 'auto',
-        background: '#141414', border: '1px solid #2A2A2A', borderRadius: 16, padding: 20,
+        background: '#1E2120', border: '1px solid #2A2E2C', borderRadius: 16, padding: 20,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-          <p style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#1DE9B6', fontWeight: 700 }}>
+          <p style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#00D1A7', fontWeight: 700 }}>
             {title}
           </p>
-          <button onClick={onClose} aria-label="Cerrar" style={{ background: 'none', border: 'none', color: '#666666', cursor: 'pointer', padding: 4 }}>
+          <button onClick={onClose} aria-label="Cerrar" style={{ background: 'none', border: 'none', color: '#7A8A85', cursor: 'pointer', padding: 4 }}>
             <X style={{ width: 16, height: 16 }} />
           </button>
         </div>
@@ -148,7 +148,7 @@ function NuevoGooalModal({ onClose, onSaved }: { onClose: () => void; onSaved: (
             onChange={e => setF({ ...f, puntos: Number(e.target.value) })}
           />
           {!enBanda(f.dificultad, f.puntos) && (
-            <p style={{ fontSize: 12, color: '#C97B7B', marginTop: 5 }}>
+            <p style={{ fontSize: 12, color: '#FF5252', marginTop: 5 }}>
               Un gooal {DIFICULTAD_META[f.dificultad].label.toLowerCase()} vale entre{' '}
               {BANDA_PUNTOS[f.dificultad][0]} y {BANDA_PUNTOS[f.dificultad][1]} puntos.
             </p>
@@ -178,12 +178,12 @@ function NuevoGooalModal({ onClose, onSaved }: { onClose: () => void; onSaved: (
             onChange={e => setF({ ...f, descripcion: e.target.value })} />
         </div>
 
-        <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#C0C0C0', cursor: 'pointer' }}>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#A3B1AC', cursor: 'pointer' }}>
           <input type="checkbox" checked={f.activo} onChange={e => setF({ ...f, activo: e.target.checked })} />
           Activo (visible en Explorar)
         </label>
 
-        {error && <p style={{ fontSize: 13, color: '#C97B7B' }}>{error}</p>}
+        {error && <p style={{ fontSize: 13, color: '#FF5252' }}>{error}</p>}
         <button style={{ ...btnPrimary, opacity: saving ? 0.5 : 1 }} disabled={saving} onClick={guardar}>
           {saving ? 'Guardando...' : 'Crear gooal'}
         </button>
@@ -258,19 +258,19 @@ function GenerarIAModal({ onClose, onSaved }: { onClose: () => void; onSaved: ()
           onClick={generar}
           disabled={generando || guardando}
           style={{
-            ...btnPrimary, background: 'transparent', color: '#1DE9B6',
-            border: '1px solid #1DE9B6', opacity: generando ? 0.5 : 1,
+            ...btnPrimary, background: 'transparent', color: '#00D1A7',
+            border: '1px solid #00D1A7', opacity: generando ? 0.5 : 1,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
           }}
         >
           {generando
-            ? <span style={{ width: 14, height: 14, border: '2px solid #1DE9B6', borderTopColor: 'transparent', borderRadius: '50%' }} className="animate-spin" />
+            ? <span style={{ width: 14, height: 14, border: '2px solid #00D1A7', borderTopColor: 'transparent', borderRadius: '50%' }} className="animate-spin" />
             : <Sparkles style={{ width: 14, height: 14 }} />
           }
           {generando ? 'Generando...' : generados ? 'Volver a generar' : 'Generar'}
         </button>
 
-        {error && <p style={{ fontSize: 13, color: '#C97B7B' }}>{error}</p>}
+        {error && <p style={{ fontSize: 13, color: '#FF5252' }}>{error}</p>}
 
         {generados && (
           <>
@@ -278,10 +278,10 @@ function GenerarIAModal({ onClose, onSaved }: { onClose: () => void; onSaved: ()
               {generados.map((g, i) => {
                 const meta = DIFICULTAD_META[g.dificultad as DificultadGooal]
                 return (
-                  <div key={i} style={{ background: '#1A1A1A', borderRadius: 8, padding: '8px 10px' }}>
-                    <p style={{ fontSize: 13, color: '#F0F0F0' }}>{g.titulo}</p>
-                    <p style={{ fontSize: 11, color: '#666666', marginTop: 2 }}>
-                      {meta?.emoji} {meta?.label} · <span style={{ color: '#1DE9B6' }}>+{g.puntos} pts</span>
+                  <div key={i} style={{ background: '#2A2E2C', borderRadius: 8, padding: '8px 10px' }}>
+                    <p style={{ fontSize: 13, color: '#FFFFFF' }}>{g.titulo}</p>
+                    <p style={{ fontSize: 11, color: '#7A8A85', marginTop: 2 }}>
+                      {meta?.emoji} {meta?.label} · <span style={{ color: '#00D1A7' }}>+{g.puntos} pts</span>
                       {g.ciudad ? ` · ${g.ciudad}` : ''}
                     </p>
                   </div>
@@ -353,11 +353,11 @@ export default function GooalsV2Section() {
     <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 16, flexWrap: 'wrap' }}>
         <div>
-          <p style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#1DE9B6', fontWeight: 700, marginBottom: 6 }}>
+          <p style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#00D1A7', fontWeight: 700, marginBottom: 6 }}>
             Catálogo Gooals V2
           </p>
-          <span style={{ fontSize: 12, color: '#888888' }}>
-            <span style={{ color: '#1DE9B6', fontWeight: 700 }}>{activos}</span> activos de {gooals.length}
+          <span style={{ fontSize: 12, color: '#A3B1AC' }}>
+            <span style={{ color: '#00D1A7', fontWeight: 700 }}>{activos}</span> activos de {gooals.length}
           </span>
         </div>
 
@@ -366,7 +366,7 @@ export default function GooalsV2Section() {
             onClick={() => setShowIA(true)}
             style={{
               display: 'flex', alignItems: 'center', gap: 6, padding: '9px 12px', borderRadius: 10,
-              background: 'transparent', border: '1px solid #1DE9B6', color: '#1DE9B6',
+              background: 'transparent', border: '1px solid #00D1A7', color: '#00D1A7',
               fontSize: 12, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap',
             }}
           >
@@ -376,7 +376,7 @@ export default function GooalsV2Section() {
             onClick={() => setShowNuevo(true)}
             style={{
               display: 'flex', alignItems: 'center', gap: 6, padding: '9px 12px', borderRadius: 10,
-              background: '#1DE9B6', color: '#0A0A0A', fontSize: 12, fontWeight: 600,
+              background: '#00D1A7', color: '#0B0B0B', fontSize: 12, fontWeight: 600,
               border: 'none', cursor: 'pointer', whiteSpace: 'nowrap',
             }}
           >
@@ -385,7 +385,7 @@ export default function GooalsV2Section() {
         </div>
       </div>
 
-      {error && <p style={{ fontSize: 13, color: '#C97B7B', marginBottom: 12 }}>{error}</p>}
+      {error && <p style={{ fontSize: 13, color: '#FF5252', marginBottom: 12 }}>{error}</p>}
 
       <div style={{ overflowX: 'auto', marginLeft: -16, marginRight: -16, paddingLeft: 16, paddingRight: 16 }}>
         <table style={{ width: '100%', minWidth: 760, borderCollapse: 'collapse', fontSize: 13 }}>
@@ -394,7 +394,7 @@ export default function GooalsV2Section() {
               {['Título', 'Categoría', 'Dificultad', 'Puntos', 'Completado', 'Activo'].map(h => (
                 <th key={h} style={{
                   textAlign: 'left', fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.14em',
-                  color: '#1DE9B6', fontWeight: 600, paddingBottom: 8, paddingRight: 14, whiteSpace: 'nowrap',
+                  color: '#00D1A7', fontWeight: 600, paddingBottom: 8, paddingRight: 14, whiteSpace: 'nowrap',
                 }}>
                   {h}
                 </th>
@@ -404,16 +404,16 @@ export default function GooalsV2Section() {
           <tbody>
             {gooals.length === 0 && !loading ? (
               <tr>
-                <td colSpan={6} style={{ padding: '24px 0', color: '#444444', textAlign: 'center' }}>
+                <td colSpan={6} style={{ padding: '24px 0', color: '#7A8A85', textAlign: 'center' }}>
                   Aún no hay gooals. Crea uno o genera 20 con IA.
                 </td>
               </tr>
             ) : gooals.map((g, i) => {
-              const color = CATEGORIA_COLOR[g.categoria] ?? '#666666'
+              const color = CATEGORIA_COLOR[g.categoria] ?? '#7A8A85'
               const meta = DIFICULTAD_META[g.dificultad]
               return (
-                <tr key={g.id} style={{ background: i % 2 === 0 ? '#0A0A0A' : '#141414', opacity: g.activo ? 1 : 0.5 }}>
-                  <td style={{ padding: '10px 14px 10px 0', color: '#F0F0F0', maxWidth: 280 }}>{g.titulo}</td>
+                <tr key={g.id} style={{ background: i % 2 === 0 ? '#0B0B0B' : '#1E2120', opacity: g.activo ? 1 : 0.5 }}>
+                  <td style={{ padding: '10px 14px 10px 0', color: '#FFFFFF', maxWidth: 280 }}>{g.titulo}</td>
                   <td style={{ padding: '10px 14px 10px 0' }}>
                     <span style={{
                       fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.06em',
@@ -422,13 +422,13 @@ export default function GooalsV2Section() {
                       {CATEGORIA_LABEL[g.categoria] ?? g.categoria}
                     </span>
                   </td>
-                  <td style={{ padding: '10px 14px 10px 0', color: meta?.color ?? '#888888', whiteSpace: 'nowrap' }}>
+                  <td style={{ padding: '10px 14px 10px 0', color: meta?.color ?? '#A3B1AC', whiteSpace: 'nowrap' }}>
                     {meta ? `${meta.emoji} ${meta.label}` : g.dificultad}
                   </td>
-                  <td style={{ padding: '10px 14px 10px 0', color: '#1DE9B6', fontWeight: 700, textAlign: 'center' }}>
+                  <td style={{ padding: '10px 14px 10px 0', color: '#00D1A7', fontWeight: 700, textAlign: 'center' }}>
                     +{g.puntos}
                   </td>
-                  <td style={{ padding: '10px 14px 10px 0', color: '#F0F0F0', textAlign: 'center' }}>
+                  <td style={{ padding: '10px 14px 10px 0', color: '#FFFFFF', textAlign: 'center' }}>
                     {g.veces_completado}
                   </td>
                   <td style={{ padding: '10px 0' }}>
@@ -438,9 +438,9 @@ export default function GooalsV2Section() {
                       aria-pressed={g.activo}
                       style={{
                         padding: '5px 10px', borderRadius: 7, fontSize: 11, fontWeight: 600, cursor: 'pointer',
-                        border: `1px solid ${g.activo ? '#1DE9B6' : '#2A2A2A'}`,
-                        background: g.activo ? 'rgba(29,233,182,0.12)' : 'transparent',
-                        color: g.activo ? '#1DE9B6' : '#666666',
+                        border: `1px solid ${g.activo ? '#00D1A7' : '#2A2E2C'}`,
+                        background: g.activo ? 'rgba(0,209,167,0.12)' : 'transparent',
+                        color: g.activo ? '#00D1A7' : '#7A8A85',
                         opacity: cambiando === g.id ? 0.5 : 1, whiteSpace: 'nowrap',
                       }}
                     >

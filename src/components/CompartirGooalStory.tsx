@@ -34,7 +34,7 @@ export default function CompartirGooalStory({
       canvas.height = STORY_H
       const ctx = canvas.getContext('2d')!
 
-      ctx.fillStyle = '#0A0A0A'
+      ctx.fillStyle = '#0B0B0B'
       ctx.fillRect(0, 0, STORY_W, STORY_H)
 
       const marcoX = 60
@@ -56,7 +56,7 @@ export default function CompartirGooalStory({
         ctx.fillRect(marcoX, marcoY, marcoW, marcoH)
         ctx.restore()
       } else {
-        ctx.fillStyle = '#141414'
+        ctx.fillStyle = '#1E2120'
         rectRedondeado(ctx, marcoX, marcoY, marcoW, marcoH, 32)
         ctx.fill()
       }
@@ -71,7 +71,7 @@ export default function CompartirGooalStory({
       ctx.font = '700 84px Inter, system-ui, sans-serif'
       ctx.fillText(`+${puntos} pts`, STORY_W / 2, 300)
 
-      ctx.fillStyle = '#888888'
+      ctx.fillStyle = '#A3B1AC'
       ctx.font = '500 34px Inter, system-ui, sans-serif'
       const meta = DIFICULTAD_META[dificultad]
       ctx.fillText(`${CATEGORIA_LABEL[categoria]} · ${meta.emoji} ${meta.label}`, STORY_W / 2, 362)
@@ -84,7 +84,7 @@ export default function CompartirGooalStory({
       let ty = marcoY + marcoH - 90 - (lineas.length - 1) * (size + 12)
       for (const l of lineas) { ctx.fillText(l, STORY_W / 2, ty); ty += size + 12 }
 
-      ctx.fillStyle = '#AAAAAA'
+      ctx.fillStyle = '#A3B1AC'
       ctx.font = '400 32px Inter, system-ui, sans-serif'
       ctx.fillText(autor, STORY_W / 2, marcoY + marcoH + 70)
 
@@ -108,17 +108,17 @@ export default function CompartirGooalStory({
         disabled={generando}
         aria-label="Compartir en Stories"
         className={`flex items-center gap-2 transition-colors disabled:opacity-60 ${
-          compacto ? 'text-[#666666] active:text-[#1DE9B6]' : 'text-[#666666] active:text-[#1DE9B6] min-h-[44px]'
+          compacto ? 'text-[#7A8A85] active:text-[#00D1A7]' : 'text-[#7A8A85] active:text-[#00D1A7] min-h-[44px]'
         }`}
         style={{ fontSize: 13 }}
       >
         {generando
-          ? <span className="w-4 h-4 border border-[#1DE9B6] border-t-transparent rounded-full animate-spin" />
+          ? <span className="w-4 h-4 border border-[#00D1A7] border-t-transparent rounded-full animate-spin" />
           : <Share2 className="w-4 h-4" />
         }
         <span>{generando ? 'Generando...' : 'Compartir'}</span>
       </button>
-      {error && <p className="text-xs text-[#C97B7B] mt-1">{error}</p>}
+      {error && <p className="text-xs text-[#FF5252] mt-1">{error}</p>}
     </>
   )
 }

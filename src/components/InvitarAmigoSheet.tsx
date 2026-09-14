@@ -54,7 +54,7 @@ export default function InvitarAmigoSheet({ onClose }: Props) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="invitar-amigo-titulo"
-        className="fixed inset-x-0 bottom-0 z-[60] bg-[#0A0A0A] modal-slide-up"
+        className="fixed inset-x-0 bottom-0 z-[60] bg-[#0B0B0B] modal-slide-up"
         style={{
           borderTopLeftRadius: 20, borderTopRightRadius: 20,
           padding: '20px 24px',
@@ -63,17 +63,17 @@ export default function InvitarAmigoSheet({ onClose }: Props) {
       >
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h2 id="invitar-amigo-titulo" className="text-lg font-bold text-[#F0F0F0]">
+            <h2 id="invitar-amigo-titulo" className="fuente-titular text-lg font-bold text-[#FFFFFF]">
               Invitar a un amigo
             </h2>
-            <p className="text-[13px] text-[#666666] mt-1 leading-relaxed">
+            <p className="text-[13px] text-[#7A8A85] mt-1 leading-relaxed">
               Le llegará un email con tu invitación.
             </p>
           </div>
           <button
             onClick={onClose}
             aria-label="Cerrar"
-            className="w-9 h-9 -mr-2 flex items-center justify-center rounded-full text-[#555555] active:text-[#F0F0F0] transition-colors flex-shrink-0"
+            className="w-9 h-9 -mr-2 flex items-center justify-center rounded-full text-[#7A8A85] active:text-[#FFFFFF] transition-colors flex-shrink-0"
           >
             <X className="w-4 h-4" />
           </button>
@@ -82,8 +82,8 @@ export default function InvitarAmigoSheet({ onClose }: Props) {
         {enviadoA ? (
           <div className="py-2">
             <div className="flex items-center gap-2.5 mb-5">
-              <Check className="w-4 h-4 text-[#1DE9B6] flex-shrink-0" />
-              <p className="text-sm text-[#F0F0F0] break-all">
+              <Check className="w-4 h-4 text-[#00D1A7] flex-shrink-0" />
+              <p className="text-sm text-[#FFFFFF] break-all">
                 Invitación enviada a {enviadoA}
               </p>
             </div>
@@ -91,14 +91,14 @@ export default function InvitarAmigoSheet({ onClose }: Props) {
               <button
                 type="button"
                 onClick={() => setEnviadoA(null)}
-                className="flex-1 py-3 rounded-xl border border-[#2A2A2A] text-[#666666] active:bg-[#1A1A1A] text-sm min-h-[44px] transition-colors"
+                className="flex-1 py-3 rounded-xl border border-[#2A2E2C] text-[#7A8A85] active:bg-[#2A2E2C] text-sm min-h-[44px] transition-colors"
               >
                 Invitar a otro
               </button>
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 py-3 rounded-xl bg-[#1DE9B6] active:bg-[#00BFA5] text-[#0A0A0A] text-sm font-semibold min-h-[44px] transition-colors"
+                className="flex-1 py-3 rounded-xl bg-[#00D1A7] active:bg-[#00B893] text-[#0B0B0B] text-sm font-semibold min-h-[44px] transition-colors"
               >
                 Listo
               </button>
@@ -119,26 +119,26 @@ export default function InvitarAmigoSheet({ onClose }: Props) {
               placeholder="email de tu amigo"
               aria-label="Email de tu amigo"
               aria-invalid={mostrarInvalido}
-              className={`w-full px-4 py-3 rounded-xl border bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none text-sm transition-colors ${
-                mostrarInvalido ? 'border-[#8B3A3A] focus:border-[#8B3A3A]' : 'border-[#2A2A2A] focus:border-[#1DE9B6]'
+              className={`w-full px-4 py-3 rounded-xl border bg-[#2A2E2C] text-[#FFFFFF] placeholder-[#7A8A85] focus:outline-none text-sm transition-colors ${
+                mostrarInvalido ? 'border-[rgba(255,82,82,0.35)] focus:border-[rgba(255,82,82,0.35)]' : 'border-[#2A2E2C] focus:border-[#00D1A7]'
               }`}
             />
 
             {mostrarInvalido && (
-              <p className="text-xs text-[#C97B7B] mt-2">Ese email no parece válido.</p>
+              <p className="text-xs text-[#FF5252] mt-2">Ese email no parece válido.</p>
             )}
 
             {error && (
-              <p className="text-xs text-[#C97B7B] bg-[#8B3A3A]/20 px-3 py-2 rounded-lg mt-3">{error}</p>
+              <p className="text-xs text-[#FF5252] bg-[rgba(255,82,82,0.14)] px-3 py-2 rounded-lg mt-3">{error}</p>
             )}
 
             <button
               type="submit"
               disabled={!emailValido || enviando}
-              className="w-full mt-4 py-3.5 rounded-xl bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-40 text-[#0A0A0A] text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors"
+              className="w-full mt-4 py-3.5 rounded-xl bg-[#00D1A7] active:bg-[#00B893] disabled:opacity-40 text-[#0B0B0B] text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors"
             >
               {enviando && (
-                <span className="w-3.5 h-3.5 border border-[#0A0A0A] border-t-transparent rounded-full animate-spin" />
+                <span className="w-3.5 h-3.5 border border-[#0B0B0B] border-t-transparent rounded-full animate-spin" />
               )}
               {enviando ? 'Enviando...' : 'Enviar invitación'}
             </button>

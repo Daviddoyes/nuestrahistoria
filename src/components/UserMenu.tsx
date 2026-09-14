@@ -27,7 +27,7 @@ export default function UserMenu({ nombre, fotoPerfil }: UserMenuProps) {
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="w-8 h-8 rounded-full overflow-hidden bg-[#1DE9B6] text-[#0A0A0A] font-semibold text-sm flex items-center justify-center active:scale-95 transition-transform"
+        className="w-8 h-8 rounded-full overflow-hidden bg-[#00D1A7] text-[#0B0B0B] font-semibold text-sm flex items-center justify-center active:scale-95 transition-transform"
         aria-label="Menú de usuario"
       >
         {fotoPerfil ? (
@@ -40,14 +40,14 @@ export default function UserMenu({ nombre, fotoPerfil }: UserMenuProps) {
       {open && (
         <>
           <div className="fixed inset-0 z-20" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-10 z-30 w-48 bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl shadow-xl overflow-hidden">
-            <div className="px-4 py-3 border-b border-[#2A2A2A]">
-              <p className="text-sm font-medium text-[#F0F0F0] truncate">{nombre}</p>
+          <div className="absolute right-0 top-10 z-30 w-48 bg-[#2A2E2C] border border-[#2A2E2C] rounded-xl shadow-xl overflow-hidden">
+            <div className="px-4 py-3 border-b border-[#2A2E2C]">
+              <p className="text-sm font-medium text-[#FFFFFF] truncate">{nombre}</p>
             </div>
 
             <button
               onClick={() => { setOpen(false); router.push('/perfil') }}
-              className="w-full px-4 py-3 text-left text-sm text-[#F0F0F0] flex items-center gap-2 active:bg-[#2A2A2A] transition-colors"
+              className="w-full px-4 py-3 text-left text-sm text-[#FFFFFF] flex items-center gap-2 active:bg-[#2A2E2C] transition-colors"
             >
               <User className="w-4 h-4" />
               Mi perfil
@@ -55,7 +55,7 @@ export default function UserMenu({ nombre, fotoPerfil }: UserMenuProps) {
 
             <button
               onClick={handleLogout}
-              className="w-full px-4 py-3 text-left text-sm text-[#666666] flex items-center gap-2 active:bg-[#2A2A2A] transition-colors border-t border-[#2A2A2A]"
+              className="w-full px-4 py-3 text-left text-sm text-[#7A8A85] flex items-center gap-2 active:bg-[#2A2E2C] transition-colors border-t border-[#2A2E2C]"
             >
               <LogOut className="w-4 h-4" />
               Cerrar sesión

@@ -61,8 +61,8 @@ export function htmlRelanzamiento(
   const hola = primerNombre(nombre, email)
   const fecha = fechaLarga(fechaBorrado)
 
-  return `<div style="font-family: Inter, system-ui, -apple-system, sans-serif; max-width: 520px; margin: 0 auto; background: #0A0A0A; color: #F0F0F0; padding: 44px 32px;">
-  <p style="font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #1DE9B6; margin: 0 0 32px 0;">GooALS</p>
+  return `<div style="font-family: Inter, system-ui, -apple-system, sans-serif; max-width: 520px; margin: 0 auto; background: #0B0B0B; color: #FFFFFF; padding: 44px 32px;">
+  <p style="font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #00D1A7; margin: 0 0 32px 0;">GooALS</p>
 
   <p style="font-size: 16px; line-height: 1.7; color: #E0E0E0; margin: 0 0 20px 0;">Hola ${hola},</p>
 
@@ -82,9 +82,9 @@ export function htmlRelanzamiento(
 
   <div style="border-left: 2px solid #C97B7B; padding-left: 18px; margin: 0 0 28px 0;">
     <p style="font-size: 15px; line-height: 1.7; color: #C0C0C0; margin: 0 0 14px 0;">
-      <strong style="color: #F0F0F0;">Con el cambio desaparece todo lo de la
+      <strong style="color: #FFFFFF;">Con el cambio desaparece todo lo de la
       versión anterior:</strong> los planes que creaste y las historias que
-      completaste. Lo guardo hasta el <strong style="color: #F0F0F0;">${fecha}</strong>;
+      completaste. Lo guardo hasta el <strong style="color: #FFFFFF;">${fecha}</strong>;
       a partir de ahí se borra de forma definitiva.
     </p>
     <p style="font-size: 15px; line-height: 1.7; color: #C0C0C0; margin: 0;">
@@ -100,7 +100,7 @@ export function htmlRelanzamiento(
 
   <p style="font-size: 16px; line-height: 1.7; color: #C0C0C0; margin: 24px 0 0 0;">David</p>
 
-  <p style="font-size: 12px; color: #555; margin: 40px 0 0 0; line-height: 1.7; border-top: 1px solid #1A1A1A; padding-top: 20px;">
+  <p style="font-size: 12px; color: #555; margin: 40px 0 0 0; line-height: 1.7; border-top: 1px solid #2A2E2C; padding-top: 20px;">
     Recibes esto porque tienes una cuenta en GooALS.
     <a href="${enlaceBaja(userId)}" style="color: #777;">No quiero más correos</a>.
   </p>

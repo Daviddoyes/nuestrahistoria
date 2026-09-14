@@ -26,10 +26,10 @@ export const ZOOM_CIUDAD = 13
  * para que las dos vistas se lean igual: si en la lista lo conseguido es verde,
  * en el mapa también.
  */
-const VERDE_COMPLETADO = '#4CAF50'
-const TURQUESA_PENDIENTE = '#1DE9B6'
+const VERDE_COMPLETADO = '#00D1A7'
+const TURQUESA_PENDIENTE = '#00D1A7'
 /** Borde de un pin sin estado: el fondo de la app, que lo recorta del mapa. */
-const BORDE_NEUTRO = '#0A0A0A'
+const BORDE_NEUTRO = '#0B0B0B'
 
 type Filtros = {
   categoria: CategoriaGooal | 'todos'
@@ -55,7 +55,7 @@ type Props = {
  * que en un mapa dice bastante más.
  */
 function iconoDe(pin: PinMapa, estado: EstadoUserGooal | undefined): L.DivIcon {
-  const color = CATEGORIA_COLOR[pin.categoria] ?? '#666666'
+  const color = CATEGORIA_COLOR[pin.categoria] ?? '#7A8A85'
   const borde = estado === 'completado' ? VERDE_COMPLETADO
     : estado === 'pendiente' ? TURQUESA_PENDIENTE
       : BORDE_NEUTRO
@@ -99,16 +99,16 @@ function contenidoPopup(
   const titulo = L.DomUtil.create('p', '', caja)
   titulo.textContent = 'Cargando...'
   Object.assign(titulo.style, {
-    fontSize: '13px', fontWeight: '600', color: '#0A0A0A',
+    fontSize: '13px', fontWeight: '600', color: '#0B0B0B',
     margin: '0 0 4px', lineHeight: '1.3',
   })
 
   const lugar = L.DomUtil.create('p', '', caja)
-  Object.assign(lugar.style, { fontSize: '11px', color: '#666666', margin: '0' })
+  Object.assign(lugar.style, { fontSize: '11px', color: '#7A8A85', margin: '0' })
 
   const puntos = L.DomUtil.create('p', '', caja)
   Object.assign(puntos.style, {
-    fontSize: '11px', color: '#00A88A', fontWeight: '700', margin: '4px 0 0',
+    fontSize: '11px', color: '#00B893', fontWeight: '700', margin: '4px 0 0',
   })
 
   const boton = L.DomUtil.create('button', '', caja)
@@ -119,8 +119,8 @@ function contenidoPopup(
   boton.disabled = true
   Object.assign(boton.style, {
     width: '100%', marginTop: '8px', padding: '6px 10px',
-    fontSize: '12px', fontWeight: '600', color: '#0A0A0A',
-    background: '#1DE9B6', border: 'none', borderRadius: '8px',
+    fontSize: '12px', fontWeight: '600', color: '#0B0B0B',
+    background: '#00D1A7', border: 'none', borderRadius: '8px',
     cursor: 'pointer', opacity: '0.5',
   })
   // Sin esto el clic atraviesa el popup y lo recoge el mapa, que lo interpreta
@@ -248,7 +248,7 @@ export default function MapaGooals({ filtros, estados, posicion, onSeleccionar }
         center={CENTRO_EUROPA}
         zoom={ZOOM_EUROPA}
         scrollWheelZoom
-        style={{ width: '100%', height: '100%', background: '#141414' }}
+        style={{ width: '100%', height: '100%', background: '#1E2120' }}
       >
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
@@ -263,7 +263,7 @@ export default function MapaGooals({ filtros, estados, posicion, onSeleccionar }
         <div style={avisoEstilo}>
           <span
             style={{
-              width: 12, height: 12, border: '2px solid #1DE9B6',
+              width: 12, height: 12, border: '2px solid #00D1A7',
               borderTopColor: 'transparent', borderRadius: '50%', display: 'inline-block',
             }}
             className="animate-spin"
@@ -287,7 +287,7 @@ export default function MapaGooals({ filtros, estados, posicion, onSeleccionar }
 const avisoEstilo: React.CSSProperties = {
   position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)',
   zIndex: 1000, display: 'flex', alignItems: 'center', gap: 7,
-  background: 'rgba(10,10,10,0.88)', color: '#C0C0C0',
+  background: 'rgba(11,11,11,0.88)', color: '#A3B1AC',
   fontSize: 12, padding: '7px 13px', borderRadius: 999,
-  border: '1px solid #2A2A2A', whiteSpace: 'nowrap', pointerEvents: 'none',
+  border: '1px solid #2A2E2C', whiteSpace: 'nowrap', pointerEvents: 'none',
 }

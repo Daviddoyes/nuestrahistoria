@@ -23,7 +23,7 @@ const MapaGooals = dynamic(() => import('./MapaGooals'), {
   ssr: false,
   loading: () => (
     <div style={{ ...mapaContenedor, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#1DE9B6] rounded-full animate-spin" />
+      <div className="w-5 h-5 border-2 border-[#2A2E2C] border-t-[#00D1A7] rounded-full animate-spin" />
     </div>
   ),
 })
@@ -176,11 +176,11 @@ export default function ExplorarFeed({ onCompletado }: Props) {
   return (
     <>
       {/* ── Cabecera: buscador y filtros ─────────────────── */}
-      <div style={{ padding: '4px 12px 10px', background: '#0A0A0A' }}>
+      <div style={{ padding: '4px 12px 10px', background: '#0B0B0B' }}>
         <div style={{ position: 'relative' }}>
           <Search
             className="w-4 h-4"
-            style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#444444' }}
+            style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#7A8A85' }}
           />
           <input
             type="search"
@@ -188,14 +188,14 @@ export default function ExplorarFeed({ onCompletado }: Props) {
             onChange={e => setBusqueda(e.target.value)}
             placeholder="Buscar un gooal..."
             aria-label="Buscar un gooal"
-            className="w-full rounded-xl border border-[#2A2A2A] bg-[#141414] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#1DE9B6] text-base"
+            className="w-full rounded-xl border border-[#2A2E2C] bg-[#1E2120] text-[#FFFFFF] placeholder-[#7A8A85] focus:outline-none focus:border-[#00D1A7] text-base"
             style={{ padding: '11px 40px 11px 40px' }}
           />
           {busqueda && (
             <button
               onClick={() => setBusqueda('')}
               aria-label="Borrar búsqueda"
-              style={{ position: 'absolute', right: 6, top: '50%', transform: 'translateY(-50%)', padding: 8, color: '#444444' }}
+              style={{ position: 'absolute', right: 6, top: '50%', transform: 'translateY(-50%)', padding: 8, color: '#7A8A85' }}
             >
               <X className="w-4 h-4" />
             </button>
@@ -229,9 +229,9 @@ export default function ExplorarFeed({ onCompletado }: Props) {
                 style={{
                   display: 'flex', alignItems: 'center', gap: 5,
                   padding: '6px 12px', borderRadius: 999, fontSize: 12, fontWeight: 500,
-                  border: `1px solid ${activo ? meta.color : '#2A2A2A'}`,
+                  border: `1px solid ${activo ? meta.color : '#2A2E2C'}`,
                   background: activo ? `${meta.color}1F` : 'transparent',
-                  color: activo ? meta.color : '#666666',
+                  color: activo ? meta.color : '#7A8A85',
                   transition: 'all 0.2s', whiteSpace: 'nowrap',
                 }}
               >
@@ -248,7 +248,7 @@ export default function ExplorarFeed({ onCompletado }: Props) {
             style={{
               display: 'flex', alignItems: 'center', gap: 6,
               padding: '6px 12px', borderRadius: 999, fontSize: 12, fontWeight: 600,
-              border: '1px solid #2A2A2A', background: '#141414', color: '#F0F0F0',
+              border: '1px solid #2A2E2C', background: '#1E2120', color: '#FFFFFF',
               whiteSpace: 'nowrap', flexShrink: 0,
             }}
           >
@@ -273,21 +273,21 @@ export default function ExplorarFeed({ onCompletado }: Props) {
       cargando ? (
         <div style={gridEstilo}>
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} style={{ aspectRatio: '1/1', borderRadius: 14, background: '#141414' }} className="animate-pulse" />
+            <div key={i} style={{ aspectRatio: '1/1', borderRadius: 14, background: '#1E2120' }} className="animate-pulse" />
           ))}
         </div>
       ) : error ? (
-        <p className="text-sm text-[#C97B7B] bg-[#8B3A3A]/20 mx-3 px-3 py-2 rounded-lg">{error}</p>
+        <p className="text-sm text-[#FF5252] bg-[rgba(255,82,82,0.14)] mx-3 px-3 py-2 rounded-lg">{error}</p>
       ) : gooals.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-2 px-8 py-16 text-center">
-          <p style={{ fontSize: 15, color: '#666666' }}>Ningún gooal coincide.</p>
-          <p style={{ fontSize: 13, color: '#444444' }}>Prueba con otra categoría o dificultad.</p>
+          <p style={{ fontSize: 15, color: '#7A8A85' }}>Ningún gooal coincide.</p>
+          <p style={{ fontSize: 13, color: '#7A8A85' }}>Prueba con otra categoría o dificultad.</p>
           <button
             onClick={() => setSugiriendo(true)}
             className="mt-4 flex items-center gap-2 rounded-xl active:opacity-80 transition-opacity"
             style={{
               padding: '11px 18px', fontSize: 14, fontWeight: 600,
-              color: '#0A0A0A', background: '#1DE9B6',
+              color: '#0B0B0B', background: '#00D1A7',
             }}
           >
             <Plus className="w-4 h-4" strokeWidth={2.5} /> Sugerir este gooal
@@ -295,7 +295,7 @@ export default function ExplorarFeed({ onCompletado }: Props) {
           {hayFiltros && (
             <button
               onClick={limpiarFiltros}
-              className="mt-1 text-[13px] text-[#666666] active:text-[#888888] transition-colors min-h-[44px]"
+              className="mt-1 text-[13px] text-[#7A8A85] active:text-[#A3B1AC] transition-colors min-h-[44px]"
             >
               Quitar filtros
             </button>
@@ -318,7 +318,7 @@ export default function ExplorarFeed({ onCompletado }: Props) {
             <div ref={centinela} style={{ padding: '4px 12px 28px' }}>
               <div style={gridEstiloSuelto}>
                 {Array.from({ length: 2 }).map((_, i) => (
-                  <div key={i} style={{ aspectRatio: '1/1', borderRadius: 14, background: '#141414' }} className="animate-pulse" />
+                  <div key={i} style={{ aspectRatio: '1/1', borderRadius: 14, background: '#1E2120' }} className="animate-pulse" />
                 ))}
               </div>
             </div>
@@ -326,13 +326,13 @@ export default function ExplorarFeed({ onCompletado }: Props) {
 
           {!hayMas && (
             <div className="flex flex-col items-center gap-2 px-8 pb-8 text-center">
-              <p style={{ fontSize: 13, color: '#444444' }}>¿Echas algo en falta?</p>
+              <p style={{ fontSize: 13, color: '#7A8A85' }}>¿Echas algo en falta?</p>
               <button
                 onClick={() => setSugiriendo(true)}
                 className="flex items-center gap-2 rounded-xl active:opacity-80 transition-opacity"
                 style={{
                   padding: '10px 16px', fontSize: 13, fontWeight: 500,
-                  color: '#1DE9B6', border: '1px solid #2A2A2A',
+                  color: '#00D1A7', border: '1px solid #2A2E2C',
                 }}
               >
                 <Plus className="w-4 h-4" /> Sugerir un gooal
@@ -378,7 +378,7 @@ const mapaContenedor: React.CSSProperties = {
   margin: '0 12px 24px',
   borderRadius: 14,
   overflow: 'hidden',
-  border: '1px solid #2A2A2A',
+  border: '1px solid #2A2E2C',
 }
 
 function ChipCategoria({
@@ -390,9 +390,9 @@ function ChipCategoria({
       aria-pressed={activo}
       style={{
         flexShrink: 0, padding: '7px 14px', borderRadius: 999, fontSize: 12, fontWeight: 500,
-        border: `1px solid ${activo ? '#1DE9B6' : '#2A2A2A'}`,
-        background: activo ? 'rgba(29,233,182,0.12)' : 'transparent',
-        color: activo ? '#1DE9B6' : '#888888',
+        border: `1px solid ${activo ? '#00D1A7' : '#2A2E2C'}`,
+        background: activo ? 'rgba(0,209,167,0.12)' : 'transparent',
+        color: activo ? '#00D1A7' : '#A3B1AC',
         transition: 'all 0.2s', whiteSpace: 'nowrap',
       }}
     >
@@ -412,7 +412,7 @@ function CardGooal({
       className="text-left active:opacity-80 transition-opacity"
       style={{
         position: 'relative', aspectRatio: '1/1', borderRadius: 14, overflow: 'hidden',
-        background: gooal.imagen_url ? '#141414' : CATEGORIA_GRADIENTE[gooal.categoria],
+        background: gooal.imagen_url ? '#1E2120' : CATEGORIA_GRADIENTE[gooal.categoria],
         display: 'block', width: '100%',
       }}
     >
@@ -454,13 +454,13 @@ function CardGooal({
       </p>
 
       {estado === 'completado' && (
-        <div style={overlayEstado('rgba(76,175,80,0.55)')}>
+        <div style={overlayEstado('rgba(0,209,167,0.55)')}>
           <Check className="w-8 h-8" style={{ color: '#FFFFFF' }} strokeWidth={2.5} />
         </div>
       )}
       {estado === 'pendiente' && (
-        <div style={overlayEstado('rgba(29,233,182,0.42)')}>
-          <Hourglass className="w-7 h-7" style={{ color: '#0A0A0A' }} strokeWidth={2} />
+        <div style={overlayEstado('rgba(0,209,167,0.42)')}>
+          <Hourglass className="w-7 h-7" style={{ color: '#0B0B0B' }} strokeWidth={2} />
         </div>
       )}
     </button>

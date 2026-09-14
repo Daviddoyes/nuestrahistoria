@@ -190,8 +190,8 @@ export default function OnboardingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
-        <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#1DE9B6] rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#0B0B0B] flex items-center justify-center">
+        <div className="w-5 h-5 border-2 border-[#2A2E2C] border-t-[#00D1A7] rounded-full animate-spin" />
       </div>
     )
   }
@@ -205,7 +205,7 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div style={{ height: '100dvh', width: '100vw', overflow: 'hidden', background: '#0A0A0A', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ height: '100dvh', width: '100vw', overflow: 'hidden', background: '#0B0B0B', display: 'flex', flexDirection: 'column' }}>
 
       {/* Progress dots */}
       <div style={{
@@ -216,7 +216,7 @@ export default function OnboardingPage() {
         {Array.from({ length: TOTAL }).map((_, i) => (
           <div key={i} style={{
             width: i === screen ? 24 : 8, height: 8, borderRadius: 4,
-            background: i <= screen ? '#1DE9B6' : '#2A2A2A',
+            background: i <= screen ? '#00D1A7' : '#2A2E2C',
             transition: 'width 0.3s ease, background 0.3s ease',
           }} />
         ))}
@@ -235,18 +235,18 @@ export default function OnboardingPage() {
         <div style={screenStyle}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 28 }}>
             <div>
-              <div className="w-10 h-10 rounded-full bg-[#1DE9B6] flex items-center justify-center mb-6">
-                <span className="text-[#0A0A0A] font-bold text-sm tracking-wide">G</span>
+              <div className="w-10 h-10 rounded-full bg-[#00D1A7] flex items-center justify-center mb-6">
+                <span className="text-[#0B0B0B] font-bold text-sm tracking-wide">G</span>
               </div>
-              <h1 className=" text-3xl font-bold text-[#F0F0F0] leading-tight mb-2">
+              <h1 className=" text-3xl font-bold text-[#FFFFFF] leading-tight mb-2">
                 ¿Cómo te llaman?
               </h1>
-              <p className="text-sm text-[#666666]">Elige tu nombre y usuario en GooALS</p>
+              <p className="text-sm text-[#7A8A85]">Elige tu nombre y usuario en GooALS</p>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-1.5">
+                <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#7A8A85] mb-1.5">
                   Tu nombre
                 </label>
                 <input
@@ -254,16 +254,16 @@ export default function OnboardingPage() {
                   value={nombre}
                   onChange={e => setNombre(e.target.value)}
                   placeholder="Escribe tu nombre"
-                  className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#1DE9B6] text-base"
+                  className="w-full px-4 py-3.5 rounded-xl border border-[#2A2E2C] bg-[#2A2E2C] text-[#FFFFFF] placeholder-[#7A8A85] focus:outline-none focus:border-[#00D1A7] text-base"
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-1.5">
+                <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#7A8A85] mb-1.5">
                   Tu @usuario
                 </label>
                 <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#444444] text-base select-none">@</span>
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#7A8A85] text-base select-none">@</span>
                   <input
                     type="text"
                     value={username}
@@ -274,21 +274,21 @@ export default function OnboardingPage() {
                     }}
                     placeholder="tu_usuario"
                     maxLength={24}
-                    className={`w-full pl-8 pr-4 py-3.5 rounded-xl border bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none text-base ${
+                    className={`w-full pl-8 pr-4 py-3.5 rounded-xl border bg-[#2A2E2C] text-[#FFFFFF] placeholder-[#7A8A85] focus:outline-none text-base ${
                       username.length >= 3
-                        ? usernameValido ? 'border-[#3A7A3A] focus:border-[#4CAF50]' : 'border-[#8B3A3A] focus:border-[#C97B7B]'
-                        : 'border-[#2A2A2A] focus:border-[#1DE9B6]'
+                        ? usernameValido ? 'border-[rgba(0,209,167,0.35)] focus:border-[#00D1A7]' : 'border-[rgba(255,82,82,0.35)] focus:border-[rgba(255,82,82,0.35)]'
+                        : 'border-[#2A2E2C] focus:border-[#00D1A7]'
                     }`}
                   />
                 </div>
                 <div className="mt-1.5 flex items-center justify-between">
                   {username.length >= 3 && (
-                    <p className={`text-xs ${usernameValido ? 'text-[#4CAF50]' : 'text-[#C97B7B]'}`}>
+                    <p className={`text-xs ${usernameValido ? 'text-[#00D1A7]' : 'text-[#FF5252]'}`}>
                       {checkingUsername ? 'Verificando...' : usernameValido ? `@${username} está disponible` : 'Ese usuario ya está en uso'}
                     </p>
                   )}
                   {username.length < 3 && (
-                    <p className="text-xs text-[#444444]">Mínimo 3 caracteres</p>
+                    <p className="text-xs text-[#7A8A85]">Mínimo 3 caracteres</p>
                   )}
                 </div>
               </div>
@@ -297,7 +297,7 @@ export default function OnboardingPage() {
           <button
             onClick={() => advance(1)}
             disabled={!nombre.trim() || !usernameValido || username.length < 3 || checkingUsername}
-            className="w-full bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-40 text-[#0A0A0A] font-semibold py-3.5 rounded-xl text-base mt-4"
+            className="w-full bg-[#00D1A7] active:bg-[#00B893] disabled:opacity-40 text-[#0B0B0B] font-semibold py-3.5 rounded-xl text-base mt-4"
           >
             Continuar
           </button>
@@ -307,16 +307,16 @@ export default function OnboardingPage() {
         <div style={screenStyle}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 32 }}>
             <div>
-              <h1 className=" text-3xl font-bold text-[#F0F0F0] leading-tight mb-5">
+              <h1 className=" text-3xl font-bold text-[#FFFFFF] leading-tight mb-5">
                 Hola, {nombre}.
               </h1>
-              <p style={{ fontFamily: 'var(--font-inter), Inter, system-ui, sans-serif', color: '#999999', fontSize: 16, lineHeight: 1.7, textAlign: 'center' }}>
+              <p style={{ fontFamily: 'var(--font-inter), Inter, system-ui, sans-serif', color: '#7A8A85', fontSize: 16, lineHeight: 1.7, textAlign: 'center' }}>
                 Las redes están llenas de vidas perfectas.<br />
                 GooALS es para los que prefieren vivirlas.
               </p>
             </div>
             <div>
-              <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] mb-2">
+              <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#7A8A85] mb-2">
                 ¿Cuántos años tienes?
               </label>
               <input
@@ -326,11 +326,11 @@ export default function OnboardingPage() {
                 onChange={e => setEdad(e.target.value)}
                 placeholder="Tu edad"
                 min={1} max={120}
-                className="w-full px-4 py-3.5 rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] text-[#F0F0F0] placeholder-[#444444] focus:outline-none focus:border-[#1DE9B6] text-base"
+                className="w-full px-4 py-3.5 rounded-xl border border-[#2A2E2C] bg-[#2A2E2C] text-[#FFFFFF] placeholder-[#7A8A85] focus:outline-none focus:border-[#00D1A7] text-base"
               />
             </div>
           </div>
-          <button onClick={() => advance(2)} className="w-full bg-[#1DE9B6] active:bg-[#00BFA5] text-[#0A0A0A] font-semibold py-3.5 rounded-xl text-base mt-4">
+          <button onClick={() => advance(2)} className="w-full bg-[#00D1A7] active:bg-[#00B893] text-[#0B0B0B] font-semibold py-3.5 rounded-xl text-base mt-4">
             Continuar
           </button>
         </div>
@@ -339,10 +339,10 @@ export default function OnboardingPage() {
         <div style={screenStyle}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 20 }}>
             <div>
-              <h2 className=" text-2xl font-bold text-[#F0F0F0] leading-tight mb-1">
+              <h2 className=" text-2xl font-bold text-[#FFFFFF] leading-tight mb-1">
                 ¿Qué quieres vivir?
               </h2>
-              <p className="text-sm text-[#666666]">Elige lo que te mueve.</p>
+              <p className="text-sm text-[#7A8A85]">Elige lo que te mueve.</p>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               {INTERESES.map(item => {
@@ -353,14 +353,14 @@ export default function OnboardingPage() {
                     onClick={() => setIntereses(prev => prev.includes(item.id) ? prev.filter(i => i !== item.id) : [...prev, item.id])}
                     style={{
                       padding: '16px 12px', borderRadius: 16,
-                      border: `2px solid ${sel ? '#1DE9B6' : '#2A2A2A'}`,
-                      background: sel ? 'rgba(29,233,182,0.1)' : '#1A1A1A',
+                      border: `2px solid ${sel ? '#00D1A7' : '#2A2E2C'}`,
+                      background: sel ? 'rgba(0,209,167,0.1)' : '#2A2E2C',
                       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
                       transition: 'border-color 0.15s, background 0.15s', cursor: 'pointer',
                     }}
                   >
                     <span style={{ fontSize: 28 }}>{item.icon}</span>
-                    <span style={{ fontSize: 12, fontWeight: 500, color: sel ? '#1DE9B6' : '#A0A0A0', textAlign: 'center', lineHeight: 1.2 }}>
+                    <span style={{ fontSize: 12, fontWeight: 500, color: sel ? '#00D1A7' : '#A3B1AC', textAlign: 'center', lineHeight: 1.2 }}>
                       {item.label}
                     </span>
                   </button>
@@ -371,7 +371,7 @@ export default function OnboardingPage() {
           <button
             onClick={() => advance(3)}
             disabled={intereses.length === 0}
-            className="w-full bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-40 text-[#0A0A0A] font-semibold py-3.5 rounded-xl text-base mt-4"
+            className="w-full bg-[#00D1A7] active:bg-[#00B893] disabled:opacity-40 text-[#0B0B0B] font-semibold py-3.5 rounded-xl text-base mt-4"
           >
             Continuar
           </button>
@@ -381,10 +381,10 @@ export default function OnboardingPage() {
         <div style={screenStyle}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 24 }}>
             <div>
-              <h2 className=" text-2xl font-bold text-[#F0F0F0] leading-tight mb-1">
+              <h2 className=" text-2xl font-bold text-[#FFFFFF] leading-tight mb-1">
                 ¿Con quién mejor?
               </h2>
-              <p className="text-sm text-[#666666]">Tus mejores momentos siempre tienen compañía.</p>
+              <p className="text-sm text-[#7A8A85]">Tus mejores momentos siempre tienen compañía.</p>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               {CON_QUIEN_OPTIONS.map(item => {
@@ -395,14 +395,14 @@ export default function OnboardingPage() {
                     onClick={() => toggleConQuien(item.id)}
                     style={{
                       padding: '20px 12px', borderRadius: 16,
-                      border: `2px solid ${sel ? '#1DE9B6' : '#2A2A2A'}`,
-                      background: sel ? 'rgba(29,233,182,0.1)' : '#1A1A1A',
+                      border: `2px solid ${sel ? '#00D1A7' : '#2A2E2C'}`,
+                      background: sel ? 'rgba(0,209,167,0.1)' : '#2A2E2C',
                       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10,
                       transition: 'border-color 0.15s, background 0.15s', cursor: 'pointer',
                     }}
                   >
                     <span style={{ fontSize: 32 }}>{item.icon}</span>
-                    <span style={{ fontSize: 13, fontWeight: 500, color: sel ? '#1DE9B6' : '#A0A0A0', textAlign: 'center' }}>
+                    <span style={{ fontSize: 13, fontWeight: 500, color: sel ? '#00D1A7' : '#A3B1AC', textAlign: 'center' }}>
                       {item.label}
                     </span>
                   </button>
@@ -413,7 +413,7 @@ export default function OnboardingPage() {
           <button
             onClick={() => advance(4)}
             disabled={conQuien.length === 0}
-            className="w-full bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-40 text-[#0A0A0A] font-semibold py-3.5 rounded-xl text-base mt-4"
+            className="w-full bg-[#00D1A7] active:bg-[#00B893] disabled:opacity-40 text-[#0B0B0B] font-semibold py-3.5 rounded-xl text-base mt-4"
           >
             Continuar
           </button>
@@ -423,20 +423,20 @@ export default function OnboardingPage() {
         <div style={screenStyle}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 14, overflowY: 'auto', paddingTop: '1rem', minHeight: 0 }}>
             <div style={{ flexShrink: 0 }}>
-              <h2 className="text-2xl font-bold text-[#F0F0F0] leading-tight mb-1">
+              <h2 className="text-2xl font-bold text-[#FFFFFF] leading-tight mb-1">
                 ¿Ya has hecho alguno de estos?
               </h2>
-              <p className="text-sm text-[#666666]">Marca lo vivido y elige lo que viene.</p>
+              <p className="text-sm text-[#7A8A85]">Marca lo vivido y elige lo que viene.</p>
             </div>
 
             {sugeridos === null ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} style={{ height: 84, borderRadius: 16, background: '#141414' }} className="animate-pulse" />
+                  <div key={i} style={{ height: 84, borderRadius: 16, background: '#1E2120' }} className="animate-pulse" />
                 ))}
               </div>
             ) : sugeridos.length === 0 ? (
-              <p style={{ fontSize: 13, color: '#444444', textAlign: 'center', padding: '24px 0' }}>
+              <p style={{ fontSize: 13, color: '#7A8A85', textAlign: 'center', padding: '24px 0' }}>
                 Todavía no hay gooals en el catálogo. Podrás explorarlos en cuanto los haya.
               </p>
             ) : (
@@ -448,15 +448,15 @@ export default function OnboardingPage() {
                     <div
                       key={g.id}
                       style={{
-                        background: '#141414',
-                        border: `1px solid ${estado ? '#3A3A3A' : '#2A2A2A'}`,
+                        background: '#1E2120',
+                        border: `1px solid ${estado ? '#2A2E2C' : '#2A2E2C'}`,
                         borderRadius: 16, padding: 10,
                         display: 'flex', alignItems: 'center', gap: 12,
                       }}
                     >
                       <div style={{
                         width: 54, height: 54, borderRadius: 12, overflow: 'hidden', flexShrink: 0,
-                        background: g.imagen_url ? '#1A1A1A' : CATEGORIA_GRADIENTE[g.categoria],
+                        background: g.imagen_url ? '#2A2E2C' : CATEGORIA_GRADIENTE[g.categoria],
                       }}>
                         {g.imagen_url && (
                           <img src={g.imagen_url} alt="" loading="lazy"
@@ -466,21 +466,21 @@ export default function OnboardingPage() {
 
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{
-                          fontSize: 14, fontWeight: 600, color: estado ? '#888888' : '#F0F0F0',
+                          fontSize: 14, fontWeight: 600, color: estado ? '#A3B1AC' : '#FFFFFF',
                           lineHeight: 1.3, margin: 0,
                           display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
                         } as React.CSSProperties}>
                           {g.titulo}
                         </p>
-                        <p style={{ fontSize: 11, color: '#666666', marginTop: 3 }}>
-                          {dificultad.emoji} <span style={{ color: '#1DE9B6', fontWeight: 600 }}>+{g.puntos} pts</span>
+                        <p style={{ fontSize: 11, color: '#7A8A85', marginTop: 3 }}>
+                          {dificultad.emoji} <span style={{ color: '#00D1A7', fontWeight: 600 }}>+{g.puntos} pts</span>
                         </p>
                       </div>
 
                       {estado ? (
                         <span style={{
                           flexShrink: 0, fontSize: 11, fontWeight: 600, whiteSpace: 'nowrap',
-                          color: estado === 'hecho' ? '#4CAF50' : '#1DE9B6',
+                          color: estado === 'hecho' ? '#00D1A7' : '#00D1A7',
                           padding: '8px 10px',
                         }}>
                           {estado === 'hecho' ? '✓ Conseguido' : '✓ En tu lista'}
@@ -492,8 +492,8 @@ export default function OnboardingPage() {
                             aria-label={`Ya hice: ${g.titulo}`}
                             style={{
                               display: 'flex', alignItems: 'center', gap: 4,
-                              padding: '9px 11px', borderRadius: 10, border: '1px solid #2A2A2A',
-                              background: 'transparent', color: '#F0F0F0', fontSize: 11, fontWeight: 600,
+                              padding: '9px 11px', borderRadius: 10, border: '1px solid #2A2E2C',
+                              background: 'transparent', color: '#FFFFFF', fontSize: 11, fontWeight: 600,
                               whiteSpace: 'nowrap', cursor: 'pointer',
                             }}
                           >
@@ -506,7 +506,7 @@ export default function OnboardingPage() {
                             style={{
                               display: 'flex', alignItems: 'center', gap: 4,
                               padding: '9px 11px', borderRadius: 10, border: 'none',
-                              background: '#1DE9B6', color: '#0A0A0A', fontSize: 11, fontWeight: 600,
+                              background: '#00D1A7', color: '#0B0B0B', fontSize: 11, fontWeight: 600,
                               whiteSpace: 'nowrap', cursor: 'pointer',
                               opacity: anadiendo === g.id ? 0.6 : 1,
                             }}
@@ -524,7 +524,7 @@ export default function OnboardingPage() {
 
           <p style={{
             fontSize: 15, fontWeight: 600, textAlign: 'center', marginTop: 12,
-            color: puntosIniciales > 0 ? '#1DE9B6' : '#444444', flexShrink: 0,
+            color: puntosIniciales > 0 ? '#00D1A7' : '#7A8A85', flexShrink: 0,
           }}>
             {puntosIniciales > 0
               ? `¡Empiezas con ${puntosIniciales} puntos!`
@@ -532,7 +532,7 @@ export default function OnboardingPage() {
           </p>
 
           {finishError && (
-            <p style={{ fontSize: 12, color: '#C97B7B', textAlign: 'center', marginTop: 8, flexShrink: 0, padding: '0 4px' }}>
+            <p style={{ fontSize: 12, color: '#FF5252', textAlign: 'center', marginTop: 8, flexShrink: 0, padding: '0 4px' }}>
               {finishError}
             </p>
           )}
@@ -540,7 +540,7 @@ export default function OnboardingPage() {
           <button
             onClick={handleFinish}
             disabled={finishing}
-            className="w-full bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-40 text-[#0A0A0A] font-semibold py-3.5 rounded-xl text-base mt-3"
+            className="w-full bg-[#00D1A7] active:bg-[#00B893] disabled:opacity-40 text-[#0B0B0B] font-semibold py-3.5 rounded-xl text-base mt-3"
             style={{ flexShrink: 0 }}
           >
             {finishing ? 'Guardando...' : 'Empezar a vivir →'}

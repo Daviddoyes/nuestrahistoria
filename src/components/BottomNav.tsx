@@ -25,7 +25,7 @@ export default function BottomNav({ activeTab, fotoPerfil }: Props) {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-20 bg-[#0A0A0A] border-t border-[#1A1A1A] flex"
+      className="fixed bottom-0 left-0 right-0 z-20 bg-[#0B0B0B] border-t border-[#2A2E2C] flex"
       style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
     >
       {TABS.map(({ id, href, label, Icon }) => {
@@ -36,8 +36,8 @@ export default function BottomNav({ activeTab, fotoPerfil }: Props) {
             href={href}
             aria-current={activo ? 'page' : undefined}
             style={{ height: 56 }}
-            className={`flex-1 flex flex-col items-center justify-center gap-1 active:bg-[#141414] transition-colors ${
-              activo ? 'text-[#1DE9B6]' : 'text-[#444444]'
+            className={`flex-1 flex flex-col items-center justify-center gap-1 active:bg-[#1E2120] transition-colors ${
+              activo ? 'text-[#00D1A7]' : 'text-[#7A8A85]'
             }`}
           >
             {id === 'perfil' && fotoPerfil ? (
@@ -46,7 +46,7 @@ export default function BottomNav({ activeTab, fotoPerfil }: Props) {
                 alt=""
                 style={{
                   width: 24, height: 24, borderRadius: '50%', objectFit: 'cover',
-                  border: activo ? '1.5px solid #1DE9B6' : '1.5px solid transparent',
+                  border: activo ? '1.5px solid #00D1A7' : '1.5px solid transparent',
                 }}
               />
             ) : (

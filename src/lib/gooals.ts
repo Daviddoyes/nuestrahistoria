@@ -29,32 +29,32 @@ export const CATEGORIA_EMOJI: Record<CategoriaGooal, string> = {
 }
 
 export const CATEGORIA_COLOR: Record<CategoriaGooal, string> = {
-  viajes: '#3B82F6',
-  deporte: '#10B981',
-  musica: '#EC4899',
+  viajes: '#38BDF8',
+  deporte: '#FF6B4A',
+  musica: '#A855F7',
   gastronomia: '#F59E0B',
-  cultura: '#8B5CF6',
-  aventura: '#FF6B35',
-  espectaculos: '#EF4444',
+  cultura: '#EC4899',
+  aventura: '#84CC16',
+  espectaculos: '#FACC15',
 }
 
 /** Fondo de las cards sin imagen: degradado del color de su categoría. */
 export const CATEGORIA_GRADIENTE: Record<CategoriaGooal, string> = {
-  viajes: 'linear-gradient(145deg, #1E3A8A 0%, #3B82F6 100%)',
-  deporte: 'linear-gradient(145deg, #064E3B 0%, #10B981 100%)',
-  musica: 'linear-gradient(145deg, #831843 0%, #EC4899 100%)',
+  viajes: 'linear-gradient(145deg, #0C4A6E 0%, #38BDF8 100%)',
+  deporte: 'linear-gradient(145deg, #7F2418 0%, #FF6B4A 100%)',
+  musica: 'linear-gradient(145deg, #4C1D95 0%, #A855F7 100%)',
   gastronomia: 'linear-gradient(145deg, #78350F 0%, #F59E0B 100%)',
-  cultura: 'linear-gradient(145deg, #4C1D95 0%, #8B5CF6 100%)',
-  aventura: 'linear-gradient(145deg, #7C2D12 0%, #FF6B35 100%)',
-  espectaculos: 'linear-gradient(145deg, #7F1D1D 0%, #EF4444 100%)',
+  cultura: 'linear-gradient(145deg, #831843 0%, #EC4899 100%)',
+  aventura: 'linear-gradient(145deg, #365314 0%, #84CC16 100%)',
+  espectaculos: 'linear-gradient(145deg, #713F12 0%, #FACC15 100%)',
 }
 
 export const DIFICULTADES: DificultadGooal[] = ['facil', 'dificil', 'epico']
 
 export const DIFICULTAD_META: Record<DificultadGooal, { emoji: string; label: string; puntos: number; color: string }> = {
   facil: { emoji: '⚡', label: 'Fácil', puntos: 1, color: '#FFD54F' },
-  dificil: { emoji: '🔥', label: 'Difícil', puntos: 5, color: '#FF6B35' },
-  epico: { emoji: '💎', label: 'Épico', puntos: 10, color: '#1DE9B6' },
+  dificil: { emoji: '🔥', label: 'Difícil', puntos: 5, color: '#FF6B4A' },
+  epico: { emoji: '💎', label: 'Épico', puntos: 10, color: '#00D1A7' },
 }
 
 /**

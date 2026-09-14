@@ -35,39 +35,24 @@ export default function SplashScreen() {
         position: 'fixed',
         inset: 0,
         zIndex: 9999,
-        background: '#0A0A0A',
+        background: '#0B0B0B',
         display: 'flex',
-        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 16,
         transition: 'opacity 0.3s ease',
         opacity: phase === 'fading' ? 0 : 1,
         pointerEvents: 'none',
       }}
     >
-      <span
-        style={{
-          color: '#1DE9B6',
-          fontSize: 56,
-          fontWeight: 700,
-          fontFamily: 'var(--font-inter), Inter, system-ui, sans-serif',
-          letterSpacing: '-0.02em',
-        }}
-      >
-        LS
-      </span>
-      <span
-        style={{
-          color: '#333333',
-          fontSize: 11,
-          letterSpacing: '0.3em',
-          textTransform: 'uppercase',
-          fontFamily: 'var(--font-inter), system-ui, sans-serif',
-        }}
-      >
-        GooALS
-      </span>
+      {/* width/height con la proporción del SVG (3828×723) para que no salte. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/marca/gooals-logotipo-oscuro.svg"
+        alt="GooALS"
+        width={169}
+        height={32}
+        style={{ height: 32, width: 'auto', display: 'block' }}
+      />
     </div>
   )
 }

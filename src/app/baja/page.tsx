@@ -15,34 +15,34 @@ export default async function BajaPage({
 
   return (
     <div style={{
-      minHeight: '100dvh', background: '#0A0A0A', display: 'flex',
+      minHeight: '100dvh', background: '#0B0B0B', display: 'flex',
       alignItems: 'center', justifyContent: 'center', padding: '0 24px',
     }}>
       <div style={{ width: '100%', maxWidth: 380, textAlign: 'center' }}>
         <p style={{
           fontSize: 11, fontWeight: 700, letterSpacing: '0.25em',
-          color: '#1DE9B6', textTransform: 'uppercase', marginBottom: 8,
+          color: '#00D1A7', textTransform: 'uppercase', marginBottom: 8,
         }}>
           GooALS
         </p>
-        <div style={{ width: 40, height: 1, background: '#1DE9B6', margin: '0 auto 28px' }} />
+        <div style={{ width: 40, height: 1, background: '#00D1A7', margin: '0 auto 28px' }} />
 
         {ok ? (
           <>
-            <p style={{ fontSize: 18, fontWeight: 600, color: '#F0F0F0', marginBottom: 12 }}>
+            <p style={{ fontSize: 18, fontWeight: 600, color: '#FFFFFF', marginBottom: 12 }}>
               Hecho, no te escribimos más.
             </p>
-            <p style={{ fontSize: 15, color: '#888888', lineHeight: 1.6 }}>
+            <p style={{ fontSize: 15, color: '#A3B1AC', lineHeight: 1.6 }}>
               Tu cuenta sigue como estaba: puedes entrar cuando quieras. Esto solo
               afecta a los correos.
             </p>
           </>
         ) : (
           <>
-            <p style={{ fontSize: 18, fontWeight: 600, color: '#F0F0F0', marginBottom: 12 }}>
+            <p style={{ fontSize: 18, fontWeight: 600, color: '#FFFFFF', marginBottom: 12 }}>
               Este enlace no vale.
             </p>
-            <p style={{ fontSize: 15, color: '#888888', lineHeight: 1.6 }}>
+            <p style={{ fontSize: 15, color: '#A3B1AC', lineHeight: 1.6 }}>
               Puede que esté incompleto por cómo lo cortó tu programa de correo.
               Responde al email y te damos de baja a mano.
             </p>
@@ -53,7 +53,7 @@ export default async function BajaPage({
           href="/"
           style={{
             display: 'inline-block', marginTop: 28, padding: '12px 22px',
-            borderRadius: 12, background: '#1DE9B6', color: '#0A0A0A',
+            borderRadius: 12, background: '#00D1A7', color: '#0B0B0B',
             fontWeight: 600, fontSize: 15, textDecoration: 'none',
           }}
         >

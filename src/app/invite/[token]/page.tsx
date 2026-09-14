@@ -23,24 +23,24 @@ export default function InvitePage({ params }: { params: Promise<{ token: string
 
   return (
     <div style={{
-      background: '#0A0A0A', minHeight: '100vh',
+      background: '#0B0B0B', minHeight: '100vh',
       display: 'flex', alignItems: 'center',
       justifyContent: 'center', flexDirection: 'column',
       gap: 16, padding: 32,
     }}>
       <p style={{
-        color: '#1DE9B6', fontSize: 11,
+        color: '#00D1A7', fontSize: 11,
         letterSpacing: '0.2em', textTransform: 'uppercase',
       }}>
         GooALS
       </p>
       <h1 style={{
-        color: '#F0F0F0', fontSize: 24,
+        color: '#FFFFFF', fontSize: 24,
         fontWeight: 700, textAlign: 'center',
       }}>
         Te esperamos dentro.
       </h1>
-      <p style={{ color: '#666', fontSize: 15, textAlign: 'center' }}>
+      <p style={{ color: '#7A8A85', fontSize: 15, textAlign: 'center' }}>
         Redirigiendo...
       </p>
     </div>

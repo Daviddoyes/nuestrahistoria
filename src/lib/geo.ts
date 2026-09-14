@@ -13,12 +13,3 @@ export function acortarLugar(nombre: string | null | undefined): string {
   const corto = (nombre ?? '').split('|')[0].split(',')[0].trim()
   return corto.length > 35 ? corto.slice(0, 35) + '...' : corto
 }
-
-export const CAT_COLOR: Record<string, string> = {
-  viajes: '#3B82F6',
-  deporte: '#10B981',
-  gastronomia: '#F59E0B',
-  cultura: '#8B5CF6',
-  aventura: '#FF6B35',
-  musica: '#EC4899',
-}

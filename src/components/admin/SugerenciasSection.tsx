@@ -82,13 +82,13 @@ export default function SugerenciasSection() {
   return (
     <>
       <div className="flex items-center justify-between" style={{ marginBottom: 16 }}>
-        <p style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#666666' }}>
+        <p style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#7A8A85' }}>
           Sugerencias de la comunidad
           {pendientes > 0 && (
             <span
               style={{
                 marginLeft: 8, padding: '2px 7px', borderRadius: 999, fontSize: 10,
-                color: '#0A0A0A', background: '#1DE9B6', letterSpacing: 0,
+                color: '#0B0B0B', background: '#00D1A7', letterSpacing: 0,
               }}
             >
               {pendientes}
@@ -98,7 +98,7 @@ export default function SugerenciasSection() {
         <button
           onClick={cargar}
           aria-label="Recargar"
-          style={{ padding: 6, color: '#666666' }}
+          style={{ padding: 6, color: '#7A8A85' }}
         >
           <RefreshCw className={`w-4 h-4 ${cargando ? 'animate-spin' : ''}`} />
         </button>
@@ -111,9 +111,9 @@ export default function SugerenciasSection() {
             onClick={() => setEstado(p.estado)}
             style={{
               padding: '6px 13px', borderRadius: 999, fontSize: 12, fontWeight: 500,
-              border: `1px solid ${estado === p.estado ? '#1DE9B6' : '#2A2A2A'}`,
-              background: estado === p.estado ? 'rgba(29,233,182,0.12)' : 'transparent',
-              color: estado === p.estado ? '#1DE9B6' : '#888888',
+              border: `1px solid ${estado === p.estado ? '#00D1A7' : '#2A2E2C'}`,
+              background: estado === p.estado ? 'rgba(0,209,167,0.12)' : 'transparent',
+              color: estado === p.estado ? '#00D1A7' : '#A3B1AC',
             }}
           >
             {p.label}
@@ -122,15 +122,15 @@ export default function SugerenciasSection() {
       </div>
 
       {error && (
-        <p className="text-sm text-[#C97B7B] bg-[#8B3A3A]/20 rounded-lg" style={{ padding: '9px 12px', marginBottom: 12 }}>
+        <p className="text-sm text-[#FF5252] bg-[rgba(255,82,82,0.14)] rounded-lg" style={{ padding: '9px 12px', marginBottom: 12 }}>
           {error}
         </p>
       )}
 
       {cargando ? (
-        <p style={{ fontSize: 13, color: '#444444' }}>Cargando...</p>
+        <p style={{ fontSize: 13, color: '#7A8A85' }}>Cargando...</p>
       ) : sugerencias.length === 0 ? (
-        <p style={{ fontSize: 13, color: '#444444' }}>
+        <p style={{ fontSize: 13, color: '#7A8A85' }}>
           {estado === 'pendiente' ? 'No hay nada pendiente de revisar.' : 'Nada por aquí.'}
         </p>
       ) : (
@@ -142,7 +142,7 @@ export default function SugerenciasSection() {
               <div
                 key={s.id}
                 style={{
-                  background: '#141414', border: '1px solid #2A2A2A',
+                  background: '#1E2120', border: '1px solid #2A2E2C',
                   borderRadius: 12, padding: 14,
                 }}
               >
@@ -151,7 +151,7 @@ export default function SugerenciasSection() {
                     <input
                       value={edicion?.titulo ?? s.titulo}
                       onChange={e => editar(s.id, { titulo: e.target.value })}
-                      className="w-full rounded-lg border border-[#2A2A2A] bg-[#0A0A0A] text-[#F0F0F0] focus:outline-none focus:border-[#1DE9B6]"
+                      className="w-full rounded-lg border border-[#2A2E2C] bg-[#0B0B0B] text-[#FFFFFF] focus:outline-none focus:border-[#00D1A7]"
                       style={{ padding: '9px 11px', fontSize: 14 }}
                     />
 
@@ -162,9 +162,9 @@ export default function SugerenciasSection() {
                           onClick={() => editar(s.id, { categoria: c })}
                           style={{
                             padding: '5px 10px', borderRadius: 999, fontSize: 11,
-                            border: `1px solid ${edicion?.categoria === c ? CATEGORIA_COLOR[c] : '#2A2A2A'}`,
+                            border: `1px solid ${edicion?.categoria === c ? CATEGORIA_COLOR[c] : '#2A2E2C'}`,
                             background: edicion?.categoria === c ? `${CATEGORIA_COLOR[c]}22` : 'transparent',
-                            color: edicion?.categoria === c ? CATEGORIA_COLOR[c] : '#666666',
+                            color: edicion?.categoria === c ? CATEGORIA_COLOR[c] : '#7A8A85',
                           }}
                         >
                           {CATEGORIA_LABEL[c]}
@@ -182,9 +182,9 @@ export default function SugerenciasSection() {
                             onClick={() => editar(s.id, { dificultad: d })}
                             style={{
                               padding: '5px 10px', borderRadius: 999, fontSize: 11,
-                              border: `1px solid ${activo ? meta.color : '#2A2A2A'}`,
+                              border: `1px solid ${activo ? meta.color : '#2A2E2C'}`,
                               background: activo ? `${meta.color}22` : 'transparent',
-                              color: activo ? meta.color : '#666666',
+                              color: activo ? meta.color : '#7A8A85',
                             }}
                           >
                             {meta.emoji} {meta.label} · {meta.puntos}pt
@@ -200,7 +200,7 @@ export default function SugerenciasSection() {
                         className="flex items-center justify-center gap-1.5 flex-1 rounded-lg active:opacity-80"
                         style={{
                           padding: '10px', fontSize: 13, fontWeight: 600,
-                          color: '#0A0A0A', background: ocupado ? '#1F1F1F' : '#1DE9B6',
+                          color: '#0B0B0B', background: ocupado ? '#2A2E2C' : '#00D1A7',
                         }}
                       >
                         <Check className="w-4 h-4" strokeWidth={2.5} /> Publicar
@@ -211,7 +211,7 @@ export default function SugerenciasSection() {
                         className="flex items-center justify-center gap-1.5 rounded-lg active:opacity-80"
                         style={{
                           padding: '10px 16px', fontSize: 13, fontWeight: 500,
-                          color: '#C97B7B', border: '1px solid #2A2A2A',
+                          color: '#FF5252', border: '1px solid #2A2E2C',
                         }}
                       >
                         <X className="w-4 h-4" /> Descartar
@@ -220,8 +220,8 @@ export default function SugerenciasSection() {
                   </>
                 ) : (
                   <>
-                    <p style={{ fontSize: 14, color: '#F0F0F0' }}>{s.titulo}</p>
-                    <p style={{ fontSize: 11, color: '#666666', marginTop: 5 }}>
+                    <p style={{ fontSize: 14, color: '#FFFFFF' }}>{s.titulo}</p>
+                    <p style={{ fontSize: 11, color: '#7A8A85', marginTop: 5 }}>
                       {CATEGORIA_LABEL[s.categoria]}
                       {s.revisada_at && ` · revisada ${new Date(s.revisada_at).toLocaleDateString('es-ES')}`}
                     </p>

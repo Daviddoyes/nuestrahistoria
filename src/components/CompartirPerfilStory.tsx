@@ -26,7 +26,7 @@ export default function CompartirPerfilStory({ perfil }: Props) {
       canvas.height = STORY_H
       const ctx = canvas.getContext('2d')!
 
-      ctx.fillStyle = '#0A0A0A'
+      ctx.fillStyle = '#0B0B0B'
       ctx.fillRect(0, 0, STORY_W, STORY_H)
 
       const nivel = calcularNivel(perfil.puntos)
@@ -49,7 +49,7 @@ export default function CompartirPerfilStory({ perfil }: Props) {
         ctx.beginPath()
         ctx.arc(avatarCX, avatarCY, avatarR, 0, Math.PI * 2)
         ctx.fill()
-        ctx.fillStyle = '#0A0A0A'
+        ctx.fillStyle = '#0B0B0B'
         ctx.font = '700 96px Inter, system-ui, sans-serif'
         ctx.textAlign = 'center'
         ctx.textBaseline = 'middle'
@@ -64,14 +64,14 @@ export default function CompartirPerfilStory({ perfil }: Props) {
       ctx.stroke()
 
       ctx.textAlign = 'center'
-      ctx.fillStyle = '#F0F0F0'
+      ctx.fillStyle = '#FFFFFF'
       ctx.font = '700 60px Inter, system-ui, sans-serif'
       const nombreLineas = wrapText(ctx, perfil.usuario.nombre, STORY_W - 160, 2)
       let ny = 570
       for (const l of nombreLineas) { ctx.fillText(l, STORY_W / 2, ny); ny += 68 }
 
       if (perfil.usuario.username) {
-        ctx.fillStyle = '#666666'
+        ctx.fillStyle = '#7A8A85'
         ctx.font = '400 36px Inter, system-ui, sans-serif'
         ctx.fillText(`@${perfil.usuario.username}`, STORY_W / 2, ny + 6)
       }
@@ -89,7 +89,7 @@ export default function CompartirPerfilStory({ perfil }: Props) {
       const barraX = 140
       const barraY = ny + 290
       const barraW = STORY_W - 280
-      ctx.fillStyle = '#1A1A1A'
+      ctx.fillStyle = '#2A2E2C'
       rectRedondeado(ctx, barraX, barraY, barraW, 22, 11)
       ctx.fill()
       ctx.fillStyle = ACENTO
@@ -98,7 +98,7 @@ export default function CompartirPerfilStory({ perfil }: Props) {
       ctx.fill()
 
       if (progreso.siguiente) {
-        ctx.fillStyle = '#888888'
+        ctx.fillStyle = '#A3B1AC'
         ctx.font = '400 30px Inter, system-ui, sans-serif'
         ctx.fillText(
           `${perfil.puntos}/${progreso.siguiente.minPuntos} para ${progreso.siguiente.nombre}`,
@@ -111,7 +111,7 @@ export default function CompartirPerfilStory({ perfil }: Props) {
       let cy = barraY + 160
       ctx.font = '500 34px Inter, system-ui, sans-serif'
       for (const s of conProgreso) {
-        ctx.fillStyle = '#AAAAAA'
+        ctx.fillStyle = '#A3B1AC'
         ctx.fillText(
           `${CATEGORIA_EMOJI[s.categoria]}  ${CATEGORIA_LABEL[s.categoria]} · ${s.porcentaje}%`,
           STORY_W / 2, cy
@@ -119,7 +119,7 @@ export default function CompartirPerfilStory({ perfil }: Props) {
         cy += 54
       }
 
-      ctx.fillStyle = '#666666'
+      ctx.fillStyle = '#7A8A85'
       ctx.font = '400 32px Inter, system-ui, sans-serif'
       ctx.fillText(
         `${perfil.seguidores} seguidores · ${perfil.siguiendo} siguiendo`,
@@ -144,15 +144,15 @@ export default function CompartirPerfilStory({ perfil }: Props) {
       <button
         onClick={generar}
         disabled={generando}
-        className="w-full py-3.5 rounded-xl border border-[#2A2A2A] text-[#F0F0F0] active:bg-[#141414] transition-colors text-sm font-medium min-h-[44px] flex items-center justify-center gap-2 disabled:opacity-60"
+        className="w-full py-3.5 rounded-xl border border-[#2A2E2C] text-[#FFFFFF] active:bg-[#1E2120] transition-colors text-sm font-medium min-h-[44px] flex items-center justify-center gap-2 disabled:opacity-60"
       >
         {generando
-          ? <span className="w-4 h-4 border-2 border-[#1DE9B6] border-t-transparent rounded-full animate-spin" />
+          ? <span className="w-4 h-4 border-2 border-[#00D1A7] border-t-transparent rounded-full animate-spin" />
           : <Share2 className="w-4 h-4" />
         }
         {generando ? 'Generando...' : 'Compartir perfil'}
       </button>
-      {error && <p className="text-xs text-[#C97B7B] mt-1.5 text-center">{error}</p>}
+      {error && <p className="text-xs text-[#FF5252] mt-1.5 text-center">{error}</p>}
     </>
   )
 }

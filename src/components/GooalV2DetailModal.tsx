@@ -86,12 +86,12 @@ export default function GooalV2DetailModal({
         <X className="w-4 h-4" />
       </button>
 
-      <div className={`fixed inset-0 z-[60] bg-[#0A0A0A] overflow-y-auto ${cerrando ? 'modal-slide-down' : 'modal-slide-up'}`}>
+      <div className={`fixed inset-0 z-[60] bg-[#0B0B0B] overflow-y-auto ${cerrando ? 'modal-slide-down' : 'modal-slide-up'}`}>
         {/* Imagen de cabecera */}
         <div
           style={{
             position: 'relative', width: '100%', aspectRatio: '4/3',
-            background: gooal.imagen_url ? '#111111' : CATEGORIA_GRADIENTE[gooal.categoria],
+            background: gooal.imagen_url ? '#161817' : CATEGORIA_GRADIENTE[gooal.categoria],
           }}
         >
           {gooal.imagen_url && (
@@ -104,7 +104,7 @@ export default function GooalV2DetailModal({
           <div
             style={{
               position: 'absolute', inset: 0,
-              background: 'linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, transparent 40%, #0A0A0A 100%)',
+              background: 'linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, transparent 40%, #0B0B0B 100%)',
             }}
           />
         </div>
@@ -113,7 +113,7 @@ export default function GooalV2DetailModal({
           className="px-6"
           style={{ marginTop: -32, paddingBottom: 'max(3rem, env(safe-area-inset-bottom, 0px))' }}
         >
-          <h2 style={{ fontSize: 24, fontWeight: 700, color: '#F0F0F0', lineHeight: 1.2 }}>
+          <h2 className="fuente-titular" style={{ fontSize: 24, fontWeight: 700, color: '#FFFFFF', lineHeight: 1.2 }}>
             {gooal.titulo}
           </h2>
 
@@ -131,28 +131,28 @@ export default function GooalV2DetailModal({
               {dificultad.emoji} {dificultad.label}
             </span>
             <span style={{
-              fontSize: 11, fontWeight: 700, color: '#1DE9B6',
-              background: 'rgba(29,233,182,0.14)', borderRadius: 999, padding: '5px 11px',
+              fontSize: 11, fontWeight: 700, color: '#00D1A7',
+              background: 'rgba(0,209,167,0.14)', borderRadius: 999, padding: '5px 11px',
             }}>
               +{gooal.puntos} pts
             </span>
           </div>
 
           {lugar && (
-            <p style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#666666', marginTop: 12 }}>
-              <MapPin className="w-3.5 h-3.5" style={{ color: '#1DE9B6' }} />
+            <p style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#7A8A85', marginTop: 12 }}>
+              <MapPin className="w-3.5 h-3.5" style={{ color: '#00D1A7' }} />
               {lugar}
             </p>
           )}
 
           {gooal.descripcion && (
-            <p style={{ fontSize: 14, color: '#A0A0A0', lineHeight: 1.65, marginTop: 16 }}>
+            <p style={{ fontSize: 14, color: '#A3B1AC', lineHeight: 1.65, marginTop: 16 }}>
               {gooal.descripcion}
             </p>
           )}
 
-          <p style={{ fontSize: 13, color: '#666666', marginTop: 20 }}>
-            <span style={{ color: '#1DE9B6', fontWeight: 700 }}>{vecesCompletado}</span>{' '}
+          <p style={{ fontSize: 13, color: '#7A8A85', marginTop: 20 }}>
+            <span style={{ color: '#00D1A7', fontWeight: 700 }}>{vecesCompletado}</span>{' '}
             {vecesCompletado === 1 ? 'persona lo logró' : 'personas lo lograron'}
           </p>
 
@@ -160,7 +160,7 @@ export default function GooalV2DetailModal({
             <div style={{ display: 'flex', alignItems: 'center', marginTop: 12 }}>
               {ultimos.map((u, i) => (
                 <div key={u.id} style={{ marginLeft: i === 0 ? 0 : -10, zIndex: ultimos.length - i }}>
-                  <Avatar nombre={u.nombre} foto={u.foto_perfil_url} size={34} borde="#0A0A0A" />
+                  <Avatar nombre={u.nombre} foto={u.foto_perfil_url} size={34} borde="#0B0B0B" />
                 </div>
               ))}
             </div>
@@ -171,14 +171,14 @@ export default function GooalV2DetailModal({
             {estadoLocal === 'completado' ? (
               <div
                 className="w-full py-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
-                style={{ background: 'rgba(76,175,80,0.14)', color: '#4CAF50' }}
+                style={{ background: 'rgba(0,209,167,0.14)', color: '#00D1A7' }}
               >
                 <Check className="w-4 h-4" /> Ya lo conseguiste
               </div>
             ) : estadoLocal === 'pendiente' ? (
               <button
                 onClick={() => setCompletando('lista')}
-                className="w-full py-4 bg-[#1DE9B6] active:bg-[#00BFA5] text-[#0A0A0A] rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors"
+                className="w-full py-4 bg-[#00D1A7] active:bg-[#00B893] text-[#0B0B0B] rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors"
               >
                 <Camera className="w-4 h-4" /> Completar ahora
               </button>
@@ -187,10 +187,10 @@ export default function GooalV2DetailModal({
                 <button
                   onClick={handleAnadir}
                   disabled={anadiendo}
-                  className="w-full py-4 bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-60 text-[#0A0A0A] rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors"
+                  className="w-full py-4 bg-[#00D1A7] active:bg-[#00B893] disabled:opacity-60 text-[#0B0B0B] rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors"
                 >
                   {anadiendo
-                    ? <span className="w-4 h-4 border-2 border-[#0A0A0A] border-t-transparent rounded-full animate-spin" />
+                    ? <span className="w-4 h-4 border-2 border-[#0B0B0B] border-t-transparent rounded-full animate-spin" />
                     : <Plus className="w-4 h-4" />
                   }
                   {anadiendo ? 'Añadiendo...' : 'Añadir a mi lista'}
@@ -198,7 +198,7 @@ export default function GooalV2DetailModal({
 
                 <button
                   onClick={() => setCompletando('directo')}
-                  className="w-full py-4 rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 border border-[#2A2A2A] text-[#F0F0F0] active:bg-[#141414] transition-colors"
+                  className="w-full py-4 rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 border border-[#2A2E2C] text-[#FFFFFF] active:bg-[#1E2120] transition-colors"
                 >
                   <Camera className="w-4 h-4" /> Ya lo hice — subir prueba
                 </button>
@@ -206,7 +206,7 @@ export default function GooalV2DetailModal({
             )}
           </div>
 
-          {error && <p style={{ color: '#C97B7B', fontSize: 13, marginTop: 12 }}>{error}</p>}
+          {error && <p style={{ color: '#FF5252', fontSize: 13, marginTop: 12 }}>{error}</p>}
         </div>
       </div>
 

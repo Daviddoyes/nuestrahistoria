@@ -28,7 +28,7 @@ function QrCode({ size = 168 }: { size?: number }) {
       role="img"
       aria-label="Código QR con el enlace gooals.app/download"
     >
-      <path stroke="#F0F0F0" d="M0 0.5h7m2 0h1m2 0h1m2 0h6m1 0h7M0 1.5h1m5 0h1m4 0h2m4 0h1m2 0h1m1 0h1m5 0h1M0 2.5h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h3m1 0h1m1 0h3m1 0h1M0 3.5h1m1 0h3m1 0h1m1 0h4m4 0h2m2 0h1m1 0h1m1 0h3m1 0h1M0 4.5h1m1 0h3m1 0h1m1 0h1m1 0h2m1 0h3m1 0h4m1 0h1m1 0h3m1 0h1M0 5.5h1m5 0h1m1 0h1m1 0h1m1 0h5m3 0h1m1 0h1m5 0h1M0 6.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M8 7.5h1m1 0h2m1 0h1m1 0h1m2 0h3M0 8.5h1m1 0h5m3 0h1m1 0h1m1 0h2m1 0h1m1 0h1m2 0h5M4 9.5h1m2 0h2m2 0h1m3 0h10m3 0h1M0 10.5h1m2 0h1m1 0h2m2 0h2m6 0h1m4 0h3M0 11.5h2m5 0h1m3 0h1m2 0h1m1 0h1m3 0h2m2 0h2m1 0h1M3 12.5h2m1 0h1m2 0h1m6 0h2m7 0h2M3 13.5h1m6 0h2m1 0h3m2 0h3m1 0h3m3 0h1M0 14.5h2m4 0h1m1 0h9m1 0h1m1 0h2m1 0h1m1 0h2M1 15.5h3m1 0h1m2 0h3m2 0h1m1 0h1m3 0h2m1 0h2m3 0h1M1 16.5h2m1 0h3m1 0h3m1 0h1m1 0h2m1 0h1m1 0h1m1 0h1m3 0h2M0 17.5h1m6 0h1m2 0h3m2 0h2m1 0h2m1 0h4m1 0h1m1 0h1M0 18.5h1m2 0h2m1 0h3m2 0h1m10 0h2m2 0h1M0 19.5h1m1 0h1m1 0h2m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m1 0h1m2 0h3m3 0h1M0 20.5h1m2 0h5m1 0h3m4 0h1m1 0h1m1 0h5m1 0h3M8 21.5h1m1 0h2m1 0h3m1 0h4m3 0h5M0 22.5h7m2 0h1m1 0h1m1 0h5m1 0h2m1 0h1m1 0h3M0 23.5h1m5 0h1m1 0h2m3 0h1m1 0h1m1 0h4m3 0h1m3 0h1M0 24.5h1m1 0h3m1 0h1m1 0h2m2 0h1m1 0h2m4 0h5m1 0h3M0 25.5h1m1 0h3m1 0h1m1 0h5m2 0h2m1 0h1m6 0h2M0 26.5h1m1 0h3m1 0h1m1 0h1m9 0h1m2 0h7M0 27.5h1m5 0h1m3 0h1m1 0h1m3 0h1m2 0h3m1 0h1m1 0h1m1 0h1M0 28.5h7m1 0h1m1 0h1m3 0h1m1 0h1m1 0h2m3 0h2m1 0h1" />
+      <path stroke="#FFFFFF" d="M0 0.5h7m2 0h1m2 0h1m2 0h6m1 0h7M0 1.5h1m5 0h1m4 0h2m4 0h1m2 0h1m1 0h1m5 0h1M0 2.5h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h3m1 0h1m1 0h3m1 0h1M0 3.5h1m1 0h3m1 0h1m1 0h4m4 0h2m2 0h1m1 0h1m1 0h3m1 0h1M0 4.5h1m1 0h3m1 0h1m1 0h1m1 0h2m1 0h3m1 0h4m1 0h1m1 0h3m1 0h1M0 5.5h1m5 0h1m1 0h1m1 0h1m1 0h5m3 0h1m1 0h1m5 0h1M0 6.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M8 7.5h1m1 0h2m1 0h1m1 0h1m2 0h3M0 8.5h1m1 0h5m3 0h1m1 0h1m1 0h2m1 0h1m1 0h1m2 0h5M4 9.5h1m2 0h2m2 0h1m3 0h10m3 0h1M0 10.5h1m2 0h1m1 0h2m2 0h2m6 0h1m4 0h3M0 11.5h2m5 0h1m3 0h1m2 0h1m1 0h1m3 0h2m2 0h2m1 0h1M3 12.5h2m1 0h1m2 0h1m6 0h2m7 0h2M3 13.5h1m6 0h2m1 0h3m2 0h3m1 0h3m3 0h1M0 14.5h2m4 0h1m1 0h9m1 0h1m1 0h2m1 0h1m1 0h2M1 15.5h3m1 0h1m2 0h3m2 0h1m1 0h1m3 0h2m1 0h2m3 0h1M1 16.5h2m1 0h3m1 0h3m1 0h1m1 0h2m1 0h1m1 0h1m1 0h1m3 0h2M0 17.5h1m6 0h1m2 0h3m2 0h2m1 0h2m1 0h4m1 0h1m1 0h1M0 18.5h1m2 0h2m1 0h3m2 0h1m10 0h2m2 0h1M0 19.5h1m1 0h1m1 0h2m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m1 0h1m2 0h3m3 0h1M0 20.5h1m2 0h5m1 0h3m4 0h1m1 0h1m1 0h5m1 0h3M8 21.5h1m1 0h2m1 0h3m1 0h4m3 0h5M0 22.5h7m2 0h1m1 0h1m1 0h5m1 0h2m1 0h1m1 0h3M0 23.5h1m5 0h1m1 0h2m3 0h1m1 0h1m1 0h4m3 0h1m3 0h1M0 24.5h1m1 0h3m1 0h1m1 0h2m2 0h1m1 0h2m4 0h5m1 0h3M0 25.5h1m1 0h3m1 0h1m1 0h5m2 0h2m1 0h1m6 0h2M0 26.5h1m1 0h3m1 0h1m1 0h1m9 0h1m2 0h7M0 27.5h1m5 0h1m3 0h1m1 0h1m3 0h1m2 0h3m1 0h1m1 0h1m1 0h1M0 28.5h7m1 0h1m1 0h1m3 0h1m1 0h1m1 0h2m3 0h2m1 0h1" />
     </svg>
   )
 }
@@ -81,11 +81,11 @@ export default function DownloadLanding() {
   }
 
   const botonClase =
-    'w-full py-4 bg-[#1DE9B6] active:bg-[#00BFA5] disabled:opacity-50 text-[#0A0A0A] text-[15px] font-semibold min-h-[44px] transition-colors'
+    'w-full py-4 bg-[#00D1A7] active:bg-[#00B893] disabled:opacity-50 text-[#0B0B0B] text-[15px] font-semibold min-h-[44px] transition-colors'
 
   return (
     <main
-      className="min-h-screen bg-[#0A0A0A] flex flex-col items-center px-6"
+      className="min-h-screen bg-[#0B0B0B] flex flex-col items-center px-6"
       style={{
         paddingTop: 'calc(env(safe-area-inset-top, 0px) + 56px)',
         paddingBottom: 'max(2rem, env(safe-area-inset-bottom, 0px))',
@@ -94,14 +94,14 @@ export default function DownloadLanding() {
       <div className="w-full flex-1 flex flex-col items-center" style={{ maxWidth: 400 }}>
         {/* ── Header ──────────────────────────────────────── */}
         <p
-          className="text-[#1DE9B6] font-semibold"
+          className="text-[#00D1A7] font-semibold"
           style={{ fontSize: 12, letterSpacing: '0.3em', textTransform: 'uppercase' }}
         >
           GooALS
         </p>
 
         <h1
-          className="text-[#F0F0F0] text-center mt-7"
+          className="text-[#FFFFFF] text-center mt-7"
           style={{ fontSize: 28, fontWeight: 700, lineHeight: 1.25 }}
         >
           Convierte tus intenciones en recuerdos.
@@ -109,7 +109,7 @@ export default function DownloadLanding() {
 
         <p
           className="text-center mt-4"
-          style={{ fontSize: 16, fontWeight: 400, color: '#999999', lineHeight: 1.6 }}
+          style={{ fontSize: 16, fontWeight: 400, color: '#7A8A85', lineHeight: 1.6 }}
         >
           Crea tu bucket list, vívela y compártela.
         </p>
@@ -117,13 +117,13 @@ export default function DownloadLanding() {
         {/* ── CTA por plataforma ──────────────────────────── */}
         <div className="w-full mt-10">
           {instalada ? (
-            <div className="flex items-center justify-center gap-2.5 py-4 rounded-xl border border-[#1DE9B6]/30 bg-[#1DE9B6]/5">
-              <Check className="w-4 h-4 text-[#1DE9B6] shrink-0" />
-              <span className="text-sm text-[#F0F0F0]">Ya la tienes instalada</span>
+            <div className="flex items-center justify-center gap-2.5 py-4 rounded-xl border border-[#00D1A7]/30 bg-[#00D1A7]/5">
+              <Check className="w-4 h-4 text-[#00D1A7] shrink-0" />
+              <span className="text-sm text-[#FFFFFF]">Ya la tienes instalada</span>
             </div>
           ) : platform === null ? (
             // Placeholder de la misma altura: evita que la página salte al montar.
-            <div className="w-full rounded-xl bg-[#141414]" style={{ height: 56 }} />
+            <div className="w-full rounded-xl bg-[#1E2120]" style={{ height: 56 }} />
           ) : platform === 'ios' ? (
             <button onClick={handleInstall} className={`${botonClase} rounded-xl`}>
               Añadir a pantalla de inicio
@@ -135,23 +135,23 @@ export default function DownloadLanding() {
           ) : (
             <div className="flex flex-col items-center">
               <div className="flex items-center gap-2.5 text-center">
-                <Smartphone className="w-4 h-4 text-[#1DE9B6] shrink-0" />
-                <p className="text-sm text-[#F0F0F0] leading-snug">
+                <Smartphone className="w-4 h-4 text-[#00D1A7] shrink-0" />
+                <p className="text-sm text-[#FFFFFF] leading-snug">
                   Abre esta página en tu móvil para instalar la app
                 </p>
               </div>
 
-              <div className="mt-6 p-4 rounded-2xl bg-[#141414] border border-[#2A2A2A]">
+              <div className="mt-6 p-4 rounded-2xl bg-[#1E2120] border border-[#2A2E2C]">
                 <QrCode />
               </div>
-              <p className="text-xs text-[#666666] mt-3">Escanea con la cámara</p>
+              <p className="text-xs text-[#7A8A85] mt-3">Escanea con la cámara</p>
             </div>
           )}
         </div>
 
         {/* ── Social proof ────────────────────────────────── */}
         <div className="w-full mt-12 flex flex-col items-center">
-          <p className="text-[13px] text-[#999999] text-center">
+          <p className="text-[13px] text-[#7A8A85] text-center">
             Únete a la comunidad que vive más.
           </p>
 
@@ -163,13 +163,13 @@ export default function DownloadLanding() {
             ].map(({ emoji, label }) => (
               <li key={label} className="flex flex-col items-center gap-1.5">
                 <span
-                  className="flex items-center justify-center rounded-xl bg-[#141414] border border-[#2A2A2A]"
+                  className="flex items-center justify-center rounded-xl bg-[#1E2120] border border-[#2A2E2C]"
                   style={{ width: 44, height: 44, fontSize: 19 }}
                   aria-hidden
                 >
                   {emoji}
                 </span>
-                <span className="text-[11px] text-[#666666]">{label}</span>
+                <span className="text-[11px] text-[#7A8A85]">{label}</span>
               </li>
             ))}
           </ul>
@@ -177,7 +177,7 @@ export default function DownloadLanding() {
       </div>
 
       {/* ── Footer ────────────────────────────────────────── */}
-      <p className="text-xs text-[#444444] mt-12">{APP_URL}</p>
+      <p className="text-xs text-[#7A8A85] mt-12">{APP_URL}</p>
 
       {showPasos && (
         <InstallStepsSheet platform={showPasos} onClose={() => setShowPasos(null)} />

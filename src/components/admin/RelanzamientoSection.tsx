@@ -71,31 +71,31 @@ export default function RelanzamientoSection() {
   return (
     <>
       <div className="flex items-center justify-between" style={{ marginBottom: 16 }}>
-        <p style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#666666' }}>
+        <p style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#7A8A85' }}>
           Correo a los usuarios existentes
         </p>
-        <button onClick={cargar} aria-label="Recargar" style={{ padding: 6, color: '#666666' }}>
+        <button onClick={cargar} aria-label="Recargar" style={{ padding: 6, color: '#7A8A85' }}>
           <RefreshCw className={`w-4 h-4 ${cargando ? 'animate-spin' : ''}`} />
         </button>
       </div>
 
       {error && (
-        <p className="text-sm text-[#C97B7B] bg-[#8B3A3A]/20 rounded-lg" style={{ padding: '9px 12px', marginBottom: 12 }}>
+        <p className="text-sm text-[#FF5252] bg-[rgba(255,82,82,0.14)] rounded-lg" style={{ padding: '9px 12px', marginBottom: 12 }}>
           {error}
         </p>
       )}
       {aviso && (
-        <p className="text-sm text-[#1DE9B6] bg-[#1DE9B6]/10 rounded-lg" style={{ padding: '9px 12px', marginBottom: 12 }}>
+        <p className="text-sm text-[#00D1A7] bg-[#00D1A7]/10 rounded-lg" style={{ padding: '9px 12px', marginBottom: 12 }}>
           {aviso}
         </p>
       )}
 
       {cargando && !estado ? (
-        <p style={{ fontSize: 13, color: '#444444' }}>Cargando...</p>
+        <p style={{ fontSize: 13, color: '#7A8A85' }}>Cargando...</p>
       ) : estado && (
-        <div style={{ background: '#141414', border: '1px solid #2A2A2A', borderRadius: 12, padding: 18 }}>
+        <div style={{ background: '#1E2120', border: '1px solid #2A2E2C', borderRadius: 12, padding: 18 }}>
           {!estado.configurado && (
-            <p className="flex items-start gap-2 text-sm text-[#C97B7B]" style={{ marginBottom: 14 }}>
+            <p className="flex items-start gap-2 text-sm text-[#FF5252]" style={{ marginBottom: 14 }}>
               <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ marginTop: 2 }} />
               Falta <code>RESEND_API_KEY</code>. Sin ella no se puede enviar.
             </p>
@@ -103,22 +103,22 @@ export default function RelanzamientoSection() {
 
           <div className="flex gap-8" style={{ marginBottom: 18 }}>
             <div>
-              <p style={{ fontSize: 26, fontWeight: 700, color: '#1DE9B6', lineHeight: 1 }}>
+              <p style={{ fontSize: 26, fontWeight: 700, color: '#00D1A7', lineHeight: 1 }}>
                 {estado.pendientes}
               </p>
-              <p style={{ fontSize: 11, color: '#666666', marginTop: 5 }}>sin escribir</p>
+              <p style={{ fontSize: 11, color: '#7A8A85', marginTop: 5 }}>sin escribir</p>
             </div>
             <div>
-              <p style={{ fontSize: 26, fontWeight: 700, color: '#666666', lineHeight: 1 }}>
+              <p style={{ fontSize: 26, fontWeight: 700, color: '#7A8A85', lineHeight: 1 }}>
                 {estado.porEstado.enviado ?? 0}
               </p>
-              <p style={{ fontSize: 11, color: '#666666', marginTop: 5 }}>ya enviados</p>
+              <p style={{ fontSize: 11, color: '#7A8A85', marginTop: 5 }}>ya enviados</p>
             </div>
           </div>
 
           <label style={{
             display: 'block', fontSize: 11, textTransform: 'uppercase',
-            letterSpacing: '0.14em', color: '#666666', marginBottom: 7,
+            letterSpacing: '0.14em', color: '#7A8A85', marginBottom: 7,
           }}>
             Fecha de borrado que anuncia el correo
           </label>
@@ -126,10 +126,10 @@ export default function RelanzamientoSection() {
             type="date"
             value={fecha}
             onChange={e => setFecha(e.target.value)}
-            className="rounded-lg border border-[#2A2A2A] bg-[#0A0A0A] text-[#F0F0F0] focus:outline-none focus:border-[#1DE9B6]"
+            className="rounded-lg border border-[#2A2E2C] bg-[#0B0B0B] text-[#FFFFFF] focus:outline-none focus:border-[#00D1A7]"
             style={{ padding: '9px 11px', fontSize: 14, marginBottom: 6 }}
           />
-          <p style={{ fontSize: 12, color: '#555555', marginBottom: 18, lineHeight: 1.6 }}>
+          <p style={{ fontSize: 12, color: '#7A8A85', marginBottom: 18, lineHeight: 1.6 }}>
             Es la fecha a partir de la cual borras los planes y las historias.
             Deja margen para que a quien le importe le dé tiempo a escribirte.
           </p>
@@ -141,7 +141,7 @@ export default function RelanzamientoSection() {
               className="flex items-center gap-2 rounded-lg active:opacity-80"
               style={{
                 padding: '11px 16px', fontSize: 13, fontWeight: 500,
-                color: '#1DE9B6', border: '1px solid #2A2A2A',
+                color: '#00D1A7', border: '1px solid #2A2E2C',
                 opacity: enviando || !estado.configurado ? 0.4 : 1,
               }}
             >
@@ -155,7 +155,7 @@ export default function RelanzamientoSection() {
                 className="rounded-lg active:opacity-80"
                 style={{
                   padding: '11px 16px', fontSize: 13, fontWeight: 600,
-                  color: '#0A0A0A', background: '#1DE9B6',
+                  color: '#0B0B0B', background: '#00D1A7',
                   opacity: enviando || !estado.configurado || estado.pendientes === 0 ? 0.35 : 1,
                 }}
               >
@@ -163,7 +163,7 @@ export default function RelanzamientoSection() {
               </button>
             ) : (
               <div className="flex items-center gap-2">
-                <span style={{ fontSize: 13, color: '#C97B7B' }}>
+                <span style={{ fontSize: 13, color: '#FF5252' }}>
                   Se manda a {estado.pendientes} personas y no se puede deshacer.
                 </span>
                 <button
@@ -172,14 +172,14 @@ export default function RelanzamientoSection() {
                   className="rounded-lg active:opacity-80"
                   style={{
                     padding: '11px 16px', fontSize: 13, fontWeight: 600,
-                    color: '#0A0A0A', background: '#C97B7B',
+                    color: '#0B0B0B', background: '#FF5252',
                   }}
                 >
                   {enviando ? 'Enviando...' : 'Sí, enviar'}
                 </button>
                 <button
                   onClick={() => setConfirmando(false)}
-                  style={{ fontSize: 13, color: '#666666', padding: '11px 8px' }}
+                  style={{ fontSize: 13, color: '#7A8A85', padding: '11px 8px' }}
                 >
                   Cancelar
                 </button>
@@ -188,7 +188,7 @@ export default function RelanzamientoSection() {
           </div>
 
           {estado.muestra.length > 0 && (
-            <p style={{ fontSize: 11, color: '#444444', marginTop: 16, lineHeight: 1.6 }}>
+            <p style={{ fontSize: 11, color: '#7A8A85', marginTop: 16, lineHeight: 1.6 }}>
               Primeros de la lista: {estado.muestra.join(', ')}
               {estado.pendientes > estado.muestra.length && ` y ${estado.pendientes - estado.muestra.length} más`}
             </p>
