@@ -3,6 +3,10 @@
 
 export type CategoriaGooal = 'viajes' | 'deporte' | 'musica' | 'gastronomia' | 'cultura' | 'aventura' | 'espectaculos'
 export type DificultadGooal = 'facil' | 'dificil' | 'epico'
+/** Solo los 'verificado' se enseñan en el catálogo. */
+export type EstadoGooal = 'borrador' | 'verificado'
+/** 'lugar' va al mapa (aunque aún le falte el pin); 'personal' no necesita coordenadas nunca. */
+export type AmbitoGooal = 'lugar' | 'personal'
 
 export const CATEGORIAS: CategoriaGooal[] = [
   'viajes', 'deporte', 'musica', 'gastronomia', 'cultura', 'aventura', 'espectaculos',
@@ -76,18 +80,24 @@ export function contarPorCategoria(
 
 export const DIFICULTADES: DificultadGooal[] = ['facil', 'dificil', 'epico']
 
-export const DIFICULTAD_META: Record<DificultadGooal, { emoji: string; label: string; puntos: number; color: string }> = {
-  facil: { emoji: '⚡', label: 'Fácil', puntos: 1, color: '#FFD54F' },
-  dificil: { emoji: '🔥', label: 'Difícil', puntos: 5, color: '#FF6B4A' },
-  epico: { emoji: '💎', label: 'Épico', puntos: 10, color: '#00D1A7' },
+export const DIFICULTAD_META: Record<DificultadGooal, { emoji: string; label: string; color: string }> = {
+  facil: { emoji: '⚡', label: 'Fácil', color: '#FFD54F' },
+  dificil: { emoji: '🔥', label: 'Difícil', color: '#FF6B4A' },
+  epico: { emoji: '💎', label: 'Épico', color: '#00D1A7' },
 }
 
+/** Escala de puntos de un gooal. */
+export const PUNTOS_MIN = 1
+export const PUNTOS_MAX = 10
+
 /**
- * Rango de puntos admisible para cada dificultad, como [mínimo, máximo].
+ * Qué puntos corresponden a cada dificultad, como [mínimo, máximo].
  *
- * Los puntos ya no se deducen de la dificultad: dentro de un mismo nivel hay
- * retos que valen más que otros (en Espectáculos hay 'facil' de 2 y de 3). La
- * dificultad fija la banda; el valor exacto lo pone quien crea el gooal.
+ * La dificultad ya NO se escribe: se deduce de los puntos. Esta tabla vive en
+ * tres sitios y tienen que coincidir:
+ *   - aquí, que es lo que usa la app
+ *   - scripts/seed-gooals/generar_sql.py (BANDA), lo que se siembra
+ *   - el disparador de supabase/fase3f.sql, que la recalcula en la base
  */
 export const BANDA_PUNTOS: Record<DificultadGooal, [number, number]> = {
   facil: [1, 3],
@@ -95,25 +105,54 @@ export const BANDA_PUNTOS: Record<DificultadGooal, [number, number]> = {
   epico: [8, 10],
 }
 
-/** ¿Esos puntos caen dentro de la banda de esa dificultad? */
-export function puntosValidos(dificultad: string, puntos: number): boolean {
-  const banda = BANDA_PUNTOS[dificultad as DificultadGooal]
-  if (!banda) return false
-  if (!Number.isInteger(puntos)) return false
-  return puntos >= banda[0] && puntos <= banda[1]
+/**
+ * Los puntos si son válidos (entero de 1 a 10); si no, null.
+ * Acepta lo que llegue de un formulario o de una petición: "5", 5, 5.0.
+ */
+export function puntosEnEscala(valor: unknown): number | null {
+  const n = typeof valor === 'string' && valor.trim() !== '' ? Number(valor) : valor
+  if (typeof n !== 'number' || !Number.isInteger(n)) return null
+  return n >= PUNTOS_MIN && n <= PUNTOS_MAX ? n : null
 }
 
-/** Puntos por defecto de cada dificultad, cuando no se especifica ninguno. */
-export function puntosPorDificultad(dificultad: string): number {
-  return DIFICULTAD_META[dificultad as DificultadGooal]?.puntos ?? 1
+/**
+ * LA dificultad de un gooal. Única fuente en el código: nadie la escribe a mano.
+ * Devuelve null si los puntos están fuera de escala.
+ */
+export function dificultadDePuntos(puntos: number): DificultadGooal | null {
+  for (const d of DIFICULTADES) {
+    const [min, max] = BANDA_PUNTOS[d]
+    if (Number.isInteger(puntos) && puntos >= min && puntos <= max) return d
+  }
+  return null
+}
+
+/**
+ * Si un gooal va al mapa ('lugar') o no necesita coordenadas nunca ('personal').
+ *
+ * No basta con "tiene coordenadas": Troya o el Cotopaxi son sitios aunque aún no
+ * tengan pin. Con ciudad, o con país en cultura y aventura, es un lugar. En el
+ * resto un país suele ser el origen de un plato ("Probar ceviche peruano"), no
+ * un sitio al que ir; lo fino se corrige a mano en el panel.
+ *
+ * Es la misma regla que rellenó la columna en supabase/fase3f.sql, y la repiten
+ * los scripts de siembra (insertar.mjs, generar_sql.py). Si cambia aquí,
+ * cambia allí.
+ */
+export function ambitoDeGooal(g: {
+  categoria: string
+  ciudad?: string | null
+  pais?: string | null
+  lat?: number | null
+}): AmbitoGooal {
+  if (g.lat != null) return 'lugar'
+  if (g.ciudad) return 'lugar'
+  if (g.pais && (g.categoria === 'cultura' || g.categoria === 'aventura')) return 'lugar'
+  return 'personal'
 }
 
 export function esCategoria(valor: string): valor is CategoriaGooal {
   return (CATEGORIAS as string[]).includes(valor)
-}
-
-export function esDificultad(valor: string): valor is DificultadGooal {
-  return (DIFICULTADES as string[]).includes(valor)
 }
 
 /** Categoría normalizada, tolerante a acentos y mayúsculas de la IA o del admin. */

@@ -146,8 +146,18 @@ entrada — esquiar un día, parapente en tándem, quad por dunas.
 
 ## Notas
 
-- Los gooals entran con `activo = true` y sin imagen. `imagen_url` queda a `null`
-  y se rellena desde `/admin` → **Catálogo Gooals V2**.
-- Requiere que `supabase/fase3.sql` esté ya ejecutado — es quien crea la tabla.
+- Los gooals entran en **`estado = 'borrador'`**: la app no los enseña hasta que
+  se verifican en `/admin`. Entran con `activo = true` y sin imagen; `imagen_url`
+  queda a `null` y se rellena desde el panel.
+- Cada gooal entra con su **`ambito`**: `lugar` si tiene coordenadas, ciudad, o
+  país en cultura/aventura; `personal` en el resto. La regla está repetida en
+  `insertar.mjs`, `generar_sql.py` y `src/lib/gooals.ts`.
+- **La dificultad no se escribe.** Aquí se usa para decidir los puntos (es lo que
+  traen los PDFs), pero la base la recalcula siempre a partir de los puntos con un
+  disparador. Si los puntos dicen otra cosa, mandan los puntos.
+- Requiere `supabase/fase3.sql` (crea la tabla) y `supabase/fase3f.sql` (estado,
+  ámbito y el disparador de la dificultad).
+- Los `.sql` de `output/` generados antes del 15-9-2026 aún escriben la dificultad
+  y no llevan estado ni ámbito: regenéralos con `generar_sql.py` antes de usarlos.
 - Es un script **local** de siembra, como `scripts/generar-experiencias/`. No
   forma parte de la app Next.js y no se despliega en Vercel.

@@ -3,10 +3,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Plus, X, Sparkles } from 'lucide-react'
 import {
-  CATEGORIAS, CATEGORIA_LABEL, CATEGORIA_COLOR, DIFICULTADES, DIFICULTAD_META,
-  BANDA_PUNTOS, puntosPorDificultad, type CategoriaGooal, type DificultadGooal,
+  CATEGORIAS, CATEGORIA_LABEL, CATEGORIA_COLOR, DIFICULTAD_META, PUNTOS_MIN,
+  dificultadDePuntos, puntosEnEscala, type CategoriaGooal,
 } from '@/lib/gooals'
 import type { GooalV2 } from '@/types/gooals'
+import SelectorPuntos from './SelectorPuntos'
 
 const HEADERS = { 'Content-Type': 'application/json' }
 
@@ -14,7 +15,6 @@ type GooalGenerado = {
   titulo: string
   descripcion: string
   categoria: string
-  dificultad: string
   ciudad: string
   pais: string
   puntos: number
@@ -31,12 +31,6 @@ const labelStyle: React.CSSProperties = {
 const btnPrimary: React.CSSProperties = {
   padding: '12px 0', borderRadius: 10, background: '#00D1A7', color: '#0B0B0B',
   fontWeight: 600, fontSize: 14, border: 'none', cursor: 'pointer', width: '100%',
-}
-
-/** ¿Los puntos caen en la banda de esa dificultad? Espejo de puntosValidos. */
-function enBanda(dificultad: DificultadGooal, puntos: number): boolean {
-  const [min, max] = BANDA_PUNTOS[dificultad]
-  return Number.isInteger(puntos) && puntos >= min && puntos <= max
 }
 
 function ModalShell({
@@ -72,7 +66,7 @@ function ModalShell({
 function NuevoGooalModal({ onClose, onSaved }: { onClose: () => void; onSaved: () => void }) {
   const [f, setF] = useState({
     titulo: '', descripcion: '', categoria: 'aventura' as CategoriaGooal,
-    dificultad: 'facil' as DificultadGooal, puntos: puntosPorDificultad('facil'),
+    puntos: PUNTOS_MIN,
     ciudad: '', pais: 'España', imagen_url: '', activo: true,
   })
   const [saving, setSaving] = useState(false)
@@ -80,10 +74,7 @@ function NuevoGooalModal({ onClose, onSaved }: { onClose: () => void; onSaved: (
 
   const guardar = async () => {
     if (!f.titulo.trim()) { setError('El título es obligatorio'); return }
-    if (!enBanda(f.dificultad, f.puntos)) {
-      setError(`Los puntos deben ir de ${BANDA_PUNTOS[f.dificultad][0]} a ${BANDA_PUNTOS[f.dificultad][1]}`)
-      return
-    }
+    if (puntosEnEscala(f.puntos) === null) { setError('Los puntos van de 1 a 10'); return }
     setSaving(true); setError('')
     try {
       const res = await fetch('/api/admin/gooals-v2', { method: 'POST', headers: HEADERS, body: JSON.stringify(f) })
@@ -107,52 +98,17 @@ function NuevoGooalModal({ onClose, onSaved }: { onClose: () => void; onSaved: (
             onChange={e => setF({ ...f, titulo: e.target.value })} />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-          <div>
-            <label style={labelStyle}>Categoría</label>
-            <select style={inputStyle} value={f.categoria}
-              onChange={e => setF({ ...f, categoria: e.target.value as CategoriaGooal })}>
-              {CATEGORIAS.map(c => <option key={c} value={c}>{CATEGORIA_LABEL[c]}</option>)}
-            </select>
-          </div>
-          <div>
-            <label style={labelStyle}>Dificultad</label>
-            <select style={inputStyle} value={f.dificultad}
-              onChange={e => {
-                const d = e.target.value as DificultadGooal
-                // Los puntos de la banda anterior no valen en la nueva: se
-                // recolocan al valor por defecto de la dificultad elegida.
-                setF({ ...f, dificultad: d, puntos: puntosPorDificultad(d) })
-              }}>
-              {DIFICULTADES.map(d => (
-                <option key={d} value={d}>
-                  {DIFICULTAD_META[d].emoji} {DIFICULTAD_META[d].label}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div>
+          <label style={labelStyle}>Categoría</label>
+          <select style={inputStyle} value={f.categoria}
+            onChange={e => setF({ ...f, categoria: e.target.value as CategoriaGooal })}>
+            {CATEGORIAS.map(c => <option key={c} value={c}>{CATEGORIA_LABEL[c]}</option>)}
+          </select>
         </div>
 
         <div>
-          <label style={labelStyle}>
-            Puntos ({BANDA_PUNTOS[f.dificultad][0]}–{BANDA_PUNTOS[f.dificultad][1]} para {DIFICULTAD_META[f.dificultad].label.toLowerCase()})
-          </label>
-          <input
-            style={inputStyle}
-            type="number"
-            inputMode="numeric"
-            min={BANDA_PUNTOS[f.dificultad][0]}
-            max={BANDA_PUNTOS[f.dificultad][1]}
-            step={1}
-            value={f.puntos}
-            onChange={e => setF({ ...f, puntos: Number(e.target.value) })}
-          />
-          {!enBanda(f.dificultad, f.puntos) && (
-            <p style={{ fontSize: 12, color: '#FF5252', marginTop: 5 }}>
-              Un gooal {DIFICULTAD_META[f.dificultad].label.toLowerCase()} vale entre{' '}
-              {BANDA_PUNTOS[f.dificultad][0]} y {BANDA_PUNTOS[f.dificultad][1]} puntos.
-            </p>
-          )}
+          <label style={labelStyle}>Puntos (la dificultad sale de aquí)</label>
+          <SelectorPuntos valor={f.puntos} onCambiar={puntos => setF({ ...f, puntos })} />
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
@@ -276,7 +232,8 @@ function GenerarIAModal({ onClose, onSaved }: { onClose: () => void; onSaved: ()
           <>
             <div style={{ maxHeight: 300, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6 }}>
               {generados.map((g, i) => {
-                const meta = DIFICULTAD_META[g.dificultad as DificultadGooal]
+                const dificultad = dificultadDePuntos(g.puntos)
+                const meta = dificultad ? DIFICULTAD_META[dificultad] : null
                 return (
                   <div key={i} style={{ background: '#2A2E2C', borderRadius: 8, padding: '8px 10px' }}>
                     <p style={{ fontSize: 13, color: '#FFFFFF' }}>{g.titulo}</p>
@@ -294,7 +251,7 @@ function GenerarIAModal({ onClose, onSaved }: { onClose: () => void; onSaved: ()
               disabled={guardando}
               onClick={guardarTodos}
             >
-              {guardando ? 'Guardando...' : `Guardar los ${generados.length} gooals`}
+              {guardando ? 'Guardando...' : `Guardar los ${generados.length} como borrador`}
             </button>
           </>
         )}

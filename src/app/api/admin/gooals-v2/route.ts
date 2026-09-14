@@ -2,41 +2,42 @@ import { NextResponse } from 'next/server'
 import { createServiceRoleClient } from '@/lib/supabase/service'
 import { esAdmin } from '@/lib/admin-auth'
 import {
-  esDificultad, normalizarCategoriaGooal, puntosPorDificultad, puntosValidos,
+  PUNTOS_MIN, ambitoDeGooal, normalizarCategoriaGooal, puntosEnEscala, type EstadoGooal,
 } from '@/lib/gooals'
 import type { GooalV2 } from '@/types/gooals'
 
 /**
- * Puntos a guardar: los del body si caen en la banda de esa dificultad, y si no
- * el valor por defecto. Un valor fuera de banda no rompe la petición, se ignora.
+ * Fila lista para insertar.
+ *
+ * Sin dificultad: la calcula la base a partir de los puntos (disparador de
+ * fase3f.sql). Unos puntos fuera de 1-10 no rompen la petición: se usa el mínimo.
  */
-function resolverPuntos(dificultad: string, puntos: unknown): number {
-  const pedidos = Number(puntos)
-  return puntosValidos(dificultad, pedidos) ? pedidos : puntosPorDificultad(dificultad)
-}
-
-/** Fila lista para insertar. */
-function normalizarGooal(body: Record<string, unknown>) {
+function normalizarGooal(body: Record<string, unknown>, estado: EstadoGooal) {
   const titulo = String(body.titulo ?? '').trim()
   if (!titulo) return null
 
-  const dificultad = esDificultad(String(body.dificultad)) ? String(body.dificultad) : 'facil'
   const texto = (campo: unknown) => (campo ? String(campo).trim() || null : null)
+  const categoria = normalizarCategoriaGooal(body.categoria as string)
+  const ciudad = texto(body.ciudad)
+  const pais = texto(body.pais)
 
   return {
     titulo: titulo.slice(0, 200),
     descripcion: texto(body.descripcion),
-    categoria: normalizarCategoriaGooal(body.categoria as string),
-    dificultad,
-    puntos: resolverPuntos(dificultad, body.puntos),
-    ciudad: texto(body.ciudad),
-    pais: texto(body.pais),
+    categoria,
+    puntos: puntosEnEscala(body.puntos) ?? PUNTOS_MIN,
+    ciudad,
+    pais,
     imagen_url: texto(body.imagen_url),
     activo: body.activo === undefined ? true : Boolean(body.activo),
+    estado,
+    ambito: ambitoDeGooal({ categoria, ciudad, pais }),
   }
 }
 
-// ── Listado completo del catálogo (incluye inactivos) ───────────
+// ── Listado completo del catálogo ───────────────────────────────
+// El panel es la excepción al filtro de estado: aquí se ven TODOS, borradores
+// e inactivos incluidos, porque es donde se revisan.
 export async function GET(request: Request) {
   if (!await esAdmin()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -77,9 +78,11 @@ export async function POST(request: Request) {
   const service = createServiceRoleClient()
 
   // Alta en lote: es lo que usa "Generar con IA" al guardar los 20 gooals.
+  // Nacen en BORRADOR: son textos escritos por la IA que el admin solo ha visto
+  // de pasada en una lista, igual que lo que genera el pipeline de siembra.
   if (Array.isArray(body.gooals)) {
     const filas = body.gooals
-      .map((g: Record<string, unknown>) => normalizarGooal(g))
+      .map((g: Record<string, unknown>) => normalizarGooal(g, 'borrador'))
       .filter(Boolean)
 
     if (filas.length === 0) {
@@ -91,7 +94,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, insertados: filas.length })
   }
 
-  const fila = normalizarGooal(body)
+  // Alta manual de uno: nace VERIFICADO. Lo ha escrito el admin a mano, campo a
+  // campo; crearlo ya es revisarlo.
+  const fila = normalizarGooal(body, 'verificado')
   if (!fila) return NextResponse.json({ error: 'El título es obligatorio' }, { status: 400 })
 
   const { data, error } = await service.from('gooals_v2').insert(fila).select('id').single()
@@ -118,36 +123,11 @@ export async function PATCH(request: Request) {
   if (body.imagen_url !== undefined) cambios.imagen_url = String(body.imagen_url).trim() || null
   if (body.categoria !== undefined) cambios.categoria = normalizarCategoriaGooal(String(body.categoria))
 
-  const dificultadNueva = body.dificultad !== undefined && esDificultad(String(body.dificultad))
-    ? String(body.dificultad)
-    : null
-  if (dificultadNueva) cambios.dificultad = dificultadNueva
-
+  // La dificultad no se acepta: sale de los puntos (la recalcula la base). Unos
+  // puntos fuera de 1-10 se ignoran en vez de guardar un valor inventado.
   if (body.puntos !== undefined) {
-    // La banda es la de la dificultad que tendrá el gooal DESPUÉS del PATCH: la
-    // del body si viene, y si no la que ya tiene guardada.
-    let dificultad = dificultadNueva
-    if (!dificultad) {
-      const { data } = await service
-        .from('gooals_v2')
-        .select('dificultad')
-        .eq('id', id)
-        .maybeSingle()
-      dificultad = (data as { dificultad: string } | null)?.dificultad ?? null
-    }
-
-    if (dificultad && puntosValidos(dificultad, Number(body.puntos))) {
-      cambios.puntos = Number(body.puntos)
-    } else if (dificultadNueva) {
-      cambios.puntos = puntosPorDificultad(dificultadNueva)
-    }
-    // Puntos fuera de banda y sin cambio de dificultad: se deja el valor que
-    // ya tenía, en vez de aplanarlo al de por defecto.
-  } else if (dificultadNueva) {
-    // Sin puntos en el body, la dificultad nueva arrastra su valor por defecto.
-    // Con puntos en el body NO se pisan: es lo que aplanaba la escala de
-    // Espectáculos, donde hay 'facil' de 2 y de 3.
-    cambios.puntos = puntosPorDificultad(dificultadNueva)
+    const puntos = puntosEnEscala(body.puntos)
+    if (puntos !== null) cambios.puntos = puntos
   }
 
   if (Object.keys(cambios).length === 0) {

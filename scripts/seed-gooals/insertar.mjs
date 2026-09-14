@@ -88,6 +88,18 @@ async function titulosExistentes(categoria) {
 
 const LOTE = 500;
 
+/**
+ * Si un gooal va al mapa ('lugar') o no necesita coordenadas nunca ('personal').
+ * Copia de ambitoDeGooal() en src/lib/gooals.ts (este script no puede importar
+ * TypeScript). Si cambia allí, cambia aquí y en generar_sql.py.
+ */
+function ambitoDe(f) {
+  if (f.lat != null) return 'lugar';
+  if (f.ciudad) return 'lugar';
+  if (f.pais && (f.categoria === 'cultura' || f.categoria === 'aventura')) return 'lugar';
+  return 'personal';
+}
+
 async function sembrar(categoria) {
   const filas = catalogo[categoria];
   const yaEstan = await titulosExistentes(categoria);
@@ -109,7 +121,8 @@ async function sembrar(categoria) {
       titulo: f.titulo,
       descripcion: f.descripcion,
       categoria: f.categoria,
-      dificultad: f.dificultad,
+      // Sin dificultad: la calcula la base a partir de los puntos (fase3f.sql).
+      // En gooals.json sigue existiendo, pero solo como dato de trabajo del PDF.
       puntos: f.puntos,
       ciudad: f.ciudad,
       pais: f.pais,
@@ -118,6 +131,10 @@ async function sembrar(categoria) {
       lng: f.lng ?? null,
       geo: f.geo ?? null,
       activo: true,
+      // Todo lo que siembra el pipeline nace en borrador: se publica al
+      // verificarlo en el panel, no por haberlo sacado de un PDF.
+      estado: 'borrador',
+      ambito: ambitoDe(f),
     }));
     await pedir('gooals_v2', {
       method: 'POST',
@@ -181,8 +198,11 @@ async function actualizarCoordenadas(categoria) {
         pedir(`gooals_v2?id=eq.${id}`, {
           method: 'PATCH',
           headers: { Prefer: 'return=minimal' },
+          // ambito: 'lugar' va con las coordenadas a la fuerza. La base rechaza
+          // un gooal 'personal' con pin (gooals_v2_personal_sin_coordenadas), y
+          // si tiene pin es que es un sitio.
           body: JSON.stringify({
-            lat: fuente.lat, lng: fuente.lng, geo: fuente.geo ?? null,
+            lat: fuente.lat, lng: fuente.lng, geo: fuente.geo ?? null, ambito: 'lugar',
           }),
         }),
       ),

@@ -206,6 +206,9 @@ export async function getMuroFeed(limite = 40): Promise<MuroPostFeed[]> {
 
   const [perfilesRes, gooalsRes, misLikesRes] = await Promise.all([
     service.from('profiles').select(PERFIL_CAMPOS).in('id', autorIds),
+    // SIN filtro de estado, a propósito. Un post del muro es algo que alguien ya
+    // conquistó: si su gooal pasa a borrador, el post no puede quedarse sin
+    // título ni desaparecer. No añadir .eq('estado', 'verificado') aquí.
     gooalIds.length > 0
       ? service.from('gooals_v2').select('*').in('id', gooalIds)
       : Promise.resolve({ data: [] }),
@@ -286,10 +289,12 @@ export async function getCatalogoGooals(filtros: FiltrosCatalogo = {}): Promise<
   const pagina = Math.max(0, filtros.pagina ?? 0)
   const desde = pagina * GOOALS_POR_PAGINA
 
+  // CATÁLOGO: solo lo verificado. Aquí entra también la búsqueda de Explorar.
   let query = service
     .from('gooals_v2')
     .select('*')
     .eq('activo', true)
+    .eq('estado', 'verificado')
 
   if (filtros.categoria && filtros.categoria !== 'todos') {
     query = query.eq('categoria', filtros.categoria)
@@ -345,10 +350,12 @@ export async function getPinesMapa(filtros: FiltrosPines = {}): Promise<PinMapa[
   // recortado. Sin este bucle faltarían 2.232 pines y el mapa parecería
   // correcto, solo que con medio mundo vacío.
   for (let desde = 0; ; desde += PINES_POR_VUELTA) {
+    // CATÁLOGO: solo lo verificado. Un borrador no debe asomar como pin.
     let query = service
       .from('gooals_v2')
       .select('id, lat, lng, categoria')
       .eq('activo', true)
+      .eq('estado', 'verificado')
       .not('lat', 'is', null)
 
     if (filtros.categoria && filtros.categoria !== 'todos') {
@@ -406,6 +413,8 @@ export async function getGooalsMapa(filtros: FiltrosMapa): Promise<{
     .from('gooals_v2')
     .select('id, titulo, categoria, dificultad, puntos, ciudad, pais, lat, lng')
     .eq('activo', true)
+    // CATÁLOGO: solo lo verificado, igual que getPinesMapa.
+    .eq('estado', 'verificado')
     .not('lat', 'is', null)
     .gte('lat', filtros.sur)
     .lte('lat', filtros.norte)
@@ -448,6 +457,12 @@ export async function getGooalsMapa(filtros: FiltrosMapa): Promise<{
  * El mapa solo trae nueve columnas por pin, y la ficha necesita la fila entera.
  * Se pide al pulsar, que es una vez, en vez de engordar la consulta del mapa
  * con descripciones e imágenes para cientos de pines que nadie va a abrir.
+ *
+ * CATÁLOGO: solo devuelve gooals verificados y activos. Hoy la llaman el popup
+ * del mapa y su ficha, que abren gooals del catálogo. El perfil y el muro NO
+ * pasan por aquí: traen el gooal en su propia consulta, sin filtro de estado,
+ * para que lo que alguien ya tiene no desaparezca. Si algún día hay que abrir
+ * desde el perfil un gooal que pasó a borrador, no uses esta función.
  */
 export async function getGooalV2(id: string): Promise<GooalV2 | null> {
   const service = createServiceRoleClient()
@@ -455,6 +470,8 @@ export async function getGooalV2(id: string): Promise<GooalV2 | null> {
     .from('gooals_v2')
     .select('*')
     .eq('id', id)
+    .eq('activo', true)
+    .eq('estado', 'verificado')
     .maybeSingle()
   return (data as GooalV2 | null) ?? null
 }
@@ -496,14 +513,20 @@ export async function sugerirGooal(
 
   const service = createServiceRoleClient()
 
-  // Si ya está en el catálogo no es una sugerencia: es que no lo ha encontrado.
-  const { data: yaExiste } = await service
+  // Si ya existe no es una sugerencia nueva. Se mira TODA la tabla, borradores
+  // incluidos, pero el mensaje depende de si la persona puede encontrarlo: a un
+  // borrador no se le puede mandar a buscarlo al catálogo, porque no está.
+  const { data: yaExisten } = await service
     .from('gooals_v2')
-    .select('id')
+    .select('estado, activo')
     .ilike('titulo', limpio)
-    .limit(1)
-  if (yaExiste && yaExiste.length > 0) {
+    .limit(5)
+  const coincidencias = (yaExisten ?? []) as { estado: string; activo: boolean }[]
+  if (coincidencias.some(g => g.estado === 'verificado' && g.activo)) {
     return { ok: false, error: 'Ese gooal ya está en el catálogo, búscalo por otro nombre.' }
+  }
+  if (coincidencias.length > 0) {
+    return { ok: false, error: 'Ese gooal ya está propuesto y lo estamos revisando.' }
   }
 
   // Tope diario: modera el spam sin necesidad de vigilar la cola a mano.
@@ -570,13 +593,16 @@ export async function anadirGooal(gooalId: string): Promise<{ success: boolean; 
 
     const service = createServiceRoleClient()
 
+    // CATÁLOGO: solo se añade lo que el catálogo enseña. Añadir se hace desde
+    // Explorar o el mapa, así que un borrador aquí sería una llamada a mano.
     const { data: gooal } = await service
       .from('gooals_v2')
-      .select('id, activo')
+      .select('id, activo, estado')
       .eq('id', gooalId)
       .maybeSingle()
 
-    if (!gooal || !(gooal as { activo: boolean }).activo) {
+    const fila = gooal as { activo: boolean; estado: string } | null
+    if (!fila || !fila.activo || fila.estado !== 'verificado') {
       return { success: false, error: 'Este gooal ya no está disponible.' }
     }
 
@@ -676,14 +702,31 @@ export async function completarGooal(
     const errorPrueba = await validarPrueba(service, userId, gooalId, fotoUrl, videoUrl)
     if (errorPrueba) return { success: false, error: errorPrueba }
 
+    // SIN filtro de estado, a propósito. Completar un pendiente propio tiene que
+    // funcionar aunque ese gooal haya pasado a borrador después de añadirlo: lo
+    // que alguien ya tiene es suyo. Lo que sí se exige es que, si NO está
+    // verificado, lo tenga ya en su lista; si no, esto serviría para completar
+    // borradores que el catálogo nunca le ha enseñado.
     const { data: gooalRow } = await service
       .from('gooals_v2')
-      .select('id, puntos')
+      .select('id, puntos, estado, activo')
       .eq('id', gooalId)
       .maybeSingle()
 
     if (!gooalRow) return { success: false, error: 'Este gooal ya no existe.' }
-    const puntosGanados = (gooalRow as { puntos: number | null }).puntos ?? 1
+    const gooalDatos = gooalRow as { puntos: number | null; estado: string; activo: boolean }
+
+    if (gooalDatos.estado !== 'verificado' || !gooalDatos.activo) {
+      const { data: loTiene } = await service
+        .from('user_gooals')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('gooal_id', gooalId)
+        .maybeSingle()
+      if (!loTiene) return { success: false, error: 'Este gooal ya no está disponible.' }
+    }
+
+    const puntosGanados = gooalDatos.puntos ?? 1
 
     const { data: perfilAntes } = await service
       .from('profiles')
@@ -913,6 +956,11 @@ function listarUserGooals(
   return leerTodo<FilaUserGooal>(`user_gooals ${estado}`, (desde, hasta) =>
     service
       .from('user_gooals')
+      // SIN filtro de estado, a propósito, y así debe seguir. De aquí salen el
+      // perfil propio y el ajeno: conquistados, pendientes, conteo por categoría
+      // y "en común". Lo que alguien ya tiene es suyo aunque su gooal pase a
+      // borrador. Filtrar por estado (o convertir este join en !inner con
+      // gooals_v2.estado=eq.verificado) vaciaría el perfil de la gente.
       .select(
         'id, foto_url, video_url, puntos_ganados, completado_at, ' +
         'gooal:gooals_v2(id, titulo, categoria, dificultad, puntos, ciudad), posts:muro_posts(id)'
@@ -944,6 +992,9 @@ function listarEstados(
  * Lo que comparten quien mira y la persona del perfil: gooals que habéis
  * conquistado los dos, y gooals que tenéis pendientes los dos. Se conserva el
  * orden de la otra persona (lo más reciente suyo primero) y su foto.
+ *
+ * SIN filtro de estado, a propósito: cruza listas de lo que cada uno ya tiene.
+ * Si un gooal compartido pasa a borrador, los dos lo siguen teniendo en común.
  */
 function calcularEnComun(
   mios: { gooal_id: string; estado: EstadoUserGooal }[],
@@ -1028,6 +1079,7 @@ export async function getPerfil(username?: string): Promise<PerfilCompleto | nul
     puntos: conquistados.reduce((suma, c) => suma + c.puntos, 0),
     conquistados,
     pendientes,
+    // Cuenta sobre lo del usuario, sin filtro de estado: sus borradores también suman.
     porCategoria: contarPorCategoria(conquistados),
     enComun: misEstados ? calcularEnComun(misEstados, conquistados, pendientes) : null,
   }
@@ -1049,6 +1101,8 @@ export async function getMuroPost(postId: string): Promise<MuroPostFeed | null> 
 
   const [perfilRes, gooalRes, likeRes] = await Promise.all([
     service.from('profiles').select(PERFIL_CAMPOS).eq('id', fila.user_id).maybeSingle(),
+    // SIN filtro de estado, a propósito: es un post ya publicado (se abre desde
+    // el perfil y el muro). Si su gooal pasa a borrador, el post sigue entero.
     fila.gooal_id
       ? service.from('gooals_v2').select('*').eq('id', fila.gooal_id).maybeSingle()
       : Promise.resolve({ data: null }),
@@ -1078,7 +1132,8 @@ export async function getMuroPost(postId: string): Promise<MuroPostFeed | null> 
 export async function getGooalsOnboarding(categorias: string[], cantidad = 8): Promise<GooalV2[]> {
   const service = createServiceRoleClient()
 
-  const consulta = service.from('gooals_v2').select('*').eq('activo', true)
+  // CATÁLOGO: solo lo verificado. Lo primero que ve alguien nuevo no puede ser un borrador.
+  const consulta = service.from('gooals_v2').select('*').eq('activo', true).eq('estado', 'verificado')
   const { data } = categorias.length > 0
     ? await consulta.in('categoria', categorias).limit(cantidad * 3)
     : await consulta.limit(cantidad * 3)
@@ -1089,7 +1144,7 @@ export async function getGooalsOnboarding(categorias: string[], cantidad = 8): P
   // pantalla vacía en mitad del onboarding.
   if (gooals.length === 0 && categorias.length > 0) {
     const { data: fallback } = await service
-      .from('gooals_v2').select('*').eq('activo', true).limit(cantidad)
+      .from('gooals_v2').select('*').eq('activo', true).eq('estado', 'verificado').limit(cantidad)
     return (fallback ?? []) as GooalV2[]
   }
 

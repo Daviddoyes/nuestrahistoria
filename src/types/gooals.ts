@@ -1,6 +1,6 @@
 // Tipos de la Fase 3 (gamificación).
 
-import type { CategoriaGooal, DificultadGooal } from '@/lib/gooals'
+import type { AmbitoGooal, CategoriaGooal, DificultadGooal, EstadoGooal } from '@/lib/gooals'
 
 export type Profile = {
   id: string
@@ -21,12 +21,17 @@ export type GooalV2 = {
   titulo: string
   descripcion: string | null
   categoria: CategoriaGooal
+  /** Solo lectura: la calcula la base a partir de los puntos. Ver dificultadDePuntos. */
   dificultad: DificultadGooal
   puntos: number
   ciudad: string | null
   pais: string | null
   imagen_url: string | null
   activo: boolean
+  /** Solo los 'verificado' se enseñan en el catálogo. */
+  estado: EstadoGooal
+  /** 'lugar' va al mapa; 'personal' no necesita coordenadas nunca. */
+  ambito: AmbitoGooal
   veces_completado: number
   created_at: string
 }

@@ -3,10 +3,10 @@
 import { useState, useEffect, useCallback } from 'react'
 import { RefreshCw, Check, X } from 'lucide-react'
 import {
-  CATEGORIAS, CATEGORIA_LABEL, CATEGORIA_COLOR, DIFICULTADES, DIFICULTAD_META,
-  type CategoriaGooal, type DificultadGooal,
+  CATEGORIAS, CATEGORIA_LABEL, CATEGORIA_COLOR, PUNTOS_MIN, type CategoriaGooal,
 } from '@/lib/gooals'
 import type { GooalSugerencia, EstadoSugerencia } from '@/types/gooals'
+import SelectorPuntos from './SelectorPuntos'
 
 const PESTANAS: { estado: EstadoSugerencia; label: string }[] = [
   { estado: 'pendiente', label: 'Pendientes' },
@@ -24,7 +24,7 @@ export default function SugerenciasSection() {
 
   // Ediciones del admin antes de aprobar, por id de sugerencia.
   const [ediciones, setEdiciones] = useState<Record<string, {
-    titulo: string; categoria: CategoriaGooal; dificultad: DificultadGooal
+    titulo: string; categoria: CategoriaGooal; puntos: number
   }>>({})
 
   const cargar = useCallback(async () => {
@@ -37,7 +37,7 @@ export default function SugerenciasSection() {
       setPendientes(json.pendientes)
       setEdiciones(Object.fromEntries(
         (json.sugerencias as GooalSugerencia[]).map(s => [
-          s.id, { titulo: s.titulo, categoria: s.categoria, dificultad: 'facil' as DificultadGooal },
+          s.id, { titulo: s.titulo, categoria: s.categoria, puntos: PUNTOS_MIN },
         ]),
       ))
       setError('')
@@ -74,7 +74,7 @@ export default function SugerenciasSection() {
   }
 
   const editar = (id: string, cambio: Partial<{
-    titulo: string; categoria: CategoriaGooal; dificultad: DificultadGooal
+    titulo: string; categoria: CategoriaGooal; puntos: number
   }>) => {
     setEdiciones(prev => ({ ...prev, [id]: { ...prev[id], ...cambio } }))
   }
@@ -172,25 +172,12 @@ export default function SugerenciasSection() {
                       ))}
                     </div>
 
-                    <div className="flex gap-1.5" style={{ marginTop: 8 }}>
-                      {DIFICULTADES.map(d => {
-                        const meta = DIFICULTAD_META[d]
-                        const activo = edicion?.dificultad === d
-                        return (
-                          <button
-                            key={d}
-                            onClick={() => editar(s.id, { dificultad: d })}
-                            style={{
-                              padding: '5px 10px', borderRadius: 999, fontSize: 11,
-                              border: `1px solid ${activo ? meta.color : '#2A2E2C'}`,
-                              background: activo ? `${meta.color}22` : 'transparent',
-                              color: activo ? meta.color : '#7A8A85',
-                            }}
-                          >
-                            {meta.emoji} {meta.label} · {meta.puntos}pt
-                          </button>
-                        )
-                      })}
+                    <div style={{ marginTop: 10 }}>
+                      <SelectorPuntos
+                        compacto
+                        valor={edicion?.puntos ?? PUNTOS_MIN}
+                        onCambiar={puntos => editar(s.id, { puntos })}
+                      />
                     </div>
 
                     <div className="flex gap-2" style={{ marginTop: 12 }}>

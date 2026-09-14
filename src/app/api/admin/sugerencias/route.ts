@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { createServiceRoleClient } from '@/lib/supabase/service'
 import { esAdmin } from '@/lib/admin-auth'
 import {
-  esDificultad, normalizarCategoriaGooal, puntosPorDificultad, puntosValidos,
+  PUNTOS_MIN, ambitoDeGooal, normalizarCategoriaGooal, puntosEnEscala,
 } from '@/lib/gooals'
 import type { GooalSugerencia, EstadoSugerencia } from '@/types/gooals'
 
@@ -79,17 +79,13 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: 'Esa sugerencia ya está revisada' }, { status: 409 })
   }
 
-  // El admin puede corregir título y categoría al aprobar, y es quien pone la
-  // dificultad: el usuario que sugiere no tiene por qué saber el baremo.
+  // El admin puede corregir título y categoría al aprobar, y es quien pone los
+  // puntos: el usuario que sugiere no tiene por qué saber el baremo. La
+  // dificultad no se escribe: la calcula la base a partir de los puntos.
   const titulo = String(body.titulo ?? fila.titulo).trim().slice(0, 200)
   if (!titulo) return NextResponse.json({ error: 'El título es obligatorio' }, { status: 400 })
   const categoria = normalizarCategoriaGooal(String(body.categoria ?? fila.categoria))
-  const dificultad = esDificultad(String(body.dificultad)) ? String(body.dificultad) : 'facil'
-  // El admin puede afinar los puntos dentro de la banda de esa dificultad; si
-  // no manda ninguno, se usa el valor por defecto.
-  const puntos = puntosValidos(dificultad, Number(body.puntos))
-    ? Number(body.puntos)
-    : puntosPorDificultad(dificultad)
+  const puntos = puntosEnEscala(body.puntos) ?? PUNTOS_MIN
 
   // El gooal se publica sin rastro de quién lo sugirió: en el catálogo uno
   // sugerido es indistinguible de uno curado.
@@ -99,12 +95,14 @@ export async function PATCH(request: Request) {
       titulo,
       descripcion: null,
       categoria,
-      dificultad,
       puntos,
       ciudad: null,
       pais: null,
       imagen_url: null,
       activo: true,
+      // Nace VERIFICADO: aprobar una sugerencia ya es revisarla.
+      estado: 'verificado',
+      ambito: ambitoDeGooal({ categoria, ciudad: null, pais: null }),
     })
     .select('id')
     .single()

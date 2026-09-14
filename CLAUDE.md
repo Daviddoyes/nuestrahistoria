@@ -62,16 +62,33 @@ público. Esto ya pasó una vez y expuso el email de todos los usuarios.
 
 ## Reglas del dominio
 
-### El baremo de puntos vive en DOS sitios
+### La dificultad sale de los puntos
 
-`facil` = 1 · `dificil` = 5 · `epico` = 10
+Los puntos van de 1 a 10 y la dificultad **no se escribe nunca**: se deduce.
+`1-3 facil` · `4-7 dificil` · `8-10 epico`
 
-- `src/lib/gooals.ts` → `DIFICULTAD_META`, lo que aplica la app
-- `scripts/seed-gooals/generar_sql.py` → `PUNTOS`, lo que se siembra
+Esa tabla vive en TRES sitios y tienen que coincidir:
 
-**Si cambias uno, cambia el otro.** Los puntos se guardan en la fila de
-`gooals_v2` a propósito: así un cambio de baremo no reescribe el histórico de
-puntos ya ganados.
+- `src/lib/gooals.ts` → `BANDA_PUNTOS` y `dificultadDePuntos()`, lo que usa la app
+- `scripts/seed-gooals/generar_sql.py` → `BANDA`, lo que se siembra
+- `supabase/fase3f.sql` → el disparador que la recalcula en la base
+
+Aunque algo escribiera una dificultad, el disparador la pisa con la de los
+puntos. Los puntos se guardan en la fila de `gooals_v2` a propósito: así un
+cambio de baremo no reescribe el histórico de puntos ya ganados.
+
+### Solo se ve lo verificado, pero lo de cada uno es suyo
+
+`gooals_v2.estado` es `borrador` o `verificado`. **Todo lo que enseña el catálogo**
+(Explorar, búsqueda, mapa, detalle, onboarding) filtra por `verificado`. El panel
+de admin es la excepción: ve todo.
+
+**El perfil y el muro NO filtran por estado, a propósito.** Lo que alguien ya ha
+añadido o conquistado es suyo aunque el gooal pase a borrador. Hay un comentario
+en cada una de esas consultas; no lo "arregles".
+
+Nacen `verificado`: aprobar una sugerencia y crear uno a mano en el panel.
+Nacen `borrador`: el pipeline de siembra y "Generar con IA".
 
 ### Un gooal es una experiencia, no un sitio
 

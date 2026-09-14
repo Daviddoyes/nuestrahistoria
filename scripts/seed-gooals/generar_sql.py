@@ -617,8 +617,29 @@ def lit(v):
     return "'" + str(v).replace("'", "''") + "'"
 
 
+def ambito_de(r, cat):
+    """'lugar' si va al mapa, 'personal' si no necesita coordenadas nunca.
+
+    Copia de ambitoDeGooal() en src/lib/gooals.ts y de ambitoDe() en
+    insertar.mjs. Si cambia alli, cambia aqui.
+    """
+    if r.get('lat') is not None:
+        return 'lugar'
+    if r.get('ciudad'):
+        return 'lugar'
+    if r.get('pais') and cat in ('cultura', 'aventura'):
+        return 'lugar'
+    return 'personal'
+
+
 def sql_categoria(cat, rows):
-    """Un solo INSERT ... SELECT FROM (VALUES ...) con guarda de duplicados."""
+    """Un solo INSERT ... SELECT FROM (VALUES ...) con guarda de duplicados.
+
+    No escribe la dificultad: la calcula la base a partir de los puntos
+    (disparador de supabase/fase3f.sql). Aqui se sigue usando internamente,
+    porque es lo que traen los PDFs, pero solo para decidir los puntos.
+    Todo nace en 'borrador': se publica al verificarlo en el panel.
+    """
     rep = {k: sum(1 for r in rows if r['dificultad'] == k) for k in PUNTOS}
     L = [
         '-- ═══════════════════════════════════════════════════════════',
@@ -630,15 +651,15 @@ def sql_categoria(cat, rows):
         '-- Idempotente: compara título + categoría, así que relanzarlo no duplica.',
         '-- ═══════════════════════════════════════════════════════════',
         '',
-        'insert into gooals_v2 (titulo, descripcion, categoria, dificultad, puntos, ciudad, pais, activo)',
-        'select v.titulo, v.descripcion, v.categoria, v.dificultad, v.puntos, v.ciudad, v.pais, true',
+        'insert into gooals_v2 (titulo, descripcion, categoria, puntos, ciudad, pais, activo, estado, ambito)',
+        "select v.titulo, v.descripcion, v.categoria, v.puntos, v.ciudad, v.pais, true, 'borrador', v.ambito",
         'from (values',
         ',\n'.join(
             f'  ({lit(r["titulo"])}, {lit(r["descripcion"])}, {lit(cat)}, '
-            f'{lit(r["dificultad"])}, {r["puntos"]}, {lit(r["ciudad"])}, {lit(r["pais"])})'
+            f'{r["puntos"]}, {lit(r["ciudad"])}, {lit(r["pais"])}, {lit(ambito_de(r, cat))})'
             for r in rows
         ),
-        ') as v(titulo, descripcion, categoria, dificultad, puntos, ciudad, pais)',
+        ') as v(titulo, descripcion, categoria, puntos, ciudad, pais, ambito)',
         'where not exists (',
         '  select 1 from gooals_v2 g where g.titulo = v.titulo and g.categoria = v.categoria',
         ');',
