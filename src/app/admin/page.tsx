@@ -3,8 +3,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { RefreshCw, ArrowLeft } from 'lucide-react'
-import ExperienciasSection from '@/components/admin/ExperienciasSection'
-import GooalsSection from '@/components/admin/GooalsSection'
 import GooalsV2Section from '@/components/admin/GooalsV2Section'
 import SugerenciasSection from '@/components/admin/SugerenciasSection'
 import RelanzamientoSection from '@/components/admin/RelanzamientoSection'
@@ -364,16 +362,6 @@ export default function AdminPage() {
 
           {/* ── Section 7: Catálogo Gooals V2 (Fase 3) ── */}
           <GooalsV2Section />
-
-          <Divider />
-
-          {/* ── Section 8: Gooals (arquitectura previa) ── */}
-          <GooalsSection />
-
-          <Divider />
-
-          {/* ── Section 9: Biblioteca de experiencias (legado, fuente de la migración) ── */}
-          <ExperienciasSection />
 
         </div>
       )}

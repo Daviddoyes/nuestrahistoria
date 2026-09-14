@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { ArrowLeft, LogOut, Search, UserPlus, ListTodo, Check } from 'lucide-react'
+import { ArrowLeft, LogOut, Search, UserPlus, Check } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import {
   getPerfilGamificado, seguirUsuario, dejarDeSeguir,
@@ -148,16 +148,6 @@ function PerfilContenido() {
                 className="text-[#666666] active:text-[#1DE9B6] transition-colors p-2 -ml-2"
               >
                 <ArrowLeft className="w-5 h-5" />
-              </button>
-            )}
-
-            {perfil.esPropio && (
-              <button
-                onClick={() => router.push('/planes')}
-                aria-label="Mis planes"
-                className="text-[#666666] active:text-[#1DE9B6] transition-colors p-2 -mr-2 flex items-center gap-1.5 text-[11px] uppercase tracking-[0.12em]"
-              >
-                <ListTodo className="w-4 h-4" /> Planes
               </button>
             )}
           </div>

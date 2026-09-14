@@ -1,7 +1,22 @@
-// Tipos de la Fase 3 (gamificación). El catálogo antiguo (`gooals` +
-// `gooal_lugares`) sigue en @/types/planes; esto es la arquitectura v2.
+// Tipos de la Fase 3 (gamificación).
 
 import type { CategoriaGooal, DificultadGooal } from '@/lib/gooals'
+
+export type Profile = {
+  id: string
+  nombre: string
+  email: string
+  username: string | null
+  foto_perfil_url: string | null
+  edad: number | null
+  plan: 'free' | 'premium'
+  stripe_customer_id: string | null
+  stripe_subscription_id: string | null
+  created_at: string
+  onboarding_completado?: boolean
+  intereses?: string[]
+  con_quien_vive?: string[]
+}
 
 /** Fila del catálogo curado desde /admin. */
 export type GooalV2 = {

@@ -5,8 +5,7 @@ import { useRouter } from 'next/navigation'
 import { getMuroFeed, getMyProfile } from '@/lib/actions'
 import AppShell, { PantallaCargando, EstadoVacio } from '@/components/AppShell'
 import MuroPostCard from '@/components/MuroPostCard'
-import type { MuroPostFeed } from '@/types/gooals'
-import type { Profile } from '@/types/planes'
+import type { MuroPostFeed, Profile } from '@/types/gooals'
 
 export default function MuroPage() {
   const router = useRouter()

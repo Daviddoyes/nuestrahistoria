@@ -8,8 +8,6 @@ export async function proxy(request: NextRequest) {
   const isPublic =
     pathname === '/' ||
     pathname.startsWith('/reset-password') ||
-    pathname.startsWith('/pricing') ||
-    pathname.startsWith('/plan') ||
     pathname.startsWith('/invite') ||
     pathname.startsWith('/download') ||
     pathname.startsWith('/api/')
@@ -46,7 +44,6 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   const isProtected =
-    pathname.startsWith('/planes') ||
     pathname.startsWith('/onboarding') ||
     pathname.startsWith('/perfil') ||
     pathname.startsWith('/muro') ||

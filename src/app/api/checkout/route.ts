@@ -65,8 +65,8 @@ export async function POST(request: NextRequest) {
       customer: customerId,
       line_items: [{ price: priceId, quantity: 1 }],
       mode: 'subscription',
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/planes?upgraded=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/perfil?upgraded=true`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/perfil`,
     })
 
     return NextResponse.json({ url: session.url })

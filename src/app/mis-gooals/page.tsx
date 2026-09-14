@@ -7,8 +7,7 @@ import { CATEGORIA_LABEL, CATEGORIA_GRADIENTE, DIFICULTAD_META } from '@/lib/goo
 import AppShell, { PantallaCargando, EstadoVacio } from '@/components/AppShell'
 import CompletarGooalModal, { type ResultadoCompletado } from '@/components/CompletarGooalModal'
 import CelebracionPuntos from '@/components/CelebracionPuntos'
-import type { UserGooalConGooal, GooalV2 } from '@/types/gooals'
-import type { Profile } from '@/types/planes'
+import type { UserGooalConGooal, GooalV2, Profile } from '@/types/gooals'
 
 type Seccion = 'pendientes' | 'completados'
 

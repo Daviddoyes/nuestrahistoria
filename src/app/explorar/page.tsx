@@ -7,7 +7,7 @@ import AppShell, { PantallaCargando } from '@/components/AppShell'
 import ExplorarFeed from '@/components/ExplorarFeed'
 import CelebracionPuntos from '@/components/CelebracionPuntos'
 import type { ResultadoCompletado } from '@/components/CompletarGooalModal'
-import type { Profile } from '@/types/planes'
+import type { Profile } from '@/types/gooals'
 
 export default function ExplorarPage() {
   const router = useRouter()
