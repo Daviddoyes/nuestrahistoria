@@ -6,9 +6,12 @@ import { createClient } from '@/lib/supabase/client'
 import { completarGooal, anadirYCompletarGooal } from '@/lib/actions'
 import { DIFICULTAD_META, CATEGORIA_LABEL } from '@/lib/gooals'
 import type { GooalV2 } from '@/types/gooals'
+import {
+  ACCEPT_PRUEBA, BUCKET_PRUEBAS, MAX_BYTES_FOTO, MAX_BYTES_VIDEO, MAX_SEGUNDOS_VIDEO,
+  errorDeArchivo, tipoDePrueba,
+} from '@/lib/prueba-media'
 
-const BUCKET = 'gooals-media'
-const MAX_SEGUNDOS_VIDEO = 9
+const MEGA = 1024 * 1024
 
 export type ResultadoCompletado = {
   puntosGanados: number
@@ -78,7 +81,14 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
     if (!file) return
     setError('')
 
-    const video = file.type.startsWith('video/')
+    const errorArchivo = errorDeArchivo(file)
+    if (errorArchivo) {
+      setError(errorArchivo)
+      if (inputRef.current) inputRef.current.value = ''
+      return
+    }
+
+    const video = tipoDePrueba(file.type) === 'video'
     if (video) {
       try {
         const segundos = await duracionVideo(file)
@@ -113,19 +123,25 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
     setError('')
 
     try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('Tu sesión ha caducado. Vuelve a entrar para subir la prueba.')
+
       // La subida va directa a Storage desde el navegador: un server action
       // tiene límite de tamaño de body y un vídeo de 9s se lo come.
-      const extension = esVideo ? (archivo.name.split('.').pop() || 'mp4') : 'jpg'
+      // La carpeta <userId>/<gooalId>/ no es estética: la política del bucket
+      // solo deja subir a tu propia carpeta, y el servidor rechaza cualquier
+      // prueba que no esté en la del gooal que se completa.
+      const extension = esVideo ? (archivo.type === 'video/quicktime' ? 'mov' : 'mp4') : 'jpg'
       const cuerpo = esVideo ? archivo : await comprimirImagen(archivo)
-      const ruta = `${gooal.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${extension}`
+      const ruta = `${user.id}/${gooal.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${extension}`
 
       const { error: upError } = await supabase.storage
-        .from(BUCKET)
+        .from(BUCKET_PRUEBAS)
         .upload(ruta, cuerpo, { contentType: esVideo ? archivo.type : 'image/jpeg', upsert: false })
 
-      if (upError) throw upError
+      if (upError) throw new Error('No se pudo subir la prueba. Revisa tu conexión e inténtalo de nuevo.')
 
-      const { data: { publicUrl } } = supabase.storage.from(BUCKET).getPublicUrl(ruta)
+      const { data: { publicUrl } } = supabase.storage.from(BUCKET_PRUEBAS).getPublicUrl(ruta)
 
       const completar = modo === 'directo' ? anadirYCompletarGooal : completarGooal
       const res = await completar(
@@ -145,8 +161,7 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
       })
     } catch (err) {
       console.error('[CompletarGooalModal]', err)
-      const msg = err instanceof Error ? err.message : 'Error al subir la prueba'
-      setError(`${msg} — comprueba que el bucket "${BUCKET}" existe y es público.`)
+      setError(err instanceof Error ? err.message : 'No se pudo completar el gooal.')
       setSubiendo(false)
     }
   }
@@ -202,7 +217,7 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
                   <ImagePlus className="w-8 h-8 mb-1.5" />
                   <p className="text-sm">Subir foto o vídeo</p>
                   <p className="text-xs text-[#1DE9B6]/70 mt-0.5">
-                    Obligatorio · vídeo máx. {MAX_SEGUNDOS_VIDEO}s
+                    Obligatorio · foto hasta {MAX_BYTES_FOTO / MEGA} MB · vídeo hasta {MAX_SEGUNDOS_VIDEO}s y {MAX_BYTES_VIDEO / MEGA} MB
                   </p>
                 </div>
               )}
@@ -211,7 +226,7 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
             <input
               ref={inputRef}
               type="file"
-              accept="image/*,video/*"
+              accept={ACCEPT_PRUEBA}
               onChange={handleArchivo}
               style={{ display: 'none' }}
             />

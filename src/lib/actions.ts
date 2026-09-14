@@ -5,6 +5,9 @@ import { createClient as createServerClient } from '@/lib/supabase/server'
 import { createServiceRoleClient } from '@/lib/supabase/service'
 import { calcularNivel } from '@/lib/niveles'
 import { CATEGORIAS, normalizarCategoriaGooal } from '@/lib/gooals'
+import {
+  BUCKET_PRUEBAS, errorDeArchivo, rutaDePrueba, tipoDePrueba, type TipoPrueba,
+} from '@/lib/prueba-media'
 import type {
   GooalV2, UserGooal, UserGooalConGooal, MuroPostFeed, UsuarioMini,
   PerfilGamificado, StatCategoria, EstadoUserGooal, FiltrosCatalogo,
@@ -206,7 +209,7 @@ export async function getMuroFeed(limite = 40): Promise<MuroPostFeed[]> {
     gooalIds.length > 0
       ? service.from('gooals_v2').select('*').in('id', gooalIds)
       : Promise.resolve({ data: [] }),
-    service.from('post_likes').select('post_id').eq('user_id', userId).in('post_id', filas.map(p => p.id)),
+    service.from('muro_likes').select('post_id').eq('user_id', userId).in('post_id', filas.map(p => p.id)),
   ])
 
   const perfiles = new Map(
@@ -240,20 +243,20 @@ export async function toggleLike(postId: string): Promise<{ liked: boolean; like
   const service = createServiceRoleClient()
 
   const { data: existente } = await service
-    .from('post_likes')
+    .from('muro_likes')
     .select('id')
     .eq('post_id', postId)
     .eq('user_id', userId)
     .maybeSingle()
 
   if (existente) {
-    await service.from('post_likes').delete().eq('id', (existente as { id: string }).id)
+    await service.from('muro_likes').delete().eq('id', (existente as { id: string }).id)
   } else {
-    await service.from('post_likes').insert({ post_id: postId, user_id: userId })
+    await service.from('muro_likes').insert({ post_id: postId, user_id: userId })
   }
 
   const { count } = await service
-    .from('post_likes')
+    .from('muro_likes')
     .select('id', { count: 'exact', head: true })
     .eq('post_id', postId)
 
@@ -660,6 +663,36 @@ export async function getMisGooals(): Promise<{
   }
 }
 
+const PRUEBA_NO_VALIDA = 'No hemos podido verificar tu prueba. Vuelve a subir la foto o el vídeo.'
+
+/**
+ * Comprueba que la prueba es de verdad una subida de este usuario para este
+ * gooal. Devuelve el mensaje de error, o null si vale.
+ *
+ * Además de la URL se mira el fichero en Storage: que exista y que su peso y su
+ * tipo cumplan los límites. Los límites del navegador los puede saltar
+ * cualquiera que llame a la Server Action a mano.
+ */
+async function validarPrueba(
+  service: ReturnType<typeof createServiceRoleClient>,
+  userId: string,
+  gooalId: string,
+  fotoUrl: string | null,
+  videoUrl: string | null
+): Promise<string | null> {
+  if (Boolean(fotoUrl) === Boolean(videoUrl)) return 'Necesitas subir una foto o un vídeo.'
+
+  const tipoEsperado: TipoPrueba = fotoUrl ? 'foto' : 'video'
+  const ruta = rutaDePrueba((fotoUrl ?? videoUrl) as string, userId, gooalId)
+  if (!ruta) return PRUEBA_NO_VALIDA
+
+  const { data: fichero, error } = await service.storage.from(BUCKET_PRUEBAS).info(ruta)
+  if (error || !fichero) return PRUEBA_NO_VALIDA
+
+  if (tipoDePrueba(fichero.contentType ?? '') !== tipoEsperado) return PRUEBA_NO_VALIDA
+  return errorDeArchivo({ type: fichero.contentType ?? '', size: fichero.size ?? 0 })
+}
+
 /**
  * Completa un gooal: guarda la prueba, recalcula puntos y nivel, publica en el
  * muro y actualiza el contador del catálogo. La foto/vídeo ya viene subida a
@@ -681,9 +714,11 @@ export async function completarGooal(
   try {
     const userId = await getUserId()
     if (!userId) return { success: false, error: 'No autenticado' }
-    if (!fotoUrl && !videoUrl) return { success: false, error: 'Necesitas subir una foto o un vídeo.' }
 
     const service = createServiceRoleClient()
+
+    const errorPrueba = await validarPrueba(service, userId, gooalId, fotoUrl, videoUrl)
+    if (errorPrueba) return { success: false, error: errorPrueba }
 
     const { data: gooalRow } = await service
       .from('gooals_v2')
@@ -732,7 +767,7 @@ export async function completarGooal(
     // así que se reemplaza si el usuario vuelve a subir prueba del mismo.
     const userGooalId = (userGooal as { id: string }).id
     await service.from('muro_posts').delete().eq('user_gooal_id', userGooalId)
-    await service.from('muro_posts').insert({
+    const { error: postError } = await service.from('muro_posts').insert({
       user_id: userId,
       gooal_id: gooalId,
       user_gooal_id: userGooalId,
@@ -742,6 +777,10 @@ export async function completarGooal(
       puntos: puntosGanados,
       likes: 0,
     })
+    // No se aborta: el gooal y sus puntos ya están guardados, y deshacerlos por
+    // un fallo del muro sería peor. Pero se deja rastro, porque un insert que
+    // falla sin avisar es justo lo que tuvo el muro roto sin que nadie lo viera.
+    if (postError) console.error('[completarGooal] muro_posts:', postError)
 
     const { count } = await service
       .from('user_gooals')
@@ -967,7 +1006,7 @@ export async function getMuroPost(postId: string): Promise<MuroPostFeed | null> 
       ? service.from('gooals_v2').select('*').eq('id', fila.gooal_id).maybeSingle()
       : Promise.resolve({ data: null }),
     viewerId
-      ? service.from('post_likes').select('id').eq('post_id', postId).eq('user_id', viewerId).maybeSingle()
+      ? service.from('muro_likes').select('id').eq('post_id', postId).eq('user_id', viewerId).maybeSingle()
       : Promise.resolve({ data: null }),
   ])
 

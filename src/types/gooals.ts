@@ -43,6 +43,7 @@ export type UserGooal = {
   video_url: string | null
   descripcion: string | null
   puntos_ganados: number
+  reportes: number
   completado_at: string | null
   created_at: string
 }
