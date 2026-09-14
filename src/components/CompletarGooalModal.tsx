@@ -29,7 +29,8 @@ export type ResultadoCompletado = {
 }
 
 type Props = {
-  gooal: GooalV2
+  /** Solo lo que el modal pinta y envía: así vale tanto un gooal del catálogo como uno de la lista del perfil. */
+  gooal: Pick<GooalV2, 'id' | 'titulo' | 'categoria' | 'dificultad' | 'puntos'>
   /** 'lista' completa un gooal ya añadido; 'directo' lo añade y lo completa. */
   modo?: 'lista' | 'directo'
   onClose: () => void

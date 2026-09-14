@@ -1,23 +1,28 @@
 'use client'
 
-import { Suspense, useState, useEffect, useCallback, useMemo } from 'react'
+import { Suspense, useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { ArrowLeft, LogOut, Search, UserPlus, Check } from 'lucide-react'
+import { ArrowLeft, Search } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
-import {
-  getPerfilGamificado, seguirUsuario, dejarDeSeguir,
-} from '@/lib/actions'
-import { progresoNivel } from '@/lib/niveles'
-import { CATEGORIA_EMOJI, CATEGORIA_LABEL } from '@/lib/gooals'
+import { getPerfil, seguirUsuario, dejarDeSeguir } from '@/lib/actions'
 import AppShell, { PantallaCargando, EstadoVacio } from '@/components/AppShell'
-import Avatar from '@/components/Avatar'
 import ListaUsuariosModal from '@/components/ListaUsuariosModal'
 import EditarPerfilModal from '@/components/EditarPerfilModal'
-import CompartirPerfilStory from '@/components/CompartirPerfilStory'
 import PostDetailModal from '@/components/PostDetailModal'
 import BuscarUsuariosSheet from '@/components/BuscarUsuariosSheet'
 import InvitarAmigoSheet from '@/components/InvitarAmigoSheet'
-import type { PerfilGamificado } from '@/types/gooals'
+import CompletarGooalModal, { type ResultadoCompletado } from '@/components/CompletarGooalModal'
+import CelebracionPuntos from '@/components/CelebracionPuntos'
+import CabeceraPerfil from '@/components/perfil/CabeceraPerfil'
+import TarjetaEnComun from '@/components/perfil/TarjetaEnComun'
+import TarjetaCifras from '@/components/perfil/TarjetaCifras'
+import PastillasCategorias from '@/components/perfil/PastillasCategorias'
+import PestanasPerfil, { type PestanaPerfil } from '@/components/perfil/PestanasPerfil'
+import RejillaConquistados from '@/components/perfil/RejillaConquistados'
+import ListaPendientes from '@/components/perfil/ListaPendientes'
+import VisorLogro from '@/components/perfil/VisorLogro'
+import AjustesSheet from '@/components/perfil/AjustesSheet'
+import type { Conquistado, GooalResumen, PerfilCompleto } from '@/types/gooals'
 
 export default function PerfilPage() {
   // useSearchParams obliga a un límite de Suspense para poder prerenderizar.
@@ -36,21 +41,37 @@ function PerfilContenido() {
   // ?u=<username> abre el perfil de otra persona; sin parámetro, el propio.
   const username = searchParams.get('u')
 
-  const [perfil, setPerfil] = useState<PerfilGamificado | null>(null)
+  const [perfil, setPerfil] = useState<PerfilCompleto | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [siguiendoAccion, setSiguiendoAccion] = useState(false)
+  const [pestana, setPestana] = useState<PestanaPerfil>('conquistados')
 
   const [lista, setLista] = useState<'seguidores' | 'siguiendo' | null>(null)
+  const [ajustes, setAjustes] = useState(false)
   const [editando, setEditando] = useState(false)
   const [postAbierto, setPostAbierto] = useState<string | null>(null)
+  const [visor, setVisor] = useState<Conquistado | null>(null)
   const [buscando, setBuscando] = useState(false)
   const [invitando, setInvitando] = useState(false)
+  const [completando, setCompletando] = useState<GooalResumen | null>(null)
+  const [celebracion, setCelebracion] = useState<ResultadoCompletado | null>(null)
 
-  const cargar = useCallback(async () => {
-    setLoading(true)
+  const pestanasRef = useRef<HTMLDivElement>(null)
+
+  /**
+   * `silencioso` recarga sin pantalla de carga ni cambiar de pestaña: tras
+   * completar un gooal o fallar un "Seguir", la página no debe parpadear. Al
+   * entrar en un perfil (o saltar a otro) sí: si no, se verían un instante los
+   * datos del anterior.
+   */
+  const cargar = useCallback(async (silencioso = false) => {
+    if (!silencioso) {
+      setLoading(true)
+      setPestana('conquistados')
+    }
     try {
-      const p = await getPerfilGamificado(username ?? undefined)
+      const p = await getPerfil(username ?? undefined)
       if (!p) {
         if (username) setError('No existe ningún perfil con ese usuario.')
         else router.push('/')
@@ -85,7 +106,7 @@ function PerfilContenido() {
 
     if (!res.success) {
       setError(res.error ?? 'No se pudo completar la acción.')
-      await cargar()
+      await cargar(true)
     }
     setSiguiendoAccion(false)
   }
@@ -93,9 +114,29 @@ function PerfilContenido() {
   const irAPerfil = (u: string | null) => {
     setLista(null)
     setBuscando(false)
+    setPostAbierto(null)
     if (!u) return
     if (perfil?.esPropio && u === perfil.usuario.username) return
     router.push(`/perfil?u=${encodeURIComponent(u)}`)
+  }
+
+  // Sin post en el muro (falló al publicarse) se abre la prueba en un visor
+  // simple: el recuerdo está en user_gooals igualmente.
+  const abrirConquistado = (c: Conquistado) => {
+    if (c.postId) setPostAbierto(c.postId)
+    else setVisor(c)
+  }
+
+  const verPendientes = () => {
+    setPestana('pendientes')
+    pestanasRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  const handleCompletado = async (resultado: ResultadoCompletado) => {
+    setCompletando(null)
+    setCelebracion(resultado)
+    setPestana('conquistados')
+    await cargar(true)
   }
 
   const handleLogout = async () => {
@@ -123,8 +164,14 @@ function PerfilContenido() {
     )
   }
 
-  const progreso = progresoNivel(perfil.puntos)
-  const nivel = progreso.actual
+  const botonExplorar = (
+    <button
+      onClick={() => router.push('/explorar')}
+      className="px-5 py-3 rounded-xl bg-[#00D1A7] active:bg-[#00B893] text-[#0B0B0B] text-sm font-semibold transition-colors min-h-[44px]"
+    >
+      Explorar gooals
+    </button>
+  )
 
   return (
     <>
@@ -132,12 +179,12 @@ function PerfilContenido() {
         <div style={{ padding: '0 20px 32px' }}>
 
           {/* ── Barra superior ─────────────────────────────── */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: 44 }}>
+          <div style={{ display: 'flex', alignItems: 'center', minHeight: 44 }}>
             {perfil.esPropio ? (
               <button
                 onClick={() => setBuscando(true)}
                 aria-label="Buscar personas"
-                className="text-[#7A8A85] active:text-[#00D1A7] transition-colors p-2 -ml-2"
+                className="text-[#7A8A85] active:text-[#00D1A7] transition-colors w-11 h-11 -ml-3 flex items-center justify-center"
               >
                 <Search className="w-5 h-5" />
               </button>
@@ -145,196 +192,77 @@ function PerfilContenido() {
               <button
                 onClick={() => router.push('/perfil')}
                 aria-label="Volver a mi perfil"
-                className="text-[#7A8A85] active:text-[#00D1A7] transition-colors p-2 -ml-2"
+                className="text-[#7A8A85] active:text-[#00D1A7] transition-colors w-11 h-11 -ml-3 flex items-center justify-center"
               >
                 <ArrowLeft className="w-5 h-5" />
               </button>
             )}
           </div>
 
-          {/* ── Cabecera ───────────────────────────────────── */}
-          <div className="flex flex-col items-center" style={{ paddingTop: 8 }}>
-            <Avatar
-              nombre={perfil.usuario.nombre}
-              foto={perfil.usuario.foto_perfil_url}
-              size={80}
-              borde={nivel.color}
-            />
-
-            <p style={{ fontSize: 22, fontWeight: 700, color: '#FFFFFF', marginTop: 14, textAlign: 'center', lineHeight: 1.2 }}>
-              {perfil.usuario.nombre}
-            </p>
-            <p style={{ fontSize: 13, color: '#7A8A85', marginTop: 4 }}>
-              @{perfil.usuario.username ?? perfil.usuario.nombre}
-            </p>
-            <p style={{ fontSize: 13, fontWeight: 600, color: '#00D1A7', marginTop: 8 }}>
-              Nivel: {nivel.nombre}
-            </p>
-
-            {!perfil.esPropio && (
-              <button
-                onClick={handleSeguir}
-                disabled={siguiendoAccion}
-                className={`mt-5 px-8 py-3 rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors disabled:opacity-60 ${
-                  perfil.siguiendolo
-                    ? 'border border-[#2A2E2C] text-[#FFFFFF] active:bg-[#1E2120]'
-                    : 'bg-[#00D1A7] active:bg-[#00B893] text-[#0B0B0B]'
-                }`}
-              >
-                {perfil.siguiendolo ? <><Check className="w-4 h-4" /> Siguiendo</> : 'Seguir'}
-              </button>
-            )}
-          </div>
-
-          {/* ── Puntos y nivel ─────────────────────────────── */}
-          <div style={{ background: '#1E2120', borderRadius: 16, padding: 18, marginTop: 26 }}>
-            <p className="fuente-titular" style={{ fontSize: 36, fontWeight: 700, color: '#00D1A7', lineHeight: 1 }}>
-              {perfil.puntos} pts
-            </p>
-
-            <div
-              role="progressbar"
-              aria-valuenow={progreso.porcentaje}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-label="Progreso al siguiente nivel"
-              style={{ height: 10, background: '#2A2E2C', borderRadius: 999, overflow: 'hidden', marginTop: 14 }}
-            >
-              <div
-                className="barra-nivel"
-                style={{ height: '100%', width: `${progreso.porcentaje}%`, background: '#00D1A7', borderRadius: 999 }}
-              />
-            </div>
-
-            <p style={{ fontSize: 12, color: '#7A8A85', marginTop: 9 }}>
-              {progreso.siguiente
-                ? `${perfil.puntos}/${progreso.siguiente.minPuntos} para ${progreso.siguiente.nombre}`
-                : 'Nivel máximo alcanzado. Eres épico.'}
-            </p>
-          </div>
-
-          {/* ── Estadísticas por categoría ─────────────────── */}
-          <p style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#7A8A85', marginTop: 28, marginBottom: 12 }}>
-            Por categoría
-          </p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-            {perfil.stats.map(s => (
-              <div
-                key={s.categoria}
-                style={{
-                  background: '#1E2120', borderRadius: 12, padding: '12px 14px',
-                  display: 'flex', alignItems: 'center', gap: 10,
-                }}
-              >
-                <span style={{ fontSize: 22, lineHeight: 1 }}>{CATEGORIA_EMOJI[s.categoria]}</span>
-                <span style={{ minWidth: 0, flex: 1 }}>
-                  <span style={{ display: 'block', fontSize: 12, color: '#A3B1AC', lineHeight: 1.3 }}>
-                    {CATEGORIA_LABEL[s.categoria]}
-                  </span>
-                  <span style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#00D1A7', lineHeight: 1.3 }}>
-                    {s.porcentaje}%
-                  </span>
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {/* ── Stats sociales ─────────────────────────────── */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 26 }}>
-            <button
-              onClick={() => setLista('seguidores')}
-              className="active:text-[#00D1A7] transition-colors"
-              style={{ fontSize: 13, color: '#A3B1AC', minHeight: 44, padding: '0 4px' }}
-            >
-              <span style={{ color: '#FFFFFF', fontWeight: 700 }}>{perfil.seguidores}</span> seguidores
-            </button>
-            <span style={{ color: '#2A2E2C' }}>·</span>
-            <button
-              onClick={() => setLista('siguiendo')}
-              className="active:text-[#00D1A7] transition-colors"
-              style={{ fontSize: 13, color: '#A3B1AC', minHeight: 44, padding: '0 4px' }}
-            >
-              <span style={{ color: '#FFFFFF', fontWeight: 700 }}>{perfil.siguiendo}</span> siguiendo
-            </button>
-          </div>
-
-          {/* ── Gooals completados ─────────────────────────── */}
-          <p style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#7A8A85', marginTop: 14, marginBottom: 12 }}>
-            Gooals completados
-          </p>
-
-          {perfil.recientes.length === 0 ? (
-            <p style={{ fontSize: 13, color: '#7A8A85', textAlign: 'center', padding: '12px 0 4px' }}>
-              {perfil.esPropio
-                ? 'Completa tu primer gooal para verlo aquí.'
-                : 'Todavía no ha completado ningún gooal.'}
-            </p>
-          ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 4 }}>
-              {perfil.recientes.map(r => (
-                <button
-                  key={r.userGooalId}
-                  onClick={() => r.postId && setPostAbierto(r.postId)}
-                  disabled={!r.postId}
-                  className="active:opacity-70 transition-opacity"
-                  style={{
-                    position: 'relative', aspectRatio: '1/1', borderRadius: 8,
-                    overflow: 'hidden', background: '#1E2120', display: 'block', width: '100%',
-                  }}
-                >
-                  {r.foto_url && (
-                    <img
-                      src={r.foto_url}
-                      alt={r.titulo}
-                      loading="lazy"
-                      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-                    />
-                  )}
-                  <span
-                    style={{
-                      position: 'absolute', bottom: 4, right: 5, fontSize: 10, fontWeight: 700,
-                      color: '#00D1A7', background: 'rgba(0,0,0,0.6)', borderRadius: 5, padding: '1px 5px',
-                    }}
-                  >
-                    +{r.puntos}
-                  </span>
-                </button>
-              ))}
-            </div>
-          )}
-
-
-          {/* ── Acciones ───────────────────────────────────── */}
-          {perfil.esPropio && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 28 }}>
-              <button
-                onClick={() => setEditando(true)}
-                className="w-full py-3.5 rounded-xl bg-[#00D1A7] active:bg-[#00B893] text-[#0B0B0B] transition-colors text-sm font-semibold min-h-[44px]"
-              >
-                Editar perfil
-              </button>
-
-              <CompartirPerfilStory perfil={perfil} />
-
-              <button
-                onClick={() => setInvitando(true)}
-                className="w-full py-3 flex items-center justify-center gap-2 text-[13px] text-[#00D1A7] active:text-[#00B893] transition-colors min-h-[44px]"
-              >
-                <UserPlus className="w-3.5 h-3.5" /> Invitar a un amigo
-              </button>
-
-              <button
-                onClick={handleLogout}
-                className="w-full py-3 flex items-center justify-center gap-2 text-[13px] text-[#7A8A85] active:text-[#FF5252] transition-colors min-h-[44px]"
-              >
-                <LogOut className="w-3.5 h-3.5" /> Cerrar sesión
-              </button>
-            </div>
-          )}
+          <CabeceraPerfil
+            usuario={perfil.usuario}
+            esPropio={perfil.esPropio}
+            siguiendolo={perfil.siguiendolo}
+            seguidores={perfil.seguidores}
+            siguiendo={perfil.siguiendo}
+            siguiendoAccion={siguiendoAccion}
+            onSeguir={handleSeguir}
+            onAjustes={() => setAjustes(true)}
+            onLista={setLista}
+          />
 
           {error && (
-            <p className="text-sm text-[#FF5252] bg-[rgba(255,82,82,0.14)] px-3 py-2 rounded-lg mt-4">{error}</p>
+            <p role="alert" className="text-sm text-[#FF5252] bg-[rgba(255,82,82,0.14)] px-3 py-2 rounded-lg mt-4">{error}</p>
           )}
+
+          {/* Lo que os une va lo primero tras la cabecera: es lo primero que se ve de alguien. */}
+          {perfil.enComun && (
+            <div style={{ marginTop: 18 }}>
+              <TarjetaEnComun enComun={perfil.enComun} onVerPendientes={verPendientes} />
+            </div>
+          )}
+
+          <div style={{ marginTop: 18 }}>
+            <TarjetaCifras conquistados={perfil.conquistados.length} puntos={perfil.puntos} />
+          </div>
+
+          <div style={{ marginTop: 14 }}>
+            <PastillasCategorias conteos={perfil.porCategoria} />
+          </div>
+
+          <div ref={pestanasRef} style={{ marginTop: 20, scrollMarginTop: 8 }}>
+            <PestanasPerfil
+              activa={pestana}
+              conquistados={perfil.conquistados.length}
+              pendientes={perfil.pendientes.length}
+              onCambiar={setPestana}
+            />
+          </div>
+
+          <div role="tabpanel" style={{ paddingTop: pestana === 'conquistados' ? 2 : 0 }}>
+            {pestana === 'conquistados' ? (
+              perfil.conquistados.length === 0 ? (
+                <EstadoVacio
+                  titulo={perfil.esPropio ? 'Aún no has conquistado ningún gooal.' : 'Todavía no ha conquistado ningún gooal.'}
+                  texto={perfil.esPropio ? 'Elige uno, vívelo y sube la prueba.' : undefined}
+                  accion={perfil.esPropio ? botonExplorar : undefined}
+                />
+              ) : (
+                <RejillaConquistados conquistados={perfil.conquistados} onAbrir={abrirConquistado} />
+              )
+            ) : perfil.pendientes.length === 0 ? (
+              <EstadoVacio
+                titulo={perfil.esPropio ? 'Tu lista de pendientes está vacía.' : 'No tiene gooals pendientes.'}
+                texto={perfil.esPropio ? 'Añade los que quieras vivir desde Explorar.' : undefined}
+                accion={perfil.esPropio ? botonExplorar : undefined}
+              />
+            ) : (
+              <ListaPendientes
+                pendientes={perfil.pendientes}
+                onYaLoHice={perfil.esPropio ? setCompletando : undefined}
+              />
+            )}
+          </div>
         </div>
       </AppShell>
 
@@ -345,6 +273,16 @@ function PerfilContenido() {
           tipo={lista}
           onClose={() => setLista(null)}
           onUsuarioClick={irAPerfil}
+        />
+      )}
+
+      {ajustes && (
+        <AjustesSheet
+          perfil={perfil}
+          onClose={() => setAjustes(false)}
+          onEditar={() => { setAjustes(false); setEditando(true) }}
+          onInvitar={() => { setAjustes(false); setInvitando(true) }}
+          onCerrarSesion={handleLogout}
         />
       )}
 
@@ -369,6 +307,8 @@ function PerfilContenido() {
         />
       )}
 
+      {visor && <VisorLogro conquistado={visor} onClose={() => setVisor(null)} />}
+
       {buscando && (
         <BuscarUsuariosSheet
           onClose={() => setBuscando(false)}
@@ -377,7 +317,19 @@ function PerfilContenido() {
       )}
 
       {invitando && <InvitarAmigoSheet onClose={() => setInvitando(false)} />}
+
+      {completando && (
+        <CompletarGooalModal
+          gooal={completando}
+          modo="lista"
+          onClose={() => setCompletando(null)}
+          onCompletado={handleCompletado}
+        />
+      )}
+
+      {celebracion && (
+        <CelebracionPuntos resultado={celebracion} onClose={() => setCelebracion(null)} />
+      )}
     </>
   )
 }
-

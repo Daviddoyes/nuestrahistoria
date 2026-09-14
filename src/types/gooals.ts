@@ -77,32 +77,59 @@ export type MuroPostFeed = {
   gooal: GooalV2 | null
 }
 
-/** Porcentaje completado de una categoría, para los badges del perfil. */
-export type StatCategoria = {
-  categoria: CategoriaGooal
-  completados: number
-  total: number
-  porcentaje: number
+/** Lo mínimo de un gooal del catálogo para pintarlo en una lista del perfil. */
+export type GooalResumen = Pick<GooalV2, 'id' | 'titulo' | 'categoria' | 'dificultad' | 'puntos' | 'ciudad'>
+
+/** Un gooal conquistado, con su prueba. */
+export type Conquistado = {
+  userGooalId: string
+  /** null si al completarlo no llegó a crearse el post del muro. */
+  postId: string | null
+  foto_url: string | null
+  video_url: string | null
+  puntos: number
+  completado_at: string | null
+  gooal: GooalResumen
 }
 
-/** Todo lo que pinta la pestaña Perfil, propio o de otra persona. */
-export type PerfilGamificado = {
+export type Pendiente = {
+  userGooalId: string
+  gooal: GooalResumen
+}
+
+/** Cuántos gooals ha conquistado alguien en una categoría. */
+export type ConteoCategoria = {
+  categoria: CategoriaGooal
+  conquistados: number
+}
+
+/**
+ * Lo que comparten quien mira y la persona del perfil. Viaja solo una muestra:
+ * la tarjeta pinta 4 miniaturas y 5 títulos, y el resto es un número.
+ */
+export type EnComun = {
+  totalConquistados: number
+  /** Versión de la OTRA persona (su foto), las más recientes primero. */
+  conquistados: Conquistado[]
+  totalPendientes: number
+  pendientes: GooalResumen[]
+}
+
+/** Todo lo que pinta el perfil, propio o de otra persona. */
+export type PerfilCompleto = {
   usuario: UsuarioMini
-  puntos: number
-  seguidores: number
-  siguiendo: number
+  esPropio: boolean
   /** null cuando es el perfil propio; true/false en el de otra persona. */
   siguiendolo: boolean | null
-  esPropio: boolean
-  stats: StatCategoria[]
-  recientes: {
-    postId: string | null
-    userGooalId: string
-    foto_url: string | null
-    titulo: string
-    puntos: number
-    completado_at: string | null
-  }[]
+  seguidores: number
+  siguiendo: number
+  puntos: number
+  conquistados: Conquistado[]
+  pendientes: Pendiente[]
+  /** Las siete categorías: primero las que tienen algo, de más a menos; luego las de 0. */
+  porCategoria: ConteoCategoria[]
+  /** null en el perfil propio. */
+  enComun: EnComun | null
 }
 
 /** Filtros de Explorar. Viajan a la query, no se aplican en el cliente. */

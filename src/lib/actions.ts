@@ -4,14 +4,14 @@ import { revalidatePath } from 'next/cache'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { createServiceRoleClient } from '@/lib/supabase/service'
 import { calcularNivel } from '@/lib/niveles'
-import { CATEGORIAS, normalizarCategoriaGooal } from '@/lib/gooals'
+import { contarPorCategoria, normalizarCategoriaGooal } from '@/lib/gooals'
 import {
   BUCKET_PRUEBAS, errorDeArchivo, rutaDePrueba, tipoDePrueba, type TipoPrueba,
 } from '@/lib/prueba-media'
 import type {
   GooalV2, UserGooal, UserGooalConGooal, MuroPostFeed, UsuarioMini,
-  PerfilGamificado, StatCategoria, EstadoUserGooal, FiltrosCatalogo,
-  FiltrosMapa, GooalMapa, FiltrosPines, PinMapa, Profile,
+  EstadoUserGooal, FiltrosCatalogo, FiltrosMapa, GooalMapa, FiltrosPines, PinMapa, Profile,
+  PerfilCompleto, Conquistado, Pendiente, EnComun, GooalResumen,
 } from '@/types/gooals'
 
 /** Tamaño de página de Explorar. */
@@ -896,10 +896,127 @@ export async function getListaSeguidores(
   return ((perfiles ?? []) as PerfilRow[]).map(aUsuarioMini)
 }
 
-// ── Perfil gamificado ────────────────────────────────────────
+// ── Perfil ───────────────────────────────────────────────────
 
-/** Perfil propio si no se pasa username; el de otra persona si se pasa. */
-export async function getPerfilGamificado(username?: string): Promise<PerfilGamificado | null> {
+/**
+ * Filas por consulta al leer listas del perfil. Es el tope de PostgREST, que
+ * corta en 1.000 sin avisar; ya rompió Explorar y los porcentajes del perfil.
+ */
+const FILAS_POR_VUELTA = 1000
+
+/** Lo que enseña la tarjeta "en común": 4 miniaturas y 5 títulos. El resto es un número. */
+const EN_COMUN_MINIATURAS = 4
+const EN_COMUN_TITULOS = 5
+
+/**
+ * Lee una consulta entera, de 1.000 en 1.000. Quien llama debe ordenar por algo
+ * que acabe en `id`: sin un orden estable, dos vueltas pueden repetir una fila o
+ * saltarse otra.
+ *
+ * Si una vuelta falla se lanza el error en vez de devolver lo leído: un perfil
+ * con la mitad de sus gooals, o un "0 en común" por un fallo de red, es un dato
+ * falso que nadie detectaría.
+ */
+async function leerTodo<T>(
+  etiqueta: string,
+  pedir: (desde: number, hasta: number) => PromiseLike<{ data: unknown[] | null; error: unknown }>
+): Promise<T[]> {
+  const filas: T[] = []
+  for (let desde = 0; ; desde += FILAS_POR_VUELTA) {
+    const { data, error } = await pedir(desde, desde + FILAS_POR_VUELTA - 1)
+    if (error) {
+      console.error(`[${etiqueta}]`, error)
+      throw new Error(`No se pudo leer ${etiqueta}`)
+    }
+    const vuelta = (data ?? []) as T[]
+    filas.push(...vuelta)
+    if (vuelta.length < FILAS_POR_VUELTA) return filas
+  }
+}
+
+type FilaUserGooal = {
+  id: string
+  foto_url: string | null
+  video_url: string | null
+  puntos_ganados: number | null
+  completado_at: string | null
+  gooal: GooalResumen | null
+  posts: { id: string }[] | null
+}
+
+/**
+ * Los gooals de un usuario en un estado, con su gooal del catálogo y su post del
+ * muro traídos en la misma consulta. Así no hace falta mandar a la base listas de
+ * miles de ids con `.in()`, que además de lentas acaban rompiendo por la
+ * longitud de la URL.
+ */
+function listarUserGooals(
+  service: ReturnType<typeof createServiceRoleClient>,
+  userId: string,
+  estado: EstadoUserGooal
+): Promise<FilaUserGooal[]> {
+  return leerTodo<FilaUserGooal>(`user_gooals ${estado}`, (desde, hasta) =>
+    service
+      .from('user_gooals')
+      .select(
+        'id, foto_url, video_url, puntos_ganados, completado_at, ' +
+        'gooal:gooals_v2(id, titulo, categoria, dificultad, puntos, ciudad), posts:muro_posts(id)'
+      )
+      .eq('user_id', userId)
+      .eq('estado', estado)
+      .order(estado === 'completado' ? 'completado_at' : 'created_at', { ascending: false, nullsFirst: false })
+      .order('id', { ascending: true })
+      .range(desde, hasta)
+  )
+}
+
+/** Solo qué gooals tiene alguien y en qué estado: lo justo para cruzar listas. */
+function listarEstados(
+  service: ReturnType<typeof createServiceRoleClient>,
+  userId: string
+): Promise<{ gooal_id: string; estado: EstadoUserGooal }[]> {
+  return leerTodo('estados del visitante', (desde, hasta) =>
+    service
+      .from('user_gooals')
+      .select('gooal_id, estado')
+      .eq('user_id', userId)
+      .order('id', { ascending: true })
+      .range(desde, hasta)
+  )
+}
+
+/**
+ * Lo que comparten quien mira y la persona del perfil: gooals que habéis
+ * conquistado los dos, y gooals que tenéis pendientes los dos. Se conserva el
+ * orden de la otra persona (lo más reciente suyo primero) y su foto.
+ */
+function calcularEnComun(
+  mios: { gooal_id: string; estado: EstadoUserGooal }[],
+  suyosConquistados: Conquistado[],
+  suyosPendientes: Pendiente[]
+): EnComun {
+  const misConquistados = new Set(mios.filter(m => m.estado === 'completado').map(m => m.gooal_id))
+  const misPendientes = new Set(mios.filter(m => m.estado === 'pendiente').map(m => m.gooal_id))
+
+  const conquistados = suyosConquistados.filter(c => misConquistados.has(c.gooal.id))
+  const pendientes = suyosPendientes.filter(p => misPendientes.has(p.gooal.id)).map(p => p.gooal)
+
+  return {
+    totalConquistados: conquistados.length,
+    conquistados: conquistados.slice(0, EN_COMUN_MINIATURAS),
+    totalPendientes: pendientes.length,
+    pendientes: pendientes.slice(0, EN_COMUN_TITULOS),
+  }
+}
+
+/**
+ * Todo lo que pinta el perfil, en una sola llamada: el propio si no se pasa
+ * username, el de otra persona si se pasa. Va junto y no en varias acciones
+ * porque cada acción es un viaje al servidor y el perfil se pintaría a trozos.
+ *
+ * Los pendientes son públicos: se leen igual en un perfil propio que en uno ajeno.
+ */
+export async function getPerfil(username?: string): Promise<PerfilCompleto | null> {
   const viewerId = await getUserId()
   const service = createServiceRoleClient()
 
@@ -913,76 +1030,51 @@ export async function getPerfilGamificado(username?: string): Promise<PerfilGami
   if (!perfil) return null
   const usuario = aUsuarioMini(perfil as PerfilRow)
   const esPropio = usuario.id === viewerId
+  const idVisitante = !esPropio ? viewerId : null
 
-  const [misGooalsRes, catalogoRes, seguidoresRes, siguiendoRes, siguiendoloRes] = await Promise.all([
-    service
-      .from('user_gooals')
-      .select('id, gooal_id, foto_url, puntos_ganados, completado_at')
-      .eq('user_id', usuario.id)
-      .eq('estado', 'completado')
-      .order('completado_at', { ascending: false }),
-    service.from('gooals_v2').select('id, titulo, categoria').eq('activo', true),
+  const [filasConquistados, filasPendientes, seguidoresRes, siguiendoRes, siguiendoloRes, misEstados] = await Promise.all([
+    listarUserGooals(service, usuario.id, 'completado'),
+    listarUserGooals(service, usuario.id, 'pendiente'),
     service.from('follows').select('id', { count: 'exact', head: true }).eq('following_id', usuario.id),
     service.from('follows').select('id', { count: 'exact', head: true }).eq('follower_id', usuario.id),
-    viewerId && !esPropio
-      ? service.from('follows').select('id').eq('follower_id', viewerId).eq('following_id', usuario.id).maybeSingle()
+    idVisitante
+      ? service.from('follows').select('id').eq('follower_id', idVisitante).eq('following_id', usuario.id).maybeSingle()
       : Promise.resolve({ data: null }),
+    idVisitante ? listarEstados(service, idVisitante) : Promise.resolve(null),
   ])
 
-  const completados = (misGooalsRes.data ?? []) as {
-    id: string; gooal_id: string; foto_url: string | null
-    puntos_ganados: number | null; completado_at: string | null
-  }[]
-  const catalogo = (catalogoRes.data ?? []) as { id: string; titulo: string; categoria: string }[]
-  const porId = new Map(catalogo.map(g => [g.id, g]))
+  // La clave foránea borra la fila si se borra su gooal del catálogo; aun así se
+  // descarta cualquiera que llegue sin él: mejor una casilla menos que una rota.
+  const conGooal = (f: FilaUserGooal): f is FilaUserGooal & { gooal: GooalResumen } => Boolean(f.gooal)
 
-  const hechosPorCategoria = new Map<string, number>()
-  for (const c of completados) {
-    const cat = porId.get(c.gooal_id)?.categoria
-    if (cat) hechosPorCategoria.set(cat, (hechosPorCategoria.get(cat) ?? 0) + 1)
-  }
-  const totalPorCategoria = new Map<string, number>()
-  for (const g of catalogo) {
-    totalPorCategoria.set(g.categoria, (totalPorCategoria.get(g.categoria) ?? 0) + 1)
-  }
+  const conquistados: Conquistado[] = filasConquistados.filter(conGooal).map(f => ({
+    userGooalId: f.id,
+    postId: f.posts?.[0]?.id ?? null,
+    foto_url: f.foto_url,
+    video_url: f.video_url,
+    puntos: f.puntos_ganados ?? 0,
+    completado_at: f.completado_at,
+    gooal: f.gooal,
+  }))
 
-  const stats: StatCategoria[] = CATEGORIAS.map(categoria => {
-    const hechos = hechosPorCategoria.get(categoria) ?? 0
-    const total = totalPorCategoria.get(categoria) ?? 0
-    return {
-      categoria,
-      completados: hechos,
-      total,
-      porcentaje: total > 0 ? Math.round((hechos / total) * 100) : 0,
-    }
-  })
-
-  const conFoto = completados.filter(c => c.foto_url).slice(0, 30)
-  const { data: posts } = conFoto.length > 0
-    ? await service.from('muro_posts').select('id, user_gooal_id').in('user_gooal_id', conFoto.map(c => c.id))
-    : { data: [] }
-  const postPorUserGooal = new Map(
-    ((posts ?? []) as { id: string; user_gooal_id: string | null }[])
-      .filter(p => p.user_gooal_id)
-      .map(p => [p.user_gooal_id as string, p.id])
-  )
+  const pendientes: Pendiente[] = filasPendientes.filter(conGooal).map(f => ({
+    userGooalId: f.id,
+    gooal: f.gooal,
+  }))
 
   return {
     usuario,
-    puntos: usuario.puntos_totales ?? 0,
+    esPropio,
+    siguiendolo: esPropio ? null : Boolean(siguiendoloRes.data),
     seguidores: seguidoresRes.count ?? 0,
     siguiendo: siguiendoRes.count ?? 0,
-    siguiendolo: esPropio ? null : Boolean(siguiendoloRes.data),
-    esPropio,
-    stats,
-    recientes: conFoto.map(c => ({
-      postId: postPorUserGooal.get(c.id) ?? null,
-      userGooalId: c.id,
-      foto_url: c.foto_url,
-      titulo: porId.get(c.gooal_id)?.titulo ?? 'Gooal',
-      puntos: c.puntos_ganados ?? 0,
-      completado_at: c.completado_at,
-    })),
+    // Se suma desde la lista y no se lee profiles.puntos_totales: esa columna es
+    // una caché, y así los puntos cuadran siempre con los gooals que se ven.
+    puntos: conquistados.reduce((suma, c) => suma + c.puntos, 0),
+    conquistados,
+    pendientes,
+    porCategoria: contarPorCategoria(conquistados),
+    enComun: misEstados ? calcularEnComun(misEstados, conquistados, pendientes) : null,
   }
 }
 

@@ -49,6 +49,31 @@ export const CATEGORIA_GRADIENTE: Record<CategoriaGooal, string> = {
   espectaculos: 'linear-gradient(145deg, #713F12 0%, #FACC15 100%)',
 }
 
+/**
+ * Cuántos gooals conquistados hay en cada categoría, con las siete siempre
+ * presentes: primero las que tienen algo (de más a menos), luego las de 0.
+ *
+ * Las de 0 no se quitan a propósito. "Música 0" es lo que empuja a probar algo
+ * distinto, y la app va de haber probado muchas cosas, no de profundizar en una.
+ *
+ * Sustituye a los porcentajes por categoría, que necesitaban el total del
+ * catálogo: se pedía entero sin paginar, la base cortaba en 1.000 filas de casi
+ * 5.000 y los porcentajes salían mal. Contando solo lo del usuario no hace falta.
+ */
+export function contarPorCategoria(
+  conquistados: { gooal: { categoria: CategoriaGooal } }[]
+): { categoria: CategoriaGooal; conquistados: number }[] {
+  const cuenta = new Map<CategoriaGooal, number>(CATEGORIAS.map(c => [c, 0]))
+  for (const c of conquistados) {
+    if (cuenta.has(c.gooal.categoria)) cuenta.set(c.gooal.categoria, (cuenta.get(c.gooal.categoria) ?? 0) + 1)
+  }
+  // El desempate por el orden de CATEGORIAS evita que dos categorías empatadas
+  // bailen de sitio entre una carga y otra.
+  return CATEGORIAS
+    .map(categoria => ({ categoria, conquistados: cuenta.get(categoria) ?? 0 }))
+    .sort((a, b) => b.conquistados - a.conquistados || CATEGORIAS.indexOf(a.categoria) - CATEGORIAS.indexOf(b.categoria))
+}
+
 export const DIFICULTADES: DificultadGooal[] = ['facil', 'dificil', 'epico']
 
 export const DIFICULTAD_META: Record<DificultadGooal, { emoji: string; label: string; puntos: number; color: string }> = {

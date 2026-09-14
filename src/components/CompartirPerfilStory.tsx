@@ -8,9 +8,9 @@ import {
 } from '@/lib/story-canvas'
 import { calcularNivel, progresoNivel } from '@/lib/niveles'
 import { CATEGORIA_EMOJI, CATEGORIA_LABEL } from '@/lib/gooals'
-import type { PerfilGamificado } from '@/types/gooals'
+import type { PerfilCompleto } from '@/types/gooals'
 
-type Props = { perfil: PerfilGamificado }
+type Props = { perfil: PerfilCompleto }
 
 /** Imagen 1080×1920 con las stats del perfil, lista para Stories. */
 export default function CompartirPerfilStory({ perfil }: Props) {
@@ -76,18 +76,37 @@ export default function CompartirPerfilStory({ perfil }: Props) {
         ctx.fillText(`@${perfil.usuario.username}`, STORY_W / 2, ny + 6)
       }
 
-      // Puntos y nivel.
+      // Mandan los gooals conquistados, como en el perfil; los puntos van debajo
+      // y más pequeños. La app va de cuántas cosas distintas has vivido.
+      const conquistados = perfil.conquistados.length
+      // next/font registra Poppins con un nombre interno generado, no "Poppins":
+      // se lee de la variable CSS y se espera a que cargue, o el canvas pintaría
+      // con la fuente de reserva sin avisar.
+      const poppins = getComputedStyle(document.body).getPropertyValue('--font-poppins').trim() || 'Poppins'
+      await Promise.all([
+        document.fonts.load(`800 150px ${poppins}`),
+        document.fonts.load(`700 56px ${poppins}`),
+      ])
+
+      ctx.fillStyle = '#FFFFFF'
+      ctx.font = `800 150px ${poppins}, Inter, system-ui, sans-serif`
+      ctx.fillText(String(conquistados), STORY_W / 2, ny + 180)
+
+      ctx.fillStyle = '#7A8A85'
+      ctx.font = '600 30px Inter, system-ui, sans-serif'
+      ctx.fillText(conquistados === 1 ? 'GOOAL CONQUISTADO' : 'GOOALS CONQUISTADOS', STORY_W / 2, ny + 230)
+
       ctx.fillStyle = ACENTO
-      ctx.font = '700 130px Inter, system-ui, sans-serif'
-      ctx.fillText(`${perfil.puntos} pts`, STORY_W / 2, ny + 170)
+      ctx.font = `700 56px ${poppins}, Inter, system-ui, sans-serif`
+      ctx.fillText(`${perfil.puntos} pts`, STORY_W / 2, ny + 314)
 
       ctx.fillStyle = nivel.color
       ctx.font = '600 40px Inter, system-ui, sans-serif'
-      ctx.fillText(`Nivel: ${nivel.nombre}`, STORY_W / 2, ny + 234)
+      ctx.fillText(`Nivel: ${nivel.nombre}`, STORY_W / 2, ny + 370)
 
       // Barra de progreso hacia el siguiente nivel.
       const barraX = 140
-      const barraY = ny + 290
+      const barraY = ny + 420
       const barraW = STORY_W - 280
       ctx.fillStyle = '#2A2E2C'
       rectRedondeado(ctx, barraX, barraY, barraW, 22, 11)
@@ -106,14 +125,15 @@ export default function CompartirPerfilStory({ perfil }: Props) {
         )
       }
 
-      // Categorías con algo conseguido.
-      const conProgreso = perfil.stats.filter(s => s.completados > 0).slice(0, 6)
+      // Categorías con algo conquistado, de más a menos. En la imagen no caben las
+      // de 0: aquí se enseña lo vivido, no lo que falta por probar.
+      const conProgreso = perfil.porCategoria.filter(s => s.conquistados > 0).slice(0, 6)
       let cy = barraY + 160
       ctx.font = '500 34px Inter, system-ui, sans-serif'
       for (const s of conProgreso) {
         ctx.fillStyle = '#A3B1AC'
         ctx.fillText(
-          `${CATEGORIA_EMOJI[s.categoria]}  ${CATEGORIA_LABEL[s.categoria]} · ${s.porcentaje}%`,
+          `${CATEGORIA_EMOJI[s.categoria]}  ${CATEGORIA_LABEL[s.categoria]} · ${s.conquistados}`,
           STORY_W / 2, cy
         )
         cy += 54
