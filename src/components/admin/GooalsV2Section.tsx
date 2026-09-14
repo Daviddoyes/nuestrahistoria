@@ -1,13 +1,13 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState } from 'react'
 import { Plus, X, Sparkles } from 'lucide-react'
 import {
-  CATEGORIAS, CATEGORIA_LABEL, CATEGORIA_COLOR, DIFICULTAD_META, PUNTOS_MIN,
+  CATEGORIAS, CATEGORIA_LABEL, DIFICULTAD_META, PUNTOS_MIN,
   dificultadDePuntos, puntosEnEscala, type CategoriaGooal,
 } from '@/lib/gooals'
-import type { GooalV2 } from '@/types/gooals'
 import SelectorPuntos from './SelectorPuntos'
+import ListaTrabajo from './catalogo/ListaTrabajo'
 
 const HEADERS = { 'Content-Type': 'application/json' }
 
@@ -261,61 +261,26 @@ function GenerarIAModal({ onClose, onSaved }: { onClose: () => void; onSaved: ()
 }
 
 // ── Sección ──────────────────────────────────────────────────
+/**
+ * Catálogo del panel. Antes era una tabla que se traía los 4.726 gooals de golpe;
+ * ahora es la lista de trabajo (50 por página, con filtros), y conserva arriba los
+ * botones de alta.
+ */
 export default function GooalsV2Section() {
-  const [gooals, setGooals] = useState<GooalV2[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
   const [showNuevo, setShowNuevo] = useState(false)
   const [showIA, setShowIA] = useState(false)
-  const [cambiando, setCambiando] = useState<string | null>(null)
-
-  const cargar = useCallback(async () => {
-    setLoading(true); setError('')
-    try {
-      const res = await fetch('/api/admin/gooals-v2', { headers: HEADERS })
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const json = await res.json()
-      setGooals(json.gooals)
-    } catch (err) {
-      console.error('[GooalsV2Section]', err)
-      setError('No se pudo cargar el catálogo. ¿Has ejecutado supabase/fase3.sql?')
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  useEffect(() => { cargar() }, [cargar])
-
-  const toggleActivo = async (g: GooalV2) => {
-    setCambiando(g.id)
-    // Optimista: si el PATCH falla, cargar() devuelve el valor real.
-    setGooals(prev => prev.map(x => x.id === g.id ? { ...x, activo: !x.activo } : x))
-    try {
-      const res = await fetch('/api/admin/gooals-v2', {
-        method: 'PATCH', headers: HEADERS,
-        body: JSON.stringify({ id: g.id, activo: !g.activo }),
-      })
-      if (!res.ok) await cargar()
-    } catch (err) {
-      console.error('[toggleActivo]', err)
-      await cargar()
-    } finally {
-      setCambiando(null)
-    }
-  }
-
-  const activos = gooals.filter(g => g.activo).length
+  // Tras crear gooals se vuelve a pedir la página de la lista.
+  const [recarga, setRecarga] = useState(0)
+  const recargar = () => setRecarga(n => n + 1)
 
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 16, flexWrap: 'wrap' }}>
         <div>
           <p style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#00D1A7', fontWeight: 700, marginBottom: 6 }}>
-            Catálogo Gooals V2
+            Catálogo
           </p>
-          <span style={{ fontSize: 12, color: '#A3B1AC' }}>
-            <span style={{ color: '#00D1A7', fontWeight: 700 }}>{activos}</span> activos de {gooals.length}
-          </span>
+          <span style={{ fontSize: 12, color: '#A3B1AC' }}>Buscar, corregir y verificar</span>
         </div>
 
         <div style={{ display: 'flex', gap: 8 }}>
@@ -342,77 +307,10 @@ export default function GooalsV2Section() {
         </div>
       </div>
 
-      {error && <p style={{ fontSize: 13, color: '#FF5252', marginBottom: 12 }}>{error}</p>}
+      <ListaTrabajo recarga={recarga} />
 
-      <div style={{ overflowX: 'auto', marginLeft: -16, marginRight: -16, paddingLeft: 16, paddingRight: 16 }}>
-        <table style={{ width: '100%', minWidth: 760, borderCollapse: 'collapse', fontSize: 13 }}>
-          <thead>
-            <tr>
-              {['Título', 'Categoría', 'Dificultad', 'Puntos', 'Completado', 'Activo'].map(h => (
-                <th key={h} style={{
-                  textAlign: 'left', fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.14em',
-                  color: '#00D1A7', fontWeight: 600, paddingBottom: 8, paddingRight: 14, whiteSpace: 'nowrap',
-                }}>
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {gooals.length === 0 && !loading ? (
-              <tr>
-                <td colSpan={6} style={{ padding: '24px 0', color: '#7A8A85', textAlign: 'center' }}>
-                  Aún no hay gooals. Crea uno o genera 20 con IA.
-                </td>
-              </tr>
-            ) : gooals.map((g, i) => {
-              const color = CATEGORIA_COLOR[g.categoria] ?? '#7A8A85'
-              const meta = DIFICULTAD_META[g.dificultad]
-              return (
-                <tr key={g.id} style={{ background: i % 2 === 0 ? '#0B0B0B' : '#1E2120', opacity: g.activo ? 1 : 0.5 }}>
-                  <td style={{ padding: '10px 14px 10px 0', color: '#FFFFFF', maxWidth: 280 }}>{g.titulo}</td>
-                  <td style={{ padding: '10px 14px 10px 0' }}>
-                    <span style={{
-                      fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.06em',
-                      color, background: `${color}22`, borderRadius: 6, padding: '3px 8px', whiteSpace: 'nowrap',
-                    }}>
-                      {CATEGORIA_LABEL[g.categoria] ?? g.categoria}
-                    </span>
-                  </td>
-                  <td style={{ padding: '10px 14px 10px 0', color: meta?.color ?? '#A3B1AC', whiteSpace: 'nowrap' }}>
-                    {meta ? `${meta.emoji} ${meta.label}` : g.dificultad}
-                  </td>
-                  <td style={{ padding: '10px 14px 10px 0', color: '#00D1A7', fontWeight: 700, textAlign: 'center' }}>
-                    +{g.puntos}
-                  </td>
-                  <td style={{ padding: '10px 14px 10px 0', color: '#FFFFFF', textAlign: 'center' }}>
-                    {g.veces_completado}
-                  </td>
-                  <td style={{ padding: '10px 0' }}>
-                    <button
-                      onClick={() => toggleActivo(g)}
-                      disabled={cambiando === g.id}
-                      aria-pressed={g.activo}
-                      style={{
-                        padding: '5px 10px', borderRadius: 7, fontSize: 11, fontWeight: 600, cursor: 'pointer',
-                        border: `1px solid ${g.activo ? '#00D1A7' : '#2A2E2C'}`,
-                        background: g.activo ? 'rgba(0,209,167,0.12)' : 'transparent',
-                        color: g.activo ? '#00D1A7' : '#7A8A85',
-                        opacity: cambiando === g.id ? 0.5 : 1, whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {g.activo ? 'Activo' : 'Inactivo'}
-                    </button>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      {showNuevo && <NuevoGooalModal onClose={() => setShowNuevo(false)} onSaved={cargar} />}
-      {showIA && <GenerarIAModal onClose={() => setShowIA(false)} onSaved={cargar} />}
+      {showNuevo && <NuevoGooalModal onClose={() => setShowNuevo(false)} onSaved={recargar} />}
+      {showIA && <GenerarIAModal onClose={() => setShowIA(false)} onSaved={recargar} />}
     </div>
   )
 }

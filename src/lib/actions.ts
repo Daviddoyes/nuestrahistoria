@@ -5,6 +5,7 @@ import { createClient as createServerClient } from '@/lib/supabase/server'
 import { createServiceRoleClient } from '@/lib/supabase/service'
 import { calcularNivel } from '@/lib/niveles'
 import { contarPorCategoria, normalizarCategoriaGooal } from '@/lib/gooals'
+import { limpiarBusqueda } from '@/lib/busqueda'
 import {
   BUCKET_PRUEBAS, errorDeArchivo, rutaDePrueba, tipoDePrueba, type TipoPrueba,
 } from '@/lib/prueba-media'
@@ -108,18 +109,6 @@ function aUsuarioMini(p: PerfilRow): UsuarioMini {
     puntos_totales: p.puntos_totales ?? 0,
     nivel: p.nivel ?? 'Principiante',
   }
-}
-
-/**
- * Limpia el texto del buscador antes de meterlo en un ilike.
- *
- * Los comodines de LIKE y los caracteres con los que PostgREST delimita los
- * filtros se quitan: en un título no aportan nada y evitan que un "%" suelto
- * convierta la búsqueda en "trae cualquier cosa". La usan la lista y el mapa,
- * para que buscar lo mismo devuelva lo mismo en las dos vistas.
- */
-function limpiarBusqueda(texto: string | undefined): string {
-  return (texto ?? '').replace(/[%_\\,()"']/g, ' ').trim()
 }
 
 /** Usuario de la sesión actual. No se exporta: en 'use server' todo export debe ser async. */

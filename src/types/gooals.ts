@@ -134,6 +134,38 @@ export type PerfilCompleto = {
   enComun: EnComun | null
 }
 
+/**
+ * Cómo de fiable es el pin de un gooal (columna geo).
+ *   fiable        el geocodificador encontró el sitio y es conocido
+ *   revisar       lo encontró pero el sitio es poco conocido (el pin suele estar bien)
+ *   solo-ciudad   no encontró el sitio: el pin es el centro del municipio
+ *   sin-resultado no encontró nada: no hay pin
+ *   rehacer       se cambió la ciudad o el país en el panel con el pin ya puesto:
+ *                 el pin puede apuntar al sitio equivocado y hay que rehacerlo
+ */
+export type GeoGooal = 'fiable' | 'revisar' | 'solo-ciudad' | 'sin-resultado' | 'rehacer'
+
+/** Un gooal tal como lo trabaja el panel de admin: la fila completa y cuánta gente lo tiene. */
+export type GooalAdmin = GooalV2 & {
+  lat: number | null
+  lng: number | null
+  geo: GeoGooal | null
+  /** Personas que lo tienen en su lista, pendiente o conquistado. Si es > 0 no se puede borrar. */
+  enListas: number
+  /** Personas que lo han conquistado. */
+  conquistados: number
+}
+
+/** Filtros de la lista de trabajo del panel. */
+export type FiltrosAdmin = {
+  busqueda: string
+  estado: EstadoGooal | 'todos'
+  categoria: CategoriaGooal | 'todas'
+  ambito: AmbitoGooal | 'todos'
+  /** Solo los de ámbito lugar que aún no tienen coordenadas. */
+  sinPin: boolean
+}
+
 /** Filtros de Explorar. Viajan a la query, no se aplican en el cliente. */
 export type FiltrosCatalogo = {
   categoria?: CategoriaGooal | 'todos'
