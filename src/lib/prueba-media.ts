@@ -13,10 +13,48 @@ export const MAX_SEGUNDOS_VIDEO = 9
 export const TIPOS_FOTO: readonly string[] = ['image/jpeg', 'image/png', 'image/webp']
 export const TIPOS_VIDEO: readonly string[] = ['video/mp4', 'video/quicktime']
 
-/** Para el `accept` del input: el selector del móvil ya filtra por tipo. */
-export const ACCEPT_PRUEBA = [...TIPOS_FOTO, ...TIPOS_VIDEO].join(',')
+/**
+ * `accept` del input: TODO el carrete, a propósito.
+ *
+ * Con la lista exacta de tipos, el selector de Android ocultaba o ponía en gris
+ * las fotos HEIF y los vídeos en otros formatos, y el usuario tocaba sin que
+ * pasara nada. El tipo se valida después de elegir, con un mensaje.
+ */
+export const ACCEPT_SELECTOR = 'image/*,video/*'
 
 export type TipoPrueba = 'foto' | 'video'
+
+const MIME_POR_EXTENSION: Record<string, string> = {
+  jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp',
+  heic: 'image/heic', heif: 'image/heif',
+  mp4: 'video/mp4', m4v: 'video/mp4', mov: 'video/quicktime',
+}
+
+/**
+ * Tipo de un archivo elegido. Algunos gestores de archivos de Android lo
+ * entregan con `type` vacío; entonces se deduce de la extensión en vez de
+ * rechazar un MP4 perfectamente válido.
+ */
+export function mimeDeArchivo(archivo: { type: string; name: string }): string {
+  if (archivo.type) return archivo.type.toLowerCase()
+  const extension = archivo.name.split('.').pop()?.toLowerCase() ?? ''
+  return MIME_POR_EXTENSION[extension] ?? ''
+}
+
+export function esHeic(mime: string, nombre: string): boolean {
+  return /^image\/hei[cf]/.test(mime) || /\.hei[cf]$/i.test(nombre)
+}
+
+/** Mensaje si el vídeo elegido no vale por tipo o peso; null si vale. */
+export function errorDeVideo(mime: string, bytes: number): string | null {
+  if (!TIPOS_VIDEO.includes(mime)) {
+    return 'Ese vídeo está en un formato que no admitimos. Súbelo en MP4 o MOV.'
+  }
+  if (bytes > MAX_BYTES_VIDEO) {
+    return `El vídeo pesa ${megas(bytes)} y el máximo son ${megas(MAX_BYTES_VIDEO)}.`
+  }
+  return null
+}
 
 export function tipoDePrueba(mime: string): TipoPrueba | null {
   if (TIPOS_FOTO.includes(mime)) return 'foto'
@@ -28,7 +66,13 @@ function megas(bytes: number): string {
   return `${Math.ceil(bytes / (1024 * 1024))} MB`
 }
 
-/** Mensaje para el usuario si el archivo no vale; null si vale. */
+/**
+ * Mensaje si el archivo que se va a SUBIR no vale; null si vale.
+ *
+ * Se aplica a lo que llega a Storage, no a lo que eligió el usuario: las fotos se
+ * convierten a JPG de 1.200 px antes de subir, así que una foto de 12 MB del
+ * móvil acaba pesando unos cientos de KB y no tiene sentido rechazarla.
+ */
 export function errorDeArchivo(archivo: { type: string; size: number }): string | null {
   const tipo = tipoDePrueba(archivo.type)
   if (!tipo) {
