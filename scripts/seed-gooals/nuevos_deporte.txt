@@ -1,0 +1,91 @@
+# GooALS — deporte: los benchmarks que faltaban
+#
+# El PDF de deporte no traía ni un solo número de fuerza. Ni press banca, ni
+# sentadilla, ni dominadas. Y es justo lo que mejor funciona en un juego: un
+# número que no admite discusión, una foto obvia, y escalones que se ven venir.
+#
+# ── La regla que decide qué entra ────────────────────────────────────
+#
+# ¿Hay foto? Un muscle up se ve. "Nadar con respiración bilateral" no. Por eso
+# están las dominadas y no está la técnica de crol.
+#
+# ── Sin distinguir por sexo, a propósito ─────────────────────────────
+#
+# Un gooal es un logro absoluto, como una maratón: nadie corre 42 km "de
+# mujer". Poner 100 kg de press banca para hombres y 60 para mujeres obligaría
+# a preguntar el sexo en el registro, a mostrar catálogos distintos y a decidir
+# qué hacer con quien no conteste. La escalera es la misma para todos y cada
+# uno entra por donde le toca.
+#
+# ── Escalones y familias ─────────────────────────────────────────────
+#
+# Cada ejercicio es una familia con varios peldaños. Si alguien pone 140 kg de
+# press banca NO cobra además los 60, 80, 100 y 120: solo cuenta el más alto,
+# igual que una maratón se come al 5K. Eso todavía no está implementado en la
+# app — hace falta una columna 'familia' en gooals_v2 — y hasta que lo esté,
+# estos suman por separado.
+#
+# Formato: puntos | título | ciudad | país | consulta de mapa
+# Todos van deslocalizados: un press banca es el mismo en cualquier gimnasio.
+
+
+## CALISTENIA — peso corporal, y se ve en vídeo
+
+1 | Hacer 10 flexiones seguidas | |
+2 | Hacer 50 flexiones seguidas | |
+4 | Hacer 100 flexiones seguidas | |
+2 | Hacer 5 dominadas seguidas | |
+3 | Hacer 10 dominadas seguidas | |
+5 | Hacer 20 dominadas seguidas | |
+4 | Hacer una dominada con peso añadido de 20 kg | |
+5 | Hacer un muscle up | |
+7 | Hacer 5 muscle ups seguidos | |
+3 | Hacer 10 fondos en anillas | |
+4 | Hacer 10 toes to bar | |
+5 | Aguantar un pino de 30 segundos | |
+6 | Hacer 10 metros de handstand walk | |
+7 | Hacer una flexión a pino | |
+8 | Aguantar una bandera humana 5 segundos | |
+8 | Aguantar un back lever completo 5 segundos | |
+9 | Aguantar un front lever completo 5 segundos | |
+3 | Aguantar una plancha de 3 minutos | |
+
+
+## HALTEROFILIA — snatch y clean & jerk
+
+3 | Hacer un snatch de 50 kg | |
+5 | Hacer un snatch de 80 kg | |
+8 | Hacer un snatch de 100 kg | |
+3 | Hacer un clean & jerk de 50 kg | |
+5 | Hacer un clean & jerk de 80 kg | |
+8 | Hacer un clean & jerk de 100 kg | |
+6 | Aprender la técnica de los dos levantamientos olímpicos | |
+
+
+## LOS TRES GRANDES — banca, sentadilla y peso muerto
+
+2 | Hacer press banca con 40 kg | |
+3 | Hacer press banca con 60 kg | |
+4 | Hacer press banca con 80 kg | |
+6 | Hacer press banca con 100 kg | |
+8 | Hacer press banca con 120 kg | |
+2 | Hacer sentadilla con 60 kg | |
+4 | Hacer sentadilla con 100 kg | |
+6 | Hacer sentadilla con 140 kg | |
+8 | Hacer sentadilla con 180 kg | |
+3 | Hacer peso muerto con 80 kg | |
+4 | Hacer peso muerto con 120 kg | |
+6 | Hacer peso muerto con 160 kg | |
+8 | Hacer peso muerto con 200 kg | |
+5 | Levantar tu propio peso en press banca | |
+6 | Levantar el doble de tu peso en peso muerto | |
+
+
+## COMPETIR — la prueba con nombre
+
+5 | Competir en una prueba de halterofilia | |
+5 | Competir en una prueba de powerlifting | |
+6 | Completar un Hyrox | |
+7 | Competir en unos Open de CrossFit | |
+6 | Completar un Murph completo con chaleco | |
+5 | Competir en una prueba de escalada en bloque | |

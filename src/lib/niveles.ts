@@ -1,5 +1,14 @@
 // Sistema de niveles de GooALS. Los tramos son inclusivos por los dos extremos
-// y contiguos (10 → 11, 30 → 31...), así que ningún número de puntos cae fuera.
+// y contiguos (4 → 5, 24 → 25...), así que ningún número de puntos cae fuera.
+//
+// La curva está cargada al principio a propósito: el primer nivel se alcanza
+// con cuatro o cinco gooals fáciles —la primera tarde— y a partir de ahí cada
+// escalón cuesta entre dos y tres veces el anterior. Donde se pierde a la gente
+// es en los primeros minutos, no en el año dos.
+//
+// Un onboarding típico, con quince experiencias ya vividas marcadas, deja a
+// alguien recién llegado en Explorador. Eso es deliberado: entrar y verte con
+// un nivel puesto es otra cosa que entrar y ver ceros.
 
 export type Nivel = {
   nombre: string
@@ -9,12 +18,12 @@ export type Nivel = {
 }
 
 export const NIVELES: Nivel[] = [
-  { nombre: 'Principiante', minPuntos: 0, maxPuntos: 10, color: '#666666' },
-  { nombre: 'Explorador', minPuntos: 11, maxPuntos: 30, color: '#4CAF50' },
-  { nombre: 'Aventurero', minPuntos: 31, maxPuntos: 75, color: '#2196F3' },
-  { nombre: 'Nómada', minPuntos: 76, maxPuntos: 150, color: '#9C27B0' },
-  { nombre: 'Leyenda', minPuntos: 151, maxPuntos: 300, color: '#FF9800' },
-  { nombre: 'Épico', minPuntos: 301, maxPuntos: 99999, color: '#1DE9B6' },
+  { nombre: 'Principiante', minPuntos: 0, maxPuntos: 4, color: '#666666' },
+  { nombre: 'Explorador', minPuntos: 5, maxPuntos: 24, color: '#4CAF50' },
+  { nombre: 'Aventurero', minPuntos: 25, maxPuntos: 74, color: '#2196F3' },
+  { nombre: 'Nómada', minPuntos: 75, maxPuntos: 174, color: '#9C27B0' },
+  { nombre: 'Leyenda', minPuntos: 175, maxPuntos: 399, color: '#FF9800' },
+  { nombre: 'Épico', minPuntos: 400, maxPuntos: 99999, color: '#1DE9B6' },
 ]
 
 export function calcularNivel(puntos: number): Nivel {

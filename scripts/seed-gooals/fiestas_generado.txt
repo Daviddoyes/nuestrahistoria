@@ -1,0 +1,102 @@
+# GooALS — fiestas icónicas, generado por fiestas.py. NO editar a mano.
+#
+# Formato: puntos | título | ciudad | país | consulta de mapa
+#
+# La época del año que trae el PDF (San Fermín 6-14 julio, Holi en
+# marzo) no se guarda todavía. El día que el mapa sepa la fecha podrá
+# avisar de lo que cae cerca en las próximas semanas, que es justo lo
+# que hace útil un mapa de viaje.
+
+3 | Vivir el Carnaval de Río | Río de Janeiro | Brasil | Carnaval de Río, Río de Janeiro
+3 | Vivir San Fermín | Pamplona | España | San Fermín, Pamplona
+3 | Vivir el Día del Rey | Ámsterdam | Países Bajos | King's Day (Koningsdag), Ámsterdam
+3 | Vivir el Oktoberfest | Múnich | Alemania | Oktoberfest, Múnich
+3 | Vivir Holi | Mathura | India | Holi, Mathura
+3 | Vivir Songkran | Bangkok | Tailandia | Songkran, Bangkok
+3 | Vivir el Día de Muertos | Oaxaca | México | Día de Muertos, Oaxaca
+3 | Vivir Mardi Gras | Nueva Orleans | Estados Unidos | Mardi Gras, Nueva Orleans
+3 | Vivir el Carnaval de Venecia | Venecia | Italia | Carnaval de Venecia, Venecia
+3 | Vivir las Fallas | Valencia | España | Las Fallas, Valencia
+3 | Vivir la Tomatina | Buñol | España | La Tomatina, Buñol
+3 | Vivir el día de San Patricio | Dublín | Irlanda | St. Patrick's Festival, Dublín
+3 | Vivir el Yi Peng | Chiang Mai | Tailandia | Yi Peng / Festival de Faroles, Chiang Mai
+3 | Vivir Inti Raymi | Cusco | Perú | Inti Raymi, Cusco
+3 | Vivir el Carnaval de Barranquilla | Barranquilla | Colombia | Carnaval de Barranquilla, Barranquilla
+3 | Vivir el Carnaval de Oruro | Oruro | Bolivia | Carnaval de Oruro, Oruro
+3 | Vivir el Año Nuevo Chino | Hong Kong | Hong Kong | Chinese New Year, Hong Kong
+3 | Vivir el Año Nuevo Chino · Singapur | Singapur | Singapur | Chinese New Year, Singapur
+3 | Vivir Gion Matsuri | Kioto | Japón | Gion Matsuri, Kioto
+3 | Vivir el festival de globos de Albuquerque | Albuquerque | Estados Unidos | Albuquerque International Balloon Fiesta, Albuquerque
+2 | Vivir la Feria de Abril | Sevilla | España | Feria de Abril, Sevilla
+2 | Vivir el Carnaval de Santa Cruz de Tenerife | Santa Cruz de Tenerife | España | Carnaval de Santa Cruz de Tenerife, Santa Cruz de Tenerife
+1 | Vivir la Patum | Berga | España | La Patum, Berga
+2 | Vivir Moros y Cristianos | Alcoy | España | Moros y Cristianos, Alcoy
+2 | Vivir el Carnaval de Cádiz | Cádiz | España | Carnaval de Cádiz, Cádiz
+1 | Vivir la Romería del Rocío | El Rocío | España | Romería del Rocío, El Rocío
+1 | Vivir la Batalla del Vino | Haro | España | Batalla del Vino, Haro
+1 | Vivir Cascamorras | Guadix | España | Cascamorras, Guadix
+2 | Vivir el Palio di Siena | Siena | Italia | Palio di Siena, Siena
+2 | Vivir la Batalla de las Naranjas | Ivrea | Italia | Battle of the Oranges, Ivrea
+1 | Vivir Infiorata di Noto | Noto | Italia | Infiorata di Noto, Noto
+2 | Vivir el Carnaval de Colonia | Colonia | Alemania | Carnaval de Colonia, Colonia
+1 | Vivir la Krampusnacht | Salzburgo | Austria | Krampusnacht, Salzburgo
+2 | Vivir Fête des Lumières | Lyon | Francia | Fête des Lumières, Lyon
+1 | Vivir Bastille Day | París | Francia | Bastille Day, París
+2 | Vivir el Carnaval de Niza | Niza | Francia | Carnaval de Niza, Niza
+2 | Vivir el carnaval de Notting Hill | Londres | Reino Unido | Notting Hill Carnival, Londres
+2 | Vivir el Up Helly Aa | Lerwick | Escocia | Up Helly Aa, Lerwick
+1 | Vivir el Hogmanay de Edimburgo | Edimburgo | Escocia | Hogmanay, Edimburgo
+2 | Vivir el carnaval de Basilea | Basilea | Suiza | Basler Fasnacht, Basilea
+1 | Vivir el Carnaval de Binche | Binche | Bélgica | Carnaval de Binche, Binche
+1 | Vivir Festa de São João | Oporto | Portugal | Festa de São João, Oporto
+1 | Vivir Festa de Santo António | Lisboa | Portugal | Festa de Santo António, Lisboa
+1 | Vivir Pushkar Camel Fair | Pushkar | India | Pushkar Camel Fair, Pushkar
+3 | Vivir Diwali | Jaipur | India | Diwali, Jaipur
+1 | Vivir Kumbh Mela | Prayagraj | India | Kumbh Mela, Prayagraj
+2 | Vivir el Thaipusam | Batu Caves | Malasia | Thaipusam, Batu Caves
+1 | Vivir Loy Krathong | Chiang Mai | Tailandia | Loy Krathong, Chiang Mai
+2 | Vivir el festival del barro de Boryeong | Boryeong | Corea del Sur | Boryeong Mud Festival, Boryeong
+1 | Vivir Sapporo Snow Festival | Sapporo | Japón | Sapporo Snow Festival, Sapporo
+2 | Vivir el Hanami | Tokio | Japón | Hanami, Tokio
+1 | Vivir Awa Odori | Tokushima | Japón | Awa Odori, Tokushima
+1 | Vivir Nebuta Matsuri | Aomori | Japón | Nebuta Matsuri, Aomori
+1 | Vivir Hadaka Matsuri | Okayama | Japón | Hadaka Matsuri, Okayama
+1 | Vivir Sinulog | Cebú | Filipinas | Sinulog, Cebú
+1 | Vivir Ati-Atihan | Kalibo | Filipinas | Ati-Atihan, Kalibo
+1 | Vivir Nyepi | Bali | Indonesia | Nyepi, Bali
+1 | Vivir Galungan y Kuningan | Bali | Indonesia | Galungan y Kuningan, Bali
+2 | Vivir el Naadam | Ulán Bator | Mongolia | Naadam, Ulán Bator
+1 | Vivir Harbin Ice and Snow Festival | Harbin | China | Harbin Ice and Snow Festival, Harbin
+1 | Vivir Dragon Boat Festival | Hong Kong | China / Hong Kong | Dragon Boat Festival, Hong Kong
+1 | Vivir Pingxi Sky Lantern Festival | Pingxi | Taiwán | Pingxi Sky Lantern Festival, Pingxi
+2 | Vivir la Fiesta de la Vendimia | Mendoza | Argentina | Fiesta de la Vendimia, Mendoza
+1 | Vivir el Carnaval de Gualeguaychú | Gualeguaychú | Argentina | Carnaval de Gualeguaychú, Gualeguaychú
+1 | Vivir el Carnaval de Salvador | Salvador de Bahía | Brasil | Carnaval de Salvador, Salvador de Bahía
+1 | Vivir Festa Junina / São João | Campina Grande | Brasil | Festa Junina / São João, Campina Grande
+1 | Vivir Círio de Nazaré | Belém | Brasil | Círio de Nazaré, Belém
+1 | Vivir el Festival de Parintins | Parintins | Brasil | Festival de Parintins, Parintins
+1 | Vivir Carnival of Trinidad and Tobago | Port of Spain | Trinidad y Tobago | Carnival of Trinidad and Tobago, Port of Spain
+1 | Vivir Junkanoo | Nassau | Bahamas | Junkanoo, Nassau
+1 | Vivir Crop Over | Bridgetown | Barbados | Crop Over, Bridgetown
+1 | Vivir la Semana Santa de Antigua | Antigua Guatemala | Guatemala | Semana Santa de Antigua, Antigua Guatemala
+1 | Vivir Guelaguetza | Oaxaca | México | Guelaguetza, Oaxaca
+1 | Vivir la Noche de Rábanos | Oaxaca | México | Noche de Rábanos, Oaxaca
+1 | Vivir la Fiesta de la Candelaria | Puno | Perú | Fiesta de la Candelaria, Puno
+1 | Vivir la Feria de las Flores | Medellín | Colombia | Feria de las Flores, Medellín
+1 | Vivir el Festival de Negros y Blancos | Pasto | Colombia | Festival de Negros y Blancos, Pasto
+1 | Vivir Burning Man | Black Rock Desert | Estados Unidos | Burning Man, Black Rock Desert
+1 | Vivir Fantasy Fest | Key West | Estados Unidos | Fantasy Fest, Key West
+1 | Vivir Calgary Stampede | Calgary | Canadá | Calgary Stampede, Calgary
+1 | Vivir Quebec Winter Carnival | Quebec City | Canadá | Quebec Winter Carnival, Quebec City
+1 | Vivir Celebration of Light | Vancouver | Canadá | Celebration of Light, Vancouver
+1 | Vivir Sydney New Year's Eve | Sydney | Australia | Sydney New Year's Eve, Sydney
+1 | Vivir Vivid Sydney | Sydney | Australia | Vivid Sydney, Sydney
+1 | Vivir Melbourne Cup Carnival | Melbourne | Australia | Melbourne Cup Carnival, Melbourne
+1 | Vivir Pasifika Festival | Auckland | Nueva Zelanda | Pasifika Festival, Auckland
+1 | Vivir Matariki | Varias ciudades | Nueva Zelanda | Matariki, Varias ciudades
+1 | Vivir el Timkat | Gondar | Etiopía | Timkat, Gondar
+1 | Vivir Meskel | Addis Abeba | Etiopía | Meskel, Addis Abeba
+1 | Vivir el Moussem de Tan-Tan | Tan-Tan | Marruecos | Moussem de Tan-Tan, Tan-Tan
+1 | Vivir el Festival de las Máscaras de Dédougou | Dédougou | Burkina Faso | Festival de las Máscaras de Dédougou, Dédougou
+1 | Vivir el Durbar | Kano | Nigeria | Durbar Festival, Kano
+1 | Vivir el Lake of Stars | Lake Malawi | Malaui | Lake of Stars, Lake Malawi

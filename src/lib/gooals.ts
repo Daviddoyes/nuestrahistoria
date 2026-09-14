@@ -1,11 +1,11 @@
 // Constantes compartidas del catálogo de gooals v2. Vive fuera de actions.ts
 // porque ese módulo es 'use server' y allí todo lo exportado debe ser async.
 
-export type CategoriaGooal = 'viajes' | 'deporte' | 'musica' | 'gastronomia' | 'cultura' | 'aventura'
+export type CategoriaGooal = 'viajes' | 'deporte' | 'musica' | 'gastronomia' | 'cultura' | 'aventura' | 'espectaculos'
 export type DificultadGooal = 'facil' | 'dificil' | 'epico'
 
 export const CATEGORIAS: CategoriaGooal[] = [
-  'viajes', 'deporte', 'musica', 'gastronomia', 'cultura', 'aventura',
+  'viajes', 'deporte', 'musica', 'gastronomia', 'cultura', 'aventura', 'espectaculos',
 ]
 
 export const CATEGORIA_LABEL: Record<CategoriaGooal, string> = {
@@ -15,6 +15,7 @@ export const CATEGORIA_LABEL: Record<CategoriaGooal, string> = {
   gastronomia: 'Gastronomía',
   cultura: 'Cultura',
   aventura: 'Aventura',
+  espectaculos: 'Espectáculos',
 }
 
 export const CATEGORIA_EMOJI: Record<CategoriaGooal, string> = {
@@ -24,6 +25,7 @@ export const CATEGORIA_EMOJI: Record<CategoriaGooal, string> = {
   gastronomia: '🍜',
   cultura: '🎨',
   aventura: '🧗',
+  espectaculos: '🎟️',
 }
 
 export const CATEGORIA_COLOR: Record<CategoriaGooal, string> = {
@@ -33,6 +35,7 @@ export const CATEGORIA_COLOR: Record<CategoriaGooal, string> = {
   gastronomia: '#F59E0B',
   cultura: '#8B5CF6',
   aventura: '#FF6B35',
+  espectaculos: '#EF4444',
 }
 
 /** Fondo de las cards sin imagen: degradado del color de su categoría. */
@@ -43,6 +46,7 @@ export const CATEGORIA_GRADIENTE: Record<CategoriaGooal, string> = {
   gastronomia: 'linear-gradient(145deg, #78350F 0%, #F59E0B 100%)',
   cultura: 'linear-gradient(145deg, #4C1D95 0%, #8B5CF6 100%)',
   aventura: 'linear-gradient(145deg, #7C2D12 0%, #FF6B35 100%)',
+  espectaculos: 'linear-gradient(145deg, #7F1D1D 0%, #EF4444 100%)',
 }
 
 export const DIFICULTADES: DificultadGooal[] = ['facil', 'dificil', 'epico']
@@ -53,7 +57,28 @@ export const DIFICULTAD_META: Record<DificultadGooal, { emoji: string; label: st
   epico: { emoji: '💎', label: 'Épico', puntos: 10, color: '#1DE9B6' },
 }
 
-/** Baremo único de puntos por dificultad. La API lo usa al crear/generar gooals. */
+/**
+ * Rango de puntos admisible para cada dificultad, como [mínimo, máximo].
+ *
+ * Los puntos ya no se deducen de la dificultad: dentro de un mismo nivel hay
+ * retos que valen más que otros (en Espectáculos hay 'facil' de 2 y de 3). La
+ * dificultad fija la banda; el valor exacto lo pone quien crea el gooal.
+ */
+export const BANDA_PUNTOS: Record<DificultadGooal, [number, number]> = {
+  facil: [1, 3],
+  dificil: [4, 7],
+  epico: [8, 10],
+}
+
+/** ¿Esos puntos caen dentro de la banda de esa dificultad? */
+export function puntosValidos(dificultad: string, puntos: number): boolean {
+  const banda = BANDA_PUNTOS[dificultad as DificultadGooal]
+  if (!banda) return false
+  if (!Number.isInteger(puntos)) return false
+  return puntos >= banda[0] && puntos <= banda[1]
+}
+
+/** Puntos por defecto de cada dificultad, cuando no se especifica ninguno. */
 export function puntosPorDificultad(dificultad: string): number {
   return DIFICULTAD_META[dificultad as DificultadGooal]?.puntos ?? 1
 }

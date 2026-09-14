@@ -1,0 +1,225 @@
+
+### España - LaLiga
+
+3 | Ver un partido en el Santiago Bernabéu | Madrid | España
+3 | Ver un partido en el Spotify Camp Nou | Barcelona | España
+2 | Ver un partido en el Riyadh Air Metropolitano | Madrid | España
+2 | Ver un partido en el San Mamés | Bilbao | España
+2 | Ver un partido en el Benito Villamarín | Sevilla | España
+2 | Ver un partido en el Ramón Sánchez-Pizjuán | Sevilla | España
+2 | Ver un partido en Mestalla | Valencia | España
+1 | Ver un partido en el Reale Arena | San Sebastián | España
+1 | Ver un partido en el Estadio de la Cerámica | Vila-real | España
+1 | Ver un partido en el RCDE Stadium | Cornellà | España
+1 | Ver un partido en Montilivi | Girona | España
+1 | Ver un partido en El Sadar | Pamplona | España
+1 | Ver un partido en Balaídos | Vigo | España
+1 | Ver un partido en Son Moix | Palma | España
+1 | Ver un partido en Mendizorroza | Vitoria | España
+1 | Ver un partido en el Coliseum | Getafe | España
+1 | Ver un partido en Vallecas | Madrid | España
+1 | Ver un partido en el Ciutat de València | Valencia | España
+1 | Ver un partido en el Martínez Valero | Elche | España
+1 | Ver un partido en el Carlos Tartiere | Oviedo | España
+
+### Inglaterra - Premier League
+
+2 | Ver un partido en el Emirates Stadium | Londres | Reino Unido
+2 | Ver un partido en Villa Park | Birmingham | Reino Unido
+1 | Ver un partido en el Vitality Stadium | Bournemouth | Reino Unido
+1 | Ver un partido en el Gtech Community Stadium | Londres | Reino Unido
+1 | Ver un partido en el Amex Stadium | Brighton | Reino Unido
+2 | Ver un partido en Stamford Bridge | Londres | Reino Unido
+1 | Ver un partido en Selhurst Park | Londres | Reino Unido
+1 | Ver un partido en el Hill Dickinson Stadium | Liverpool | Reino Unido
+1 | Ver un partido en Craven Cottage | Londres | Reino Unido
+2 | Ver un partido en Elland Road | Leeds | Reino Unido
+3 | Ver un partido en Anfield | Liverpool | Reino Unido
+2 | Ver un partido en el Etihad Stadium | Manchester | Reino Unido
+3 | Ver un partido en Old Trafford | Manchester | Reino Unido
+2 | Ver un partido en St James' Park | Newcastle | Reino Unido
+1 | Ver un partido en el City Ground | Nottingham | Reino Unido
+1 | Ver un partido en el Stadium of Light | Sunderland | Reino Unido
+2 | Ver un partido en el Tottenham Hotspur Stadium | Londres | Reino Unido
+1 | Ver un partido en el Coventry Building Society Arena | Coventry | Reino Unido
+1 | Ver un partido en Portman Road | Ipswich | Reino Unido
+1 | Ver un partido en el MKM Stadium | Hull | Reino Unido
+
+### Alemania - Bundesliga
+
+3 | Ver un partido en el Allianz Arena | Múnich | Alemania
+3 | Ver un partido en el Signal Iduna Park | Dortmund | Alemania
+1 | Ver un partido en el BayArena | Leverkusen | Alemania
+2 | Ver un partido en el Deutsche Bank Park | Frankfurt | Alemania
+2 | Ver un partido en el Red Bull Arena | Leipzig | Alemania
+1 | Ver un partido en el MHPArena | Stuttgart | Alemania
+1 | Ver un partido en el BORUSSIA-PARK | Mönchengladbach | Alemania
+1 | Ver un partido en el Europa-Park Stadion | Friburgo | Alemania
+1 | Ver un partido en el Volkswagen Arena | Wolfsburg | Alemania
+2 | Ver un partido en el Weserstadion | Bremen | Alemania
+1 | Ver un partido en el MEWA Arena | Maguncia | Alemania
+1 | Ver un partido en el PreZero Arena | Sinsheim | Alemania
+2 | Ver un partido en el Millerntor-Stadion | Hamburgo | Alemania
+2 | Ver un partido en el Volksparkstadion | Hamburgo | Alemania
+2 | Ver un partido en el RheinEnergieSTADION | Colonia | Alemania
+1 | Ver un partido en el WWK Arena | Augsburgo | Alemania
+1 | Ver un partido en el Alte Försterei | Berlín | Alemania
+1 | Ver un partido en el Voith-Arena | Heidenheim | Alemania
+
+### Italia - Serie A
+
+3 | Ver un partido en San Siro | Milán | Italia
+2 | Ver un partido en el Allianz Stadium | Turín | Italia
+2 | Ver un partido en el Diego Armando Maradona | Nápoles | Italia
+2 | Ver un partido en el Stadio Olimpico | Roma | Italia
+1 | Ver un partido en el Gewiss Stadium | Bérgamo | Italia
+2 | Ver un partido en el Artemio Franchi | Florencia | Italia
+1 | Ver un partido en el Renato Dall'Ara | Bolonia | Italia
+1 | Ver un partido en el Bluenergy Stadium | Udine | Italia
+1 | Ver un partido en el Luigi Ferraris | Génova | Italia
+1 | Ver un partido en el Olimpico Grande Torino | Turín | Italia
+1 | Ver un partido en el Mapei Stadium | Reggio Emilia | Italia
+1 | Ver un partido en el Via del Mare | Lecce | Italia
+1 | Ver un partido en el Unipol Domus | Cagliari | Italia
+1 | Ver un partido en el Ennio Tardini | Parma | Italia
+1 | Ver un partido en el Giuseppe Sinigaglia | Como | Italia
+
+### Francia - Ligue 1
+
+2 | Ver un partido en el Parc des Princes | París | Francia
+2 | Ver un partido en el Orange Vélodrome | Marsella | Francia
+1 | Ver un partido en el Groupama Stadium | Lyon | Francia
+1 | Ver un partido en el Stade Pierre-Mauroy | Lille | Francia
+1 | Ver un partido en Bollaert-Delelis | Lens | Francia
+1 | Ver un partido en La Beaujoire | Nantes | Francia
+1 | Ver un partido en el Roazhon Park | Rennes | Francia
+2 | Ver un partido en el Stade Louis II | Mónaco | Francia
+1 | Ver un partido en La Meinau | Estrasburgo | Francia
+1 | Ver un partido en el Allianz Riviera | Niza | Francia
+
+### Portugal - Primeira Liga
+
+2 | Ver un partido en el Estádio da Luz | Lisboa | Portugal
+2 | Ver un partido en el José Alvalade | Lisboa | Portugal
+2 | Ver un partido en el Estádio do Dragão | Oporto | Portugal
+1 | Ver un partido en el Municipal de Braga | Braga | Portugal
+1 | Ver un partido en el D. Afonso Henriques | Guimarães | Portugal
+
+### Países Bajos - Eredivisie
+
+2 | Ver un partido en el Johan Cruijff ArenA | Ámsterdam | Países Bajos
+2 | Ver un partido en De Kuip | Rotterdam | Países Bajos
+2 | Ver un partido en el Philips Stadion | Eindhoven | Países Bajos
+1 | Ver un partido en De Grolsch Veste | Enschede | Países Bajos
+1 | Ver un partido en el AFAS Stadion | Alkmaar | Países Bajos
+
+### Escocia
+
+3 | Ver un partido en Celtic Park | Glasgow | Reino Unido
+2 | Ver un partido en Ibrox | Glasgow | Reino Unido
+1 | Ver un partido en Tynecastle Park | Edimburgo | Reino Unido
+1 | Ver un partido en Easter Road | Edimburgo | Reino Unido
+1 | Ver un partido en Pittodrie | Aberdeen | Reino Unido
+
+### Turquía
+
+2 | Ver un partido en el RAMS Park | Estambul | Turquía
+2 | Ver un partido en el Tüpraş Stadyumu | Estambul | Turquía
+2 | Ver un partido en el Şükrü Saracoğlu | Estambul | Turquía
+
+### Argentina
+
+3 | Ver un partido en el Más Monumental | Buenos Aires | Argentina
+3 | Ver un partido en La Bombonera | Buenos Aires | Argentina
+1 | Ver un partido en el Presidente Perón | Avellaneda | Argentina
+1 | Ver un partido en el Libertadores de América | Avellaneda | Argentina
+1 | Ver un partido en Pedro Bidegain | Buenos Aires | Argentina
+1 | Ver un partido en el José Amalfitani | Buenos Aires | Argentina
+1 | Ver un partido en el Jorge Luis Hirschi | La Plata | Argentina
+
+### Brasil
+
+3 | Ver un partido en el Maracaná | Río de Janeiro | Brasil
+2 | Ver un partido en el Allianz Parque | São Paulo | Brasil
+2 | Ver un partido en el Neo Química Arena | São Paulo | Brasil
+2 | Ver un partido en el MorumBIS | São Paulo | Brasil
+2 | Ver un partido en Vila Belmiro | Santos | Brasil
+1 | Ver un partido en el Arena MRV | Belo Horizonte | Brasil
+2 | Ver un partido en el Mineirão | Belo Horizonte | Brasil
+1 | Ver un partido en el Arena do Grêmio | Porto Alegre | Brasil
+2 | Ver un partido en Beira-Rio | Porto Alegre | Brasil
+1 | Ver un partido en Fonte Nova | Salvador | Brasil
+
+### MLS - EE.UU./Canadá
+
+1 | Ver un partido en el BMO Stadium | Los Ángeles | Estados Unidos
+1 | Ver un partido en el Dignity Health Sports Park | Carson | Estados Unidos
+2 | Ver un partido en el Lumen Field | Seattle | Estados Unidos
+1 | Ver un partido en el Providence Park | Portland | Estados Unidos
+1 | Ver un partido en el BC Place | Vancouver | Canadá
+1 | Ver un partido en el BMO Field | Toronto | Canadá
+1 | Ver un partido en el Sports Illustrated Stadium | Harrison | Estados Unidos
+2 | Ver un partido en el Mercedes-Benz Stadium | Atlanta | Estados Unidos
+2 | Ver un partido en el Chase Stadium | Fort Lauderdale | Estados Unidos
+1 | Ver un partido en el Q2 Stadium | Austin | Estados Unidos
+1 | Ver un partido en el Lower.com Field | Columbus | Estados Unidos
+1 | Ver un partido en el TQL Stadium | Cincinnati | Estados Unidos
+1 | Ver un partido en el Geodis Park | Nashville | Estados Unidos
+
+### México
+
+3 | Ver un partido en el Estadio Azteca | Ciudad de México | México
+2 | Ver un partido en el Olímpico Universitario | Ciudad de México | México
+1 | Ver un partido en el Estadio Akron | Zapopan | México
+2 | Ver un partido en el Estadio BBVA | Guadalupe | México
+1 | Ver un partido en el Estadio Universitario | San Nicolás | México
+1 | Ver un partido en Nemesio Díez | Toluca | México
+
+### Asia / Oceanía
+
+1 | Ver un partido en el Saitama Stadium 2002 | Saitama | Japón
+1 | Ver un partido en el Nissan Stadium | Yokohama | Japón
+1 | Ver un partido en el Panasonic Stadium Suita | Suita | Japón
+1 | Ver un partido en el Seoul World Cup Stadium | Seúl | Corea del Sur
+1 | Ver un partido en el Jeonju World Cup Stadium | Jeonju | Corea del Sur
+1 | Ver un partido en el Kingdom Arena | Riad | Arabia Saudí
+1 | Ver un partido en el Al-Awwal Park | Riad | Arabia Saudí
+1 | Ver un partido en el King Abdullah Sports City | Yeda | Arabia Saudí
+2 | Ver un partido en el Allianz Stadium | Sídney | Australia
+1 | Ver un partido en el AAMI Park | Melbourne | Australia
+
+### Europa - otros imprescindibles
+
+1 | Ver un partido en el Jan Breydelstadion | Brujas | Bélgica
+1 | Ver un partido en el Lotto Park | Bruselas | Bélgica
+1 | Ver un partido en Wankdorf | Berna | Suiza
+1 | Ver un partido en el St. Jakob-Park | Basilea | Suiza
+2 | Ver un partido en el Red Bull Arena | Salzburgo | Austria
+1 | Ver un partido en Parken | Copenhague | Dinamarca
+1 | Ver un partido en el Eleda Stadion | Malmö | Suecia
+1 | Ver un partido en el Aspmyra Stadion | Bodø | Noruega
+1 | Ver un partido en el Wojska Polskiego | Varsovia | Polonia
+1 | Ver un partido en el Fortuna Arena | Praga | Chequia
+1 | Ver un partido en el epet ARENA | Praga | Chequia
+2 | Ver un partido en Maksimir | Zagreb | Croacia
+2 | Ver un partido en el Rajko Mitić | Belgrado | Serbia
+1 | Ver un partido en el OPAP Arena | Atenas | Grecia
+2 | Ver un partido en el Karaiskakis | El Pireo | Grecia
+1 | Ver un partido en Toumba | Salónica | Grecia
+1 | Ver un partido en el Arena Națională | Bucarest | Rumanía
+1 | Ver un partido en el Groupama Aréna | Budapest | Hungría
+
+### Sudamérica / África - otros
+
+2 | Ver un partido en el Gran Parque Central | Montevideo | Uruguay
+2 | Ver un partido en el Campeón del Siglo | Montevideo | Uruguay
+2 | Ver un partido en el Monumental David Arellano | Santiago | Chile
+1 | Ver un partido en el Monumental U | Lima | Perú
+1 | Ver un partido en el Alejandro Villanueva | Lima | Perú
+1 | Ver un partido en el Rodrigo Paz Delgado | Quito | Ecuador
+1 | Ver un partido en el Atanasio Girardot | Medellín | Colombia
+1 | Ver un partido en el Metropolitano | Barranquilla | Colombia
+2 | Ver un partido en el Hernando Siles | La Paz | Bolivia
+2 | Ver un partido en el Stade Mohammed V | Casablanca | Marruecos
+2 | Ver un partido en el Cairo International Stadium | El Cairo | Egipto
+1 | Ver un partido en Loftus Versfeld | Pretoria | Sudáfrica

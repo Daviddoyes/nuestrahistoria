@@ -1,0 +1,304 @@
+# GooALS — espectáculos
+#
+# Este bloque no sale de ningún PDF: está escrito a mano. Son las experiencias
+# de "haber estado allí" — el estadio, el circuito, la pista, la sala.
+#
+# ── Las tres reglas ─────────────────────────────────────────────────
+#
+# 1. Si se puede señalar en un mapa, NO existe la versión abierta.
+#    "Ver la F1 en Montmeló" existe; "asistir a un Gran Premio de F1" no,
+#    porque ya está cubierto por los circuitos. Si existieran las dos, la
+#    genérica valdría más que la concreta y los circuitos sobrarían.
+#
+# 2. Los puntos son la exclusividad del sitio, no la distancia a tu casa.
+#    Aquí NO se aplica la dificultad geográfica del resto del catálogo.
+#    Mónaco vale más que Montmeló porque es Mónaco, no porque esté lejos.
+#
+# 3. El gooal es el recinto, no el partido.
+#    "Ver un partido en el Camp Nou" — da igual si era una semifinal de
+#    Champions o la Copa del Rey contra un tercera. La historia es el sitio.
+#
+# ── Escala ──────────────────────────────────────────────────────────
+#
+#   1  recinto de referencia — se cuenta, pero lo tiene mucha gente
+#   2  grande — se reconoce fuera de su país
+#   3  templo — se viaja expresamente a verlo
+#   4-10  eventos abiertos: no tienen sitio fijo y por eso cuestan
+#
+# Formato:  puntos | título | ciudad | país | consulta (opcional)
+#
+# La quinta columna solo se usa para geocodificar, nunca se ve en la app. Está
+# donde el nombre corto del título engaña al buscador: hay dos Lakeville y dos
+# Madison en Estados Unidos, y "Bristol" a secas cae en Massachusetts en vez de
+# en el circuito de Tennessee. Ahí se escribe el nombre completo del recinto.
+# Los eventos abiertos van sin ciudad ni país: no van al mapa a propósito.
+
+
+## FÚTBOL — recintos
+#
+# Los 177 estadios de primera división salen del PDF que pasó David y viven en
+# estadios_generado.txt, que se rehace con:
+#
+#     python estadios.py ../../RETOS/estadios_futbol_primeras_divisiones_mundo.pdf
+#
+# Ahí NO se toca nada a mano: los puntos y el artículo ("en Anfield" pero "en el
+# Bernabéu") se deciden en estadios.py. Aquí solo van los recintos de fútbol que
+# no son de club y por eso no están en el PDF.
+
+2 | Ver un partido en Wembley | Londres | Reino Unido
+
+
+## BALONCESTO — NBA y Euroliga
+#
+# Del PDF "estadios_baloncesto_nba_euroliga.pdf" (30 NBA + 20 Euroliga = 50).
+# Se han quedado 48:
+#
+#   · El Belgrade Arena salía dos veces, una por Partizan y otra por Estrella
+#     Roja. Es el mismo edificio: un gooal.
+#   · El Arena 8888 de Sofía se ha quitado. No es la casa de nadie: es la sede
+#     neutral que usó el Hapoel Tel Aviv una temporada. Si el año que viene
+#     juegan en otro sitio, el gooal se queda huérfano. Dímelo y lo pongo.
+#
+# A +3 solo el Madison. A +2 los cinco que se reconocen sin ser del mundillo:
+# Boston, los Lakers, los Bulls, el Madrid y el Barça. Los 42 restantes a +1.
+
+3 | Ver un partido de la NBA en el Madison Square Garden | Nueva York | Estados Unidos
+2 | Ver un partido de la NBA en el TD Garden | Boston | Estados Unidos
+2 | Ver un partido de la NBA en el Crypto.com Arena | Los Ángeles | Estados Unidos
+2 | Ver un partido de la NBA en el United Center | Chicago | Estados Unidos
+2 | Ver un partido de la Euroliga en el Movistar Arena | Madrid | España
+2 | Ver un partido de la Euroliga en el Palau Blaugrana | Barcelona | España
+1 | Ver un partido de la NBA en el State Farm Arena | Atlanta | Estados Unidos
+1 | Ver un partido de la NBA en el Barclays Center | Brooklyn | Estados Unidos
+1 | Ver un partido de la NBA en el Spectrum Center | Charlotte | Estados Unidos
+1 | Ver un partido de la NBA en el Rocket Arena | Cleveland | Estados Unidos
+1 | Ver un partido de la NBA en el American Airlines Center | Dallas | Estados Unidos
+1 | Ver un partido de la NBA en el Ball Arena | Denver | Estados Unidos
+1 | Ver un partido de la NBA en el Little Caesars Arena | Detroit | Estados Unidos
+1 | Ver un partido de la NBA en el Chase Center | San Francisco | Estados Unidos
+1 | Ver un partido de la NBA en el Toyota Center | Houston | Estados Unidos
+1 | Ver un partido de la NBA en el Gainbridge Fieldhouse | Indianápolis | Estados Unidos
+1 | Ver un partido de la NBA en el Intuit Dome | Inglewood | Estados Unidos
+1 | Ver un partido de la NBA en el FedExForum | Memphis | Estados Unidos
+1 | Ver un partido de la NBA en el Kaseya Center | Miami | Estados Unidos
+1 | Ver un partido de la NBA en el Fiserv Forum | Milwaukee | Estados Unidos
+1 | Ver un partido de la NBA en el Target Center | Mineápolis | Estados Unidos
+1 | Ver un partido de la NBA en el Smoothie King Center | Nueva Orleans | Estados Unidos
+1 | Ver un partido de la NBA en el Paycom Center | Oklahoma City | Estados Unidos
+1 | Ver un partido de la NBA en el Kia Center | Orlando | Estados Unidos
+1 | Ver un partido de la NBA en el Xfinity Mobile Arena | Filadelfia | Estados Unidos
+1 | Ver un partido de la NBA en el Mortgage Matchup Center | Phoenix | Estados Unidos
+1 | Ver un partido de la NBA en el Moda Center | Portland | Estados Unidos
+1 | Ver un partido de la NBA en el Golden 1 Center | Sacramento | Estados Unidos
+1 | Ver un partido de la NBA en el Frost Bank Center | San Antonio | Estados Unidos
+1 | Ver un partido de la NBA en el Scotiabank Arena | Toronto | Canadá
+1 | Ver un partido de la NBA en el Delta Center | Salt Lake City | Estados Unidos
+1 | Ver un partido de la NBA en el Capital One Arena | Washington | Estados Unidos
+1 | Ver un partido de la Euroliga en el Buesa Arena | Vitoria-Gasteiz | España
+1 | Ver un partido de la Euroliga en el Roig Arena | Valencia | España
+1 | Ver un partido de la Euroliga en el Uber Arena | Berlín | Alemania
+1 | Ver un partido de la Euroliga en el SAP Garden | Múnich | Alemania
+1 | Ver un partido de la Euroliga en la Salle Gaston Médecin | Montecarlo | Mónaco
+1 | Ver un partido de la Euroliga en el LDLC Arena | Décines-Charpieu | Francia
+1 | Ver un partido de la Euroliga en el Unipol Arena | Casalecchio di Reno | Italia
+1 | Ver un partido de la Euroliga en el Mediolanum Forum | Assago | Italia
+1 | Ver un partido de la Euroliga en el OAKA | Atenas | Grecia | Olympic Indoor Hall, Athens
+1 | Ver un partido de la Euroliga en el Estadio de la Paz y la Amistad | El Pireo | Grecia | Peace and Friendship Stadium, Piraeus
+1 | Ver un partido de la Euroliga en el Ülker Sports and Event Hall | Estambul | Turquía | Ülker Sports and Event Hall, Istanbul
+1 | Ver un partido de la Euroliga en el Basketball Development Center | Estambul | Turquía | Sinan Erdem Dome, Istanbul
+1 | Ver un partido de la Euroliga en el Žalgirio Arena | Kaunas | Lituania
+1 | Ver un partido de la Euroliga en el Belgrade Arena | Belgrado | Serbia
+1 | Ver un partido de la Euroliga en el Menora Mivtachim Arena | Tel Aviv | Israel
+1 | Ver un partido de la Euroliga en el Pais Arena | Jerusalén | Israel
+
+
+## FÓRMULA 1 Y RESISTENCIA — circuitos
+
+#
+# Del PDF "circuitos_f1_2026_localizacion.pdf" (23 circuitos) más las 24 Horas
+# de Le Mans, que no es de F1 pero es del mismo mundo.
+#
+# Los +3 son la Triple Corona del automovilismo: Mónaco, Le Mans e Indianápolis
+# (esta última ya está en +3 en el bloque de NASCAR). Son las tres carreras que
+# reconoce alguien a quien no le gustan los coches.
+#
+# A +2, los circuitos con historia propia: Monza, Spa, Silverstone, Suzuka e
+# Interlagos. El resto a +1, incluidos los espectáculos nuevos (Las Vegas,
+# Singapur, Miami): son un fin de semana enorme, pero no son una peregrinación.
+
+3 | Ver un Gran Premio de Fórmula 1 en Mónaco | Montecarlo | Mónaco | Circuit de Monaco
+3 | Ver las 24 Horas de Le Mans | Le Mans | Francia | Circuit des 24 Heures du Mans
+2 | Ver un Gran Premio de Fórmula 1 en Monza | Monza | Italia
+2 | Ver un Gran Premio de Fórmula 1 en Spa-Francorchamps | Stavelot | Bélgica
+2 | Ver un Gran Premio de Fórmula 1 en Silverstone | Silverstone | Reino Unido
+2 | Ver un Gran Premio de Fórmula 1 en Suzuka | Suzuka | Japón
+2 | Ver un Gran Premio de Fórmula 1 en Interlagos | São Paulo | Brasil
+1 | Ver un Gran Premio de Fórmula 1 en Montmeló | Montmeló | España
+1 | Ver un Gran Premio de Fórmula 1 en el MADRING | Madrid | España
+1 | Ver un Gran Premio de Fórmula 1 en el Red Bull Ring | Spielberg | Austria
+1 | Ver un Gran Premio de Fórmula 1 en el Hungaroring | Mogyoród | Hungría
+1 | Ver un Gran Premio de Fórmula 1 en Zandvoort | Zandvoort | Países Bajos
+1 | Ver un Gran Premio de Fórmula 1 en Melbourne | Melbourne | Australia
+1 | Ver un Gran Premio de Fórmula 1 en Shanghái | Shanghái | China
+1 | Ver un Gran Premio de Fórmula 1 en Miami | Miami | Estados Unidos
+1 | Ver un Gran Premio de Fórmula 1 en Montreal | Montreal | Canadá
+1 | Ver un Gran Premio de Fórmula 1 en el Circuit of The Americas | Austin | Estados Unidos
+1 | Ver un Gran Premio de Fórmula 1 en Las Vegas | Las Vegas | Estados Unidos
+1 | Ver un Gran Premio de Fórmula 1 en Bakú | Bakú | Azerbaiyán
+1 | Ver un Gran Premio de Fórmula 1 en Singapur | Singapur | Singapur
+1 | Ver un Gran Premio de Fórmula 1 en Sepang | Sepang | Malasia
+1 | Ver un Gran Premio de Fórmula 1 en el Hermanos Rodríguez | Ciudad de México | México
+1 | Ver un Gran Premio de Fórmula 1 en Lusail | Lusail | Qatar
+1 | Ver un Gran Premio de Fórmula 1 en Yas Marina | Abu Dabi | Emiratos Árabes Unidos
+
+
+## MOTOGP — los 22 circuitos del Mundial
+#
+# Del PDF "circuitos_motogp_2026_localizacion.pdf".
+#
+# Un circuito puede salir dos veces en el catálogo —Silverstone y COTA están
+# también en Fórmula 1 y NASCAR— y está bien: mismo asfalto, pero un fin de
+# semana de motos no es un fin de semana de coches. Lo que no se repite es el
+# mismo trazado con la misma serie (por eso se cayó el Charlotte ROVAL).
+#
+# Casi todos van a +1. Solo Assen (la catedral) y Mugello tienen nombre fuera
+# del motociclismo. Phillip Island y Jerez me los pensé y los dejé en 1; si
+# crees que son evidentes, súbelos.
+
+2 | Ver un Gran Premio de MotoGP en Assen | Assen | Países Bajos
+2 | Ver un Gran Premio de MotoGP en Mugello | Scarperia | Italia
+1 | Ver un Gran Premio de MotoGP en Jerez | Jerez de la Frontera | España
+1 | Ver un Gran Premio de MotoGP en Montmeló | Montmeló | España
+1 | Ver un Gran Premio de MotoGP en MotorLand Aragón | Alcañiz | España
+1 | Ver un Gran Premio de MotoGP en Cheste | Cheste | España
+1 | Ver un Gran Premio de MotoGP en Le Mans | Le Mans | Francia
+1 | Ver un Gran Premio de MotoGP en Misano | Misano Adriatico | Italia
+1 | Ver un Gran Premio de MotoGP en Silverstone | Silverstone | Reino Unido
+1 | Ver un Gran Premio de MotoGP en el Sachsenring | Hohenstein-Ernstthal | Alemania
+1 | Ver un Gran Premio de MotoGP en el Red Bull Ring | Spielberg | Austria
+1 | Ver un Gran Premio de MotoGP en Brno | Brno | Chequia
+1 | Ver un Gran Premio de MotoGP en Balaton Park | Balatonfőkajár | Hungría
+1 | Ver un Gran Premio de MotoGP en Portimão | Portimão | Portugal
+1 | Ver un Gran Premio de MotoGP en el Circuit of The Americas | Austin | Estados Unidos
+1 | Ver un Gran Premio de MotoGP en Goiânia | Goiânia | Brasil
+1 | Ver un Gran Premio de MotoGP en Motegi | Motegi | Japón
+1 | Ver un Gran Premio de MotoGP en Sepang | Sepang | Malasia
+1 | Ver un Gran Premio de MotoGP en Buriram | Buriram | Tailandia
+1 | Ver un Gran Premio de MotoGP en Mandalika | Lombok | Indonesia
+1 | Ver un Gran Premio de MotoGP en Lusail | Lusail | Qatar
+1 | Ver un Gran Premio de MotoGP en Phillip Island | Phillip Island | Australia
+
+
+## TENIS — de ATP 500 para arriba
+
+2 | Ver un partido en Wimbledon | Londres | Reino Unido
+2 | Ver un partido en Roland Garros | París | Francia
+2 | Ver un partido en el US Open | Nueva York | Estados Unidos
+2 | Ver un partido en el Open de Australia | Melbourne | Australia | Melbourne Park, Melbourne
+1 | Ver un partido en el Mutua Madrid Open | Madrid | España | Caja Mágica, Madrid
+1 | Ver un partido en el Conde de Godó | Barcelona | España | Real Club de Tenis Barcelona
+1 | Ver un partido en Indian Wells | Indian Wells | Estados Unidos | Indian Wells Tennis Garden, California
+1 | Ver un partido en el Masters de Montecarlo | Montecarlo | Mónaco | Monte-Carlo Country Club
+1 | Ver un partido en las ATP Finals | Turín | Italia | Inalpi Arena, Torino
+
+
+## CICLISMO — los puertos son el sitio
+
+2 | Ver el Tour de Francia en Alpe d'Huez | Le Bourg-d'Oisans | Francia | Alpe d'Huez
+2 | Ver el Tour de Francia en el Mont Ventoux | Bédoin | Francia | Mont Ventoux
+1 | Ver la Vuelta a España en el Angliru | Riosa | España | Alto del Angliru, Asturias
+
+
+## MÚSICA — salas y templos
+#
+# Los FESTIVALES ya no están aquí: salen del PDF y viven en
+# festivales_generado.txt, que se rehace con:
+#
+#     python festivales.py ../../RETOS/festivales_rock_electronica_mundo.pdf
+#
+# Aquí solo quedan las salas: sitios donde el edificio ES la experiencia.
+# Tocar en el Royal Albert Hall o ver jazz en el Village Vanguard no es lo
+# mismo que verlo en el pabellón de al lado, y por eso son gooals. Un
+# Hallenstadion cualquiera no lo es, y por eso el PDF de música se vació.
+
+2 | Ver un concierto en el Red Rocks Amphitheatre | Morrison | Estados Unidos | Red Rocks Amphitheatre, Morrison, Colorado
+2 | Ver un concierto en el Hollywood Bowl | Los Ángeles | Estados Unidos | Hollywood Bowl, Los Angeles
+2 | Ver un concierto en el Royal Albert Hall | Londres | Reino Unido | Royal Albert Hall, London
+2 | Ver una ópera en La Scala | Milán | Italia | Teatro alla Scala, Milano
+2 | Ver un concierto en la Ópera de Sídney | Sídney | Australia | Sydney Opera House
+2 | Ver una ópera en el Metropolitan Opera House | Nueva York | Estados Unidos | Metropolitan Opera House, New York
+2 | Ver una ópera en la Wiener Staatsoper | Viena | Austria | Wiener Staatsoper
+2 | Ver un concierto en el Musikverein | Viena | Austria | Wiener Musikverein
+2 | Ver jazz en el Village Vanguard | Nueva York | Estados Unidos | Village Vanguard, New York
+2 | Ver jazz en el Blue Note de Tokio | Tokio | Japón | Blue Note Tokyo
+2 | Ver jazz en el Preservation Hall | Nueva Orleans | Estados Unidos | Preservation Hall, New Orleans
+2 | Salir de fiesta en el Berghain | Berlín | Alemania | Berghain, Berlin
+2 | Ver un concierto en el Cavern Club | Liverpool | Reino Unido | The Cavern Club, Liverpool
+1 | Ver un concierto en el Palau de la Música Catalana | Barcelona | España | Palau de la Música Catalana, Barcelona
+1 | Ver un concierto en la Berliner Philharmonie | Berlín | Alemania | Berliner Philharmonie
+1 | Ver una ópera en el Palais Garnier | París | Francia | Palais Garnier
+1 | Ver una ópera en La Fenice | Venecia | Italia | Teatro La Fenice
+1 | Ver un concierto en el Concertgebouw | Ámsterdam | Países Bajos | Koninklijk Concertgebouw
+1 | Ver una ópera en el Teatro Colón | Buenos Aires | Argentina | Teatro Colón, Buenos Aires
+1 | Ver un concierto en el Grand Ole Opry | Nashville | Estados Unidos | Grand Ole Opry House
+1 | Ver un concierto en el Ryman Auditorium | Nashville | Estados Unidos | Ryman Auditorium
+1 | Ver un concierto en el Whisky a Go Go | Los Ángeles | Estados Unidos | Whisky a Go Go
+1 | Ver un concierto en el Troubadour | Los Ángeles | Estados Unidos | The Troubadour, West Hollywood
+1 | Ver fado en el Clube de Fado | Lisboa | Portugal | Clube de Fado, Lisboa
+1 | Visitar los estudios de Abbey Road | Londres | Reino Unido | Abbey Road Studios
+
+
+## NASCAR — circuitos
+#
+# Del PDF "circuitos_nascar_2026_localizacion.pdf" (32 sedes). Se han quedado 31:
+# el Charlotte ROVAL se ha quitado porque es el mismo sitio que el Charlotte
+# Motor Speedway con otro trazado — mismo pin, misma tarde, misma foto.
+#
+# El nombre va corto ("en Talladega", no "en Talladega Superspeedway"): es como
+# se dice, y el título entra en una línea.
+
+3 | Ver una carrera de la NASCAR en Daytona | Daytona Beach | Estados Unidos | Daytona International Speedway, Florida
+3 | Ver una carrera de la NASCAR en Indianápolis | Speedway | Estados Unidos | Indianapolis Motor Speedway, Indiana
+2 | Ver una carrera de la NASCAR en Talladega | Lincoln | Estados Unidos | Talladega Superspeedway, Alabama
+2 | Ver una carrera de la NASCAR en Bristol | Bristol | Estados Unidos | Bristol Motor Speedway, Tennessee
+2 | Ver una carrera de la NASCAR en Darlington | Darlington | Estados Unidos | Darlington Raceway, South Carolina
+2 | Ver una carrera de la NASCAR en Martinsville | Ridgeway | Estados Unidos | Martinsville Speedway, Virginia
+2 | Ver una carrera de la NASCAR en Charlotte | Concord | Estados Unidos | Charlotte Motor Speedway, North Carolina
+2 | Ver una carrera de la NASCAR en North Wilkesboro | North Wilkesboro | Estados Unidos | North Wilkesboro Speedway, North Carolina
+2 | Ver una carrera de la NASCAR en Phoenix | Avondale | Estados Unidos | Phoenix Raceway, Arizona
+2 | Ver una carrera de la NASCAR en Las Vegas | Las Vegas | Estados Unidos | Las Vegas Motor Speedway, Nevada
+2 | Ver una carrera de la NASCAR en Sonoma | Sonoma | Estados Unidos | Sonoma Raceway, California
+2 | Ver una carrera de la NASCAR en Watkins Glen | Watkins Glen | Estados Unidos | Watkins Glen International, New York
+2 | Ver una carrera de la NASCAR en el Circuit of The Americas | Austin | Estados Unidos
+1 | Ver una carrera de la NASCAR en Atlanta | Hampton | Estados Unidos | Atlanta Motor Speedway, Georgia
+1 | Ver una carrera de la NASCAR en Kansas | Kansas City | Estados Unidos | Kansas Speedway, Kansas City, Kansas
+1 | Ver una carrera de la NASCAR en Texas | Fort Worth | Estados Unidos | Texas Motor Speedway, Fort Worth, Texas
+1 | Ver una carrera de la NASCAR en Dover | Dover | Estados Unidos | Dover Motor Speedway, Delaware
+1 | Ver una carrera de la NASCAR en Nashville | Lebanon | Estados Unidos | Nashville Superspeedway, Tennessee
+1 | Ver una carrera de la NASCAR en Michigan | Brooklyn | Estados Unidos | Michigan International Speedway, Brooklyn, Michigan
+1 | Ver una carrera de la NASCAR en Homestead-Miami | Homestead | Estados Unidos | Homestead-Miami Speedway, Florida
+1 | Ver una carrera de la NASCAR en Richmond | Richmond | Estados Unidos | Richmond Raceway, Virginia
+1 | Ver una carrera de la NASCAR en Iowa | Newton | Estados Unidos | Iowa Speedway, Newton, Iowa
+1 | Ver una carrera de la NASCAR en Rockingham | Rockingham | Estados Unidos | Rockingham Speedway, North Carolina
+1 | Ver una carrera de la NASCAR en New Hampshire | Loudon | Estados Unidos | New Hampshire Motor Speedway, Loudon, New Hampshire
+1 | Ver una carrera de la NASCAR en Chicagoland | Joliet | Estados Unidos | Chicagoland Speedway, Joliet, Illinois
+1 | Ver una carrera de la NASCAR en Bowman Gray | Winston-Salem | Estados Unidos | Bowman Gray Stadium, Winston-Salem, North Carolina
+1 | Ver una carrera de la NASCAR en Lime Rock Park | Lakeville | Estados Unidos | Lime Rock Park, Connecticut
+1 | Ver una carrera de la NASCAR en St. Petersburg | San Petersburgo | Estados Unidos | Albert Whitted Airport, St. Petersburg, Florida
+1 | Ver una carrera de la NASCAR en Coronado | San Diego | Estados Unidos | Naval Air Station North Island, Coronado, California
+1 | Ver una carrera de la NASCAR en el World Wide Technology Raceway | Madison | Estados Unidos | World Wide Technology Raceway, Madison, Illinois
+1 | Ver una carrera de la NASCAR en el Lucas Oil Indianapolis Raceway Park | Brownsburg | Estados Unidos | Lucas Oil Indianapolis Raceway Park, Brownsburg, Indiana
+
+
+## EVENTOS ABIERTOS — no tienen sitio fijo, por eso cuestan
+
+10 | Asistir a la final de un Mundial de fútbol | |
+8 | Asistir a unos Juegos Olímpicos | |
+8 | Asistir a una final de la Champions League | |
+6 | Asistir a un partido de un Mundial de fútbol | |
+6 | Asistir a la Super Bowl | |
+5 | Asistir a una final de la NBA | |
+5 | Asistir a un partido de una Eurocopa | |
+5 | Asistir a una pelea de UFC | |
+5 | Asistir a un combate de boxeo por un título mundial | |
+4 | Asistir a una Ryder Cup | |

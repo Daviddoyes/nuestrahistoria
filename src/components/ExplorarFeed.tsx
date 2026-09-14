@@ -1,61 +1,177 @@
 'use client'
 
-import { useState, useMemo, useCallback, useEffect } from 'react'
-import { Search, X, Check, Hourglass } from 'lucide-react'
-import { getCatalogoGooals } from '@/lib/actions'
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
+import dynamic from 'next/dynamic'
+import { Search, X, Check, Hourglass, Plus, Map as MapIcon, LayoutGrid } from 'lucide-react'
+import { getCatalogoGooals, getMisEstadosGooals, getGooalV2 } from '@/lib/actions'
 import {
   CATEGORIAS, CATEGORIA_LABEL, CATEGORIA_GRADIENTE, DIFICULTADES, DIFICULTAD_META,
   type CategoriaGooal, type DificultadGooal,
 } from '@/lib/gooals'
 import GooalV2DetailModal from './GooalV2DetailModal'
+import SugerirGooalSheet from './SugerirGooalSheet'
 import type { ResultadoCompletado } from './CompletarGooalModal'
 import type { GooalV2, EstadoUserGooal } from '@/types/gooals'
+
+/**
+ * Leaflet toca `window` nada más cargarse, así que no puede renderizarse en el
+ * servidor: con SSR el build revienta. Se carga solo en el navegador y solo
+ * cuando el usuario pulsa "Mapa", que además evita meter la librería en el
+ * bundle de quien nunca lo abre.
+ */
+const MapaGooals = dynamic(() => import('./MapaGooals'), {
+  ssr: false,
+  loading: () => (
+    <div style={{ ...mapaContenedor, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="w-5 h-5 border-2 border-[#2A2A2A] border-t-[#1DE9B6] rounded-full animate-spin" />
+    </div>
+  ),
+})
+
+/** Cuánto esperamos a que el navegador resuelva la ubicación antes de rendirnos. */
+const ESPERA_UBICACION = 5000
+
+type Vista = 'lista' | 'mapa'
 
 type Props = {
   onCompletado: (resultado: ResultadoCompletado) => void
 }
 
-/** Quita acentos y mayúsculas para que "musica" encuentre "Música". */
-function normalizar(texto: string): string {
-  return texto.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
-}
+/** Espera antes de mandar la búsqueda al servidor, para no lanzar una consulta por tecla. */
+const ESPERA_BUSQUEDA = 300
 
 export default function ExplorarFeed({ onCompletado }: Props) {
   const [gooals, setGooals] = useState<GooalV2[]>([])
   const [misEstados, setMisEstados] = useState<Record<string, EstadoUserGooal>>({})
+  const [pagina, setPagina] = useState(0)
+  const [hayMas, setHayMas] = useState(false)
   const [cargando, setCargando] = useState(true)
+  const [cargandoMas, setCargandoMas] = useState(false)
   const [error, setError] = useState('')
 
   const [busqueda, setBusqueda] = useState('')
+  const [busquedaAplicada, setBusquedaAplicada] = useState('')
   const [categoria, setCategoria] = useState<CategoriaGooal | 'todos'>('todos')
   const [dificultad, setDificultad] = useState<DificultadGooal | null>(null)
   const [seleccionado, setSeleccionado] = useState<GooalV2 | null>(null)
+  const [sugiriendo, setSugiriendo] = useState(false)
+  const [vista, setVista] = useState<Vista>('lista')
+  const [posicion, setPosicion] = useState<{ lat: number; lng: number } | null>(null)
 
-  const cargar = useCallback(async () => {
+  // Cada búsqueda o filtro dispara una consulta; si el usuario cambia de
+  // opinión mientras vuela, la respuesta vieja no debe pisar a la nueva.
+  const peticion = useRef(0)
+
+  // ── Debounce del buscador ─────────────────────────────────
+  useEffect(() => {
+    const t = setTimeout(() => setBusquedaAplicada(busqueda.trim()), ESPERA_BUSQUEDA)
+    return () => clearTimeout(t)
+  }, [busqueda])
+
+  // ── Primera página: al montar y cada vez que cambia un filtro ──
+  useEffect(() => {
+    const mia = ++peticion.current
+    setCargando(true)
+    getCatalogoGooals({ categoria, dificultad, busqueda: busquedaAplicada, pagina: 0 })
+      .then(({ gooals: filas, hayMas: mas }) => {
+        if (mia !== peticion.current) return
+        setGooals(filas)
+        setHayMas(mas)
+        setPagina(0)
+        setError('')
+      })
+      .catch(e => {
+        if (mia !== peticion.current) return
+        console.error('[explorar]', e)
+        setError('No hemos podido cargar el catálogo. Inténtalo de nuevo.')
+      })
+      .finally(() => {
+        if (mia === peticion.current) setCargando(false)
+      })
+  }, [categoria, dificultad, busquedaAplicada])
+
+  // ── Estados propios: no dependen de los filtros, se piden una vez ──
+  const cargarEstados = useCallback(() => {
+    getMisEstadosGooals()
+      .then(setMisEstados)
+      .catch(e => console.error('[explorar:estados]', e))
+  }, [])
+
+  useEffect(() => { cargarEstados() }, [cargarEstados])
+
+  // ── Página siguiente ──────────────────────────────────────
+  const cargarMas = useCallback(async () => {
+    if (cargandoMas || !hayMas) return
+    setCargandoMas(true)
+    const mia = peticion.current
     try {
-      const { gooals: filas, misEstados: estados } = await getCatalogoGooals()
-      setGooals(filas)
-      setMisEstados(estados)
-      setError('')
+      const siguiente = pagina + 1
+      const { gooals: filas, hayMas: mas } = await getCatalogoGooals({
+        categoria, dificultad, busqueda: busquedaAplicada, pagina: siguiente,
+      })
+      if (mia !== peticion.current) return
+      setGooals(previos => [...previos, ...filas])
+      setHayMas(mas)
+      setPagina(siguiente)
     } catch (e) {
-      console.error('[explorar]', e)
-      setError('No hemos podido cargar el catálogo. Inténtalo de nuevo.')
+      console.error('[explorar:mas]', e)
     } finally {
-      setCargando(false)
+      setCargandoMas(false)
+    }
+  }, [cargandoMas, hayMas, pagina, categoria, dificultad, busquedaAplicada])
+
+  // Centinela al final del grid: cuando entra en pantalla, pide más.
+  const centinela = useRef<HTMLDivElement | null>(null)
+  useEffect(() => {
+    const nodo = centinela.current
+    if (!nodo || !hayMas) return
+    const observador = new IntersectionObserver(
+      entradas => { if (entradas[0]?.isIntersecting) cargarMas() },
+      { rootMargin: '400px' },
+    )
+    observador.observe(nodo)
+    return () => observador.disconnect()
+  }, [hayMas, cargarMas])
+
+  const hayFiltros = Boolean(busqueda || categoria !== 'todos' || dificultad)
+
+  const limpiarFiltros = () => {
+    setBusqueda('')
+    setCategoria('todos')
+    setDificultad(null)
+  }
+
+  // Se pide la ubicación al abrir el mapa, no al montar Explorar: preguntar
+  // por el permiso a quien solo quiere la lista es intrusivo. La pantalla no
+  // espera — el mapa arranca en Europa y vuela a la ciudad si llega a tiempo.
+  useEffect(() => {
+    if (vista !== 'mapa' || posicion || !navigator.geolocation) return
+    navigator.geolocation.getCurrentPosition(
+      pos => setPosicion({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      err => console.warn('[mapa] sin ubicación:', err.message),
+      { timeout: ESPERA_UBICACION, maximumAge: 5 * 60 * 1000 },
+    )
+  }, [vista, posicion])
+
+  // Los filtros son los mismos en las dos vistas; se memorizan para que el mapa
+  // no vuelva a consultar en cada rerender del padre.
+  const filtrosMapa = useMemo(
+    () => ({ categoria, dificultad, busqueda: busquedaAplicada }),
+    [categoria, dificultad, busquedaAplicada],
+  )
+
+  // El pin solo trae nueve columnas; la ficha necesita la fila entera.
+  const abrirDesdeMapa = useCallback(async (id: string) => {
+    try {
+      const g = await getGooalV2(id)
+      if (g) setSeleccionado(g)
+    } catch (e) {
+      console.error('[mapa:ficha]', e)
     }
   }, [])
 
-  useEffect(() => { cargar() }, [cargar])
-
-  const filtrados = useMemo(() => {
-    const q = normalizar(busqueda.trim())
-    return gooals.filter(g => {
-      if (categoria !== 'todos' && g.categoria !== categoria) return false
-      if (dificultad && g.dificultad !== dificultad) return false
-      if (q && !normalizar(g.titulo).includes(q)) return false
-      return true
-    })
-  }, [gooals, busqueda, categoria, dificultad])
+  /** Tras añadir o completar un gooal desde el modal. */
+  const refrescar = useCallback(() => { cargarEstados() }, [cargarEstados])
 
   return (
     <>
@@ -123,42 +239,107 @@ export default function ExplorarFeed({ onCompletado }: Props) {
               </button>
             )
           })}
+
+          <div style={{ flex: 1 }} />
+
+          <button
+            onClick={() => setVista(v => (v === 'lista' ? 'mapa' : 'lista'))}
+            aria-label={vista === 'lista' ? 'Ver en el mapa' : 'Ver como lista'}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '6px 12px', borderRadius: 999, fontSize: 12, fontWeight: 600,
+              border: '1px solid #2A2A2A', background: '#141414', color: '#F0F0F0',
+              whiteSpace: 'nowrap', flexShrink: 0,
+            }}
+          >
+            {vista === 'lista'
+              ? <><MapIcon style={{ width: 13, height: 13 }} /> Mapa</>
+              : <><LayoutGrid style={{ width: 13, height: 13 }} /> Lista</>}
+          </button>
         </div>
       </div>
 
-      {/* ── Grid ─────────────────────────────────────────── */}
-      {cargando ? (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, padding: '0 12px 24px' }}>
+      {/* ── Mapa ─────────────────────────────────────────── */}
+      {vista === 'mapa' ? (
+        <div style={mapaContenedor}>
+          <MapaGooals
+            filtros={filtrosMapa}
+            estados={misEstados}
+            posicion={posicion}
+            onSeleccionar={abrirDesdeMapa}
+          />
+        </div>
+      ) : /* ── Grid ───────────────────────────────────────── */
+      cargando ? (
+        <div style={gridEstilo}>
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} style={{ aspectRatio: '1/1', borderRadius: 14, background: '#141414' }} className="animate-pulse" />
           ))}
         </div>
       ) : error ? (
         <p className="text-sm text-[#C97B7B] bg-[#8B3A3A]/20 mx-3 px-3 py-2 rounded-lg">{error}</p>
-      ) : filtrados.length === 0 ? (
+      ) : gooals.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-2 px-8 py-16 text-center">
           <p style={{ fontSize: 15, color: '#666666' }}>Ningún gooal coincide.</p>
           <p style={{ fontSize: 13, color: '#444444' }}>Prueba con otra categoría o dificultad.</p>
-          {(busqueda || categoria !== 'todos' || dificultad) && (
+          <button
+            onClick={() => setSugiriendo(true)}
+            className="mt-4 flex items-center gap-2 rounded-xl active:opacity-80 transition-opacity"
+            style={{
+              padding: '11px 18px', fontSize: 14, fontWeight: 600,
+              color: '#0A0A0A', background: '#1DE9B6',
+            }}
+          >
+            <Plus className="w-4 h-4" strokeWidth={2.5} /> Sugerir este gooal
+          </button>
+          {hayFiltros && (
             <button
-              onClick={() => { setBusqueda(''); setCategoria('todos'); setDificultad(null) }}
-              className="mt-3 text-[13px] text-[#1DE9B6] active:text-[#00BFA5] transition-colors min-h-[44px]"
+              onClick={limpiarFiltros}
+              className="mt-1 text-[13px] text-[#666666] active:text-[#888888] transition-colors min-h-[44px]"
             >
               Quitar filtros
             </button>
           )}
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, padding: '0 12px 24px' }}>
-          {filtrados.map(g => (
-            <CardGooal
-              key={g.id}
-              gooal={g}
-              estado={misEstados[g.id]}
-              onClick={() => setSeleccionado(g)}
-            />
-          ))}
-        </div>
+        <>
+          <div style={gridEstilo}>
+            {gooals.map(g => (
+              <CardGooal
+                key={g.id}
+                gooal={g}
+                estado={misEstados[g.id]}
+                onClick={() => setSeleccionado(g)}
+              />
+            ))}
+          </div>
+
+          {hayMas && (
+            <div ref={centinela} style={{ padding: '4px 12px 28px' }}>
+              <div style={gridEstiloSuelto}>
+                {Array.from({ length: 2 }).map((_, i) => (
+                  <div key={i} style={{ aspectRatio: '1/1', borderRadius: 14, background: '#141414' }} className="animate-pulse" />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {!hayMas && (
+            <div className="flex flex-col items-center gap-2 px-8 pb-8 text-center">
+              <p style={{ fontSize: 13, color: '#444444' }}>¿Echas algo en falta?</p>
+              <button
+                onClick={() => setSugiriendo(true)}
+                className="flex items-center gap-2 rounded-xl active:opacity-80 transition-opacity"
+                style={{
+                  padding: '10px 16px', fontSize: 13, fontWeight: 500,
+                  color: '#1DE9B6', border: '1px solid #2A2A2A',
+                }}
+              >
+                <Plus className="w-4 h-4" /> Sugerir un gooal
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       {seleccionado && (
@@ -166,12 +347,38 @@ export default function ExplorarFeed({ onCompletado }: Props) {
           gooal={seleccionado}
           estado={misEstados[seleccionado.id]}
           onClose={() => setSeleccionado(null)}
-          onCambio={cargar}
+          onCambio={refrescar}
           onCompletado={onCompletado}
+        />
+      )}
+
+      {sugiriendo && (
+        <SugerirGooalSheet
+          tituloInicial={busqueda.trim()}
+          categoriaInicial={categoria === 'todos' ? null : categoria}
+          onClose={() => setSugiriendo(false)}
         />
       )}
     </>
   )
+}
+
+const gridEstilo: React.CSSProperties = {
+  display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, padding: '0 12px 24px',
+}
+const gridEstiloSuelto: React.CSSProperties = {
+  display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8,
+}
+
+/** El mapa necesita una altura concreta: con height:100% en un padre que
+ *  crece con su contenido, Leaflet se queda a cero píxeles. */
+const mapaContenedor: React.CSSProperties = {
+  height: 'calc(100dvh - 300px)',
+  minHeight: 340,
+  margin: '0 12px 24px',
+  borderRadius: 14,
+  overflow: 'hidden',
+  border: '1px solid #2A2A2A',
 }
 
 function ChipCategoria({
@@ -214,6 +421,7 @@ function CardGooal({
           src={gooal.imagen_url}
           alt=""
           loading="lazy"
+          decoding="async"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
         />
       )}

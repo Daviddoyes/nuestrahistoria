@@ -1,0 +1,170 @@
+# GooALS — los deportes que practicas
+#
+# ── Por qué existe este bloque ───────────────────────────────────────
+#
+# La app no mide lo bueno que eres, mide lo que haces. Alguien que ha probado
+# veinte deportes de agua es más interesante que alguien que lleva diez años
+# perfeccionando uno solo, porque el perfil sirve para que otra persona lo mire
+# y piense "anda, esta también juega a tenis".
+#
+# Por eso aquí no hay escalones. Un deporte, un gooal, +1. Lo difícil y lo
+# épico ya vive en aventura ("Bucear con tiburones martillo", "Esquiar un día
+# de nieve polvo"): esto es la capa de debajo, la que dice quién eres.
+#
+# ── Reglas de escritura ──────────────────────────────────────────────
+#
+# · El verbo que usa el deporte: se juega al tenis, se hace surf, se esquía.
+#   Leído en un perfil tiene que sonar a persona, no a formulario.
+# · Ni una condición. Nada de "con instructor", "en zona autorizada" o "con
+#   sistema de seguridad": eso no cambia el recuerdo y ensucia la línea.
+# · Ni una cifra. "Jugar un partido de baloncesto 5x5" es un reglamento;
+#   "Jugar al baloncesto" es una persona.
+#
+# Formato: puntos | título | ciudad | país
+# Todos deslocalizados: el pádel es el mismo en todas partes.
+
+
+## RAQUETA Y PALA
+
+1 | Jugar al tenis | |
+1 | Jugar al pádel | |
+1 | Jugar al bádminton | |
+1 | Jugar al squash | |
+1 | Jugar al ping-pong | |
+1 | Jugar al pickleball | |
+1 | Jugar al frontón | |
+
+
+## PELOTA Y EQUIPO
+
+1 | Jugar un partido de fútbol | |
+1 | Jugar al fútbol sala | |
+1 | Jugar al fútbol playa | |
+1 | Jugar al baloncesto | |
+1 | Jugar al balonmano | |
+1 | Jugar al voleibol | |
+1 | Jugar al vóley playa | |
+1 | Jugar al rugby | |
+1 | Jugar al fútbol americano | |
+1 | Jugar al hockey sobre hierba | |
+1 | Jugar al hockey sobre hielo | |
+1 | Jugar al béisbol | |
+1 | Jugar al críquet | |
+1 | Jugar al waterpolo | |
+1 | Jugar al ultimate frisbee | |
+1 | Jugar al golf | |
+1 | Jugar a los bolos | |
+1 | Jugar al billar | |
+1 | Jugar a los dardos | |
+1 | Jugar al curling | |
+
+
+## AGUA
+
+1 | Hacer surf | |
+1 | Hacer bodyboard | |
+1 | Hacer paddle surf | |
+1 | Hacer windsurf | |
+1 | Hacer kitesurf | |
+1 | Hacer wakeboard | |
+1 | Hacer esquí acuático | |
+1 | Hacer wingfoil | |
+1 | Navegar a vela | |
+1 | Salir a remar | |
+1 | Hacer kayak | |
+1 | Hacer piragüismo | |
+1 | Nadar en aguas abiertas | |
+2 | Bucear con botella | |
+1 | Hacer snorkel | |
+2 | Hacer apnea | |
+1 | Pilotar una moto de agua | |
+
+
+## NIEVE Y HIELO
+
+1 | Esquiar | |
+1 | Hacer snowboard | |
+1 | Hacer esquí de fondo | |
+2 | Hacer esquí de montaña | |
+1 | Patinar sobre hielo | |
+1 | Bajar en trineo | |
+1 | Caminar con raquetas de nieve | |
+
+
+## MONTAÑA Y ROCA
+
+1 | Escalar en rocódromo | |
+2 | Escalar en roca | |
+1 | Hacer boulder | |
+1 | Hacer una vía ferrata | |
+1 | Hacer senderismo | |
+1 | Correr por montaña | |
+2 | Hacer montañismo | |
+2 | Hacer barranquismo | |
+2 | Hacer espeleología | |
+1 | Caminar por una slackline | |
+
+
+## RUEDAS
+
+1 | Salir en bicicleta de carretera | |
+1 | Salir en bicicleta de montaña | |
+1 | Salir en gravel | |
+1 | Montar en BMX | |
+1 | Montar en patines en línea | |
+1 | Montar en monopatín | |
+1 | Montar en longboard | |
+1 | Hacer parkour | |
+
+
+## MOTOR
+
+1 | Correr en karts | |
+1 | Hacer motocross | |
+1 | Hacer enduro | |
+2 | Conducir en circuito | |
+1 | Conducir un 4x4 fuera de asfalto | |
+1 | Montar en quad | |
+1 | Hacer una ruta larga en moto | |
+
+
+## COMBATE
+
+1 | Practicar boxeo | |
+1 | Practicar muay thai o kickboxing | |
+1 | Practicar judo | |
+1 | Practicar kárate | |
+1 | Practicar taekwondo | |
+1 | Practicar jiu-jitsu brasileño | |
+1 | Practicar lucha | |
+1 | Practicar esgrima | |
+1 | Practicar capoeira | |
+
+
+## GIMNASIO Y RESISTENCIA
+
+1 | Entrenar crossfit | |
+1 | Entrenar halterofilia | |
+1 | Entrenar powerlifting | |
+1 | Entrenar calistenia | |
+1 | Hacer yoga | |
+1 | Hacer pilates | |
+1 | Correr una carrera popular | |
+1 | Entrenar en una pista de atletismo | |
+
+
+## CON ANIMALES Y PUNTERÍA
+
+1 | Montar a caballo | |
+2 | Jugar al polo | |
+1 | Tirar con arco | |
+1 | Hacer orientación con mapa y brújula | |
+1 | Salir a pescar | |
+
+
+## AIRE Y GIMNASIA
+
+1 | Volar en un túnel de viento | |
+1 | Saltar en cama elástica | |
+1 | Hacer gimnasia artística | |
+1 | Hacer trapecio o acrobacia aérea | |

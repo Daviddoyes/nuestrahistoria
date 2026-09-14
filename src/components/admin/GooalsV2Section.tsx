@@ -2,14 +2,13 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { Plus, X, Sparkles } from 'lucide-react'
-import { ADMIN_KEY } from '@/lib/admin-auth'
 import {
   CATEGORIAS, CATEGORIA_LABEL, CATEGORIA_COLOR, DIFICULTADES, DIFICULTAD_META,
-  puntosPorDificultad, type CategoriaGooal, type DificultadGooal,
+  BANDA_PUNTOS, puntosPorDificultad, type CategoriaGooal, type DificultadGooal,
 } from '@/lib/gooals'
 import type { GooalV2 } from '@/types/gooals'
 
-const HEADERS = { 'Content-Type': 'application/json', 'X-Admin-Key': ADMIN_KEY }
+const HEADERS = { 'Content-Type': 'application/json' }
 
 type GooalGenerado = {
   titulo: string
@@ -32,6 +31,12 @@ const labelStyle: React.CSSProperties = {
 const btnPrimary: React.CSSProperties = {
   padding: '12px 0', borderRadius: 10, background: '#1DE9B6', color: '#0A0A0A',
   fontWeight: 600, fontSize: 14, border: 'none', cursor: 'pointer', width: '100%',
+}
+
+/** ¿Los puntos caen en la banda de esa dificultad? Espejo de puntosValidos. */
+function enBanda(dificultad: DificultadGooal, puntos: number): boolean {
+  const [min, max] = BANDA_PUNTOS[dificultad]
+  return Number.isInteger(puntos) && puntos >= min && puntos <= max
 }
 
 function ModalShell({
@@ -67,14 +72,18 @@ function ModalShell({
 function NuevoGooalModal({ onClose, onSaved }: { onClose: () => void; onSaved: () => void }) {
   const [f, setF] = useState({
     titulo: '', descripcion: '', categoria: 'aventura' as CategoriaGooal,
-    dificultad: 'facil' as DificultadGooal, ciudad: '', pais: 'España',
-    imagen_url: '', activo: true,
+    dificultad: 'facil' as DificultadGooal, puntos: puntosPorDificultad('facil'),
+    ciudad: '', pais: 'España', imagen_url: '', activo: true,
   })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
   const guardar = async () => {
     if (!f.titulo.trim()) { setError('El título es obligatorio'); return }
+    if (!enBanda(f.dificultad, f.puntos)) {
+      setError(`Los puntos deben ir de ${BANDA_PUNTOS[f.dificultad][0]} a ${BANDA_PUNTOS[f.dificultad][1]}`)
+      return
+    }
     setSaving(true); setError('')
     try {
       const res = await fetch('/api/admin/gooals-v2', { method: 'POST', headers: HEADERS, body: JSON.stringify(f) })
@@ -109,7 +118,12 @@ function NuevoGooalModal({ onClose, onSaved }: { onClose: () => void; onSaved: (
           <div>
             <label style={labelStyle}>Dificultad</label>
             <select style={inputStyle} value={f.dificultad}
-              onChange={e => setF({ ...f, dificultad: e.target.value as DificultadGooal })}>
+              onChange={e => {
+                const d = e.target.value as DificultadGooal
+                // Los puntos de la banda anterior no valen en la nueva: se
+                // recolocan al valor por defecto de la dificultad elegida.
+                setF({ ...f, dificultad: d, puntos: puntosPorDificultad(d) })
+              }}>
               {DIFICULTADES.map(d => (
                 <option key={d} value={d}>
                   {DIFICULTAD_META[d].emoji} {DIFICULTAD_META[d].label}
@@ -119,10 +133,27 @@ function NuevoGooalModal({ onClose, onSaved }: { onClose: () => void; onSaved: (
           </div>
         </div>
 
-        <p style={{ fontSize: 12, color: '#666666', marginTop: -4 }}>
-          Puntos asignados automáticamente:{' '}
-          <span style={{ color: '#1DE9B6', fontWeight: 700 }}>+{puntosPorDificultad(f.dificultad)} pts</span>
-        </p>
+        <div>
+          <label style={labelStyle}>
+            Puntos ({BANDA_PUNTOS[f.dificultad][0]}–{BANDA_PUNTOS[f.dificultad][1]} para {DIFICULTAD_META[f.dificultad].label.toLowerCase()})
+          </label>
+          <input
+            style={inputStyle}
+            type="number"
+            inputMode="numeric"
+            min={BANDA_PUNTOS[f.dificultad][0]}
+            max={BANDA_PUNTOS[f.dificultad][1]}
+            step={1}
+            value={f.puntos}
+            onChange={e => setF({ ...f, puntos: Number(e.target.value) })}
+          />
+          {!enBanda(f.dificultad, f.puntos) && (
+            <p style={{ fontSize: 12, color: '#C97B7B', marginTop: 5 }}>
+              Un gooal {DIFICULTAD_META[f.dificultad].label.toLowerCase()} vale entre{' '}
+              {BANDA_PUNTOS[f.dificultad][0]} y {BANDA_PUNTOS[f.dificultad][1]} puntos.
+            </p>
+          )}
+        </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
           <div>

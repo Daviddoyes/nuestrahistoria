@@ -1,0 +1,1637 @@
+# GooALS — fusiones propuestas para la categoría deporte
+#
+# El PDF repite el mismo reto cambiando un número, una máquina o el tiempo
+# que se hizo ese día. Eso es un plan de entrenamiento, no un perfil.
+#
+# Cuatro reglas:
+#   · fuera el umbral de marca — "Correr 10 km", no "en menos de 45 min"
+#   · fuera el contexto — la ruta de 50 km se cuenta una vez, no siete
+#   · una sola serie de cardio, no una por máquina de gimnasio
+#   · solo los hitos que se cuentan: 5K, 10K, media, maratón, ultra
+#
+# Formato: la línea sin sangrar es el gooal que se queda; las que empiezan
+# por "<" son los que absorbe. Borra una línea "<" para salvar ese reto,
+# o un bloque entero para deshacer el grupo.
+#
+# Un bloque titulado BORRAR elimina a sus miembros en vez de fundirlos.
+#
+# 1141 retos de partida
+
+BORRAR
+< Mantener trabajo continuo durante 10 minutos en Assault Bike
+< Mantener trabajo continuo durante 10 minutos en BikeErg
+< Mantener trabajo continuo durante 10 minutos en SkiErg
+< Mantener trabajo continuo durante 10 minutos en elíptica
+< Mantener trabajo continuo durante 10 minutos en remo indoor
+< Mantener trabajo continuo durante 10 minutos en stair climber
+< Mantener trabajo continuo durante 20 minutos en Assault Bike
+< Mantener trabajo continuo durante 20 minutos en BikeErg
+< Mantener trabajo continuo durante 20 minutos en SkiErg
+< Mantener trabajo continuo durante 20 minutos en elíptica
+< Mantener trabajo continuo durante 20 minutos en remo indoor
+< Mantener trabajo continuo durante 20 minutos en stair climber
+< Mantener trabajo continuo durante 30 minutos en Assault Bike
+< Mantener trabajo continuo durante 30 minutos en BikeErg
+< Mantener trabajo continuo durante 30 minutos en SkiErg
+< Mantener trabajo continuo durante 30 minutos en elíptica
+< Mantener trabajo continuo durante 30 minutos en remo indoor
+< Mantener trabajo continuo durante 30 minutos en stair climber
+< Mantener trabajo continuo durante 45 minutos en Assault Bike
+< Mantener trabajo continuo durante 45 minutos en BikeErg
+< Mantener trabajo continuo durante 45 minutos en SkiErg
+< Mantener trabajo continuo durante 45 minutos en elíptica
+< Mantener trabajo continuo durante 45 minutos en remo indoor
+< Mantener trabajo continuo durante 45 minutos en stair climber
+< Mantener trabajo continuo durante 60 minutos en Assault Bike
+< Mantener trabajo continuo durante 60 minutos en BikeErg
+< Mantener trabajo continuo durante 60 minutos en SkiErg
+< Mantener trabajo continuo durante 60 minutos en elíptica
+< Mantener trabajo continuo durante 60 minutos en remo indoor
+< Mantener trabajo continuo durante 60 minutos en stair climber
+< Mantener trabajo continuo durante 90 minutos en Assault Bike
+< Mantener trabajo continuo durante 90 minutos en BikeErg
+< Mantener trabajo continuo durante 90 minutos en SkiErg
+< Mantener trabajo continuo durante 90 minutos en elíptica
+< Mantener trabajo continuo durante 90 minutos en remo indoor
+< Mantener trabajo continuo durante 90 minutos en stair climber
+< Mantener trabajo continuo durante 120 minutos en Assault Bike
+< Mantener trabajo continuo durante 120 minutos en BikeErg
+< Mantener trabajo continuo durante 120 minutos en SkiErg
+< Mantener trabajo continuo durante 120 minutos en elíptica
+< Mantener trabajo continuo durante 120 minutos en remo indoor
+< Mantener trabajo continuo durante 120 minutos en stair climber
+
+Correr 10 km
+< Correr 10 km en menos de 65 minutos
+< Correr 10 km en menos de 70 minutos
+< Correr 10 km en menos de 55 minutos
+< Correr 10 km en menos de 60 minutos
+< Correr 10 km en menos de 48 minutos
+< Correr 10 km en menos de 50 minutos
+< Correr 10 km en menos de 42 minutos
+< Correr 10 km en menos de 45 minutos
+< Correr 10 km en menos de 38 minutos
+< Correr 10 km en menos de 40 minutos
+< Correr 10 km sin parar
+< Correr 12 km sin parar
+< Correr 15 km sin parar
+< Correr 16 km sin parar
+< Correr 18 km sin parar
+< Correr 20 km sin parar
+< Correr 10 km a primera hora del amanecer
+< Correr 10 km en otro país
+< Correr 10 km en una ciudad nueva
+< Correr 10 km por asfalto
+< Correr 10 km bajo lluvia
+< Correr 10 km con negative split
+< Correr 10 km de noche con frontal
+< Correr 10 km por bosque
+< Correr 10 km por montaña
+< Correr 10 km por playa
+< Correr 10 km por nieve
+
+Correr 5 km
+< Correr 5 km en menos de 27 minutos
+< Correr 5 km en menos de 30 minutos
+< Correr 5 km en menos de 35 minutos
+< Correr 5 km en menos de 22 minutos
+< Correr 5 km en menos de 23 minutos
+< Correr 5 km en menos de 25 minutos
+< Correr 5 km en menos de 20 minutos
+< Correr 5 km en menos de 21 minutos
+< Correr 5 km en menos de 19 minutos
+< Correr 5 km en menos de 18 minutos
+< Correr 1 km sin parar
+< Correr 2 km sin parar
+< Correr 3 km sin parar
+< Correr 5 km sin parar
+< Correr 7 km sin parar
+< Correr 5 km a primera hora del amanecer
+< Correr 5 km en otro país
+< Correr 5 km en una ciudad nueva
+< Correr 5 km por asfalto
+< Correr 5 km bajo lluvia
+< Correr 5 km de noche con frontal
+< Correr 5 km por bosque
+< Correr 5 km por montaña
+< Correr 5 km por playa
+< Correr 5 km por nieve
+
+Correr una media maratón
+< Correr 21.1 km sin parar
+< Correr 21.1 km a primera hora del amanecer
+< Correr 21.1 km en otro país
+< Correr 21.1 km en una ciudad nueva
+< Correr 21.1 km por asfalto
+< Correr 21.1 km bajo lluvia
+< Correr 21.1 km de noche con frontal
+< Correr 21.1 km por bosque
+< Correr 21.1 km por montaña
+< Correr 21.1 km por playa
+< Correr 21.1 km por nieve
+< Correr una media maratón en menos de 2 h 15 min
+< Correr una media maratón en menos de 2 h 30 min
+< Correr una media maratón en menos de 1 h 45 min
+< Correr una media maratón en menos de 1 h 50 min
+< Correr una media maratón en menos de 2 h 00 min
+< Correr una media maratón en menos de 1 h 35 min
+< Correr una media maratón en menos de 1 h 40 min
+< Correr una media maratón en menos de 1 h 20 min
+< Correr una media maratón en menos de 1 h 25 min
+< Correr una media maratón en menos de 1 h 30 min
+
+BORRAR
+< Acumular 50 calorías en Assault Bike en una sola sesión
+< Acumular 50 calorías en BikeErg en una sola sesión
+< Acumular 50 calorías en SkiErg en una sola sesión
+< Acumular 50 calorías en remo indoor en una sola sesión
+< Acumular 100 calorías en Assault Bike en una sola sesión
+< Acumular 100 calorías en BikeErg en una sola sesión
+< Acumular 100 calorías en SkiErg en una sola sesión
+< Acumular 100 calorías en remo indoor en una sola sesión
+< Acumular 250 calorías en Assault Bike en una sola sesión
+< Acumular 250 calorías en BikeErg en una sola sesión
+< Acumular 250 calorías en SkiErg en una sola sesión
+< Acumular 250 calorías en remo indoor en una sola sesión
+< Acumular 500 calorías en Assault Bike en una sola sesión
+< Acumular 500 calorías en BikeErg en una sola sesión
+< Acumular 500 calorías en SkiErg en una sola sesión
+< Acumular 500 calorías en remo indoor en una sola sesión
+< Acumular 1000 calorías en Assault Bike en una sola sesión
+< Acumular 1000 calorías en BikeErg en una sola sesión
+< Acumular 1000 calorías en SkiErg en una sola sesión
+< Acumular 1000 calorías en remo indoor en una sola sesión
+
+Correr una maratón
+< Correr 42.2 km sin parar
+< Correr 42.2 km a primera hora del amanecer
+< Correr 42.2 km en otro país
+< Correr 42.2 km en una ciudad nueva
+< Correr 42.2 km por asfalto
+< Correr 42.2 km bajo lluvia
+< Correr 42.2 km de noche con frontal
+< Correr 42.2 km por bosque
+< Correr 42.2 km por montaña
+< Correr 42.2 km por nieve
+< Correr 42.2 km por playa
+< Correr una maratón en menos de 5 h 30 min
+< Correr una maratón en menos de 6 h 00 min
+< Correr una maratón en menos de 4 h 00 min
+< Correr una maratón en menos de 4 h 30 min
+< Correr una maratón en menos de 5 h 00 min
+< Correr una maratón en menos de 3 h 00 min
+< Correr una maratón en menos de 3 h 15 min
+< Correr una maratón en menos de 3 h 30 min
+< Correr una maratón en menos de 3 h 45 min
+
+Nadar 100 m crol
+< Nadar 100 m crol en menos de 105 segundos
+< Nadar 100 m crol en menos de 120 segundos
+< Nadar 100 m crol en menos de 80 segundos
+< Nadar 100 m crol en menos de 90 segundos
+< Nadar 100 m crol en menos de 65 segundos
+< Nadar 100 m crol en menos de 70 segundos
+< Nadar 100 m crol en menos de 60 segundos
+< Nadar 100 m crol en menos de 55 segundos
+< Nadar 500 m crol en menos de 12 minutos
+< Nadar 500 m crol en menos de 15 minutos
+< Nadar 500 m crol en menos de 10 minutos
+< Nadar 500 m crol en menos de 9 minutos
+< Nadar 500 m crol en menos de 8 minutos
+
+BORRAR
+< Completar 1000 m en remo indoor
+< Completar 500 m en remo indoor
+< Completar 2000 m en remo indoor
+< Completar 5000 m en remo indoor
+< Completar 10000 m en remo indoor
+< Completar 1000 m en SkiErg
+< Completar 500 m en SkiErg
+< Completar 2000 m en SkiErg
+< Completar 5000 m en SkiErg
+< Completar 10000 m en SkiErg
+< Completar 10 km en SkiErg
+
+Acumular 1.000 m de desnivel en bicicleta
+< Acumular 250 m de desnivel positivo en bicicleta en un día
+< Acumular 500 m de desnivel positivo en bicicleta en un día
+< Acumular 1000 m de desnivel positivo en bicicleta en un día
+< Acumular 750 m de desnivel positivo en bicicleta en un día
+< Acumular 1500 m de desnivel positivo en bicicleta en un día
+< Acumular 2000 m de desnivel positivo en bicicleta en un día
+< Acumular 2500 m de desnivel positivo en bicicleta en un día
+< Acumular 3000 m de desnivel positivo en bicicleta en un día
+< Acumular 4000 m de desnivel positivo en bicicleta en un día
+< Acumular 5000 m de desnivel positivo en bicicleta en un día
+
+Completar 50 km en bicicleta de carretera en un día
+< Completar 10 km en bicicleta de carretera en un día
+< Completar 20 km en bicicleta de carretera en un día
+< Completar 30 km en bicicleta de carretera en un día
+< Completar 5 km en bicicleta de carretera en un día
+< Completar 40 km en bicicleta de carretera en un día
+< Completar 50 km en bicicleta de carretera en un día
+< Completar 60 km en bicicleta de carretera en un día
+< Completar 75 km en bicicleta de carretera en un día
+< Completar 80 km en bicicleta de carretera en un día
+
+Pedalear 5 horas en un mismo día
+< Pedalear durante 1 horas en un mismo día
+< Pedalear durante 2 horas en un mismo día
+< Pedalear durante 3 horas en un mismo día
+< Pedalear durante 4 horas en un mismo día
+< Pedalear durante 5 horas en un mismo día
+< Pedalear durante 6 horas en un mismo día
+< Pedalear durante 8 horas en un mismo día
+< Pedalear durante 10 horas en un mismo día
+< Pedalear durante 12 horas en un mismo día
+
+Resolver un bloque de grado V
+< Resolver un bloque de grado V0
+< Resolver un bloque de grado V1
+< Resolver un bloque de grado V2
+< Resolver un bloque de grado V3
+< Resolver un bloque de grado V4
+< Resolver un bloque de grado V5
+< Resolver un bloque de grado V6
+< Resolver un bloque de grado V7
+< Resolver un bloque de grado V8
+
+Alcanzar una cumbre de más de 3.000 m
+< Alcanzar una cumbre de más de 1000 m con preparación adecuada
+< Alcanzar una cumbre de más de 1500 m con preparación adecuada
+< Alcanzar una cumbre de más de 2000 m con preparación adecuada
+< Alcanzar una cumbre de más de 2500 m con preparación adecuada
+< Alcanzar una cumbre de más de 3000 m con preparación adecuada
+< Alcanzar una cumbre de más de 3500 m con preparación adecuada
+< Alcanzar una cumbre de más de 4000 m con preparación adecuada
+< Alcanzar una cumbre de más de 4500 m con preparación adecuada
+< Alcanzar una cumbre de más de 5000 m con preparación adecuada
+
+Acumular 1.000 m de desnivel corriendo
+< Acumular 250 m de desnivel positivo corriendo en una sesión
+< Acumular 500 m de desnivel positivo corriendo en una sesión
+< Acumular 750 m de desnivel positivo corriendo en una sesión
+< Acumular 1000 m de desnivel positivo corriendo en una sesión
+< Acumular 1500 m de desnivel positivo corriendo en una sesión
+< Acumular 2000 m de desnivel positivo corriendo en una sesión
+< Acumular 2500 m de desnivel positivo corriendo en una sesión
+< Acumular 3000 m de desnivel positivo corriendo en una sesión
+< Acumular 4000 m de desnivel positivo corriendo en una sesión
+
+Completar 100 burpees seguidos
+< Completar 10 burpees en una sesión
+< Completar 20 burpees en una sesión
+< Completar 30 burpees en una sesión
+< Completar 50 burpees en una sesión
+< Completar 100 burpees en una sesión
+< Completar 75 burpees en una sesión
+< Completar 150 burpees en una sesión
+< Completar 200 burpees en una sesión
+
+BORRAR
+< Completar una ruta con 250 m de desnivel positivo
+< Completar una ruta con 500 m de desnivel positivo
+< Completar una ruta con 1000 m de desnivel positivo
+< Completar una ruta con 750 m de desnivel positivo
+< Completar una ruta con 1500 m de desnivel positivo
+< Completar una ruta con 2000 m de desnivel positivo
+< Completar una ruta con 2500 m de desnivel positivo
+< Completar una ruta con 3000 m de desnivel positivo
+
+Hacer una ruta ciclista de 50 km
+< Hacer una ruta ciclista de 50 km al amanecer
+< Hacer una ruta ciclista de 50 km junto al mar
+< Hacer una ruta ciclista de 50 km por una vía verde
+< Hacer una ruta ciclista de 50 km bajo lluvia
+< Hacer una ruta ciclista de 50 km de noche con luces
+< Hacer una ruta ciclista de 50 km en invierno
+< Hacer una ruta ciclista de 50 km en otro país
+
+Completar una ruta gravel de 100 km
+< Completar una ruta gravel de 20 km
+< Completar una ruta gravel de 40 km
+< Completar una ruta gravel de 60 km
+< Completar una ruta gravel de 100 km
+< Completar una ruta gravel de 80 km
+< Completar una ruta gravel de 150 km
+< Completar una ruta gravel de 200 km
+
+Completar una ruta MTB de 50 km
+< Completar una ruta MTB de 10 km
+< Completar una ruta MTB de 20 km
+< Completar una ruta MTB de 30 km
+< Completar una ruta MTB de 40 km
+< Completar una ruta MTB de 50 km
+< Completar una ruta MTB de 60 km
+< Completar una ruta MTB de 75 km
+
+Caminar al menos 10.000 pasos durante 7 días consecutivos
+< Caminar al menos 10.000 pasos durante 14 días consecutivos
+< Caminar al menos 10.000 pasos durante 7 días consecutivos
+< Caminar al menos 10.000 pasos durante 21 días consecutivos
+< Caminar al menos 10.000 pasos durante 30 días consecutivos
+< Caminar al menos 10.000 pasos durante 50 días consecutivos
+< Caminar al menos 10.000 pasos durante 75 días consecutivos
+< Caminar al menos 10.000 pasos durante 100 días consecutivos
+
+Hacer al menos de actividad física durante días consecutivos
+< Hacer al menos 30 minutos de actividad física durante 14 días consecutivos
+< Hacer al menos 30 minutos de actividad física durante 7 días consecutivos
+< Hacer al menos 30 minutos de actividad física durante 21 días consecutivos
+< Hacer al menos 30 minutos de actividad física durante 30 días consecutivos
+< Hacer al menos 30 minutos de actividad física durante 50 días consecutivos
+< Hacer al menos 30 minutos de actividad física durante 75 días consecutivos
+< Hacer al menos 30 minutos de actividad física durante 100 días consecutivos
+
+Nadar 500 metros sin parar
+< Nadar 100 m sin parar
+< Nadar 200 m sin parar
+< Nadar 25 m sin parar
+< Nadar 400 m sin parar
+< Nadar 50 m sin parar
+< Nadar 500 m sin parar
+< Nadar 750 m sin parar
+
+Remar en ergómetro
+< Remar 1000 m en ergómetro en una sesión
+< Remar 500 m en ergómetro en una sesión
+< Remar 2000 m en ergómetro en una sesión
+< Remar 5000 m en ergómetro en una sesión
+< Remar 10000 m en ergómetro en una sesión
+< Remar 21097 m en ergómetro en una sesión
+< Remar 42195 m en ergómetro en una sesión
+
+Remar de forma continua durante en ergómetro
+< Remar de forma continua durante 10 minutos en ergómetro
+< Remar de forma continua durante 20 minutos en ergómetro
+< Remar de forma continua durante 30 minutos en ergómetro
+< Remar de forma continua durante 45 minutos en ergómetro
+< Remar de forma continua durante 60 minutos en ergómetro
+< Remar de forma continua durante 90 minutos en ergómetro
+< Remar de forma continua durante 120 minutos en ergómetro
+
+Correr al menos 5 km durante 7 días consecutivos
+< Correr al menos 5 km durante 14 días consecutivos
+< Correr al menos 5 km durante 7 días consecutivos
+< Correr al menos 5 km durante 21 días consecutivos
+< Correr al menos 5 km durante 30 días consecutivos
+< Correr al menos 5 km durante 50 días consecutivos
+< Correr al menos 5 km durante 75 días consecutivos
+< Correr al menos 5 km durante 100 días consecutivos
+
+Acumular
+< Acumular 25 calorías en Assault Bike en una sesión
+< Acumular 50 calorías en Assault Bike en una sesión
+< Acumular 75 calorías en Assault Bike en una sesión
+< Acumular 100 calorías en Assault Bike en una sesión
+< Acumular 150 calorías en Assault Bike en una sesión
+< Acumular 200 calorías en Assault Bike en una sesión
+
+BORRAR
+< Completar 2.000 m en remo indoor en menos de 10 minutos
+< Completar 2.000 m en remo indoor en menos de 8 minutos
+< Completar 2.000 m en remo indoor en menos de 9 minutos
+< Completar 2.000 m en remo indoor en menos de 7 minutos
+< Completar 2.000 m en remo indoor en menos de 6.5 minutos
+< Completar 2.000 m en remo indoor en menos de 6 minutos
+
+Completar una travesía de montaña de días
+< Completar una travesía de montaña de 2 días
+< Completar una travesía de montaña de 3 días
+< Completar una travesía de montaña de 4 días
+< Completar una travesía de montaña de 5 días
+< Completar una travesía de montaña de 7 días
+< Completar una travesía de montaña de 10 días
+
+BORRAR
+< Hacer 10 flexiones seguidas
+< Hacer 25 flexiones seguidas
+< Hacer 50 flexiones seguidas
+< Hacer 75 flexiones seguidas
+< Hacer 100 flexiones seguidas
+
+Subir el equivalente a plantas
+< Subir el equivalente a 25 plantas en stair climber
+< Subir el equivalente a 50 plantas en stair climber
+< Subir el equivalente a 100 plantas en stair climber
+< Subir el equivalente a 150 plantas en stair climber
+< Subir el equivalente a 200 plantas en stair climber
+
+Completar 100 km en bicicleta de carretera en un día
+< Completar 100 km en bicicleta de carretera en un día
+< Completar 120 km en bicicleta de carretera en un día
+< Completar 150 km en bicicleta de carretera en un día
+< Completar 160 km en bicicleta de carretera en un día
+< Completar 180 km en bicicleta de carretera en un día
+
+Completar entrenamientos registrados
+< Completar 10 entrenamientos registrados
+< Completar 25 entrenamientos registrados
+< Completar 50 entrenamientos registrados
+< Completar 100 entrenamientos registrados
+< Completar 200 entrenamientos registrados
+
+Completar un AMRAP de 20 minutos
+< Completar un AMRAP continuo de 10 minutos
+< Completar un AMRAP continuo de 20 minutos
+< Completar un AMRAP continuo de 30 minutos
+< Completar un AMRAP continuo de 45 minutos
+< Completar un AMRAP continuo de 60 minutos
+
+Completar rondas de air squats + push-ups + sit-ups
+< Completar 3 rondas de 10 air squats + 10 push-ups + 10 sit-ups
+< Completar 5 rondas de 10 air squats + 10 push-ups + 10 sit-ups
+< Completar 10 rondas de 10 air squats + 10 push-ups + 10 sit-ups
+< Completar 15 rondas de 10 air squats + 10 push-ups + 10 sit-ups
+< Completar 20 rondas de 10 air squats + 10 push-ups + 10 sit-ups
+
+Levantar × tu peso corporal en peso muerto para repetición
+< Levantar 0.75× tu peso corporal en peso muerto para 1 repetición
+< Levantar 1.25× tu peso corporal en peso muerto para 1 repetición
+< Levantar 1.5× tu peso corporal en peso muerto para 1 repetición
+< Levantar 1.75× tu peso corporal en peso muerto para 1 repetición
+< Levantar 2.25× tu peso corporal en peso muerto para 1 repetición
+
+Nadar 100 m de braza sin detenerse
+< Nadar 25 m de braza sin detenerse
+< Nadar 50 m de braza sin detenerse
+< Nadar 100 m de braza sin detenerse
+< Nadar 200 m de braza sin detenerse
+< Nadar 400 m de braza sin detenerse
+
+Nadar 100 m de crol sin detenerse
+< Nadar 25 m de crol sin detenerse
+< Nadar 50 m de crol sin detenerse
+< Nadar 100 m de crol sin detenerse
+< Nadar 200 m de crol sin detenerse
+< Nadar 400 m de crol sin detenerse
+
+Nadar 100 m de espalda sin detenerse
+< Nadar 25 m de espalda sin detenerse
+< Nadar 50 m de espalda sin detenerse
+< Nadar 100 m de espalda sin detenerse
+< Nadar 200 m de espalda sin detenerse
+< Nadar 400 m de espalda sin detenerse
+
+Nadar 100 m de mariposa sin detenerse
+< Nadar 25 m de mariposa sin detenerse
+< Nadar 50 m de mariposa sin detenerse
+< Nadar 100 m de mariposa sin detenerse
+< Nadar 200 m de mariposa sin detenerse
+< Nadar 400 m de mariposa sin detenerse
+
+Completar una carrera de obstáculos
+< Completar una carrera OCR de 3 km
+< Completar una carrera OCR de 5 km
+< Completar una carrera OCR de 10 km
+< Completar una carrera OCR de 15 km
+< Completar una carrera OCR de 21 km
+
+BORRAR
+< Acumular 50 calorías en remo indoor
+< Acumular 100 calorías en remo indoor
+< Acumular 250 calorías en remo indoor
+< Acumular 500 calorías en remo indoor
+< Acumular 1000 calorías en remo indoor
+
+Levantar × tu peso corporal en press estricto para repetición
+< Levantar 0.35× tu peso corporal en press estricto para 1 repetición
+< Levantar 0.5× tu peso corporal en press estricto para 1 repetición
+< Levantar 0.65× tu peso corporal en press estricto para 1 repetición
+< Levantar 0.75× tu peso corporal en press estricto para 1 repetición
+
+Levantar × tu peso corporal en snatch para repetición
+< Levantar 0.35× tu peso corporal en snatch para 1 repetición
+< Levantar 0.5× tu peso corporal en snatch para 1 repetición
+< Levantar 0.75× tu peso corporal en snatch para 1 repetición
+< Levantar 1.25× tu peso corporal en snatch para 1 repetición
+
+Levantar × tu peso corporal en clean para repetición
+< Levantar 0.5× tu peso corporal en clean para 1 repetición
+< Levantar 0.75× tu peso corporal en clean para 1 repetición
+< Levantar 1.25× tu peso corporal en clean para 1 repetición
+< Levantar 1.5× tu peso corporal en clean para 1 repetición
+
+Levantar × tu peso corporal en press banca para repetición
+< Levantar 0.5× tu peso corporal en press banca para 1 repetición
+< Levantar 0.75× tu peso corporal en press banca para 1 repetición
+< Levantar 1.25× tu peso corporal en press banca para 1 repetición
+< Levantar 1.5× tu peso corporal en press banca para 1 repetición
+
+Levantar × tu peso corporal en sentadilla frontal para repetición
+< Levantar 0.5× tu peso corporal en sentadilla frontal para 1 repetición
+< Levantar 0.75× tu peso corporal en sentadilla frontal para 1 repetición
+< Levantar 1.25× tu peso corporal en sentadilla frontal para 1 repetición
+< Levantar 1.5× tu peso corporal en sentadilla frontal para 1 repetición
+
+Levantar × tu peso corporal en sentadilla trasera para repetición
+< Levantar 0.75× tu peso corporal en sentadilla trasera para 1 repetición
+< Levantar 1.25× tu peso corporal en sentadilla trasera para 1 repetición
+< Levantar 1.5× tu peso corporal en sentadilla trasera para 1 repetición
+< Levantar 1.75× tu peso corporal en sentadilla trasera para 1 repetición
+
+BORRAR
+< Hacer 5 dominadas estrictas seguidas
+< Hacer 10 dominadas estrictas seguidas
+< Hacer 15 dominadas estrictas seguidas
+< Hacer 20 dominadas estrictas seguidas
+
+BORRAR
+< Completar 5 repeticiones seguidas de peso muerto con el 50% de tu peso corporal
+< Completar 10 repeticiones seguidas de peso muerto con el 50% de tu peso corporal
+< Completar 15 repeticiones seguidas de peso muerto con el 50% de tu peso corporal
+< Completar 20 repeticiones seguidas de peso muerto con el 50% de tu peso corporal
+
+BORRAR
+< Completar 5 repeticiones seguidas de press banca con el 50% de tu peso corporal
+< Completar 10 repeticiones seguidas de press banca con el 50% de tu peso corporal
+< Completar 15 repeticiones seguidas de press banca con el 50% de tu peso corporal
+< Completar 20 repeticiones seguidas de press banca con el 50% de tu peso corporal
+
+BORRAR
+< Completar 5 repeticiones seguidas de press estricto con el 50% de tu peso corporal
+< Completar 10 repeticiones seguidas de press estricto con el 50% de tu peso corporal
+< Completar 15 repeticiones seguidas de press estricto con el 50% de tu peso corporal
+< Completar 20 repeticiones seguidas de press estricto con el 50% de tu peso corporal
+
+BORRAR
+< Completar 5 repeticiones seguidas de sentadilla frontal con el 50% de tu peso corporal
+< Completar 10 repeticiones seguidas de sentadilla frontal con el 50% de tu peso corporal
+< Completar 15 repeticiones seguidas de sentadilla frontal con el 50% de tu peso corporal
+< Completar 20 repeticiones seguidas de sentadilla frontal con el 50% de tu peso corporal
+
+BORRAR
+< Completar 5 repeticiones seguidas de sentadilla trasera con el 50% de tu peso corporal
+< Completar 10 repeticiones seguidas de sentadilla trasera con el 50% de tu peso corporal
+< Completar 15 repeticiones seguidas de sentadilla trasera con el 50% de tu peso corporal
+< Completar 20 repeticiones seguidas de sentadilla trasera con el 50% de tu peso corporal
+
+Completar una ruta de senderismo de 40 km en un día
+< Completar una ruta de senderismo de 40 km en un día
+< Completar una ruta de senderismo de 50 km en un día
+< Completar una ruta de senderismo de 100 km en un día
+< Completar una ruta de senderismo de 75 km en un día
+
+Nadar 1000 m
+< Nadar 1000 m sin parar
+< Nadar 1500 m sin parar
+< Nadar 2000 m sin parar
+< Nadar 3000 m sin parar
+
+Nadar 1000 m en piscina
+< Nadar 1000 m en piscina
+< Nadar 1500 m en piscina
+< Nadar 2000 m en piscina
+< Nadar 3000 m en piscina
+
+Nadar 1000 m en aguas abiertas
+< Nadar 1000 m en aguas abiertas
+< Nadar 1500 m en aguas abiertas
+< Nadar 2000 m en aguas abiertas
+< Nadar 3000 m en aguas abiertas
+
+Nadar 1000 m en el mar
+< Nadar 1000 m en el mar
+< Nadar 1500 m en el mar
+< Nadar 2000 m en el mar
+< Nadar 3000 m en el mar
+
+Nadar 1000 m en un lago
+< Nadar 1000 m en un lago
+< Nadar 1500 m en un lago
+< Nadar 2000 m en un lago
+< Nadar 3000 m en un lago
+
+Esquiar 50 km en un día
+< Esquiar 20 km en un día
+< Esquiar 40 km en un día
+< Esquiar 60 km en un día
+< Esquiar 100 km en un día
+
+Completar un trail de 10 km
+< Completar un trail de 10 km
+< Completar un trail de 5 km
+< Completar un trail de 15 km
+< Completar un trail de 20 km
+
+Completar un trail de 42 km
+< Completar un trail de 100 km
+< Completar un trail de 42 km
+< Completar un trail de 50 km
+< Completar un trail de 80 km
+
+Practicar transiciones completas de triatlón
+< Practicar 2 transiciones completas de triatlón en una sesión
+< Practicar 3 transiciones completas de triatlón en una sesión
+< Practicar 4 transiciones completas de triatlón en una sesión
+< Practicar 5 transiciones completas de triatlón en una sesión
+
+Completar 200 km en bicicleta de carretera en un día
+< Completar 200 km en bicicleta de carretera en un día
+< Completar 250 km en bicicleta de carretera en un día
+< Completar 300 km en bicicleta de carretera en un día
+
+Completar una ruta MTB de 100 km
+< Completar una ruta MTB de 100 km
+< Completar una ruta MTB de 120 km
+< Completar una ruta MTB de 150 km
+
+Encadenar una vía deportiva de grado 5a
+< Encadenar una vía deportiva de grado 5a
+< Encadenar una vía deportiva de grado 6a
+< Encadenar una vía deportiva de grado 7a
+
+Hacer 50 double unders seguidos
+< Hacer 20 double-unders seguidos
+< Hacer 50 double-unders seguidos
+< Hacer 100 double-unders seguidos
+
+Completar de farmer carry con dos cargas del % de tu peso corporal
+< Completar 100 m de farmer carry con dos cargas del 25% de tu peso corporal
+< Completar 50 m de farmer carry con dos cargas del 50% de tu peso corporal
+< Completar 25 m de farmer carry con dos cargas del 75% de tu peso corporal
+
+Completar una ruta de senderismo de 10 km en un día
+< Completar una ruta de senderismo de 10 km en un día
+< Completar una ruta de senderismo de 5 km en un día
+< Completar una ruta de senderismo de 15 km en un día
+
+Completar una ruta de senderismo de 20 km en un día
+< Completar una ruta de senderismo de 20 km en un día
+< Completar una ruta de senderismo de 25 km en un día
+< Completar una ruta de senderismo de 30 km en un día
+
+Nadar
+< Nadar 5000 m sin parar
+< Nadar 10000 m sin parar
+< Nadar 7500 m sin parar
+
+Correr
+< Correr 25 km sin parar
+< Correr 30 km sin parar
+< Correr 35 km sin parar
+
+Correr
+< Correr 50 km sin parar
+< Correr 60 km sin parar
+< Correr 80 km sin parar
+
+Hacer dominadas estrictas
+< Hacer 10 dominadas estrictas
+< Hacer 20 dominadas estrictas
+
+Mantener un handstand libre segundos
+< Mantener un handstand libre 5 segundos
+< Mantener un handstand libre 30 segundos
+
+Completar de cardio en zona
+< Completar 60 minutos de cardio en zona 2
+< Completar 120 minutos de cardio en zona 2
+
+Subir un puerto de montaña de sin bajarse de la bicicleta
+< Subir un puerto de montaña de 5 km sin bajarse de la bicicleta
+< Subir un puerto de montaña de 10 km sin bajarse de la bicicleta
+
+BORRAR
+< Entrenar 4 días por semana durante 8 semanas
+< Entrenar 5 días por semana durante 8 semanas
+
+Probar deportes distintos en meses
+< Probar 12 deportes distintos en 12 meses
+< Probar 24 deportes distintos en 12 meses
+
+Probar dragon boat
+< Probar dragon boat
+< Probar dragon boat
+
+Hacer surf
+< Hacer surf al amanecer
+< Hacer surf al atardecer
+
+Recorrer 10 km en kayak
+< Recorrer 10 km en kayak
+< Recorrer 20 km en kayak
+
+Completar clases de boxeo
+< Completar 10 clases de boxeo
+< Completar 50 clases de boxeo
+
+BORRAR
+< Hacer 3 rounds de saco de 3 minutos
+< Hacer 10 rounds de saco de 3 minutos
+
+Patinar en línea
+< Patinar 10 km en línea
+< Patinar 20 km en línea
+
+Encadenar una vía deportiva de grado
+< Encadenar una vía deportiva de grado 3
+< Encadenar una vía deportiva de grado 4
+
+Encadenar una vía deportiva de grado 5b
+< Encadenar una vía deportiva de grado 5b
+< Encadenar una vía deportiva de grado 6b
+
+Encadenar una vía deportiva de grado 5c
+< Encadenar una vía deportiva de grado 5c
+< Encadenar una vía deportiva de grado 6c
+
+Escalar una vía de varios largos
+< Escalar una vía de 20 m
+< Escalar una vía de 30 m
+
+Mantenerte segundos colgado de una barra
+< Mantenerte 60 segundos colgado de una barra
+< Mantenerte 120 segundos colgado de una barra
+
+BORRAR
+< Hacer 10 toes-to-bar seguidos
+< Hacer 20 toes-to-bar seguidos
+
+Levantar × tu peso corporal en peso muerto para repetición
+< Levantar 1× tu peso corporal en peso muerto para 1 repetición
+< Levantar 2× tu peso corporal en peso muerto para 1 repetición
+
+Levantar × tu peso corporal en sentadilla trasera para repetición
+< Levantar 1× tu peso corporal en sentadilla trasera para 1 repetición
+< Levantar 2× tu peso corporal en sentadilla trasera para 1 repetición
+
+Mantener una plancha
+< Mantener una plancha 2 minutos
+< Mantener una plancha 5 minutos
+
+Hacer una dominada con % de tu peso corporal de lastre
+< Hacer una dominada con 25% de tu peso corporal de lastre
+< Hacer una dominada con 50% de tu peso corporal de lastre
+
+Nadar 1.000 metros en piscina
+< Completar 100 largos de piscina de 25 m
+< Completar 200 largos de piscina de 25 m
+
+Completar de esquí de fondo
+< Completar 10 km de esquí de fondo
+< Completar 25 km de esquí de fondo
+
+Completar una carrera rogaining de horas
+< Completar una carrera rogaining de 6 horas
+< Completar una carrera rogaining de 12 horas
+
+Bajar de golpes en hoyos
+< Bajar de 100 golpes en 18 hoyos
+< Bajar de 90 golpes en 18 hoyos
+
+BORRAR
+< Completar una sesión de 10 km en BikeErg
+< Completar una sesión de 50 km en BikeErg
+
+Remar en agua
+< Remar 5 km en agua
+< Remar 10 km en agua
+
+Completar un trail de 10 km
+< Completar un trail de 25 km
+< Completar un trail de 30 km
+
+Completar una sesión combinada de bici + carrera sin pausa larga
+< Completar una sesión combinada de 20 km bici + 5 km carrera sin pausa larga
+< Completar una sesión combinada de 40 km bici + 10 km carrera sin pausa larga
+
+Completar una sesión combinada de carrera + bici sin pausa larga
+< Completar una sesión combinada de 5 km carrera + 20 km bici sin pausa larga
+< Completar una sesión combinada de 10 km carrera + 40 km bici sin pausa larga
+
+# ── Se quedan tal cual ──
+# Acertar una diana a 30 m con arco en campo supervisado
+# Agrupar 5 flechas dentro de un círculo de 20 cm a 10 m
+# Anotar 10 tiros libres consecutivos
+# Anotar un triple en un partido
+# Aprender 3 proyecciones básicas de judo
+# Aprender a asegurar con dispositivo asistido
+# Aprender a cambiar una cámara en ruta
+# Aprender a frenar en T
+# Aprender a frenar en hockey stop sobre hielo
+# Aprender a frenar en skateboard
+# Aprender a hacer el nudo de ocho correctamente
+# Aprender a hacer malabares con 4 pelotas
+# Aprender a hacer un viraje de voltereta
+# Aprender a usar brújula y mapa topográfico
+# Aprender autodetención con piolet en curso
+# Aprender galope controlado con instructor
+# Aprender jab, cross, hook y uppercut básicos
+# Aprender la técnica básica de remo en skiff
+# Aprender maniobras básicas de reunión en curso
+# Aprender moonwalk
+# Aprender shuffle dance básico
+# Aprender trote levantado
+# Aprender un backflip en trampolín con entrenador
+# Aprender un bunny hop en bicicleta
+# Aprender un derribo de doble pierna
+# Aprender un freeze básico de breakdance
+# Aprender un front flip en trampolín con entrenador
+# Aprender un giro doble controlado
+# Aprender un precision jump básico
+# Aprender un salto agrupado en trampolín
+# Aprender un salto básico con patines
+# Aprender un six-step de breakdance
+# Aprender una coreografía de 3 minutos
+# Aprender una coreografía de bachata de 2 minutos
+# Aprender una coreografía de hip hop completa
+# Aprender una pequeña coreografía de flamenco
+# Aprender una rondada
+# Aprender una rueda lateral
+# Aprender una salida desde poyete
+# Aprender una secuencia básica de salsa
+# Arrastrar un trineo pesado 100 m
+# Bailar durante 2 horas en una social dance
+# Bailar salsa durante 30 minutos seguidos
+# Bajar una pista azul con control
+# Bajar una pista azul en snowboard
+# Bajar una pista negra con control
+# Bajar una pista roja con control
+# Bajar una pista verde con control
+# Batear una bola en cricket
+# Bombear 1 km en surfskate sin empujar
+# Caminar 10 m sobre las manos
+# Caminar 10 m sobre slackline
+# Caminar 100.000 pasos en 24 horas
+# Caminar 20 m haciendo handstand
+# Caminar 30 m sobre slackline
+# Caminar 50.000 pasos en un día
+# Cerrar una partida de dardos con un doble
+# Coger 10 olas en bodyboard
+# Completar 10 clases de spinning
+# Completar 10 partidos de pádel en un mes
+# Completar 100 flexiones en una sesión
+# Completar 100 sentadillas con peso corporal sin parar
+# Completar 18 hoyos de footgolf
+# Completar 20 bloques diferentes en una sesión
+# Completar 20 clases de kickboxing
+# Completar 20 km de marcha nórdica
+# Completar 20 vueltas a un pump track
+# Completar 30 días de movilidad de 15 minutos
+# Completar 5 obstáculos ninja consecutivos
+# Completar 5 rounds de pads de Muay Thai
+# Completar 50 box jumps sin fallos
+# Completar 50 m de bear hug carry con tu peso corporal
+# Completar 50 m de suitcase carry con el 50% de tu peso corporal en una mano
+# Completar 50 sesiones de BJJ
+# Completar 50 zancadas por pierna con peso corporal
+# Completar 60 minutos de zumba sin parar
+# Completar tu primer triatlón sin objetivo de tiempo
+# Completar un 24 horas por relevos
+# Completar un Hero WOD RX
+# Completar un Hero WOD escalado
+# Completar un arrastre de saco de 100 m
+# Completar un bautismo de buceo
+# Completar un camino de peregrinación de 100 km
+# Completar un campamento de artes marciales de fin de semana
+# Completar un circuito de campus board básico
+# Completar un circuito de parkour para principiantes
+# Completar un circuito ninja para principiantes
+# Completar un curso de conducción off-road
+# Completar un curso de iniciación al paracaidismo
+# Completar un curso de iniciación al parapente
+# Completar un duatlón estándar
+# Completar un evento tipo DEKA
+# Completar un evento tipo HYROX
+# Completar un farmer carry de carrera OCR de 200 m
+# Completar un gran fondo
+# Completar un kilómetro vertical
+# Completar un recorrido de 18 hoyos de disc golf
+# Completar un reto de 4 deportes en un día
+# Completar un reto deportivo nuevo cada mes durante un año
+# Completar un swimrun corto
+# Completar un swimrun de más de 20 km
+# Completar un triatlón Half: 1,9 km natación + 90 km bici + 21,1 km carrera
+# Completar un triatlón Ironman: 3,8 km natación + 180 km bici + 42,2 km carrera
+# Completar un triatlón Olímpico: 1,5 km natación + 40 km bici + 10 km carrera
+# Completar un triatlón Sprint: 750 m natación + 20 km bici + 5 km carrera
+# Completar un triatlón Super sprint: 400 m natación + 10 km bici + 2,5 km carrera
+# Completar un triatlón de montaña
+# Completar una Spartan Beast
+# Completar una Spartan Super
+# Completar una Tough Mudder
+# Completar una barra de ballet completa
+# Completar una carga de sandbag de 1 km
+# Completar una carrera OCR en invierno
+# Completar una carrera OCR nocturna
+# Completar una carrera Spartan Sprint
+# Completar una carrera de barro
+# Completar una carrera de orientación en bosque
+# Completar una carrera de orientación por equipos
+# Completar una carrera de orientación urbana
+# Completar una carrera sin mirar el reloj
+# Completar una carrera vertical de escaleras
+# Completar una clase de spinning
+# Completar una clase de yoga de 90 minutos
+# Completar una competición amateur de halterofilia
+# Completar una competición amateur de powerlifting
+# Completar una línea básica en skatepark
+# Completar una ruta ciclista de 3 días
+# Completar una ruta de 100 km sin parar más de 10 minutos
+# Completar una ruta de 5 largos
+# Completar una ruta de enduro MTB
+# Completar una ruta de orientación con mapa y brújula
+# Completar una ruta sin usar GPS, con mapa y brújula
+# Completar una sesión combinada de 1 km natación + 5 km carrera sin pausa larga
+# Completar una sesión combinada de 1,5 km natación + 10 km carrera sin pausa larga
+# Completar una sesión combinada de 2 km remo + 5 km carrera sin pausa larga
+# Completar una sesión combinada de 5 km SkiErg + 5 km carrera sin pausa larga
+# Completar una sesión combinada de 500 m natación + 20 km bici sin pausa larga
+# Completar una sesión de 30 minutos en parque de trampolines
+# Completar una sesión de cardio indoor de 3 máquinas diferentes
+# Completar una travesía popular en aguas abiertas
+# Completar una trifecta de tres distancias OCR en un año
+# Conducir un coche deportivo en circuito con instructor
+# Conducir un quad en una ruta guiada
+# Conducir una moto de agua en zona autorizada
+# Conseguir tu primera finalización técnica en rolling
+# Conseguir un hit en béisbol o softball
+# Conseguir un split frontal
+# Conseguir un split lateral
+# Correr 100 km sin parar
+# Correr 3 días por semana durante 12 semanas
+# Correr por una causa benéfica
+# Correr un backyard ultra durante al menos 6 vueltas
+# Correr una carrera de obstáculos
+# Correr una carrera en una capital europea
+# Correr una carrera nocturna
+# Correr una carrera vestido con un disfraz
+# Correr una milla urbana
+# Cruzar la estela en wakeboard
+# Cruzar un puente tibetano en una vía ferrata
+# Cruzar una frontera en bicicleta
+# Cruzar una monkey bar de 10 m
+# Dormir en un refugio de montaña
+# Dormir en vivac donde esté permitido
+# Empujar un trineo pesado 100 m
+# Encadenar una vía deportiva de grado 6a+
+# Encadenar una vía deportiva de grado 6b+
+# Encestar 10 tiros libres seguidos
+# Encontrar 20 geocachés en un día
+# Enseñar a un amigo una habilidad deportiva que domines
+# Entrar en un snowpark y completar una línea fácil
+# Entrenar Muay Thai en Tailandia
+# Entrenar antes de las 7:00 durante 10 días
+# Entrenar con 10 personas diferentes
+# Entrenar fuerza 3 días por semana durante 12 semanas
+# Escalar de primero una vía fácil
+# Escalar en granito
+# Escalar en roca caliza
+# Esquiar durante 5 días consecutivos
+# Esquiar por primera vez
+# Ganar un asalto amistoso de esgrima
+# Ganar un partido de pádel
+# Ganar un set de tenis
+# Ganar una carrera amateur de karting
+# Gobernar un velero durante una hora con instructor
+# Hacer 1 hora de natación, 2 de bici y 1 de carrera en un mismo día
+# Hacer 10 chest-to-bar seguidos
+# Hacer 10 entrenamientos bajo lluvia moderada de forma segura
+# Hacer 10 fondos en anillas seguidos
+# Hacer 10 handstand push-ups seguidos
+# Hacer 10 minutos diarios de movilidad durante 100 días
+# Hacer 10 pistol squats por pierna
+# Hacer 100 días de actividad al aire libre en un año
+# Hacer 100 toques de balón de fútbol sin que caiga
+# Hacer 100 wall balls seguidos
+# Hacer 20 servicios de tenis válidos consecutivos
+# Hacer 20 virajes perfectos seguidos
+# Hacer 25 m subacuáticos solo en entrenamiento supervisado
+# Hacer 30 burpees de penalización y continuar corriendo
+# Hacer 30 días de práctica de baile de 15 minutos
+# Hacer 30 entrenamientos al amanecer
+# Hacer 5 bar muscle-ups seguidos
+# Hacer 5 días de surf consecutivos
+# Hacer 5 ring muscle-ups seguidos
+# Hacer 50 kettlebell swings seguidos
+# Hacer 50 toques alternando ambos pies
+# Hacer ala delta biplaza
+# Hacer bikepacking de un fin de semana
+# Hacer bikepacking de una noche
+# Hacer body drag en kitesurf
+# Hacer bodyboard
+# Hacer canyoning nivel iniciación con guía
+# Hacer canyoning nivel intermedio con guía
+# Hacer carving limpio en pista azul
+# Hacer carving limpio en pista roja
+# Hacer coasteering con guía
+# Hacer de pacer a un amigo en una carrera
+# Hacer geocaching durante una jornada
+# Hacer kayak de mar por primera vez
+# Hacer malabares con 3 pelotas durante 1 minuto
+# Hacer malabares con 3 pelotas durante 5 minutos
+# Hacer movilidad 10 minutos diarios durante un mes
+# Hacer paddle surf al amanecer
+# Hacer paddle surf en un lago
+# Hacer paddle surf por primera vez
+# Hacer paracaidismo tándem
+# Hacer paracaidismo tándem desde más de 3.000 m
+# Hacer parapente biplaza
+# Hacer parapente biplaza en montaña
+# Hacer parapente biplaza sobre costa
+# Hacer rafting nivel II
+# Hacer rafting nivel III
+# Hacer rafting nivel IV con guía
+# Hacer rappel de 30 m con supervisión
+# Hacer snorkel durante una hora
+# Hacer snorkel en un arrecife
+# Hacer sparring técnico de Muay Thai con entrenador
+# Hacer surf en otro continente
+# Hacer tirolina de más de 500 m
+# Hacer trekking en un desierto con guía
+# Hacer trekking en una selva con guía
+# Hacer tres strikes seguidos
+# Hacer tu primer L-sit de 5 segundos
+# Hacer tu primer bar muscle-up
+# Hacer tu primer box jump
+# Hacer tu primer chest-to-bar
+# Hacer tu primer double-under
+# Hacer tu primer fondo en anillas
+# Hacer tu primer handstand push-up
+# Hacer tu primer ring muscle-up
+# Hacer tu primer rope climb
+# Hacer tu primer sparring técnico de boxeo con entrenador
+# Hacer tu primer toes-to-bar
+# Hacer tu primera bandera humana asistida
+# Hacer tu primera dominada estricta
+# Hacer tu primera dominada lastrada
+# Hacer tu primera dominada pronada
+# Hacer tu primera dominada supina
+# Hacer tu primera pistol squat asistida
+# Hacer tu primera pistol squat libre
+# Hacer un 180 en dardos
+# Hacer un Turkish get-up con 25% de tu peso corporal
+# Hacer un ace en un partido de tenis
+# Hacer un backflip en gimnasio con entrenador
+# Hacer un birdie
+# Hacer un bottom turn controlado
+# Hacer un curso de técnica de carving
+# Hacer un cutback básico
+# Hacer un entrenamiento triple: remo + bici + carrera
+# Hacer un giro enlazado en snowboard
+# Hacer un handstand contra pared de 30 segundos
+# Hacer un hoyo en uno
+# Hacer un kickflip
+# Hacer un mate en una canasta reglamentaria
+# Hacer un muscle-up estricto en anillas
+# Hacer un muscle-up estricto en barra
+# Hacer un ollie en skateboard
+# Hacer un ollie en snowboard
+# Hacer un ollie sobre un obstáculo pequeño
+# Hacer un par en un hoyo de golf
+# Hacer un parkrun en otro país
+# Hacer un salto básico en snowpark
+# Hacer un salto básico en wakeboard
+# Hacer un saque directo en voleibol
+# Hacer un surf camp de una semana
+# Hacer un test de 2.000 m en remo y repetirlo 8 semanas después
+# Hacer un test de 20 minutos en BikeErg
+# Hacer un triatlón con salida desde playa
+# Hacer un triatlón por relevos
+# Hacer un vault básico en parkour
+# Hacer un wheelie controlado de 20 metros
+# Hacer una actividad deportiva en 10 países diferentes
+# Hacer una actividad deportiva en 5 continentes
+# Hacer una apnea estática de 60 segundos en entorno seguro
+# Hacer una carrera OCR por equipos
+# Hacer una clase de BJJ
+# Hacer una clase de Muay Thai
+# Hacer una clase de aro aéreo
+# Hacer una clase de bachata
+# Hacer una clase de ballet para adultos
+# Hacer una clase de boxeo
+# Hacer una clase de breakdance
+# Hacer una clase de danza africana
+# Hacer una clase de danza contemporánea
+# Hacer una clase de defensa personal
+# Hacer una clase de esgrima
+# Hacer una clase de flamenco
+# Hacer una clase de hip hop
+# Hacer una clase de judo
+# Hacer una clase de karate
+# Hacer una clase de kickboxing
+# Hacer una clase de lucha olímpica
+# Hacer una clase de salsa
+# Hacer una clase de spinning de 90 minutos
+# Hacer una clase de taekwondo
+# Hacer una clase de telas aéreas
+# Hacer una clase de zumba
+# Hacer una competición de adventure race
+# Hacer una competición por parejas
+# Hacer una contrarreloj de 20 km
+# Hacer una experiencia de caída libre indoor de 4 minutos acumulados
+# Hacer una experiencia de rally con instructor
+# Hacer una figura invertida básica en telas aéreas
+# Hacer una inmersión desde barco
+# Hacer una inmersión nocturna con certificación adecuada
+# Hacer una jornada de enduro en circuito o zona autorizada
+# Hacer una jornada de esquí al amanecer
+# Hacer una jornada de esquí de travesía con guía
+# Hacer una marcha de 12 horas
+# Hacer una ruta a caballo de 2 horas
+# Hacer una ruta a caballo de día completo
+# Hacer una ruta ciclista de 50 km con alforjas
+# Hacer una ruta ciclista de 50 km por un parque natural
+# Hacer una ruta ciclista de 50 km por una isla
+# Hacer una ruta circular alrededor de un macizo
+# Hacer una ruta con raquetas de nieve
+# Hacer una ruta con raquetas de nieve de 10 km
+# Hacer una ruta de 10 km en longboard
+# Hacer una ruta de buggy off-road
+# Hacer una ruta de moto de más de 1.000 km en varios días
+# Hacer una ruta de quad por montaña autorizada
+# Hacer una ruta de varios largos con guía
+# Hacer una ruta e-bike de montaña de 50 km
+# Hacer una ruta en camello por dunas
+# Hacer una ruta en trineo de perros con operador responsable
+# Hacer una ruta glaciar con guía
+# Hacer una ruta guiada en moto de agua
+# Hacer una ruta larga en moto de más de 300 km
+# Hacer una rutina de shuffle de 2 minutos
+# Hacer una salida de escalada en roca con guía
+# Hacer una salida en velódromo
+# Hacer una segunda sesión de vuelo indoor y controlar giros básicos
+# Hacer una sentadilla profunda con talones apoyados
+# Hacer una serie de 10 bolas seguidas en billar de entrenamiento
+# Hacer una sesión de boulder de 2 horas
+# Hacer una sesión de natación de 90 minutos
+# Hacer una sesión de trampolín deportivo
+# Hacer una sesión de técnica con palas, pull buoy y aletas
+# Hacer una tanda de karting de resistencia de 1 hora por equipos
+# Hacer una tanda de track day como conductor con formación
+# Hacer una tirolina de más de 1 km
+# Hacer una travesía costera en moto de agua con guía
+# Hacer una travesía de kayak de un día
+# Hacer una tuck back lever de 10 segundos
+# Hacer una tuck front lever de 10 segundos
+# Hacer una voltereta hacia delante controlada
+# Hacer una vía ferrata difícil con guía
+# Hacer una vía ferrata nivel fácil
+# Hacer una vía ferrata nivel medio con equipo adecuado
+# Hacer waterstart en kitesurf
+# Jugar 18 hoyos de golf
+# Jugar un entrenamiento de cricket
+# Jugar un partido amateur de hockey sobre hielo
+# Jugar un partido completo de fútbol 11
+# Jugar un partido de baloncesto 5x5
+# Jugar un partido de balonmano
+# Jugar un partido de bádminton
+# Jugar un partido de béisbol o softball
+# Jugar un partido de fútbol playa
+# Jugar un partido de fútbol sala
+# Jugar un partido de hockey hierba
+# Jugar un partido de pickleball
+# Jugar un partido de pádel
+# Jugar un partido de rugby touch
+# Jugar un partido de squash
+# Jugar un partido de tenis
+# Jugar un partido de ultimate frisbee
+# Jugar un partido de voleibol
+# Jugar un partido de waterpolo
+# Jugar un torneo de fútbol 7
+# Jugar una partida de billar
+# Jugar una partida de bolos por encima de 150 puntos
+# Jugar una partida de curling
+# Jugar una partida de dardos 501
+# Jugar una partida de teqball
+# Jugar vóley playa
+# Lanzar un caber de entrenamiento con instructor
+# Levantar 1× tu peso corporal en clean para 1 repetición
+# Levantar 1× tu peso corporal en press banca para 1 repetición
+# Levantar 1× tu peso corporal en press estricto para 1 repetición
+# Levantar 1× tu peso corporal en sentadilla frontal para 1 repetición
+# Levantar 1× tu peso corporal en snatch para 1 repetición
+# Mantener 10 intercambios en futvóley
+# Mantener 30 km/h de media durante 40 km
+# Mantener un L-sit 20 segundos
+# Mantener un back lever completo 5 segundos
+# Mantener un diábolo girando 2 minutos
+# Mantener un front lever completo 5 segundos
+# Mantener un peloteo de 20 golpes en teqball
+# Mantener un track stand 30 segundos
+# Mantener una bandera humana 5 segundos
+# Mantener una figura básica en aro aéreo 20 segundos
+# Mantener una postura de puente 30 segundos
+# Mantener una sentadilla profunda 2 minutos
+# Mantener vuelo estable 100 m en e-foil
+# Mantener vuelo estable 30 segundos en túnel de viento
+# Mantenerte 30 segundos sobre slackline
+# Mantenerte 5 minutos en esquí acuático
+# Mantenerte de pie 30 minutos en paddle surf
+# Marcar un gol en fútbol 11
+# Marcar un punto en ultimate frisbee
+# Meter 20 triples en una sesión de 100 intentos
+# Meter un hat-trick en un partido amateur
+# Montar a caballo por primera vez
+# Nadar 100 m con respiración bilateral
+# Nadar 400 m respirando cada 3 brazadas
+# Nadar 500 m en aguas abiertas
+# Nadar 500 m en el mar
+# Nadar 500 m en piscina
+# Nadar 500 m en un lago
+# Nadar 5000 m en aguas abiertas
+# Nadar 5000 m en el mar
+# Nadar 5000 m en piscina
+# Nadar 5000 m en un lago
+# Nadar con neopreno en aguas abiertas
+# Nadar de noche en un evento organizado
+# Nadar sin neopreno en agua templada durante 30 minutos
+# Navegar 1 km en windsurf
+# Navegar 100 m en kitesurf de forma controlada
+# Obtener una certificación básica de buceo
+# Participar en un aquatlón
+# Participar en un duatlón sprint
+# Participar en un interclub de boxeo amateur
+# Participar en un randori controlado de judo
+# Participar en un torneo amateur de BJJ
+# Participar en un torneo amateur de bádminton
+# Participar en un torneo amateur de pádel
+# Participar en un torneo amateur de tenis
+# Participar en un torneo amateur de vóley playa
+# Participar en una San Silvestre
+# Participar en una carrera de dragon boat
+# Participar en una carrera de relevos
+# Participar en una competición amateur de tiro con arco
+# Participar en una competición de fitness funcional
+# Participar en una competición ninja amateur
+# Participar en una exhibición amateur de baile
+# Participar en una marcha cicloturista
+# Participar en una prueba de salvamento y socorrismo deportivo
+# Participar en una regata amateur
+# Participar en una regata amateur de remo
+# Participar en unos juegos Highland amateur adaptados
+# Patinar 5 km sobre pista de hielo
+# Ponerte de pie en una ola de espuma
+# Ponerte de pie en wakeboard
+# Ponerte de pie y navegar en wingfoil
+# Probar BMX en pump track
+# Probar SUP polo
+# Probar acrobacia aérea en colchoneta con entrenador
+# Probar apnea recreativa con instructor
+# Probar bochas
+# Probar canicross
+# Probar conducción 4x4 en circuito
+# Probar conducción sobre hielo en circuito especializado
+# Probar croquet
+# Probar descenso MTB en bike park
+# Probar descenso en trineo de verano
+# Probar disc golf
+# Probar e-foil con instructor
+# Probar escalada en rocódromo
+# Probar escalada tradicional con guía
+# Probar esquí acuático
+# Probar esquí de fondo
+# Probar esquí fuera de pista con guía y equipo
+# Probar esquí nocturno
+# Probar floorball
+# Probar footgolf
+# Probar futvóley
+# Probar fútbol gaélico
+# Probar fútbol playa
+# Probar hidrospeed con guía
+# Probar highline con sistema de seguridad y profesionales
+# Probar hurling en una sesión de iniciación
+# Probar jai alai con instructor
+# Probar kabaddi en sesión recreativa
+# Probar karting
+# Probar kin-ball
+# Probar kitesurf con instructor
+# Probar korfball
+# Probar lacrosse
+# Probar longboard
+# Probar marcha nórdica
+# Probar motocross en circuito con instructor
+# Probar orientación a caballo
+# Probar parkour con entrenador
+# Probar patinaje sobre hielo
+# Probar patines en línea
+# Probar pelota vasca
+# Probar petanca en competición local
+# Probar polo en una clase de iniciación
+# Probar psicobloc en zona autorizada y segura
+# Probar puenting con operador certificado
+# Probar remo en agua con instructor
+# Probar rugby 15 en entrenamiento
+# Probar sandboarding en dunas
+# Probar sepak takraw
+# Probar snowboard
+# Probar sumo recreativo con equipamiento inflable
+# Probar supermoto en circuito
+# Probar surf por primera vez
+# Probar surfskate
+# Probar tiro con arco con instructor
+# Probar trapecio volante con instructor
+# Probar trineo deportivo en pista
+# Probar ultimate frisbee
+# Probar una bicicleta de pista
+# Probar una carrera de aventura con kayak, bici y trekking
+# Probar vela ligera
+# Probar vuelo indoor en túnel de viento
+# Probar wakeboard
+# Probar wakesurf
+# Probar windsurf
+# Probar wingfoil
+# Probar yoke carry bajo supervisión
+# Realizar un levantamiento de atlas stone bajo supervisión
+# Recorrer 10 km en paddle surf
+# Recorrer 5 km en paddle surf
+# Reparar un pinchazo tubeless en ruta
+# Rodar en circuito con una moto bajo formación
+# Romper una tabla en una demostración supervisada
+# Saltar un obstáculo básico con caballo e instructor
+# Subir 1.000 m de desnivel con esquís de travesía
+# Subir 1.000 m de desnivel en menos de una hora acumulada
+# Subir 3 m en telas aéreas con técnica
+# Subir 500 m de desnivel con esquís de travesía
+# Subir dos puertos en una misma salida sin bajarse de la bicicleta
+# Subir tres puertos en una misma salida sin bajarse de la bicicleta
+# Subir un puerto de categoría especial sin bajarse de la bicicleta
+# Subir una cuerda de 5 m
+# Subir una cuerda sin piernas
+# Subirte a un skateboard y avanzar con control
+# Superar 10 obstáculos sin penalización
+# Superar 200 puntos en bolos
+# Superar una monkey bar completa
+# Superar una warped wall
+# Surfear 10 olas en una sesión
+# Surfear la ola sin cuerda en wakesurf
+# Surfear una ola de 1 metro
+# Surfear una ola de 1,5 metros
+# Surfear una ola de 2 metros con experiencia adecuada
+# Surfear una ola verde
+# Tocar el suelo con las palmas manteniendo las rodillas extendidas
+# Trepar un muro de 2 m
+# Trepar un muro de 2,5 m con técnica
+# Ver un amanecer desde una cumbre
+# Ver un atardecer desde una cumbre y descender con frontal
+# Volar en túnel de viento
+
+
+# GooALS — deporte: fuera lo que no se puede contar
+#
+# La regla es de David: si no hay foto, no hay gooal. Nadie sube a un muro
+# "Nadar 100 m con respiración bilateral" ni "Hacer un cutback básico". Como
+# entrenamiento están bien; como experiencia de vida, no.
+#
+# Tres grupos se van:
+#
+#   · Títulos que quedaron cojos al quitarles el número en las fusiones.
+#     "Hacer flexiones seguidas", "Completar una ruta con de desnivel
+#     positivo", "Hacer rounds de saco de". Eso es un fallo mío de la pasada
+#     anterior, no una decisión.
+#
+#   · Micro-técnica: el gesto suelto en vez del logro. Todo lo que lleva
+#     "básico", "controlado", "asistido" o "con supervisión" es una clase,
+#     no una historia. También los 36 "Aprender a frenar en T" y compañía.
+#
+#   · Deportes que no conoce nadie: korfball, kin-ball, bochas, footgolf,
+#     sepak takraw. Si alguien los echa de menos, ya los sugerirá.
+#
+# Lo que entra a cambio está en nuevos_deporte.txt: 45 benchmarks de fuerza
+# y calistenia, que sí tienen número y sí tienen foto.
+#
+# Para salvar uno, borra su línea "<".
+
+BORRAR
+< Acumular
+< Aprender 3 proyecciones básicas de judo
+< Aprender a asegurar con dispositivo asistido
+< Aprender a cambiar una cámara en ruta
+< Aprender a frenar en T
+< Aprender a frenar en hockey stop sobre hielo
+< Aprender a frenar en skateboard
+< Aprender a hacer el nudo de ocho correctamente
+< Aprender a hacer malabares con 4 pelotas
+< Aprender a hacer un viraje de voltereta
+< Aprender a usar brújula y mapa topográfico
+< Aprender galope controlado con instructor
+< Aprender jab, cross, hook y uppercut básicos
+< Aprender la técnica básica de remo en skiff
+< Aprender maniobras básicas de reunión en curso
+< Aprender moonwalk
+< Aprender shuffle dance básico
+< Aprender trote levantado
+< Aprender un backflip en trampolín con entrenador
+< Aprender un bunny hop en bicicleta
+< Aprender un derribo de doble pierna
+< Aprender un freeze básico de breakdance
+< Aprender un front flip en trampolín con entrenador
+< Aprender un giro doble controlado
+< Aprender un precision jump básico
+< Aprender un salto agrupado en trampolín
+< Aprender un salto básico con patines
+< Aprender un six-step de breakdance
+< Aprender una coreografía de 3 minutos
+< Aprender una coreografía de bachata de 2 minutos
+< Aprender una coreografía de hip hop completa
+< Aprender una pequeña coreografía de flamenco
+< Aprender una rondada
+< Aprender una rueda lateral
+< Aprender una salida desde poyete
+< Aprender una secuencia básica de salsa
+< Batear una bola en cricket
+< Completar 100 burpees seguidos
+< Completar 18 hoyos de footgolf
+< Completar 30 días de movilidad de 15 minutos
+< Completar de cardio en zona
+< Completar de farmer carry con dos cargas del % de tu peso corporal
+< Completar largos de piscina de
+< Completar repeticiones seguidas de peso muerto con el % de tu peso corporal
+< Completar repeticiones seguidas de press banca con el % de tu peso corporal
+< Completar repeticiones seguidas de press estricto con el % de tu peso corporal
+< Completar repeticiones seguidas de sentadilla frontal con el % de tu peso corporal
+< Completar repeticiones seguidas de sentadilla trasera con el % de tu peso corporal
+< Completar un Hero WOD escalado
+< Completar un circuito de campus board básico
+< Completar un recorrido de 18 hoyos de disc golf
+< Completar un trail de
+< Completar una carrera sin mirar el reloj
+< Completar una línea básica en skatepark
+< Completar una ruta con de desnivel positivo
+< Completar una sesión de
+< Correr
+< Escalar una vía de
+< Hacer 10 minutos diarios de movilidad durante 100 días
+< Hacer 30 burpees de penalización y continuar corriendo
+< Hacer al menos de actividad física durante días consecutivos
+< Hacer body drag en kitesurf
+< Hacer bodyboard
+< Hacer carving limpio en pista azul
+< Hacer carving limpio en pista roja
+< Hacer dominadas estrictas seguidas
+< Hacer double-unders seguidos
+< Hacer flexiones seguidas
+< Hacer movilidad 10 minutos diarios durante un mes
+< Hacer rappel de 30 m con supervisión
+< Hacer rounds de saco de
+< Hacer surf
+< Hacer toes-to-bar seguidos
+< Hacer tres strikes seguidos
+< Hacer tu primera bandera humana asistida
+< Hacer tu primera pistol squat asistida
+< Hacer un bottom turn controlado
+< Hacer un cutback básico
+< Hacer un salto básico en snowpark
+< Hacer un salto básico en wakeboard
+< Hacer un vault básico en parkour
+< Hacer un wheelie controlado de 20 metros
+< Hacer una dominada con % de tu peso corporal de lastre
+< Hacer una figura invertida básica en telas aéreas
+< Hacer una ruta de varios largos con guía
+< Hacer una segunda sesión de vuelo indoor y controlar giros básicos
+< Hacer una voltereta hacia delante controlada
+< Jugar un entrenamiento de cricket
+< Mantener 10 intercambios en futvóley
+< Mantener una figura básica en aro aéreo 20 segundos
+< Nadar
+< Nadar 100 m con respiración bilateral
+< Navegar 100 m en kitesurf de forma controlada
+< Obtener una certificación básica de buceo
+< Participar en un randori controlado de judo
+< Participar en una carrera de dragon boat
+< Participar en una competición ninja amateur
+< Probar SUP polo
+< Probar bochas
+< Probar canicross
+< Probar croquet
+< Probar disc golf
+< Probar dragon boat
+< Probar floorball
+< Probar footgolf
+< Probar futvóley
+< Probar fútbol gaélico
+< Probar hurling en una sesión de iniciación
+< Probar jai alai con instructor
+< Probar kabaddi en sesión recreativa
+< Probar karting
+< Probar kin-ball
+< Probar korfball
+< Probar lacrosse
+< Probar longboard
+< Probar orientación a caballo
+< Probar pelota vasca
+< Probar petanca en competición local
+< Probar sepak takraw
+< Probar snowboard
+< Probar sumo recreativo con equipamiento inflable
+< Probar surfskate
+< Probar una bicicleta de pista
+< Probar wakeboard
+< Probar wakesurf
+< Probar windsurf
+< Probar wingfoil
+< Probar yoke carry bajo supervisión
+< Remar de forma continua durante en ergómetro
+< Remar en ergómetro
+< Saltar un obstáculo básico con caballo e instructor
+
+
+# ── Los de entrada, sustituidos ──────────────────────────────────────
+#
+# Estos 60 y pico eran la puerta de entrada a cada deporte, pero estaban
+# escritos de tres formas distintas ("Probar surf", "Jugar un partido de
+# baloncesto 5x5", "Hacer una clase de BJJ"), con condiciones pegadas que no
+# cambian nada ("con instructor", "en zona autorizada y segura") y con
+# reglamentos dentro del título.
+#
+# Los sustituye deportes_practicar.txt: un deporte, una línea, un verbo, +1.
+# "Jugar al baloncesto" en vez de "Jugar un partido de baloncesto 5x5".
+# Lo que se lee en un perfil tiene que sonar a persona, no a formulario.
+
+BORRAR
+< Hacer una clase de BJJ
+< Hacer una clase de Muay Thai
+< Hacer una clase de aro aéreo
+< Hacer una clase de bachata
+< Hacer una clase de ballet para adultos
+< Hacer una clase de boxeo
+< Hacer una clase de breakdance
+< Hacer una clase de danza africana
+< Hacer una clase de danza contemporánea
+< Hacer una clase de defensa personal
+< Hacer una clase de esgrima
+< Hacer una clase de flamenco
+< Hacer una clase de hip hop
+< Hacer una clase de judo
+< Hacer una clase de karate
+< Hacer una clase de kickboxing
+< Hacer una clase de lucha olímpica
+< Hacer una clase de salsa
+< Hacer una clase de spinning de 90 minutos
+< Hacer una clase de taekwondo
+< Hacer una clase de telas aéreas
+< Hacer una clase de zumba
+< Jugar 18 hoyos de golf
+< Jugar un partido amateur de hockey sobre hielo
+< Jugar un partido completo de fútbol 11
+< Jugar un partido de baloncesto 5x5
+< Jugar un partido de balonmano
+< Jugar un partido de bádminton
+< Jugar un partido de béisbol o softball
+< Jugar un partido de fútbol playa
+< Jugar un partido de fútbol sala
+< Jugar un partido de hockey hierba
+< Jugar un partido de pickleball
+< Jugar un partido de pádel
+< Jugar un partido de rugby touch
+< Jugar un partido de squash
+< Jugar un partido de tenis
+< Jugar un partido de ultimate frisbee
+< Jugar un partido de voleibol
+< Jugar un partido de waterpolo
+< Jugar un torneo de fútbol 7
+< Jugar una partida de billar
+< Jugar una partida de bolos por encima de 150 puntos
+< Jugar una partida de curling
+< Jugar una partida de dardos 501
+< Jugar una partida de teqball
+< Jugar vóley playa
+< Probar BMX en pump track
+< Probar acrobacia aérea en colchoneta con entrenador
+< Probar apnea recreativa con instructor
+< Probar conducción 4x4 en circuito
+< Probar conducción sobre hielo en circuito especializado
+< Probar deportes distintos en meses
+< Probar descenso MTB en bike park
+< Probar descenso en trineo de verano
+< Probar e-foil con instructor
+< Probar escalada en rocódromo
+< Probar escalada tradicional con guía
+< Probar esquí acuático
+< Probar esquí de fondo
+< Probar esquí fuera de pista con guía y equipo
+< Probar esquí nocturno
+< Probar fútbol playa
+< Probar hidrospeed con guía
+< Probar highline con sistema de seguridad y profesionales
+< Probar kitesurf con instructor
+< Probar marcha nórdica
+< Probar motocross en circuito con instructor
+< Probar parkour con entrenador
+< Probar patinaje sobre hielo
+< Probar patines en línea
+< Probar polo en una clase de iniciación
+< Probar psicobloc en zona autorizada y segura
+< Probar puenting con operador certificado
+< Probar remo en agua con instructor
+< Probar rugby 15 en entrenamiento
+< Probar sandboarding en dunas
+< Probar supermoto en circuito
+< Probar surf por primera vez
+< Probar tiro con arco con instructor
+< Probar trapecio volante con instructor
+< Probar trineo deportivo en pista
+< Probar ultimate frisbee
+< Probar una carrera de aventura con kayak, bici y trekking
+< Probar vela ligera
+< Probar vuelo indoor en túnel de viento
+
+
+# ── Dos que se escaparon del barrido ─────────────────────────────────
+# Perdieron su número en las fusiones y quedaron sin sentido.
+
+BORRAR
+< Hacer al menos de actividad física durante días consecutivos
+< Entrenar días por semana durante semanas

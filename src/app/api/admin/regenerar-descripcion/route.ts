@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
-import { createServiceRoleClient } from '@/lib/supabase-server'
-import { isAdminRequest } from '@/lib/admin-auth'
+import { createServiceRoleClient } from '@/lib/supabase/service'
+import { esAdmin } from '@/lib/admin-auth'
 
 const SCHEMA = {
   type: 'object',
@@ -11,7 +11,7 @@ const SCHEMA = {
 }
 
 export async function POST(request: Request) {
-  if (!isAdminRequest(request)) {
+  if (!await esAdmin()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
   if (!process.env.ANTHROPIC_API_KEY) {

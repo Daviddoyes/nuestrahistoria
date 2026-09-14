@@ -1,0 +1,532 @@
+# GooALS — fusiones propuestas para la categoría aventura
+#
+# Regla: el lugar se queda cuando ES el objetivo (una cumbre, un trek con
+# nombre, una cueva única). Se va cuando es una sede intercambiable (una
+# estación, un spot, un circuito).
+#
+# Formato: una línea sin sangrar es el gooal que se queda; las que empiezan
+# por '<' son los retos que absorbe y desaparecen del catálogo.
+#
+# Cómo revisarlo:
+#   · cambia el título de la primera línea si no te convence
+#   · borra una línea '<' para que ESE reto sobreviva tal cual
+#   · borra un bloque entero para dejar el grupo como está hoy
+#
+# 423 retos ahora · 238 se fusionan en 46 · quedarían 231
+
+Saltar en paracaídas en tándem
+< Paracaidismo sobre Palm Jumeirah
+< Paracaidismo sobre Interlaken y los Alpes
+< Paracaidismo junto al Fox Glacier
+< Paracaidismo sobre Oahu
+< Paracaidismo sobre Mission Beach
+< Paracaidismo sobre la costa de Empuriabrava
+< Paracaidismo sobre el desierto de Namibia
+< Paracaidismo sobre el lago Taupo
+
+Hacer puenting desde un puente o una presa
+< Bungee desde Kawarau Bridge
+< Bungee Nevis
+< Bungee Bloukrans Bridge
+< Bungee sobre el Zambeze junto a Victoria Falls
+< Bungee de la presa de Verzasca
+< Bungee Macau Tower
+< Bungee Niouc
+< Bungee Europabruecke
+
+Lanzarse en un swing gigante sobre un cañón
+< Swing gigante en el cañon de Nevis
+< Swing sobre el cañon de Oribi Gorge
+
+Volar en parapente en tándem
+< Parapente sobre Oludeniz
+< Parapente sobre Interlaken
+< Parapente sobre Chamonix
+< Parapente sobre Pokhara y Annapurna
+< Parapente desde Pedra Bonita
+< Parapente sobre Cape Town
+< Parapente sobre Gudauri
+< Parapente sobre Annecy
+< Parapente sobre Queenstown
+< Parapente sobre Tenerife
+
+Volar en ala delta en tándem
+< Ala delta sobre Rio de Janeiro
+< Ala delta en Kitty Hawk
+< Ala delta en Valle de Bravo
+
+Volar en globo al amanecer
+< Vuelo en globo sobre Bagan
+< Vuelo en globo sobre Luxor
+< Vuelo en globo sobre Marrakech y el Atlas
+< Vuelo en globo sobre Teotihuacan
+< Vuelo en globo sobre Napa Valley
+< Vuelo en globo sobre Yarra Valley
+
+Sobrevolar un paisaje en helicóptero
+< Vuelo en helicoptero sobre el Grand Canyon
+< Vuelo en helicoptero sobre Manhattan
+< Vuelo en helicoptero sobre Kauai
+< Vuelo en helicoptero sobre Victoria Falls
+
+Cruzar un valle en tirolina
+< Zipline Jebel Jais Flight
+< Zipline Toro Verde Monster
+< Zipline sobre Monteverde
+< Zipline sobre Whistler
+< Zipline sobre el bosque de Chiang Mai
+< Zipline sobre Icy Strait Point
+
+Hacer rafting en aguas bravas
+< Rafting en el Futaleufu
+< Rafting en el Colorado por Grand Canyon
+< Rafting en el Pacuare
+< Rafting en el rio Tara
+< Rafting en el Noce
+< Rafting en el Franklin
+< Rafting en el Kali Gandaki
+< Rafting en el Sun Kosi
+< Rafting en el Tully River
+< Rafting en el Ottawa River
+< Rafting en el Kaituna y su cascada
+
+Hacer kayak de mar en una travesía guiada
+< Kayak en Milford Sound
+< Kayak en los fiordos noruegos
+< Kayak entre islas de Palawan
+< Kayak en Ha Long Bay
+< Kayak en los manglares de Florida
+< Kayak en los canales de Tortuguero
+< Kayak por el lago Titicaca
+< Kayak entre cuevas marinas del Algarve
+< Kayak alrededor de Dubrovnik
+< Kayak por los lagos de Plitvice en zonas permitidas
+< Paddle surf en mar abierto con travesia guiada
+
+Hacer kayak entre icebergs
+< Kayak de mar entre icebergs
+< Kayak frente a glaciares en Alaska
+< SUP entre icebergs
+
+Hacer descenso de barrancos
+< Canyoning en el barranco de Vero
+< Canyoning en Mascun
+< Canyoning en Verdon
+< Canyoning en Interlaken
+< Canyoning en Madeira
+< Canyoning en Azores
+< Canyoning en Ticino
+< Canyoning en Queenstown
+< Canyoning en Blue Mountains
+< Canyoning en Cebu
+< Canyoning en Bali
+< Barranquismo en Wadi Mujib
+
+Hacer coasteering en una costa rocosa
+< Coasteering en Pembrokeshire
+< Coasteering en Mallorca
+< Coasteering en Madeira
+
+Aprender kitesurf y navegar solo
+< Kitesurf en Tarifa
+< Kitesurf en Cabarete
+< Kitesurf en Dakhla
+< Kitesurf en Jericoacoara
+< Kitesurf en Le Morne
+
+Navegar en windsurf con viento fuerte
+< Windsurf en Pozo Izquierdo
+< Windsurf en Maui
+
+Aprender wingfoil
+< Wingfoil en Tarifa
+< Wingfoil en Lago de Garda
+
+Pilotar una moto de agua en una ruta costera
+< Moto de agua alrededor de Dubai
+< Moto de agua frente a Miami Beach
+< Moto de agua por la Costa Brava
+< Moto de agua en Ibiza
+< Moto de agua en Bora Bora
+
+Montar en jet boat por un cañón fluvial
+< Jet boat Shotover River
+< Jet boat en Niagara River
+
+Hacer wakeboard
+< Wakeboard en cable park
+< Wakeboard detras de lancha
+< Wakesurf detras de lancha
+
+Bucear en un arrecife tropical
+< Bucear en Raja Ampat
+< Bucear en Sipadan
+< Bucear en Komodo
+< Bucear en el Mar Rojo
+< Bucear en Bonaire
+< Bucear en Cozumel
+< Bucear en Roatan
+< Bucear en Poor Knights Islands
+< Bucear en Socorro
+< Bucear en Cocos Island
+< Bucear en Fernando de Noronha
+< Bucear en Yongala
+< Bucear en Malta y Gozo
+< Bucear en Azores
+< Bucear en Madeira
+< Bucear en Cabo de Palos
+< Bucear en Medes
+
+Bucear en un pecio
+< Bucear en pecios de Truk Lagoon
+< Bucear en pecios de Coron
+< Bucear en SS Thistlegorm
+
+Completar una vía ferrata
+< Via ferrata de la Grande Fistoire
+< Via ferrata de Mürren-Gimmelwald
+< Via ferrata de Dolomitas
+< Via ferrata Caminito del Rey areas habilitadas
+< Via ferrata de Ronda
+< Via ferrata de Montserrat
+< Via ferrata de Telluride
+< Via ferrata de Banff/Mt Norquay
+< Via ferrata de Jebel Jais
+< Via ferrata de Honister Pass
+
+Escalar en roca en una zona clásica
+< Escalar en Kalymnos
+< Escalar en El Chorro
+< Escalar en Siurana
+< Escalar en Yosemite
+< Escalar en Joshua Tree
+< Escalar en Railay
+< Escalar en Krabi sobre el mar
+< Escalar en Fontainebleau
+< Hacer boulder en Rocklands
+
+Escalar una cascada de hielo
+< Escalar hielo en Chamonix
+< Escalar hielo en Ouray
+< Escalar hielo en Islandia
+< Escalada en glaciar
+
+Hacer un trekking de varios días en montaña
+< Hacer trekking en Svaneti
+< Hacer trekking en Simien Mountains
+< Hacer trekking en Drakensberg
+< Hacer trekking en Rwenzori
+
+Subir a un volcán a ver el amanecer
+< Hacer el Mount Bromo sunrise trek
+< Hacer el Mount Batur sunrise trek
+
+Esquiar una jornada completa en estación
+< Esquiar en los Alpes suizos
+< Esquiar en Chamonix
+< Esquiar en Dolomitas
+< Esquiar en St. Anton
+< Esquiar en Whistler Blackcomb
+< Esquiar en Hakuba
+< Esquiar en Jackson Hole
+< Esquiar en Aspen
+< Esquiar en Banff
+< Esquiar en Portillo
+< Esquiar en Valle Nevado
+< Esquiar en Bariloche
+< Esquiar en Queenstown
+
+Esquiar un día de nieve polvo
+< Esquiar en Niseko con powder
+
+Bajar una pista completa en snowboard
+< Hacer snowboard en Laax
+< Hacer snowboard en Avoriaz
+< Hacer snowboard en Andorra
+
+Hacer heliesquí con guía
+< Heliski con guia en Canada
+< Heliski con guia en Alaska
+
+Hacer una travesía de esquí de montaña
+< Ski touring al amanecer
+< Ski touring en Lofoten
+
+Caminar sobre un glaciar con crampones
+< Cruzar un glaciar con crampones
+< Caminar sobre Perito Moreno con guia
+< Caminar sobre Franz Josef Glacier
+< Caminar sobre Athabasca Glacier con guia
+
+Conducir una moto de nieve
+< Conducir moto de nieve en Laponia
+< Conducir moto de nieve en Islandia
+< Conducir moto de nieve en Svalbard
+< Conducir una moto de nieve de alto rendimiento en circuito
+
+Guiar un trineo de perros
+< Conducir trineo de perros
+
+Bañarse en agua helada
+< Bañarse en agua helada tras sauna
+< Nadar en un lago helado de forma supervisada
+< Ice floating con traje termico
+
+Conducir un quad o buggy por dunas
+< Conducir un quad por dunas del Sahara
+< Conducir un buggy por dunas de Dubai
+< Conducir un quad en Namibia
+< Conducir un buggy en Huacachina
+< Ruta ATV en Santorini
+< Ruta ATV en Mykonos
+< Ruta en quad por Cappadocia
+< Ruta en quad por el desierto de Agafay
+
+Bajar una duna en sandboard
+< Sandboard en Huacachina
+< Sandboard en Namibia
+< Sandboard en Dubai
+< Sandboard en Cerro Negro
+
+Cruzar un desierto en 4x4
+< Cruzar dunas en 4x4 en Wadi Rum
+< Hacer una ruta 4x4 por el Sahara
+< Hacer una expedicion 4x4 por Namibia
+< Ruta off-road por Moab
+
+Rodar en un circuito de F1 con instructor
+< Rodar en Nurburgring con instructor
+< Rodar en Spa-Francorchamps con instructor
+< Rodar en Monza con experiencia de circuito
+< Rodar en Silverstone con experiencia de circuito
+< Rodar en Yas Marina con experiencia de circuito
+
+Hacer una ruta de varios días en moto
+< Hacer una ruta en moto por los Alpes
+< Hacer una ruta en moto por Dolomitas
+< Hacer una ruta en moto por la Costa Amalfitana
+< Hacer una ruta en moto por la Pacific Coast Highway
+< Hacer una ruta en moto por la Ruta 66
+< Hacer una ruta en moto por Mae Hong Son Loop
+< Hacer una ruta en moto por Ha Giang Loop
+< Hacer una ruta en moto por Ladakh
+< Hacer una ruta en moto por Patagonia
+
+Hacer un safari en vehículo
+< Safari en Masai Mara
+< Safari en Kruger
+< Safari en Etosha
+< Safari en Okavango en mokoro
+
+Dormir en el desierto bajo las estrellas
+< Dormir en campamento bereber en dunas
+< Dormir bajo estrellas en Wadi Rum
+< Dormir en el desierto de Atacama
+
+Explorar un tubo o campo de lava
+< Caminar sobre campos de lava recientes con guia
+< Explorar tubos de lava
+
+Explorar una cueva turística de gran formato
+< Explorar Mammoth Cave
+< Explorar Carlsbad Caverns
+< Explorar Postojna y cuevas cercanas
+< Explorar cuevas de lava en Lanzarote
+
+Hacer espeleología deportiva
+< Hacer espeleologia en Picos de Europa
+< Hacer espeleologia en Sierra de Guara
+< Hacer espeleologia en Yucatan
+
+Caminar por el borde exterior de un rascacielos
+< Skywalk exterior de una torre
+< Edge walk exterior de la CN Tower
+< Skywalk exterior en Auckland Sky Tower
+< Caminar por el borde de una torre con arnes
+
+# ── Se quedan tal cual (el lugar es el reto, o no hay con qué fusionarlos) ──
+# Acampar una noche en la Antartida si la expedicion lo permite
+# Aprender a encender fuego y construir refugio en curso bushcraft
+# Aprender maniobras basicas de bodyflight
+# Aprender un 180 en snowboard
+# Aprender un salto basico en snowpark
+# Ascender Mera Peak
+# Ascender Monte Perdido
+# Ascender el Acatenango y ver Fuego
+# Ascender el Aconcagua
+# Ascender el Aneto
+# Ascender el Chimborazo con guia
+# Ascender el Cotopaxi con aclimatacion
+# Ascender el Damavand
+# Ascender el Elbrus
+# Ascender el Fuji
+# Ascender el Gran Paradiso
+# Ascender el Huayna Potosi
+# Ascender el Island Peak
+# Ascender el Kazbek
+# Ascender el Kilimanjaro
+# Ascender el Kinabalu
+# Ascender el Mont Blanc con guia
+# Ascender el Mulhacen
+# Ascender el Olympus
+# Ascender el Rinjani
+# Ascender el Teide a pie
+# Ascender el Toubkal
+# Ascender el Triglav
+# Bucear bajo hielo con formacion especifica
+# Bucear con mantarrayas
+# Bucear con tiburones ballena
+# Bucear con tiburones martillo
+# Bucear con tiburones tigre
+# Bucear con tiburones toro
+# Bucear en Blue Hole
+# Bucear en Galapagos
+# Bucear en Silfra entre placas tectonicas
+# Bucear en cenotes de Yucatan
+# Bucear en la Gran Barrera de Coral
+# Caminar por selva amazonica con guia
+# Completar Alta Via 1
+# Completar Camino Inca a Machu Picchu
+# Completar Huayhuash Circuit
+# Completar West Highland Way
+# Completar certificacion Advanced Open Water
+# Completar certificacion Open Water
+# Completar curso Rescue Diver
+# Completar curso de apnea nivel 1
+# Completar curso de apnea nivel 2
+# Completar el Annapurna Circuit
+# Completar el GR20
+# Completar el Laugavegur Trail
+# Completar el O Circuit
+# Completar el Tour du Mont Blanc
+# Completar el W Trek
+# Completar un circuito de cuerdas a gran altura
+# Completar un ninja warrior course
+# Completar una Spartan Beast
+# Completar una Spartan Sprint
+# Completar una Spartan Super
+# Completar una Spartan Trifecta
+# Completar una carrera OCR nocturna
+# Completar una carrera Tough Mudder
+# Completar una carrera de obstaculos con barro
+# Completar una ruta de orientacion sin GPS
+# Conducir por pistas del interior de Islandia con 4x4
+# Conducir un coche de rally en circuito
+# Conducir un superdeportivo en circuito
+# Copilotar un coche de rally
+# Cruzar el Circulo Polar Artico por tierra
+# Cruzar el Drake Passage
+# Cruzar el Tongariro Alpine Crossing
+# Cruzar un desierto a camello
+# Cruzar un puente colgante sobre canopy tropical
+# Cruzar un puente tibetano de gran altura
+# Cruzar un puerto alpino en moto
+# Curso de conduccion 4x4
+# Curso de conduccion sobre hielo
+# Descender a Waitomo y hacer black-water rafting
+# Descender con rapel a una sima con guia
+# Desembarcar en la peninsula Antartica
+# Dormir en hamaca en selva con guia
+# Dormir en la selva de Costa Rica
+# Dormir en tienda bajo auroras boreales
+# Dormir en un campamento de nieve tras llegar con raquetas
+# Dormir una noche en vivac de montana
+# Escalar una via de varios largos con guia
+# Escalar una via deportiva de grado inicial
+# Esqui acuatico
+# Expedicion a Georgia del Sur
+# Expedicion a Groenlandia oriental
+# Expedicion a Svalbard en barco
+# Expedicion al Danakil con operador autorizado
+# Expedicion por Borneo
+# Expedicion por Papua
+# Explorar Hang En Cave
+# Explorar Son Doong con expedicion autorizada
+# Explorar manglares en bote pequeno
+# Explorar una cueva de hielo natural con guia
+# Explorar una cueva submarina solo con certificacion tecnica
+# Explorar una mina abandonada habilitada para visitas de aventura
+# Flyboard sobre el mar
+# Freediving hasta 10 m con seguridad
+# Freediving hasta 20 m con entrenamiento
+# Hacer el Mount Rinjani trek
+# Hacer geocaching en un entorno remoto
+# Hacer kayak en la Antartida con guia
+# Hacer parkour con instructor en entorno urbano
+# Hacer rafting y trekking en selva de Ecuador
+# Hacer rapel de 50 m con instructor
+# Hacer rapel en cascada
+# Hacer shark cage diving
+# Hacer shark cage diving con grandes blancos donde este permitido
+# Hacer supervivencia 24 h con instructor
+# Hacer supervivencia 48 h con instructor
+# Hacer trekking al Tiger's Nest
+# Hacer trekking en Patagonia sobre hielo con guia
+# Hacer un curso basico de espeleologia
+# Hacer un pendulo gigante desde puente autorizado
+# Hacer una expedicion de varios dias en canoa
+# Hacer una inmersion desde barco liveaboard
+# Hacer una inmersion nocturna
+# Hacer una inmersion profunda de 30 m con certificacion
+# Hacer una jornada de freeride con guia
+# Hacer una ruta 4x4 por el Salar de Uyuni
+# Hacer una travesia con raquetas de nieve
+# Hydrospeed en un rio de aguas bravas
+# Kayak nocturno en bahia bioluminiscente
+# Kneeboard
+# Llegar al Everest Base Camp
+# Nadar con delfines en entorno silvestre regulado
+# Nadar con leones marinos
+# Nadar con rayas en aguas abiertas
+# Nadar con tortugas marinas
+# Nadar en una laguna bioluminiscente
+# Navegar por el Amazonas y dormir en lodge selvatico
+# Paracaidismo sobre el Everest desde gran altitud
+# Parasailing sobre una bahia tropical
+# Participar en una carrera amateur de karting
+# Participar en una carrera de orientacion de aventura
+# Pasar una semana en liveaboard de buceo
+# Perseguir auroras boreales durante varios dias
+# Pilotar un kart de competicion
+# Probar trampolin freestyle en centro especializado
+# Probar un simulador de caida libre indoor
+# Rafting en el rio Zambeze bajo Victoria Falls
+# Rastrear chimpances
+# Rastrear gorilas de montana
+# Riverboarding en Nueva Zelanda
+# Ruta de motocross en circuito
+# Ruta enduro guiada
+# Safari a pie con ranger
+# Safari fotografico en Serengeti durante la migracion
+# Safari nocturno guiado
+# Salto BASE tandem autorizado desde Kjerag
+# Snorkel con mantarrayas de noche
+# Snorkel con orcas bajo regulacion local
+# Snorkel con tiburon ballena
+# Snorkel en cenote
+# Subir a un volcan y ver lava desde distancia permitida
+# Subir por escaleras exteriores de un rascacielos habilitado
+# Trekking por Kamchatka con guia
+# Trekking sobre tundra en Groenlandia
+# Tubing rapido detras de lancha
+# Ver ballena azul en libertad
+# Ver ballenas jorobadas desde kayak guiado
+# Ver el sol de medianoche sobre el Artico
+# Ver lobos en Yellowstone
+# Ver orangutanes en Borneo
+# Ver orcas en libertad
+# Ver osos grizzly con guia
+# Ver osos polares con expedicion autorizada
+# Ver pinguinos africanos
+# Ver pinguinos emperador en expedicion polar
+# Ver pinguinos rey
+# Viajar a la Antartida en expedicion
+# Viajar en avion de bush y aterrizar en pista remota
+# Visitar Komodo con ranger
+# Visitar el crater de Nyiragongo cuando sea seguro y abierto
+# Visitar un volcan activo desde zona segura
+# Vuelo acrobatico en avion
+# Vuelo en globo sobre Capadocia
+# Vuelo en globo sobre Serengeti
+# Vuelo en hidroavion sobre Vancouver
+# Vuelo en planeador sobre los Alpes

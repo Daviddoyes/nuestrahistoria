@@ -2,14 +2,40 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient as createServerClient } from '@/lib/supabase/server'
-import { createServiceRoleClient } from '@/lib/supabase-server'
+import { createServiceRoleClient } from '@/lib/supabase/service'
 import type { Plan, Profile, ConQuien, InvitacionPendiente, SolicitudPendiente, PublicPlan, PlanExplorar } from '@/types/planes'
 import { calcularNivel } from '@/lib/niveles'
-import { CATEGORIAS } from '@/lib/gooals'
+import { CATEGORIAS, normalizarCategoriaGooal } from '@/lib/gooals'
 import type {
   GooalV2, UserGooal, UserGooalConGooal, MuroPostFeed, UsuarioMini,
-  PerfilGamificado, StatCategoria, EstadoUserGooal,
+  PerfilGamificado, StatCategoria, EstadoUserGooal, FiltrosCatalogo,
+  FiltrosMapa, GooalMapa, FiltrosPines, PinMapa,
 } from '@/types/gooals'
+
+/** Tamaño de página de Explorar. */
+const GOOALS_POR_PAGINA = 40
+
+/**
+ * Tope de pines por consulta del mapa.
+ *
+ * PostgREST corta en 1.000 filas EN SILENCIO cuando no hay límite explícito, y
+ * eso ya rompió Explorar una vez: la lista se traía el catálogo entero, recibía
+ * solo el último trozo insertado y filtrar por viajes no devolvía nada. Aquí el
+ * límite es explícito y se avisa al cliente cuando se alcanza, en vez de
+ * enseñar un mapa incompleto sin decirlo.
+ */
+const GOOALS_MAPA_MAX = 500
+
+/**
+ * Cuántos pines se piden por vuelta en getPinesMapa.
+ *
+ * Es el tope de PostgREST, no una elección: devuelve como mucho 1.000 filas y
+ * no avisa de que hay más. Por eso la función pagina en vez de pedir y ya.
+ */
+const PINES_POR_VUELTA = 1000
+
+/** Sugerencias que puede mandar un usuario en 24 h. */
+const SUGERENCIAS_POR_DIA = 5
 
 export async function getMyData(): Promise<{
   planes: Plan[]
@@ -1026,6 +1052,18 @@ function aUsuarioMini(p: PerfilRow): UsuarioMini {
   }
 }
 
+/**
+ * Limpia el texto del buscador antes de meterlo en un ilike.
+ *
+ * Los comodines de LIKE y los caracteres con los que PostgREST delimita los
+ * filtros se quitan: en un título no aportan nada y evitan que un "%" suelto
+ * convierta la búsqueda en "trae cualquier cosa". La usan la lista y el mapa,
+ * para que buscar lo mismo devuelva lo mismo en las dos vistas.
+ */
+function limpiarBusqueda(texto: string | undefined): string {
+  return (texto ?? '').replace(/[%_\\,()"']/g, ' ').trim()
+}
+
 /** Usuario de la sesión actual. No se exporta: en 'use server' todo export debe ser async. */
 async function getUserId(): Promise<string | null> {
   const serverSupa = await createServerClient()
@@ -1173,32 +1211,273 @@ export async function toggleLike(postId: string): Promise<{ liked: boolean; like
 // ── Explorar: catálogo v2 ────────────────────────────────────
 
 /** Catálogo activo + en qué estado tiene el usuario cada gooal (para los overlays). */
-export async function getCatalogoGooals(): Promise<{
+/**
+ * Una página del catálogo, ya filtrada en la base de datos.
+ *
+ * Los filtros van en la query y no en el cliente a propósito: PostgREST corta
+ * en 1.000 filas por defecto, así que traerse el catálogo entero (4.900 gooals)
+ * y filtrar en memoria devolvía solo el último trozo insertado — Explorar se
+ * quedaba sin viajes, sin deporte y sin aventura, y filtrar por esas categorías
+ * no daba ningún resultado.
+ */
+export async function getCatalogoGooals(filtros: FiltrosCatalogo = {}): Promise<{
   gooals: GooalV2[]
-  misEstados: Record<string, EstadoUserGooal>
+  hayMas: boolean
 }> {
-  const userId = await getUserId()
   const service = createServiceRoleClient()
+  const pagina = Math.max(0, filtros.pagina ?? 0)
+  const desde = pagina * GOOALS_POR_PAGINA
 
-  const { data: gooals } = await service
+  let query = service
     .from('gooals_v2')
     .select('*')
     .eq('activo', true)
-    .order('veces_completado', { ascending: false })
-    .order('created_at', { ascending: false })
 
-  const misEstados: Record<string, EstadoUserGooal> = {}
-  if (userId) {
-    const { data: mios } = await service
-      .from('user_gooals')
-      .select('gooal_id, estado')
-      .eq('user_id', userId)
-    for (const fila of (mios ?? []) as { gooal_id: string; estado: EstadoUserGooal }[]) {
-      misEstados[fila.gooal_id] = fila.estado
-    }
+  if (filtros.categoria && filtros.categoria !== 'todos') {
+    query = query.eq('categoria', filtros.categoria)
+  }
+  if (filtros.dificultad) {
+    query = query.eq('dificultad', filtros.dificultad)
+  }
+  const busqueda = limpiarBusqueda(filtros.busqueda)
+  if (busqueda) {
+    query = query.ilike('titulo', `%${busqueda}%`)
   }
 
-  return { gooals: (gooals ?? []) as GooalV2[], misEstados }
+  // `id` cierra el orden: sin un desempate estable, dos filas con los mismos
+  // veces_completado y created_at pueden repetirse o saltarse entre páginas.
+  const { data, error } = await query
+    .order('veces_completado', { ascending: false })
+    .order('created_at', { ascending: false })
+    .order('id', { ascending: true })
+    // Pedimos uno de más para saber si hay página siguiente sin contar el total.
+    .range(desde, desde + GOOALS_POR_PAGINA)
+
+  if (error) {
+    console.error('[getCatalogoGooals]', error)
+    return { gooals: [], hayMas: false }
+  }
+
+  const filas = (data ?? []) as GooalV2[]
+  return {
+    gooals: filas.slice(0, GOOALS_POR_PAGINA),
+    hayMas: filas.length > GOOALS_POR_PAGINA,
+  }
+}
+
+/**
+ * Todos los pines del mapa de una vez, sin recuadro.
+ *
+ * El catálogo entero son 3.232 filas con coordenadas — en el mundo, no por
+ * pantalla — y un pin son cuatro campos: 325 KB sin comprimir, 111 KB con gzip
+ * y 93 KB con brotli (medido, no estimado; salen 103 bytes por pin, la mitad
+ * el uuid). Cabe de sobra en memoria, y con eso desaparecen el recuadro, el
+ * debounce y el tope de 500: mover el mapa deja de consultar nada.
+ *
+ * El select es de cuatro columnas a propósito. El título, la ciudad y los
+ * puntos no se pintan en un pin, solo en el popup del que se pulsa, y ese se
+ * pide por id con getGooalV2. Traerlos para los 3.232 multiplicaría por diez
+ * el peso de la respuesta para enseñar uno.
+ */
+export async function getPinesMapa(filtros: FiltrosPines = {}): Promise<PinMapa[]> {
+  const service = createServiceRoleClient()
+
+  const pines: PinMapa[] = []
+  // Paginar no es opcional: PostgREST corta en 1.000 filas y no dice que haya
+  // recortado. Sin este bucle faltarían 2.232 pines y el mapa parecería
+  // correcto, solo que con medio mundo vacío.
+  for (let desde = 0; ; desde += PINES_POR_VUELTA) {
+    let query = service
+      .from('gooals_v2')
+      .select('id, lat, lng, categoria')
+      .eq('activo', true)
+      .not('lat', 'is', null)
+
+    if (filtros.categoria && filtros.categoria !== 'todos') {
+      query = query.eq('categoria', filtros.categoria)
+    }
+    if (filtros.dificultad) {
+      query = query.eq('dificultad', filtros.dificultad)
+    }
+    const busqueda = limpiarBusqueda(filtros.busqueda)
+    if (busqueda) {
+      query = query.ilike('titulo', `%${busqueda}%`)
+    }
+
+    // Ordenar por id no es estético: sin un orden estable, dos vueltas pueden
+    // devolver la misma fila o saltarse otra.
+    const { data, error } = await query
+      .order('id', { ascending: true })
+      .range(desde, desde + PINES_POR_VUELTA - 1)
+
+    if (error) {
+      console.error('[getPinesMapa]', error)
+      return []
+    }
+
+    const vuelta = (data ?? []) as PinMapa[]
+    pines.push(...vuelta)
+    if (vuelta.length < PINES_POR_VUELTA) return pines
+  }
+}
+
+/**
+ * Los gooals geocodificados que caen dentro del recuadro visible del mapa.
+ *
+ * HOY NO SE USA: el mapa se los trae todos de una con getPinesMapa, porque el
+ * catálogo entero cabe en memoria. Se conserva para cuando deje de caber — a
+ * partir de unas decenas de miles de pines, mandar el catálogo completo a cada
+ * móvil se vuelve indefendible y hay que volver a pedir por recuadro. Entonces
+ * vuelven con ella el debounce, el tope y el aviso de "acerca el zoom".
+ *
+ *
+ * Se filtra por recuadro en la base y no en el cliente: hay 3.232 filas con
+ * coordenadas y traérselas todas para descartar el 95% sería absurdo. El
+ * índice gooals_v2_mapa_idx sobre (lat, lng) cubre esta consulta.
+ *
+ * El select es corto a propósito: en una consulta caben cientos de filas y en
+ * un pin no se pinta ni la descripción ni la imagen.
+ */
+export async function getGooalsMapa(filtros: FiltrosMapa): Promise<{
+  gooals: GooalMapa[]
+  truncado: boolean
+}> {
+  const service = createServiceRoleClient()
+
+  let query = service
+    .from('gooals_v2')
+    .select('id, titulo, categoria, dificultad, puntos, ciudad, pais, lat, lng')
+    .eq('activo', true)
+    .not('lat', 'is', null)
+    .gte('lat', filtros.sur)
+    .lte('lat', filtros.norte)
+    .gte('lng', filtros.oeste)
+    .lte('lng', filtros.este)
+
+  if (filtros.categoria && filtros.categoria !== 'todos') {
+    query = query.eq('categoria', filtros.categoria)
+  }
+  if (filtros.dificultad) {
+    query = query.eq('dificultad', filtros.dificultad)
+  }
+  const busqueda = limpiarBusqueda(filtros.busqueda)
+  if (busqueda) {
+    query = query.ilike('titulo', `%${busqueda}%`)
+  }
+
+  // Uno de más que el tope, para distinguir "hay justo 500" de "hay más de 500"
+  // sin pagar un count sobre miles de filas.
+  const { data, error } = await query
+    .order('puntos', { ascending: false })
+    .order('id', { ascending: true })
+    .limit(GOOALS_MAPA_MAX + 1)
+
+  if (error) {
+    console.error('[getGooalsMapa]', error)
+    return { gooals: [], truncado: false }
+  }
+
+  const filas = (data ?? []) as GooalMapa[]
+  return {
+    gooals: filas.slice(0, GOOALS_MAPA_MAX),
+    truncado: filas.length > GOOALS_MAPA_MAX,
+  }
+}
+
+/**
+ * Un gooal completo por id.
+ *
+ * El mapa solo trae nueve columnas por pin, y la ficha necesita la fila entera.
+ * Se pide al pulsar, que es una vez, en vez de engordar la consulta del mapa
+ * con descripciones e imágenes para cientos de pines que nadie va a abrir.
+ */
+export async function getGooalV2(id: string): Promise<GooalV2 | null> {
+  const service = createServiceRoleClient()
+  const { data } = await service
+    .from('gooals_v2')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle()
+  return (data as GooalV2 | null) ?? null
+}
+
+/**
+ * Qué gooals tiene ya el usuario, para pintar los checks del grid.
+ *
+ * Va aparte del catálogo porque no depende de los filtros ni de la página: se
+ * pide una vez al montar Explorar y vale para todas las páginas siguientes.
+ */
+export async function getMisEstadosGooals(): Promise<Record<string, EstadoUserGooal>> {
+  const userId = await getUserId()
+  if (!userId) return {}
+
+  const service = createServiceRoleClient()
+  const { data } = await service
+    .from('user_gooals')
+    .select('gooal_id, estado')
+    .eq('user_id', userId)
+
+  const misEstados: Record<string, EstadoUserGooal> = {}
+  for (const fila of (data ?? []) as { gooal_id: string; estado: EstadoUserGooal }[]) {
+    misEstados[fila.gooal_id] = fila.estado
+  }
+  return misEstados
+}
+
+/**
+ * Propone un gooal que no está en el catálogo. Queda pendiente hasta que un
+ * admin lo apruebe desde /admin; al aprobarse se publica sin acreditar a nadie.
+ */
+export async function sugerirGooal(
+  titulo: string,
+  categoria: string,
+): Promise<{ ok: boolean; error?: string }> {
+  const userId = await getUserId()
+  if (!userId) return { ok: false, error: 'Necesitas iniciar sesión.' }
+
+  const limpio = titulo.trim().replace(/\s+/g, ' ')
+  if (limpio.length < 6) return { ok: false, error: 'Escribe un poco más para entenderlo.' }
+  if (limpio.length > 160) return { ok: false, error: 'Hazlo más corto, máximo 160 caracteres.' }
+
+  const service = createServiceRoleClient()
+
+  // Si ya está en el catálogo no es una sugerencia: es que no lo ha encontrado.
+  const { data: yaExiste } = await service
+    .from('gooals_v2')
+    .select('id')
+    .ilike('titulo', limpio)
+    .limit(1)
+  if (yaExiste && yaExiste.length > 0) {
+    return { ok: false, error: 'Ese gooal ya está en el catálogo, búscalo por otro nombre.' }
+  }
+
+  // Tope diario: modera el spam sin necesidad de vigilar la cola a mano.
+  const desde = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+  const { count } = await service
+    .from('gooal_sugerencias')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', userId)
+    .gte('created_at', desde)
+  if ((count ?? 0) >= SUGERENCIAS_POR_DIA) {
+    return { ok: false, error: `Puedes sugerir ${SUGERENCIAS_POR_DIA} gooals al día. Vuelve mañana.` }
+  }
+
+  const { error } = await service.from('gooal_sugerencias').insert({
+    user_id: userId,
+    titulo: limpio,
+    categoria: normalizarCategoriaGooal(categoria),
+  })
+
+  if (error) {
+    // Choca con gooal_sugerencias_unica_idx: ya la mandó él mismo.
+    if (error.code === '23505') {
+      return { ok: false, error: 'Ya habías sugerido ese gooal. Lo estamos revisando.' }
+    }
+    console.error('[sugerirGooal]', error)
+    return { ok: false, error: 'No hemos podido guardar tu sugerencia.' }
+  }
+
+  return { ok: true }
 }
 
 /** Detalle social de un gooal: cuánta gente lo ha logrado y quiénes fueron los últimos. */

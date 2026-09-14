@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import { createServiceRoleClient } from '@/lib/supabase-server'
+import { createServiceRoleClient } from '@/lib/supabase/service'
+import { esAdmin } from '@/lib/admin-auth'
 
 type ProfileRow = {
   id: string
@@ -29,7 +30,7 @@ type PartRow = {
 }
 
 export async function GET(request: Request) {
-  if (request.headers.get('x-admin-key') !== 'LivestoryAdmin2024') {
+  if (!await esAdmin()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { createServiceRoleClient } from '@/lib/supabase-server'
-import { isAdminRequest } from '@/lib/admin-auth'
+import { createServiceRoleClient } from '@/lib/supabase/service'
+import { esAdmin } from '@/lib/admin-auth'
 import type { ExperienciaGenerada } from '@/types/planes'
 
 const PAGE_SIZE = 20
@@ -26,7 +26,7 @@ function limpiarExperiencia(raw: Record<string, unknown>) {
 
 // ── Listado paginado + stats de la cabecera ──────────────────
 export async function GET(request: Request) {
-  if (!isAdminRequest(request)) {
+  if (!await esAdmin()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -67,7 +67,7 @@ export async function GET(request: Request) {
 
 // ── Crear (manual o guardar generadas) ───────────────────────
 export async function POST(request: Request) {
-  if (!isAdminRequest(request)) {
+  if (!await esAdmin()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -101,7 +101,7 @@ export async function POST(request: Request) {
 
 // ── Actualizar (toggle verificada o editar) ──────────────────
 export async function PATCH(request: Request) {
-  if (!isAdminRequest(request)) {
+  if (!await esAdmin()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -131,7 +131,7 @@ export async function PATCH(request: Request) {
 
 // ── Borrar ───────────────────────────────────────────────────
 export async function DELETE(request: Request) {
-  if (!isAdminRequest(request)) {
+  if (!await esAdmin()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

@@ -4,7 +4,9 @@ import { useState, useEffect, useCallback } from 'react'
 import { Sparkles, Plus, Pencil, Trash2, X, Check } from 'lucide-react'
 import type { Experiencia, ExperienciaGenerada } from '@/types/planes'
 
-const ADMIN_HEADER = { 'Content-Type': 'application/json', 'X-Admin-Key': 'LivestoryAdmin2024' }
+// La sesión viaja en la cookie: las llamadas del mismo origen ya se
+// identifican solas y el servidor comprueba profiles.es_admin.
+const ADMIN_HEADER = { 'Content-Type': 'application/json' }
 
 const CATEGORIAS = ['viajes', 'deporte', 'gastronomia', 'cultura', 'aventura', 'musica'] as const
 const DIFICULTADES = ['facil', 'medio', 'dificil'] as const

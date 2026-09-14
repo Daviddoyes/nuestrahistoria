@@ -91,3 +91,69 @@ export type PerfilGamificado = {
     completado_at: string | null
   }[]
 }
+
+/** Filtros de Explorar. Viajan a la query, no se aplican en el cliente. */
+export type FiltrosCatalogo = {
+  categoria?: CategoriaGooal | 'todos'
+  dificultad?: DificultadGooal | null
+  busqueda?: string
+  pagina?: number
+}
+
+/** Recuadro visible del mapa, en grados. */
+export type Recuadro = {
+  norte: number
+  sur: number
+  este: number
+  oeste: number
+}
+
+/** Filtros del mapa: los mismos que la lista, sin paginación. */
+export type FiltrosPines = Omit<FiltrosCatalogo, 'pagina'>
+
+/** Filtros del mapa por recuadro. Ver getGooalsMapa: hoy no se usa. */
+export type FiltrosMapa = FiltrosPines & Recuadro
+
+/**
+ * Un pin del mapa: lo mínimo para dibujar un círculo de color en un sitio.
+ *
+ * Ni título ni puntos ni dificultad. El catálogo entero cabe en memoria
+ * (3.232 pines) precisamente porque cada uno ocupa esto y no más; el resto se
+ * pide por id cuando alguien abre un popup, que es de uno en uno.
+ */
+export type PinMapa = {
+  id: string
+  lat: number
+  lng: number
+  categoria: CategoriaGooal
+}
+
+/**
+ * Un pin del mapa. Deliberadamente más pequeño que GooalV2: en una consulta
+ * caben cientos de filas y `descripcion` o `imagen_url` no se pintan en el pin.
+ */
+export type GooalMapa = {
+  id: string
+  titulo: string
+  categoria: CategoriaGooal
+  dificultad: DificultadGooal
+  puntos: number
+  ciudad: string | null
+  pais: string | null
+  lat: number
+  lng: number
+}
+
+export type EstadoSugerencia = 'pendiente' | 'aprobada' | 'rechazada'
+
+/** Gooal propuesto por un usuario, a la espera de moderación. */
+export type GooalSugerencia = {
+  id: string
+  user_id: string | null
+  titulo: string
+  categoria: CategoriaGooal
+  estado: EstadoSugerencia
+  gooal_id: string | null
+  revisada_at: string | null
+  created_at: string
+}

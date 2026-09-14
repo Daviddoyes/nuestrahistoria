@@ -1,0 +1,372 @@
+# GooALS — festivales, generado por festivales.py. NO editar a mano.
+#
+# Formato: puntos | título | ciudad | país | consulta de mapa
+#
+# La consulta lleva el nombre del festival con su país porque el
+# recinto ("Worthy Farm", "De Schorre") no aparece en el título.
+
+2 | Ir al Download Festival | Donington Park | Reino Unido | Download Festival, Donington Park
+2 | Ir al Reading Festival | Reading | Reino Unido | Reading Festival, Reading
+2 | Ir al Leeds Festival | Leeds | Reino Unido | Leeds Festival, Leeds
+2 | Ir al Isle of Wight Festival | Isle of Wight | Reino Unido | Isle of Wight Festival, Isle of Wight
+1 | Ir al TRNSMT | Glasgow | Reino Unido | TRNSMT, Glasgow
+1 | Ir al 2000trees | Cheltenham | Reino Unido | 2000trees, Cheltenham
+1 | Ir al ArcTanGent | Compton Martin | Reino Unido | ArcTanGent, Compton Martin
+1 | Ir al Bloodstock Open Air | Catton Park | Reino Unido | Bloodstock Open Air, Catton Park
+1 | Ir al Rebellion Punk Music Festival | Blackpool | Reino Unido | Rebellion Punk Music Festival, Blackpool
+1 | Ir al Slam Dunk Festival | Hatfield | Reino Unido | Slam Dunk Festival, Hatfield
+2 | Ir al Rock am Ring | Nürburgring | Alemania | Rock am Ring, Nürburgring
+1 | Ir al Rock im Park | Nuremberg | Alemania | Rock im Park, Nuremberg
+2 | Ir al Wacken Open Air | Wacken | Alemania | Wacken Open Air, Wacken
+1 | Ir al Hurricane Festival | Scheeßel | Alemania | Hurricane Festival, Scheeßel
+1 | Ir al Southside Festival | Neuhausen ob Eck | Alemania | Southside Festival, Neuhausen ob Eck
+1 | Ir al Summer Breeze Open Air | Dinkelsbühl | Alemania | Summer Breeze Open Air, Dinkelsbühl
+1 | Ir al Full Force | Ferropolis | Alemania | Full Force, Ferropolis
+1 | Ir al Rockharz Open Air | Ballenstedt | Alemania | Rockharz Open Air, Ballenstedt
+2 | Ir al Hellfest | Clisson | Francia | Hellfest, Clisson
+1 | Ir al Main Square Festival | Arras | Francia | Main Square Festival, Arras
+1 | Ir al Les Vieilles Charrues | Carhaix-Plouguer | Francia | Les Vieilles Charrues, Carhaix-Plouguer
+2 | Ir al Rock en Seine | Saint-Cloud | Francia | Rock en Seine, Saint-Cloud
+1 | Ir al Musilac | Aix-les-Bains | Francia | Musilac, Aix-les-Bains
+1 | Ir al Motocultor Festival | Carhaix-Plouguer | Francia | Motocultor Festival, Carhaix-Plouguer
+2 | Ir al Graspop Metal Meeting | Dessel | Bélgica | Graspop Metal Meeting, Dessel
+2 | Ir al Rock Werchter | Werchter | Bélgica | Rock Werchter, Werchter
+2 | Ir al Pukkelpop | Hasselt | Bélgica | Pukkelpop, Hasselt
+1 | Ir al Alcatraz Open Air | Kortrijk | Bélgica | Alcatraz Open Air, Kortrijk
+1 | Ir al Pinkpop | Landgraaf | Países Bajos | Pinkpop, Landgraaf
+1 | Ir al Jera On Air | Ysselsteyn | Países Bajos | Jera On Air, Ysselsteyn
+1 | Ir al Dynamo Metalfest | Eindhoven | Países Bajos | Dynamo Metalfest, Eindhoven
+1 | Ir al Paaspop | Schijndel | Países Bajos | Paaspop, Schijndel
+1 | Ir al Lowlands | Biddinghuizen | Países Bajos | Lowlands, Biddinghuizen
+2 | Ir al Roskilde Festival | Roskilde | Dinamarca | Roskilde Festival, Roskilde
+1 | Ir al Copenhell | Copenhague | Dinamarca | Copenhell, Copenhague
+1 | Ir al NorthSide | Aarhus | Dinamarca | NorthSide, Aarhus
+1 | Ir al Sweden Rock Festival | Sölvesborg | Suecia | Sweden Rock Festival, Sölvesborg
+1 | Ir al Way Out West | Gothenburg | Suecia | Way Out West, Gothenburg
+1 | Ir al Gefle Metal Festival | Gävle | Suecia | Gefle Metal Festival, Gävle
+1 | Ir al Tuska Open Air | Helsinki | Finlandia | Tuska Open Air, Helsinki
+1 | Ir al Ruisrock | Turku | Finlandia | Ruisrock, Turku
+1 | Ir al Provinssi | Seinäjoki | Finlandia | Provinssi, Seinäjoki
+1 | Ir al Ilosaarirock | Joensuu | Finlandia | Ilosaarirock, Joensuu
+1 | Ir al Tons of Rock | Oslo | Noruega | Tons of Rock, Oslo
+1 | Ir al Inferno Metal Festival | Oslo | Noruega | Inferno Metal Festival, Oslo
+1 | Ir al Øya Festival | Oslo | Noruega | Øya Festival, Oslo
+1 | Ir al Bergenfest | Bergen | Noruega | Bergenfest, Bergen
+1 | Ir al Mystic Festival | Gda■sk | Polonia | Mystic Festival, Gda■sk
+1 | Ir al Pol'and'Rock Festival | Czaplinek | Polonia | Pol'and'Rock Festival, Czaplinek
+1 | Ir al Open'er Festival | Gdynia | Polonia | Open'er Festival, Gdynia
+1 | Ir al Masters of Rock | Vizovice | Chequia | Masters of Rock, Vizovice
+1 | Ir al Rock for People | Hradec Králové | Chequia | Rock for People, Hradec Králové
+1 | Ir al Brutal Assault | Jarom■■ | Chequia | Brutal Assault, Jarom■■
+1 | Ir al Nova Rock | Nickelsdorf | Austria | Nova Rock, Nickelsdorf
+1 | Ir al Frequency Festival | St. Pölten | Austria | Frequency Festival, St. Pölten
+1 | Ir al Greenfield Festival | Interlaken | Suiza | Greenfield Festival, Interlaken
+1 | Ir al Paléo Festival | Nyon | Suiza | Paléo Festival, Nyon
+1 | Ir al OpenAir St. Gallen | St. Gallen | Suiza | OpenAir St. Gallen, St. Gallen
+1 | Ir al Rock The Lakes | Vallamand | Suiza | Rock The Lakes, Vallamand
+1 | Ir al Rockstadt Extreme Fest | Râ■nov | Rumanía | Rockstadt Extreme Fest, Râ■nov
+1 | Ir al Electric Castle | Bon■ida | Rumanía | Electric Castle, Bon■ida
+2 | Ir al Sziget Festival | Budapest | Hungría | Sziget Festival, Budapest
+1 | Ir al FEZEN Festival | Székesfehérvár | Hungría | FEZEN Festival, Székesfehérvár
+2 | Ir al Exit Festival | Novi Sad | Serbia | Exit Festival, Novi Sad
+1 | Ir al Arsenal Fest | Kragujevac | Serbia | Arsenal Fest, Kragujevac
+1 | Ir al INmusic Festival | Zagreb | Croacia | INmusic Festival, Zagreb
+1 | Ir al Rockstadt? | Râ■nov | Rumanía | Rockstadt?, Râ■nov
+1 | Ir al Hills of Rock | Plovdiv | Bulgaria | Hills of Rock, Plovdiv
+1 | Ir al Midalidare Rock In The Wine Valley | Mogilovo | Bulgaria | Midalidare Rock In The Wine Valley, Mogilovo
+1 | Ir al Ejekt Festival | Atenas | Grecia | Ejekt Festival, Atenas
+1 | Ir al Release Athens | Atenas | Grecia | Release Athens, Atenas
+1 | Ir al Rockwave Festival | Malakasa | Grecia | Rockwave Festival, Malakasa
+1 | Ir al Rock for People? | Hradec Králové | Chequia | Rock for People?, Hradec Králové
+1 | Ir al Rock in Roma | Roma | Italia | Rock in Roma, Roma
+1 | Ir al Firenze Rocks | Florencia | Italia | Firenze Rocks, Florencia
+1 | Ir al I-Days Milano | Milán | Italia | I-Days Milano, Milán
+1 | Ir al Lucca Summer Festival | Lucca | Italia | Lucca Summer Festival, Lucca
+1 | Ir al Rock The Castle | Villafranca di Verona | Italia | Rock The Castle, Villafranca di Verona
+1 | Ir al Resurrection Fest | Viveiro | España | Resurrection Fest, Viveiro
+2 | Ir al Mad Cool Festival | Madrid | España | Mad Cool Festival, Madrid
+1 | Ir al Azkena Rock Festival | Vitoria-Gasteiz | España | Azkena Rock Festival, Vitoria-Gasteiz
+1 | Ir al Barcelona Rock Fest | Santa Coloma de Gramenet | España | Barcelona Rock Fest, Santa Coloma de Gramenet
+1 | Ir al Leyendas del Rock | Villena | España | Leyendas del Rock, Villena
+1 | Ir al Viña Rock | Villarrobledo | España | Viña Rock, Villarrobledo
+1 | Ir al CanelaParty | Torremolinos | España | CanelaParty, Torremolinos
+2 | Ir al Primavera Sound | Barcelona | España | Primavera Sound, Barcelona
+1 | Ir al NOS Alive | Algés | Portugal | NOS Alive, Algés
+1 | Ir al MEO Kalorama | Lisboa | Portugal | MEO Kalorama, Lisboa
+1 | Ir al Vilar de Mouros | Caminha | Portugal | Vilar de Mouros, Caminha
+1 | Ir al SonicBlast Fest | Âncora | Portugal | SonicBlast Fest, Âncora
+1 | Ir al Hell of a Weekend | Copenhagen | Dinamarca | Hell of a Weekend, Copenhagen
+1 | Ir al Rockwave? | Athens | Grecia | Rockwave?, Athens
+1 | Ir al Sick New World | Las Vegas, Nevada | Estados Unidos | Sick New World, Las Vegas, Nevada
+1 | Ir al Welcome to Rockville | Daytona Beach, Florida | Estados Unidos | Welcome to Rockville, Daytona Beach, Florida
+1 | Ir al Sonic Temple Art & Music Festival | Columbus, Ohio | Estados Unidos | Sonic Temple Art & Music Festival, Columbus, Ohio
+1 | Ir al Aftershock Festival | Sacramento, California | Estados Unidos | Aftershock Festival, Sacramento, California
+1 | Ir al Louder Than Life | Louisville, Kentucky | Estados Unidos | Louder Than Life, Louisville, Kentucky
+1 | Ir al Rocklahoma | Pryor, Oklahoma | Estados Unidos | Rocklahoma, Pryor, Oklahoma
+1 | Ir al Inkcarceration | Mansfield, Ohio | Estados Unidos | Inkcarceration, Mansfield, Ohio
+1 | Ir al Maryland Deathfest | Baltimore, Maryland | Estados Unidos | Maryland Deathfest, Baltimore, Maryland
+1 | Ir al Milwaukee Metal Fest | Milwaukee, Wisconsin | Estados Unidos | Milwaukee Metal Fest, Milwaukee, Wisconsin
+1 | Ir al Punk Rock Bowling | Las Vegas, Nevada | Estados Unidos | Punk Rock Bowling, Las Vegas, Nevada
+1 | Ir al Riot Fest | Chicago, Illinois | Estados Unidos | Riot Fest, Chicago, Illinois
+1 | Ir al Shaky Knees | Atlanta, Georgia | Estados Unidos | Shaky Knees, Atlanta, Georgia
+1 | Ir al When We Were Young | Las Vegas, Nevada | Estados Unidos | When We Were Young, Las Vegas, Nevada
+1 | Ir al Vans Warped Tour | Varias ciudades | Estados Unidos | Vans Warped Tour, Varias ciudades
+1 | Ir al BottleRock Napa Valley | Napa, California | Estados Unidos | BottleRock Napa Valley, Napa, California
+2 | Ir al Austin City Limits Music Festival | Austin, Texas | Estados Unidos | Austin City Limits Music Festival, Austin, Texas
+2 | Ir al Lollapalooza Chicago | Chicago, Illinois | Estados Unidos | Lollapalooza Chicago, Chicago, Illinois
+2 | Ir al Bonnaroo | Manchester, Tennessee | Estados Unidos | Bonnaroo, Manchester, Tennessee
+1 | Ir al Boston Calling | Boston, Massachusetts | Estados Unidos | Boston Calling, Boston, Massachusetts
+1 | Ir al Sea.Hear.Now | Asbury Park, New Jersey | Estados Unidos | Sea.Hear.Now, Asbury Park, New Jersey
+1 | Ir al Osheaga | Montreal, Quebec | Canadá | Osheaga, Montreal, Quebec
+1 | Ir al FEQ - Festival d'été de Québec | Quebec City, Quebec | Canadá | FEQ - Festival d'été de Québec, Quebec City, Quebec
+1 | Ir al Heavy Montréal / related metal events | Montreal, Quebec | Canadá | Heavy Montréal / related metal events, Montreal, Quebec
+1 | Ir al Rifflandia | Victoria, British Columbia | Canadá | Rifflandia, Victoria, British Columbia
+2 | Ir al Rock in Rio | Río de Janeiro | Brasil | Rock in Rio, Río de Janeiro
+1 | Ir al The Town | São Paulo | Brasil | The Town, São Paulo
+2 | Ir al Lollapalooza Brasil | São Paulo | Brasil | Lollapalooza Brasil, São Paulo
+1 | Ir al Porão do Rock | Brasília | Brasil | Porão do Rock, Brasília
+1 | Ir al Knotfest Brasil | São Paulo | Brasil | Knotfest Brasil, São Paulo
+1 | Ir al Cosquín Rock | Santa María de Punilla | Argentina | Cosquín Rock, Santa María de Punilla
+1 | Ir al Quilmes Rock | Buenos Aires | Argentina | Quilmes Rock, Buenos Aires
+2 | Ir al Lollapalooza Argentina | San Isidro | Argentina | Lollapalooza Argentina, San Isidro
+1 | Ir al Rock al Parque | Bogotá | Colombia | Rock al Parque, Bogotá
+1 | Ir al Estéreo Picnic | Bogotá | Colombia | Estéreo Picnic, Bogotá
+1 | Ir al Vive Latino | Ciudad de México | México | Vive Latino, Ciudad de México
+1 | Ir al Corona Capital | Ciudad de México | México | Corona Capital, Ciudad de México
+1 | Ir al Tecate Pa'l Norte | Monterrey | México | Tecate Pa'l Norte, Monterrey
+1 | Ir al Knotfest México | Ciudad de México | México | Knotfest México, Ciudad de México
+1 | Ir al Hell & Heaven Metal Fest | Área de Ciudad de México | México | Hell & Heaven Metal Fest, Área de Ciudad de México
+2 | Ir al Lollapalooza Chile | Santiago | Chile | Lollapalooza Chile, Santiago
+1 | Ir al Fauna Primavera | Santiago | Chile | Fauna Primavera, Santiago
+1 | Ir al Rockódromo | Valparaíso | Chile | Rockódromo, Valparaíso
+1 | Ir al Good Things Festival | Melbourne | Australia | Good Things Festival, Melbourne
+2 | Ir al Download Festival Australia* | Australia (histórico | Australia | Download Festival Australia*, Australia (histórico
+1 | Ir al Yours & Owls | Wollongong, New South Wales | Australia | Yours & Owls, Wollongong, New South Wales
+1 | Ir al Splendour in the Grass* | Byron Bay, New South Wales | Australia | Splendour in the Grass*, Byron Bay, New South Wales
+1 | Ir al Laneway Festival | Varias ciudades | Australia / Nueva Zelanda | Laneway Festival, Varias ciudades
+1 | Ir al Bluesfest Byron Bay | Byron Bay, New South Wales | Australia | Bluesfest Byron Bay, Byron Bay, New South Wales
+1 | Ir al Homegrown | Wellington | Nueva Zelanda | Homegrown, Wellington
+2 | Ir al Fuji Rock Festival | Naeba | Japón | Fuji Rock Festival, Naeba
+1 | Ir al Summer Sonic Tokyo | Chiba | Japón | Summer Sonic Tokyo, Chiba
+1 | Ir al Summer Sonic Osaka | Osaka | Japón | Summer Sonic Osaka, Osaka
+1 | Ir al Loud Park | Tokyo | Japón | Loud Park, Tokyo
+1 | Ir al Rock in Japan Festival | Chiba | Japón | Rock in Japan Festival, Chiba
+1 | Ir al Pentaport Rock Festival | Incheon | Corea del Sur | Pentaport Rock Festival, Incheon
+1 | Ir al Busan International Rock Festival | Busan | Corea del Sur | Busan International Rock Festival, Busan
+1 | Ir al Clockenflap | Hong Kong | Hong Kong | Clockenflap, Hong Kong
+1 | Ir al Baybeats | Singapore | Singapur | Baybeats, Singapore
+1 | Ir al Hammersonic Festival | Jakarta | Indonesia | Hammersonic Festival, Jakarta
+1 | Ir al Java Rockin'land* | Jakarta | Indonesia | Java Rockin'land*, Jakarta
+1 | Ir al Oppikoppi* | Northam, Limpopo | Sudáfrica | Oppikoppi*, Northam, Limpopo
+1 | Ir al Ramfest | Varias ciudades | Sudáfrica | Ramfest, Varias ciudades
+1 | Ir al Up The Creek | Swellendam, Western Cape | Sudáfrica | Up The Creek, Swellendam, Western Cape
+3 | Ir al Tomorrowland | Boom | Bélgica | Tomorrowland, Boom
+3 | Ir al Tomorrowland Winter | Alpe d'Huez | Francia | Tomorrowland Winter, Alpe d'Huez
+2 | Ir al Creamfields | Daresbury | Reino Unido | Creamfields, Daresbury
+1 | Ir al Parklife | Manchester | Reino Unido | Parklife, Manchester
+1 | Ir al Field Day | Londres | Reino Unido | Field Day, Londres
+1 | Ir al Junction 2 | Londres | Reino Unido | Junction 2, Londres
+1 | Ir al Emerge Festival | Belfast | Reino Unido | Emerge Festival, Belfast
+1 | Ir al Lost Village | Lincolnshire | Reino Unido | Lost Village, Lincolnshire
+1 | Ir al Houghton Festival | Norfolk | Reino Unido | Houghton Festival, Norfolk
+1 | Ir al Boomtown Fair | Hampshire | Reino Unido | Boomtown Fair, Hampshire
+1 | Ir al Love Saves The Day | Bristol | Reino Unido | Love Saves The Day, Bristol
+1 | Ir al Terminal V Festival | Edimburgo | Reino Unido | Terminal V Festival, Edimburgo
+2 | Ir al Time Warp | Mannheim | Alemania | Time Warp, Mannheim
+1 | Ir al MELT Festival* | Ferropolis | Alemania | MELT Festival*, Ferropolis
+1 | Ir al Nation of Gondwana | Grünefeld | Alemania | Nation of Gondwana, Grünefeld
+1 | Ir al Fusion Festival | Lärz | Alemania | Fusion Festival, Lärz
+1 | Ir al Airbeat One | Neustadt-Glewe | Alemania | Airbeat One, Neustadt-Glewe
+1 | Ir al Parookaville | Weeze | Alemania | Parookaville, Weeze
+1 | Ir al Nature One | Kastellaun | Alemania | Nature One, Kastellaun
+1 | Ir al Mayday | Dortmund | Alemania | Mayday, Dortmund
+1 | Ir al Sea You Festival | Freiburg | Alemania | Sea You Festival, Freiburg
+2 | Ir al Sónar Barcelona | Barcelona | España | Sónar Barcelona, Barcelona
+1 | Ir al Monegros Desert Festival | Fraga | España | Monegros Desert Festival, Fraga
+1 | Ir al Medusa Festival | Cullera | España | Medusa Festival, Cullera
+1 | Ir al Dreambeach | Almería | España | Dreambeach, Almería
+1 | Ir al Aquasella | Arriondas | España | Aquasella, Arriondas
+1 | Ir al A Summer Story | Arganda del Rey | España | A Summer Story, Arganda del Rey
+1 | Ir al Brunch Electronik Festival | Barcelona | España | Brunch Electronik Festival, Barcelona
+2 | Ir al OFFSónar | Barcelona | España | OFFSónar, Barcelona
+1 | Ir al DGTL Barcelona | Barcelona | España | DGTL Barcelona, Barcelona
+1 | Ir al Sun & Snow Weekend | Sierra Nevada | España | Sun & Snow Weekend, Sierra Nevada
+1 | Ir al Neopop Festival | Viana do Castelo | Portugal | Neopop Festival, Viana do Castelo
+2 | Ir al Boom Festival | Idanha-a-Nova | Portugal | Boom Festival, Idanha-a-Nova
+1 | Ir al Lisboa Electronica | Lisboa | Portugal | Lisboa Electronica, Lisboa
+1 | Ir al RFM Somnii | Figueira da Foz | Portugal | RFM Somnii, Figueira da Foz
+1 | Ir al Ultra Europe | Split | Croacia | Ultra Europe, Split
+1 | Ir al Sonus Festival | Pag | Croacia | Sonus Festival, Pag
+1 | Ir al Hideout Festival | Pag | Croacia | Hideout Festival, Pag
+1 | Ir al Defected Croatia | Tisno | Croacia | Defected Croatia, Tisno
+1 | Ir al Dimensions Festival | Tisno | Croacia | Dimensions Festival, Tisno
+1 | Ir al Love International | Tisno | Croacia | Love International, Tisno
+1 | Ir al Hospitality On The Beach | Tisno | Croacia | Hospitality On The Beach, Tisno
+1 | Ir al UNUM Festival | Shëngjin | Albania | UNUM Festival, Shëngjin
+1 | Ir al Kala Festival | Dhërmi | Albania | Kala Festival, Dhërmi
+1 | Ir al ION Festival | Dhërmi | Albania | ION Festival, Dhërmi
+2 | Ir al Untold Festival | Cluj-Napoca | Rumanía | Untold Festival, Cluj-Napoca
+1 | Ir al Neversea | Constan■a | Rumanía | Neversea, Constan■a
+1 | Ir al Balaton Sound* | Zamárdi | Hungría | Balaton Sound*, Zamárdi
+1 | Ir al B.my.Lake* | Lake Balaton region | Hungría | B.my.Lake*, Lake Balaton region
+1 | Ir al Lovefest | Vrnja■ka Banja | Serbia | Lovefest, Vrnja■ka Banja
+2 | Ir al Sea Dance* | Budva | Montenegro | Sea Dance*, Budva
+2 | Ir al Awakenings Festival | Hilvarenbeek | Países Bajos | Awakenings Festival, Hilvarenbeek
+1 | Ir al DGTL Amsterdam | Ámsterdam | Países Bajos | DGTL Amsterdam, Ámsterdam
+2 | Ir al Mysteryland | Haarlemmermeer | Países Bajos | Mysteryland, Haarlemmermeer
+2 | Ir al Defqon.1 | Biddinghuizen | Países Bajos | Defqon.1, Biddinghuizen
+1 | Ir al Decibel Outdoor | Hilvarenbeek | Países Bajos | Decibel Outdoor, Hilvarenbeek
+1 | Ir al Dominator Festival | Eersel | Países Bajos | Dominator Festival, Eersel
+1 | Ir al Verknipt Festival | Utrecht | Países Bajos | Verknipt Festival, Utrecht
+1 | Ir al Free Your Mind Festival | Arnhem | Países Bajos | Free Your Mind Festival, Arnhem
+1 | Ir al Loveland Festival | Ámsterdam | Países Bajos | Loveland Festival, Ámsterdam
+1 | Ir al Dekmantel | Ámsterdam | Países Bajos | Dekmantel, Ámsterdam
+1 | Ir al Amsterdam Dance Event (ADE) | Ámsterdam | Países Bajos | Amsterdam Dance Event (ADE), Ámsterdam
+1 | Ir al A State of Trance Festival | Rotterdam | Países Bajos | A State of Trance Festival, Rotterdam
+1 | Ir al Luminosity Beach Festival | Zandvoort | Países Bajos | Luminosity Beach Festival, Zandvoort
+1 | Ir al Liquicity Festival | Geestmerambacht | Países Bajos | Liquicity Festival, Geestmerambacht
+1 | Ir al Draaimolen Festival | Tilburg | Países Bajos | Draaimolen Festival, Tilburg
+1 | Ir al Extrema Outdoor Belgium | Houthalen-Helchteren | Bélgica | Extrema Outdoor Belgium, Houthalen-Helchteren
+1 | Ir al Rampage Open Air | Lommel | Bélgica | Rampage Open Air, Lommel
+2 | Ir al Dour Festival | Dour | Bélgica | Dour Festival, Dour
+1 | Ir al Les Ardentes | Liège | Bélgica | Les Ardentes, Liège
+1 | Ir al Kappa FuturFestival | Turín | Italia | Kappa FuturFestival, Turín
+1 | Ir al Nameless Festival | Annone di Brianza | Italia | Nameless Festival, Annone di Brianza
+1 | Ir al Decibel Open Air | Florencia | Italia | Decibel Open Air, Florencia
+1 | Ir al Movement Torino | Turín | Italia | Movement Torino, Turín
+1 | Ir al Polifonic Festival | Puglia | Italia | Polifonic Festival, Puglia
+1 | Ir al Sonar Lisboa* | Lisboa | Portugal | Sonar Lisboa*, Lisboa
+1 | Ir al Les Plages Électroniques | Cannes | Francia | Les Plages Électroniques, Cannes
+1 | Ir al Nuits Sonores | Lyon | Francia | Nuits Sonores, Lyon
+1 | Ir al Peacock Society | París | Francia | Peacock Society, París
+1 | Ir al Elektric Park | Chatou | Francia | Elektric Park, Chatou
+1 | Ir al Delta Festival | Marsella | Francia | Delta Festival, Marsella
+1 | Ir al Astropolis | Brest | Francia | Astropolis, Brest
+1 | Ir al Garorock | Marmande | Francia | Garorock, Marmande
+1 | Ir al Street Parade | Zúrich | Suiza | Street Parade, Zúrich
+1 | Ir al SunIce Festival | St. Moritz | Suiza | SunIce Festival, St. Moritz
+1 | Ir al Caprices Festival | Crans-Montana | Suiza | Caprices Festival, Crans-Montana
+1 | Ir al Terrazzza - Horse Park Festival | Zúrich region | Suiza | Terrazzza - Horse Park Festival, Zúrich region
+1 | Ir al Electric Love Festival | Salzburgring | Austria | Electric Love Festival, Salzburgring
+1 | Ir al Shutdown Festival | Zwentendorf | Austria | Shutdown Festival, Zwentendorf
+1 | Ir al Lake Festival* | Schwarzlsee | Austria | Lake Festival*, Schwarzlsee
+1 | Ir al Electric Nation | Graz | Austria | Electric Nation, Graz
+1 | Ir al Audioriver | ■ód■ | Polonia | Audioriver, ■ód■
+1 | Ir al Instytut Festival | Nowy Dwór Mazowiecki | Polonia | Instytut Festival, Nowy Dwór Mazowiecki
+1 | Ir al Fest Festival* | Chorzów | Polonia | Fest Festival*, Chorzów
+1 | Ir al Beats for Love | Ostrava | Chequia | Beats for Love, Ostrava
+1 | Ir al Let It Roll | Milovice | Chequia | Let It Roll, Milovice
+1 | Ir al Máchá■ Festival | Doksy | Chequia | Máchá■ Festival, Doksy
+1 | Ir al Pohoda Festival | Tren■ín | Eslovaquia | Pohoda Festival, Tren■ín
+1 | Ir al Grape Festival | Tren■ín | Eslovaquia | Grape Festival, Tren■ín
+1 | Ir al Dimensions? | Tisno | Croacia | Dimensions?, Tisno
+1 | Ir al Flow Festival | Helsinki | Finlandia | Flow Festival, Helsinki
+1 | Ir al Weekend Festival | Espoo | Finlandia | Weekend Festival, Espoo
+1 | Ir al Summer Sound | Helsinki | Finlandia | Summer Sound, Helsinki
+1 | Ir al Findings Festival* | Oslo | Noruega | Findings Festival*, Oslo
+1 | Ir al Stavernfestivalen | Larvik | Noruega | Stavernfestivalen, Larvik
+1 | Ir al Distortion | Copenhague | Dinamarca | Distortion, Copenhague
+1 | Ir al Karrusel | Copenhague | Dinamarca | Karrusel, Copenhague
+1 | Ir al Department Festival | Stockholm | Suecia | Department Festival, Stockholm
+1 | Ir al Into the Valley* | Sweden | Suecia | Into the Valley*, Sweden
+1 | Ir al Iceland Airwaves | Reikiavik | Islandia | Iceland Airwaves, Reikiavik
+1 | Ir al Secret Solstice* | Reikiavik | Islandia | Secret Solstice*, Reikiavik
+1 | Ir al Insomnia Festival | Tromsø | Noruega | Insomnia Festival, Tromsø
+1 | Ir al Semibreve | Braga | Portugal | Semibreve, Braga
+1 | Ir al Waking Life | Crato | Portugal | Waking Life, Crato
+2 | Ir al Ultra Music Festival | Miami, Florida | Estados Unidos | Ultra Music Festival, Miami, Florida
+2 | Ir al EDC Las Vegas | Las Vegas, Nevada | Estados Unidos | EDC Las Vegas, Las Vegas, Nevada
+1 | Ir al EDC Orlando | Orlando, Florida | Estados Unidos | EDC Orlando, Orlando, Florida
+1 | Ir al Electric Forest | Rothbury, Michigan | Estados Unidos | Electric Forest, Rothbury, Michigan
+1 | Ir al Movement Detroit | Detroit, Michigan | Estados Unidos | Movement Detroit, Detroit, Michigan
+1 | Ir al Beyond Wonderland SoCal | San Bernardino, California | Estados Unidos | Beyond Wonderland SoCal, San Bernardino, California
+1 | Ir al Nocturnal Wonderland | San Bernardino, California | Estados Unidos | Nocturnal Wonderland, San Bernardino, California
+1 | Ir al Escape Halloween | San Bernardino, California | Estados Unidos | Escape Halloween, San Bernardino, California
+1 | Ir al Countdown NYE | San Bernardino, California | Estados Unidos | Countdown NYE, San Bernardino, California
+1 | Ir al Hard Summer | Los Angeles, California | Estados Unidos | Hard Summer, Los Angeles, California
+1 | Ir al CRSSD Festival | San Diego, California | Estados Unidos | CRSSD Festival, San Diego, California
+1 | Ir al Portola Music Festival | San Francisco, California | Estados Unidos | Portola Music Festival, San Francisco, California
+1 | Ir al Lightning in a Bottle | Buena Vista Lake, California | Estados Unidos | Lightning in a Bottle, Buena Vista Lake, California
+3 | Ir al Coachella | Indio, California | Estados Unidos | Coachella, Indio, California
+1 | Ir al Desert Hearts Festival | California | Estados Unidos | Desert Hearts Festival, California
+1 | Ir al ARC Music Festival | Chicago, Illinois | Estados Unidos | ARC Music Festival, Chicago, Illinois
+1 | Ir al North Coast Music Festival | Chicago area, Illinois | Estados Unidos | North Coast Music Festival, Chicago area, Illinois
+1 | Ir al Electric Zoo* | New York City | Estados Unidos | Electric Zoo*, New York City
+1 | Ir al Governors Ball | New York City | Estados Unidos | Governors Ball, New York City
+1 | Ir al Elements Music & Arts Festival | Long Pond, Pennsylvania | Estados Unidos | Elements Music & Arts Festival, Long Pond, Pennsylvania
+1 | Ir al Lost Lands | Legend Valley, Ohio | Estados Unidos | Lost Lands, Legend Valley, Ohio
+1 | Ir al Secret Dreams | Legend Valley, Ohio | Estados Unidos | Secret Dreams, Legend Valley, Ohio
+1 | Ir al Okeechobee Music & Arts Festival | Okeechobee, Florida | Estados Unidos | Okeechobee Music & Arts Festival, Okeechobee, Florida
+1 | Ir al III Points | Miami, Florida | Estados Unidos | III Points, Miami, Florida
+1 | Ir al Seismic Dance Event | Austin, Texas | Estados Unidos | Seismic Dance Event, Austin, Texas
+1 | Ir al Freaky Deaky | Austin | Estados Unidos | Freaky Deaky, Austin
+1 | Ir al Ubbi Dubbi | Fort Worth, Texas | Estados Unidos | Ubbi Dubbi, Fort Worth, Texas
+1 | Ir al Lights All Night | Dallas, Texas | Estados Unidos | Lights All Night, Dallas, Texas
+1 | Ir al Das Energi | Salt Lake City, Utah | Estados Unidos | Das Energi, Salt Lake City, Utah
+1 | Ir al Bass Canyon | George, Washington | Estados Unidos | Bass Canyon, George, Washington
+1 | Ir al Beyond Wonderland at The Gorge | George, Washington | Estados Unidos | Beyond Wonderland at The Gorge, George, Washington
+1 | Ir al Shambhala Music Festival | Salmo, British Columbia | Canadá | Shambhala Music Festival, Salmo, British Columbia
+1 | Ir al ÎLESONIQ | Montreal, Quebec | Canadá | ÎLESONIQ, Montreal, Quebec
+1 | Ir al VELD Music Festival | Toronto, Ontario | Canadá | VELD Music Festival, Toronto, Ontario
+1 | Ir al Escapade Music Festival | Ottawa, Ontario | Canadá | Escapade Music Festival, Ottawa, Ontario
+1 | Ir al Igloofest | Montreal, Quebec | Canadá | Igloofest, Montreal, Quebec
+1 | Ir al Bass Coast | Merritt, British Columbia | Canadá | Bass Coast, Merritt, British Columbia
+1 | Ir al Chasing Summer | Calgary, Alberta | Canadá | Chasing Summer, Calgary, Alberta
+1 | Ir al EDC México | Ciudad de México | México | EDC México, Ciudad de México
+1 | Ir al Dreamfields México | Guadalajara | México | Dreamfields México, Guadalajara
+2 | Ir al Zamna Festival | Tulum, Quintana Roo | México | Zamna Festival, Tulum, Quintana Roo
+1 | Ir al BPM Festival Costa Rica | Tamarindo | Costa Rica | BPM Festival Costa Rica, Tamarindo
+1 | Ir al Resistance Buenos Aires | Buenos Aires | Argentina | Resistance Buenos Aires, Buenos Aires
+2 | Ir al Creamfields Argentina | Buenos Aires | Argentina | Creamfields Argentina, Buenos Aires
+1 | Ir al Ultra Buenos Aires | Buenos Aires | Argentina | Ultra Buenos Aires, Buenos Aires
+1 | Ir al Ultra Brasil | São Paulo | Brasil | Ultra Brasil, São Paulo
+3 | Ir al Tomorrowland Brasil | Itu | Brasil | Tomorrowland Brasil, Itu
+1 | Ir al Só Track Boa | São Paulo | Brasil | Só Track Boa, São Paulo
+1 | Ir al XXXperience Festival | Itu | Brasil | XXXperience Festival, Itu
+1 | Ir al Universo Paralello | Pratigi | Brasil | Universo Paralello, Pratigi
+1 | Ir al Resistance Santiago | Santiago | Chile | Resistance Santiago, Santiago
+2 | Ir al Creamfields Chile | Santiago | Chile | Creamfields Chile, Santiago
+1 | Ir al Baum Festival | Bogotá | Colombia | Baum Festival, Bogotá
+1 | Ir al Ritvales | Medellín | Colombia | Ritvales, Medellín
+1 | Ir al Road to Ultra Peru | Lima | Perú | Road to Ultra Peru, Lima
+1 | Ir al Ultra Japan | Tokyo | Japón | Ultra Japan, Tokyo
+1 | Ir al Rainbow Disco Club | Higashi-Izu | Japón | Rainbow Disco Club, Higashi-Izu
+1 | Ir al Summer Sonic | Tokyo | Japón | Summer Sonic, Tokyo
+1 | Ir al ZoukOut | Sentosa | Singapur | ZoukOut, Sentosa
+1 | Ir al S2O Songkran Music Festival | Bangkok | Tailandia | S2O Songkran Music Festival, Bangkok
+1 | Ir al 808 Festival | Bangkok | Tailandia | 808 Festival, Bangkok
+1 | Ir al Wonderfruit | Pattaya | Tailandia | Wonderfruit, Pattaya
+1 | Ir al Djakarta Warehouse Project | Jakarta | Indonesia | Djakarta Warehouse Project, Jakarta
+1 | Ir al We The Fest | Jakarta | Indonesia | We The Fest, Jakarta
+1 | Ir al Ultra Korea | Seoul | Corea del Sur | Ultra Korea, Seoul
+1 | Ir al World DJ Festival | Seoul region | Corea del Sur | World DJ Festival, Seoul region
+2 | Ir al Creamfields Hong Kong | Hong Kong | Hong Kong | Creamfields Hong Kong, Hong Kong
+1 | Ir al Ultra Taiwan | Taipei | Taiwán | Ultra Taiwan, Taipei
+1 | Ir al S2O Taiwan | Taipei | Taiwán | S2O Taiwan, Taipei
+1 | Ir al EDC China | various Chinese cities | China | EDC China, various Chinese cities
+1 | Ir al Sunburn Festival | Goa | India | Sunburn Festival, Goa
+1 | Ir al VH1 Supersonic | Pune | India | VH1 Supersonic, Pune
+1 | Ir al Magnetic Fields Festival | Alsisar | India | Magnetic Fields Festival, Alsisar
+1 | Ir al MDLBEAST Soundstorm | Riyadh | Arabia Saudí | MDLBEAST Soundstorm, Riyadh
+1 | Ir al Balad Beast | Jeddah | Arabia Saudí | Balad Beast, Jeddah
+2 | Ir al Untold Dubai | Dubai | Emiratos Árabes Unidos | Untold Dubai, Dubai
+1 | Ir al Groove on the Grass | Dubai | Emiratos Árabes Unidos | Groove on the Grass, Dubai
+1 | Ir al Pitch Music & Arts | Moyston, Victoria | Australia | Pitch Music & Arts, Moyston, Victoria
+1 | Ir al Beyond The Valley | Barunah Plains, Victoria | Australia | Beyond The Valley, Barunah Plains, Victoria
+1 | Ir al Wildlands | Brisbane | Australia | Wildlands, Brisbane
+1 | Ir al Festival X* | Sydney | Australia | Festival X*, Sydney
+1 | Ir al Listen Out | Multiple cities | Australia | Listen Out, Multiple cities
+1 | Ir al Subsonic Music Festival | Monkerai, New South Wales | Australia | Subsonic Music Festival, Monkerai, New South Wales
+1 | Ir al Strawberry Fields | Tocumwal, New South Wales | Australia | Strawberry Fields, Tocumwal, New South Wales
+1 | Ir al Rabbits Eat Lettuce | Queensland | Australia | Rabbits Eat Lettuce, Queensland
+1 | Ir al Electric Gardens | Sydney | Australia | Electric Gardens, Sydney
+1 | Ir al Snow Machine | Queenstown | Nueva Zelanda | Snow Machine, Queenstown
+1 | Ir al Rhythm and Vines | Gisborne | Nueva Zelanda | Rhythm and Vines, Gisborne
+1 | Ir al Northern Bass | Mangawhai | Nueva Zelanda | Northern Bass, Mangawhai
+1 | Ir al AfrikaBurn | Tankwa Karoo | Sudáfrica | AfrikaBurn, Tankwa Karoo
+1 | Ir al Ultra South Africa | Cape Town | Sudáfrica | Ultra South Africa, Cape Town
+1 | Ir al Rocking the Daisies | Cape Town region | Sudáfrica | Rocking the Daisies, Cape Town region
+1 | Ir al Bazique | Cape Town region | Sudáfrica | Bazique, Cape Town region
+1 | Ir al Oasis Festival | Marrakech | Marruecos | Oasis Festival, Marrakech
+1 | Ir al MOGA Essaouira | Essaouira | Marruecos | MOGA Essaouira, Essaouira
+1 | Ir al Sandbox Festival | El Gouna | Egipto | Sandbox Festival, El Gouna

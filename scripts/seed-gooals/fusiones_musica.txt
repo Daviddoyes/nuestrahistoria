@@ -1,0 +1,518 @@
+# GooALS — música: el PDF entero se retira
+#
+# Las 504 filas del PDF de música eran nombres de festivales ("Vivir
+# Bahidora") y pabellones intercambiables ("Ver un concierto en
+# Hallenstadion"). Ninguna es una experiencia que alguien cuente.
+#
+# Lo que valía se ha reubicado, no se ha perdido:
+#   · los festivales   → Espectáculos, desde el PDF de festivales (365)
+#   · las salas grandes → Espectáculos, sección de música (25)
+#   · la experiencia    → nuevos_musica.txt, escrito a mano
+#
+# Si algún día quieres rescatar uno, borra su línea "<" de aquí.
+
+BORRAR
+< Aprender a mezclar dos canciones como DJ sin sync
+< Aprender a reconocer 20 subgeneros de musica electronica
+< Aprender a tocar 10 canciones en un instrumento
+< Aprender teoria musical basica aplicada a produccion
+< Asistir a 10 conciertos en un año
+< Asistir a 5 festivales distintos en un año
+< Asistir a un concierto de musica sacra en una catedral
+< Asistir a un concierto sin grabar ningun video
+< Asistir a un music show de K-pop con publico
+< Asistir a una firma o meet & greet oficial
+< Cantar en un karaoke en un idioma que no dominas
+< Cantar karaoke en Tokio con amigos
+< Componer una letra propia
+< Comprar un disco directamente a un artista independiente
+< Conseguir acceso backstage de forma legitima
+< Crear una coleccion de 50 vinilos elegidos por significado personal
+< Crear una playlist de 100 canciones que cuente tu vida
+< Crear una sesion que mezcle 3 generos diferentes
+< Descubrir una banda desconocida y verla antes de hacerse grande
+< Escribir y grabar una cancion con amigos
+< Escuchar Chopin en un recital
+< Escuchar un album completo en vinilo sin usar el movil
+< Escuchar un organo historico en una iglesia
+< Grabar un DJ set de 30 minutos
+< Grabar un DJ set de 60 minutos
+< Hacer un remix terminado
+< Hacer un road trip para asistir a varios conciertos
+< Hacer un set sunrise
+< Hacer un set sunset
+< Hacer una ruta de David Bowie
+< Hacer una ruta de The Beatles
+< Hacer una ruta de U2
+< Hacer una ruta del punk britanico
+< Hacer una ruta por tiendas de discos en otra ciudad
+< Ir a un concierto de idol culture con respeto
+< Ir a un listening party de un album
+< Organizar una fiesta con un concepto musical propio
+< Participar en una jam session
+< Producir una cancion electronica completa
+< Publicar una cancion propia en plataformas
+< Recorrer Abbey Road y visitar su entorno musical
+< Recorrer Broadway honky-tonks
+< Recorrer Glasgow descubriendo su escena indie
+< Recorrer Manchester siguiendo Joy Division y Factory Records
+< Salir a Berghain si se logra entrar
+< Seguir la Viena de Mozart, Beethoven y Schubert
+< Seguir la historia del grunge
+< Seguir la historia del hip-hop en Bronx
+< Tocar en un festival como DJ
+< Tocar un DJ set en un bar o evento pequeno
+< Tocar un DJ set en un club
+< Tocar un DJ set frente a amigos
+< Tocar una cancion completa frente a publico
+< Ver Carmina Burana en vivo
+< Ver a tu artista favorito en directo
+< Ver a una banda legendaria antes de que deje de girar
+< Ver fado en Clube de Fado
+< Ver jazz en Blue Note New York
+< Ver jazz en Blue Note Tokyo
+< Ver jazz en The Orbit o club de referencia vigente
+< Ver jazz en Upstairs Jazz Bar
+< Ver jazz en Village Vanguard
+< Ver musica clasica en BOZAR
+< Ver musica clasica en Berliner Philharmonie
+< Ver musica clasica en Musikverein
+< Ver musica clasica en Stockholm Concert Hall
+< Ver musica clasica en Suntory Hall
+< Ver musica en 9:30 Club
+< Ver musica en Concertgebouw
+< Ver musica en Dubai Opera
+< Ver musica en Esplanade Concert Hall
+< Ver musica en Harpa
+< Ver musica en Hong Kong Cultural Centre
+< Ver musica en KKL Luzern
+< Ver musica en NCPA
+< Ver musica en Odeon of Herodes Atticus
+< Ver musica en Palau de la Musica Catalana
+< Ver musica en Philharmonie de Paris
+< Ver musica en Royal Opera House Muscat
+< Ver musica en Sidney Myer Music Bowl
+< Ver musica en Teatro Colon
+< Ver musica en Teatro Municipal
+< Ver opera en Palais Garnier
+< Ver opera en Wiener Staatsoper
+< Ver salsa en vivo
+< Ver samba en vivo en Lapa
+< Ver tango en vivo con orquesta
+< Ver un ballet con orquesta en directo
+< Ver un concierto desde primera fila
+< Ver un concierto en Accor Arena
+< Ver un concierto en Accor? no repetir
+< Ver un concierto en Alexandra Palace
+< Ver un concierto en Allianz Parque
+< Ver un concierto en Apolo
+< Ver un concierto en Arena di Verona
+< Ver un concierto en AsiaWorld-Arena
+< Ver un concierto en Atlas Arena
+< Ver un concierto en Auditorio Nacional
+< Ver un concierto en Auditorium Parco della Musica
+< Ver un concierto en Avicii Arena
+< Ver un concierto en Brixton Academy
+< Ver un concierto en Carnegie Hall
+< Ver un concierto en Coca-Cola Arena
+< Ver un concierto en Coliseu dos Recreios
+< Ver un concierto en Elbphilharmonie
+< Ver un concierto en Estadi Olimpic
+< Ver un concierto en Estadio River Plate
+< Ver un concierto en Etihad Arena
+< Ver un concierto en Foro Sol/Estadio GNP
+< Ver un concierto en Gocheok Sky Dome
+< Ver un concierto en Grand Ole Opry
+< Ver un concierto en GrandWest Arena
+< Ver un concierto en Hallenstadion
+< Ver un concierto en Hollywood Bowl
+< Ver un concierto en Hordern Pavilion
+< Ver un concierto en Impact Arena
+< Ver un concierto en Istora Senayan
+< Ver un concierto en Jawaharlal Nehru Stadium
+< Ver un concierto en KSPO Dome
+< Ver un concierto en Madison Square Garden
+< Ver un concierto en Mall of Asia Arena
+< Ver un concierto en Manchester Arena
+< Ver un concierto en Massey Hall
+< Ver un concierto en Melkweg
+< Ver un concierto en Movistar Arena
+< Ver un concierto en Movistar Arena Bogota
+< Ver un concierto en Movistar Arena Santiago
+< Ver un concierto en Nippon Budokan
+< Ver un concierto en O2 Arena
+< Ver un concierto en O2 Arena Prague
+< Ver un concierto en OAKA
+< Ver un concierto en Olympia
+< Ver un concierto en Osaka-jō Hall
+< Ver un concierto en Oslo Spektrum
+< Ver un concierto en Palau Sant Jordi
+< Ver un concierto en Paradiso
+< Ver un concierto en Preservation Hall
+< Ver un concierto en Puskas Arena
+< Ver un concierto en Radio City Music Hall
+< Ver un concierto en Razzmatazz
+< Ver un concierto en Red Rocks Amphitheatre
+< Ver un concierto en Rod Laver Arena
+< Ver un concierto en Roundhouse
+< Ver un concierto en Royal Albert Hall
+< Ver un concierto en Royal Arena
+< Ver un concierto en Ryman Auditorium
+< Ver un concierto en Singapore Indoor Stadium
+< Ver un concierto en Spark Arena
+< Ver un concierto en Sportpaleis
+< Ver un concierto en Sydney Opera House
+< Ver un concierto en Tauron Arena
+< Ver un concierto en The Fillmore
+< Ver un concierto en The Gorge Amphitheatre
+< Ver un concierto en The Greek Theatre
+< Ver un concierto en The Powerstation
+< Ver un concierto en Tokyo Dome
+< Ver un concierto en Union Chapel
+< Ver un concierto en Waldbühne
+< Ver un concierto en Wembley Stadium
+< Ver un concierto en WiZink/Movistar Arena Madrid
+< Ver un concierto en Zenith Paris
+< Ver un concierto en Ziggo Dome
+< Ver un concierto en un estadio con mas de 50.000 personas
+< Ver un concierto intimista de menos de 200 personas
+< Ver un coro gospel en contexto autentico y respetuoso
+< Ver un requiem de Mozart en vivo
+< Ver un sunrise set de un DJ
+< Ver una actuacion en Seoul Arts Center
+< Ver una banda en Barrowland Ballroom
+< Ver una banda en Foro Indie Rocks
+< Ver una banda en King Tut's Wah Wah Hut
+< Ver una banda en The Troubadour
+< Ver una banda en Whisky a Go Go
+< Ver una opera completa por primera vez
+< Ver una opera en La Fenice
+< Ver una opera en Teatro alla Scala
+< Ver una orquesta interpretar Beethoven en vivo
+< Ver una orquesta interpretar Mahler en vivo
+< Ver una orquesta sinfonica interpretando una banda sonora
+< Viajar a otro pais solo por un concierto
+< Visitar Apollo Theater
+< Visitar Bach Museum
+< Visitar Beethoven-Haus
+< Visitar British Music Experience
+< Visitar Buddy Holly Center
+< Visitar Chopin Museum
+< Visitar Country Music Hall of Fame
+< Visitar Graceland
+< Visitar HYBE Insight o experiencia oficial equivalente si esta disponible
+< Visitar Haus der Musik
+< Visitar Jimi Hendrix memorial
+< Visitar Johnny Cash Museum
+< Visitar Motown Museum
+< Visitar Mozart Geburtshaus
+< Visitar Museo del Rock argentino o ruta equivalente
+< Visitar Museum of Pop Culture
+< Visitar National Museum of African American Music
+< Visitar Paisley Park
+< Visitar Rock & Roll Hall of Fame
+< Visitar Salford Lads Club
+< Visitar Stax Museum
+< Visitar Studio Bell National Music Centre
+< Visitar Sun Studio
+< Visitar The Cavern Club
+< Visitar The New Afrika Shrine
+< Visitar casas de musica tradicional
+< Visitar house music landmarks
+< Visitar instrumentos historicos en museo musical
+< Visitar una tienda de vinilos de Shibuya
+< Vivir 808 Festival
+< Vivir A State of Trance Festival
+< Vivir ARC Music Festival
+< Vivir AfrikaBurn
+< Vivir Afro Nation Ghana si se celebra
+< Vivir Afro Nation Portugal
+< Vivir Aftershock Festival
+< Vivir Airbeat One
+< Vivir All Points East
+< Vivir Amsterdam Dance Event
+< Vivir Aquasella
+< Vivir Athens Epidaurus contemporary music events
+< Vivir Austin City Limits
+< Vivir Awakenings Festival
+< Vivir BST Hyde Park
+< Vivir Bahidora
+< Vivir Balaton Sound si vuelve a celebrarse
+< Vivir Baum Festival
+< Vivir Bergenfest
+< Vivir Beyond Wonderland
+< Vivir Beyond the Valley
+< Vivir Bilbao BBK Live
+< Vivir Boardmasters
+< Vivir Bollywood music show
+< Vivir Bonnaroo
+< Vivir Boom Festival
+< Vivir Boomtown Fair
+< Vivir Boston Calling
+< Vivir Burning Man
+< Vivir CRSSD Festival
+< Vivir Cabaret Vert
+< Vivir Cape Town International Jazz Festival
+< Vivir Ceremonia
+< Vivir Clockenflap
+< Vivir Coachella
+< Vivir Colours of Ostrava
+< Vivir Copenhell
+< Vivir Corona Capital
+< Vivir Cosquin Rock
+< Vivir Creamfields
+< Vivir Creamfields Argentina
+< Vivir Creamfields Hong Kong si se celebra
+< Vivir Cruilla
+< Vivir DGTL Amsterdam
+< Vivir Defqon.1
+< Vivir Dekmantel
+< Vivir Dimensions Festival
+< Vivir Distortion
+< Vivir Djakarta Warehouse Project
+< Vivir Dour Festival
+< Vivir Download Festival
+< Vivir Dreambeach
+< Vivir EDC Korea si se celebra
+< Vivir EDC Las Vegas
+< Vivir EDC Mexico
+< Vivir EDC Orlando
+< Vivir Ejekt Festival
+< Vivir Electric Avenue
+< Vivir Electric Castle
+< Vivir Electric Forest
+< Vivir Electric Zoo o sucesor neoyorquino vigente
+< Vivir Essaouira Gnaoua and World Music Festival
+< Vivir Essence Festival
+< Vivir Estereo Picnic
+< Vivir Eurockeennes
+< Vivir Exit Festival
+< Vivir FIB Benicassim
+< Vivir Felabration
+< Vivir Festival Beauregard
+< Vivir Festival Cordillera
+< Vivir Festival au Desert o equivalente seguro
+< Vivir Festival de Vina del Mar
+< Vivir Field Day
+< Vivir Field Day Sydney
+< Vivir Firenze Rocks
+< Vivir Flow Festival
+< Vivir Frequency Festival
+< Vivir Fuji Rock
+< Vivir Fuji Rock Festival
+< Vivir Fusion Festival
+< Vivir Garorock
+< Vivir Glastonbury Festival
+< Vivir Good Vibes Festival si se celebra
+< Vivir Governors Ball
+< Vivir Graspop Metal Meeting
+< Vivir Guca Trumpet Festival
+< Vivir Hard Summer
+< Vivir Hellfest
+< Vivir Hellfest Open Air
+< Vivir Hideout Festival
+< Vivir Home Festival o sucesor activo
+< Vivir Homegrown
+< Vivir Hurricane Festival
+< Vivir I-Days Milano
+< Vivir INmusic Festival
+< Vivir Iceland Airwaves
+< Vivir IleSoniq
+< Vivir Isle of Wight Festival
+< Vivir J-pop en Tokio
+< Vivir Java Jazz Festival
+< Vivir K-pop en Seul
+< Vivir Kappa FuturFestival
+< Vivir Lake of Stars
+< Vivir Laneway Festival
+< Vivir Leeds Festival
+< Vivir Les Ardentes
+< Vivir Les Vieilles Charrues
+< Vivir Leyendas del Rock
+< Vivir Lightning in a Bottle
+< Vivir Lollapalooza Argentina
+< Vivir Lollapalooza Berlin
+< Vivir Lollapalooza Brasil
+< Vivir Lollapalooza Chicago
+< Vivir Lollapalooza Chile
+< Vivir Lost Village
+< Vivir Louder Than Life
+< Vivir Lovebox o sucesor activo
+< Vivir Loveland Festival
+< Vivir Lowlands
+< Vivir Lucca Summer Festival
+< Vivir MDLBEAST Soundstorm
+< Vivir Mad Cool Festival
+< Vivir Magnetic Fields Festival
+< Vivir Main Square Festival
+< Vivir Mawazine
+< Vivir Medusa Festival
+< Vivir Melt Festival o sucesor de referencia si esta activo
+< Vivir Monegros Desert Festival
+< Vivir Montreux Jazz Festival
+< Vivir Movement Detroit
+< Vivir Mysteryland
+< Vivir NH7 Weekender
+< Vivir Nameless Festival
+< Vivir Nature One
+< Vivir Neopop Festival
+< Vivir Neversea o festival costero sucesor oficial
+< Vivir New Orleans Jazz & Heritage Festival
+< Vivir Nocturnal Wonderland
+< Vivir North Sea Jazz Festival
+< Vivir Nos Alive
+< Vivir Nova Rock
+< Vivir O Son do Camino
+< Vivir OFF Festival
+< Vivir Open'er Festival
+< Vivir OpenAir St. Gallen
+< Vivir Osheaga
+< Vivir Outside Lands
+< Vivir Oya Festival
+< Vivir Paléo Festival
+< Vivir Parklife
+< Vivir Parookaville
+< Vivir Pentaport Rock Festival
+< Vivir Pinkpop
+< Vivir Pitch Music & Arts
+< Vivir Pitchfork Music Festival si se celebra
+< Vivir Pohoda Festival
+< Vivir Pol'and'Rock Festival
+< Vivir Primavera Sound Barcelona
+< Vivir Provinssi
+< Vivir Pukkelpop
+< Vivir Rainforest World Music Festival
+< Vivir Reading Festival
+< Vivir Reeperbahn Festival
+< Vivir Release Athens
+< Vivir Resurrection Fest
+< Vivir Rhythm and Vines
+< Vivir Riot Fest
+< Vivir Riverland Fest
+< Vivir Roadburn Festival
+< Vivir Rock Fest Barcelona si se celebra
+< Vivir Rock Werchter
+< Vivir Rock am Ring
+< Vivir Rock en Seine
+< Vivir Rock im Park
+< Vivir Rock in Japan
+< Vivir Rock in Rio
+< Vivir Rock in Rio Lisboa
+< Vivir Rock in Roma
+< Vivir Rocking the Daisies
+< Vivir Rolling Loud Miami
+< Vivir Rolling Loud Thailand si se celebra
+< Vivir Roskilde Festival
+< Vivir Rototom Sunsplash
+< Vivir Ruisrock
+< Vivir Sauti za Busara
+< Vivir Sea Star Festival
+< Vivir Secret Solstice si esta activo
+< Vivir Shambhala Music Festival
+< Vivir Sick New World si se celebra
+< Vivir Sole DXB music program
+< Vivir Solidays
+< Vivir Sonar Barcelona
+< Vivir Sonus Festival
+< Vivir Southside Festival
+< Vivir Splendour in the Grass si regresa
+< Vivir Stagecoach
+< Vivir Summer Sonic
+< Vivir Sunburn Festival
+< Vivir Sunny Hill Festival
+< Vivir Sunwaves Festival si se celebra
+< Vivir Super Bock Super Rock
+< Vivir Sweden Rock Festival
+< Vivir Sziget Festival
+< Vivir TRNSMT
+< Vivir Tecate Pal Norte
+< Vivir The Town
+< Vivir Time Warp
+< Vivir Tomorrowland Belgium
+< Vivir Tomorrowland Brasil si la edicion esta activa
+< Vivir Tomorrowland Winter
+< Vivir Tons of Rock
+< Vivir Ultra Australia
+< Vivir Ultra Europe
+< Vivir Ultra Japan
+< Vivir Ultra Music Festival Miami
+< Vivir Ultra South Africa
+< Vivir Ultra Worldwide en una sede internacional
+< Vivir Untold Dubai si existe una edicion vigente
+< Vivir Untold Festival
+< Vivir Veld Music Festival
+< Vivir Vida Festival
+< Vivir Vive Latino
+< Vivir WARM UP Estrella de Levante
+< Vivir Wacken Open Air
+< Vivir Way Out West
+< Vivir We Love Green
+< Vivir We The Fest
+< Vivir Welcome to Rockville
+< Vivir When We Were Young
+< Vivir Wildlands
+< Vivir Wireless Festival
+< Vivir Wonderfruit
+< Vivir Ziro Festival of Music
+< Vivir ZoukOut
+< Vivir Zurich Openair
+< Vivir afrobeat en Lagos
+< Vivir amapiano en Johannesburgo
+< Vivir banda sinaloense en directo
+< Vivir blues en Chicago
+< Vivir bossa nova en Rio
+< Vivir ca tru o musica tradicional vietnamita
+< Vivir cantopop en Hong Kong
+< Vivir city pop en un listening bar
+< Vivir cueca chilena
+< Vivir cumbia colombiana
+< Vivir cumbia villera o escena tropical en contexto seguro
+< Vivir dangdut
+< Vivir ethiopian jazz
+< Vivir folk y chanson en Montreal
+< Vivir forro en vivo
+< Vivir gamelan
+< Vivir gnawa en Essaouira
+< Vivir gqom en Durban
+< Vivir highlife en Ghana
+< Vivir jazz en New Orleans
+< Vivir jazz kissa
+< Vivir jazz sudafricano
+< Vivir luk thung o mor lam
+< Vivir mandopop en Taipei
+< Vivir mariachi en Plaza Garibaldi
+< Vivir mbalax en Dakar
+< Vivir musica aborigen australiana en festival cultural
+< Vivir musica andina en vivo
+< Vivir musica carnatic
+< Vivir musica hindustani
+< Vivir musica maori en un evento cultural
+< Vivir musica tradicional china en directo
+< Vivir norteño en el norte de Mexico
+< Vivir opera cantonesa
+< Vivir pinpeat camboyano
+< Vivir qawwali en un santuario o concierto respetuoso
+< Vivir rai en Argelia o diaspora
+< Vivir salsa en Cali
+< Vivir samba de roda
+< Vivir sertanejo en una gran fiesta
+< Vivir son cubano en vivo
+< Vivir soukous en Kinshasa con seguridad
+< Vivir taarab en Zanzibar
+< Vivir tango en una milonga
+< Vivir una jam session de jazz
+< Vivir una noche de reggae en Kingston
+< Vivir una noche de techno en Detroit
+< Vivir una noche en Amnesia Ibiza
+< Vivir una noche en Cocorico
+< Vivir una noche en DC-10
+< Vivir una noche en Fabrik
+< Vivir una noche en Hï Ibiza
+< Vivir una noche en INPUT
+< Vivir una noche en Pacha Ibiza
+< Vivir una noche en RSO Berlin
+< Vivir una noche en Tresor
+< Vivir una noche en Ushuaia Ibiza
+< Vivir una noche en Zouk Kuala Lumpur
+< Vivir una noche en Zouk Singapore
+< Vivir vallenato

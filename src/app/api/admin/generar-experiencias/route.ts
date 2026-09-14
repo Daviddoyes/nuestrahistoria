@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
-import { isAdminRequest } from '@/lib/admin-auth'
+import { esAdmin } from '@/lib/admin-auth'
 
 const CATEGORIAS = ['viajes', 'deporte', 'gastronomia', 'cultura', 'aventura', 'musica'] as const
 const DIFICULTADES = ['facil', 'medio', 'dificil'] as const
@@ -42,7 +42,7 @@ const SCHEMA = {
 }
 
 export async function POST(request: Request) {
-  if (!isAdminRequest(request)) {
+  if (!await esAdmin()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

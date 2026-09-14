@@ -9,7 +9,6 @@ export async function proxy(request: NextRequest) {
     pathname === '/' ||
     pathname.startsWith('/reset-password') ||
     pathname.startsWith('/pricing') ||
-    pathname.startsWith('/admin') ||
     pathname.startsWith('/plan') ||
     pathname.startsWith('/invite') ||
     pathname.startsWith('/download') ||
@@ -52,7 +51,10 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith('/perfil') ||
     pathname.startsWith('/muro') ||
     pathname.startsWith('/explorar') ||
-    pathname.startsWith('/mis-gooals')
+    pathname.startsWith('/mis-gooals') ||
+    // /admin exige sesión aquí; que ADEMÁS seas admin lo comprueba el servidor
+    // contra profiles.es_admin, tanto en la página como en cada /api/admin/*.
+    pathname.startsWith('/admin')
 
   if (!user && isProtected) {
     const url = request.nextUrl.clone()

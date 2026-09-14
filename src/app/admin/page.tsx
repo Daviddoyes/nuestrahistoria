@@ -1,13 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { RefreshCw, LogOut } from 'lucide-react'
+import { useState, useEffect, useCallback } from 'react'
+import Link from 'next/link'
+import { RefreshCw, ArrowLeft } from 'lucide-react'
 import ExperienciasSection from '@/components/admin/ExperienciasSection'
 import GooalsSection from '@/components/admin/GooalsSection'
 import GooalsV2Section from '@/components/admin/GooalsV2Section'
+import SugerenciasSection from '@/components/admin/SugerenciasSection'
+import RelanzamientoSection from '@/components/admin/RelanzamientoSection'
 
-const ADMIN_PASSWORD = 'LivestoryAdmin2024'
-const STORAGE_KEY = 'admin_auth'
 
 type Stats = {
   totalUsers: number
@@ -112,91 +113,61 @@ function ConversionRow({ label, value, total }: { label: string; value: number; 
 // ── Main page ──────────────────────────────────────────────
 
 export default function AdminPage() {
-  const [authed, setAuthed] = useState(false)
-  const [password, setPassword] = useState('')
-  const [passwordError, setPasswordError] = useState(false)
+  // 'comprobando' hasta que el servidor responde; no hay contraseña que
+  // guardar en el navegador, el permiso es el de tu sesión de Supabase.
+  const [acceso, setAcceso] = useState<'comprobando' | 'si' | 'no'>('comprobando')
   const [data, setData] = useState<AdminData | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    if (typeof window !== 'undefined' && localStorage.getItem(STORAGE_KEY) === 'true') {
-      setAuthed(true)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (authed) loadData()
-  }, [authed]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (password === ADMIN_PASSWORD) {
-      localStorage.setItem(STORAGE_KEY, 'true')
-      setAuthed(true)
-      setPasswordError(false)
-    } else {
-      setPasswordError(true)
-    }
-  }
-
-  const handleLogout = () => {
-    localStorage.removeItem(STORAGE_KEY)
-    setAuthed(false)
-    setData(null)
-  }
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setLoading(true)
     setError('')
     try {
-      const res = await fetch('/api/admin-stats', {
-        headers: { 'x-admin-key': ADMIN_PASSWORD },
-      })
+      // Sin cabeceras: la cookie de sesión identifica al usuario y el servidor
+      // comprueba profiles.es_admin.
+      const res = await fetch('/api/admin-stats')
+      if (res.status === 401) { setAcceso('no'); return }
       if (!res.ok) throw new Error('Error del servidor')
       setData(await res.json())
+      setAcceso('si')
     } catch {
       setError('No se pudieron cargar los datos. Inténtalo de nuevo.')
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
-  // ── Password gate ────────────────────────────────────────
-  if (!authed) {
+  useEffect(() => { loadData() }, [loadData])
+
+  // ── Sin permiso ──────────────────────────────────────────
+  if (acceso !== 'si') {
     return (
       <div style={{ minHeight: '100dvh', background: '#0A0A0A', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px' }}>
-        <div style={{ width: '100%', maxWidth: 340 }}>
-          <div style={{ textAlign: 'center', marginBottom: 32 }}>
-            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.25em', color: '#1DE9B6', textTransform: 'uppercase', marginBottom: 8 }}>
-              GooALS ADMIN
-            </p>
-            <div style={{ width: 40, height: 1, background: '#1DE9B6', margin: '0 auto' }} />
-          </div>
-          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <input
-              type="password"
-              value={password}
-              onChange={e => { setPassword(e.target.value); setPasswordError(false) }}
-              placeholder="Contraseña de administrador"
-              autoFocus
-              style={{
-                padding: '14px 16px', borderRadius: 12,
-                border: `1px solid ${passwordError ? '#8B3A3A' : '#2A2A2A'}`,
-                background: '#1A1A1A', color: '#F0F0F0', fontSize: 16,
-                outline: 'none', width: '100%', boxSizing: 'border-box',
-              }}
-            />
-            {passwordError && (
-              <p style={{ fontSize: 13, color: '#C97B7B' }}>Contraseña incorrecta</p>
-            )}
-            <button
-              type="submit"
-              style={{ padding: '14px 0', borderRadius: 12, background: '#1DE9B6', color: '#0A0A0A', fontWeight: 600, fontSize: 15, border: 'none', cursor: 'pointer' }}
-            >
-              Entrar
-            </button>
-          </form>
+        <div style={{ width: '100%', maxWidth: 340, textAlign: 'center' }}>
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.25em', color: '#1DE9B6', textTransform: 'uppercase', marginBottom: 8 }}>
+            GooALS ADMIN
+          </p>
+          <div style={{ width: 40, height: 1, background: '#1DE9B6', margin: '0 auto 28px' }} />
+          {acceso === 'comprobando' ? (
+            <p style={{ fontSize: 14, color: '#666666' }}>Comprobando tu acceso...</p>
+          ) : (
+            <>
+              <p style={{ fontSize: 15, color: '#C0C0C0', lineHeight: 1.6, marginBottom: 10 }}>
+                Esta cuenta no tiene acceso al panel.
+              </p>
+              <p style={{ fontSize: 13, color: '#666666', lineHeight: 1.6 }}>
+                Inicia sesión con una cuenta de administrador. Los permisos se
+                dan desde Supabase, en la columna <code>es_admin</code> de <code>profiles</code>.
+              </p>
+              <Link
+                href="/"
+                style={{ display: 'inline-block', marginTop: 24, padding: '12px 22px', borderRadius: 12, background: '#1DE9B6', color: '#0A0A0A', fontWeight: 600, fontSize: 15, textDecoration: 'none' }}
+              >
+                Ir al inicio
+              </Link>
+            </>
+          )}
         </div>
       </div>
     )
@@ -220,13 +191,13 @@ export default function AdminPage() {
             <RefreshCw style={{ width: 13, height: 13 }} className={loading ? 'animate-spin' : ''} />
             Actualizar
           </button>
-          <button
-            onClick={handleLogout}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#666666', background: 'none', border: 'none', cursor: 'pointer' }}
+          <Link
+            href="/"
+            style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#666666', textDecoration: 'none' }}
           >
-            <LogOut style={{ width: 13, height: 13 }} />
-            Salir
-          </button>
+            <ArrowLeft style={{ width: 13, height: 13 }} />
+            Volver a la app
+          </Link>
         </div>
       </div>
 
@@ -381,17 +352,27 @@ export default function AdminPage() {
 
           <Divider />
 
-          {/* ── Section 5: Catálogo Gooals V2 (Fase 3) ── */}
+          {/* ── Section 5: Correo a los usuarios existentes (Fase 3d) ── */}
+          <RelanzamientoSection />
+
+          <Divider />
+
+          {/* ── Section 6: Sugerencias de la comunidad (Fase 3b) ── */}
+          <SugerenciasSection />
+
+          <Divider />
+
+          {/* ── Section 7: Catálogo Gooals V2 (Fase 3) ── */}
           <GooalsV2Section />
 
           <Divider />
 
-          {/* ── Section 6: Gooals (arquitectura previa) ── */}
+          {/* ── Section 8: Gooals (arquitectura previa) ── */}
           <GooalsSection />
 
           <Divider />
 
-          {/* ── Section 7: Biblioteca de experiencias (legado, fuente de la migración) ── */}
+          {/* ── Section 9: Biblioteca de experiencias (legado, fuente de la migración) ── */}
           <ExperienciasSection />
 
         </div>

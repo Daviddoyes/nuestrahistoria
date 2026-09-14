@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
-import { isAdminRequest } from '@/lib/admin-auth'
-import { CATEGORIAS, DIFICULTADES, esCategoria, puntosPorDificultad } from '@/lib/gooals'
+import { esAdmin } from '@/lib/admin-auth'
+import {
+  CATEGORIAS, DIFICULTADES, esCategoria, puntosPorDificultad, puntosValidos,
+} from '@/lib/gooals'
 
 const CANTIDAD = 20
 
@@ -19,10 +21,11 @@ const SCHEMA = {
           descripcion: { type: 'string' },
           categoria: { type: 'string', enum: CATEGORIAS },
           dificultad: { type: 'string', enum: DIFICULTADES },
+          puntos: { type: 'integer', minimum: 1, maximum: 10 },
           ciudad: { type: 'string' },
           pais: { type: 'string' },
         },
-        required: ['titulo', 'descripcion', 'categoria', 'dificultad', 'ciudad', 'pais'],
+        required: ['titulo', 'descripcion', 'categoria', 'dificultad', 'puntos', 'ciudad', 'pais'],
         additionalProperties: false,
       },
     },
@@ -42,7 +45,7 @@ type GooalGenerado = {
 }
 
 export async function POST(request: Request) {
-  if (!isAdminRequest(request)) {
+  if (!await esAdmin()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -68,6 +71,7 @@ Reglas de los campos:
 - descripcion: 2 frases aspiracionales en español. NO menciones marcas, empresas ni locales concretos. Habla de la experiencia: qué se siente, qué se vive.
 - categoria: exactamente "${categoria}".
 - dificultad: "facil" (algo de un rato, sin preparación), "dificil" (requiere planificación, dinero o entrenamiento) o "epico" (un hito de los que se cuentan toda la vida).
+- puntos: un entero dentro de la banda de su dificultad — "facil" de 1 a 3, "dificil" de 4 a 7, "epico" de 8 a 10. Dentro de la banda, más puntos cuanto más cueste conseguirlo.
 - ciudad y pais: si el gooal es de un sitio concreto, indícalos; si vale en cualquier parte, pon cadena vacía en ambos.
 
 Reparte las dificultades: aproximadamente la mitad fáciles, un tercio difíciles y el resto épicos.
@@ -97,13 +101,18 @@ No repitas gooals ni escribas variaciones del mismo.`
       return NextResponse.json({ gooals: [], error: 'Respuesta vacía' }, { status: 502 })
     }
 
-    const { gooals } = JSON.parse(texto) as { gooals: Omit<GooalGenerado, 'puntos'>[] }
+    const { gooals } = JSON.parse(texto) as {
+      gooals: (Omit<GooalGenerado, 'puntos'> & { puntos?: number })[]
+    }
 
-    // Los puntos los pone el servidor desde el baremo, no el modelo: así el
-    // catálogo no se desequilibra si la IA se inventa una puntuación.
+    // Los puntos los valida el servidor: si el modelo propone uno dentro de
+    // la banda de su dificultad se respeta, y si no se cae al valor por
+    // defecto. Así el catálogo no se desequilibra por una puntuación inventada.
     const conPuntos: GooalGenerado[] = gooals.map(g => ({
       ...g,
-      puntos: puntosPorDificultad(g.dificultad),
+      puntos: puntosValidos(g.dificultad, Number(g.puntos))
+        ? Number(g.puntos)
+        : puntosPorDificultad(g.dificultad),
     }))
 
     return NextResponse.json({ gooals: conPuntos })

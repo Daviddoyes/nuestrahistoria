@@ -1,0 +1,95 @@
+# GooALS — música: lo que de verdad es música
+#
+# El PDF de música traía 504 retos y ninguno servía: 295 eran nombres de
+# festivales ("Vivir Bahidora", "Vivir NH7 Weekender") y 96 eran pabellones
+# intercambiables ("Ver un concierto en Hallenstadion"). Los festivales tienen
+# sede fija y se han ido a Espectáculos, con su pin en el mapa. Las salas con
+# alma, también.
+#
+# Lo que queda aquí es lo que no tiene sitio: la experiencia musical en sí.
+# Aprender a tocar algo, cantar delante de gente, ir a la ópera por primera
+# vez, salir de fiesta hasta que amanezca. Eso pasa en cualquier parte y por
+# eso no va al mapa.
+#
+# La vara es la de siempre: si no se puede contar, no es un gooal. "Escuchar
+# un disco entero" no se cuenta. "Tocar delante de público" sí.
+#
+# Formato: puntos | título | ciudad | país | consulta de mapa
+# Casi todos van sin ciudad: son deslocalizados a propósito.
+
+
+## IR A VERLO — sin sitio fijo
+
+1 | Ir a un concierto de tu grupo favorito | |
+1 | Ir a un concierto en un estadio | |
+2 | Ir a un festival de música de varios días | |
+2 | Asistir a un concierto de música clásica | |
+3 | Ir a la ópera | |
+2 | Ver un musical en un teatro | |
+2 | Ver un concierto de jazz en un club pequeño | |
+1 | Ir a un concierto de un grupo que no conocías | |
+2 | Ver tocar a una orquesta sinfónica en directo | |
+2 | Ir a un concierto acústico o desenchufado | |
+3 | Ver a un artista en su ciudad natal | |
+2 | Ir a un concierto tú solo | |
+4 | Viajar a otro país solo para ver un concierto | |
+
+
+## LA NOCHE
+
+2 | Salir de fiesta hasta que amanezca | |
+3 | Salir de fiesta en Ibiza | Ibiza | España | Ibiza, Islas Baleares
+2 | Bailar en una sesión de música electrónica de más de seis horas | |
+2 | Ir a una fiesta en la playa hasta el amanecer | |
+2 | Ir a una rave | |
+1 | Cantar en un karaoke delante de desconocidos | |
+
+
+## TOCAR Y CANTAR — lo que cuesta de verdad
+
+3 | Aprender a tocar un instrumento | |
+5 | Tocar una canción entera delante de público | |
+4 | Cantar delante de público | |
+5 | Tocar en una banda o grupo | |
+6 | Dar un concierto de pago | |
+4 | Participar en una jam session | |
+5 | Grabar una canción en un estudio | |
+6 | Componer una canción propia | |
+4 | Aprender a pinchar y hacer una sesión | |
+3 | Cantar en un coro | |
+5 | Tocar un instrumento en la calle | |
+
+
+## MÚSICA CON RAÍCES — el género donde nació
+
+3 | Ver flamenco en un tablao | |
+4 | Ver flamenco en Sevilla o Jerez | Sevilla | España | Sevilla, Andalucía
+4 | Ver tango en directo en Buenos Aires | Buenos Aires | Argentina | Buenos Aires, Argentina
+4 | Ver samba en directo en Río de Janeiro | Río de Janeiro | Brasil | Rio de Janeiro, Brasil
+3 | Ver fado en Lisboa | Lisboa | Portugal | Lisboa, Portugal
+5 | Ver jazz en directo en Nueva Orleans | Nueva Orleans | Estados Unidos | New Orleans, Louisiana
+4 | Ver country en directo en Nashville | Nashville | Estados Unidos | Nashville, Tennessee
+5 | Ver reggae en directo en Jamaica | Kingston | Jamaica | Kingston, Jamaica
+4 | Ver música en directo en un pub de Dublín | Dublín | Irlanda | Dublín, Irlanda
+5 | Ver blues en directo en un club de Chicago | Chicago | Estados Unidos | Chicago, Illinois
+5 | Ver ópera en Italia | | Italia
+4 | Ver un espectáculo de danza tradicional en Asia | |
+5 | Escuchar tambores en directo en África occidental | |
+
+
+## EL CARNAVAL Y LA CALLE
+
+3 | Ver una banda tocando en la calle y quedarte hasta el final | |
+3 | Ir a una verbena o fiesta mayor de pueblo | |
+4 | Ver una procesión de Semana Santa con banda | |
+
+
+## PARA LOS QUE VAN EN SERIO
+
+3 | Comprar un vinilo en una tienda de discos | |
+2 | Ver a un artista dos veces en la misma gira | |
+4 | Ver en directo a los cinco artistas que más escuchas | |
+5 | Ver un concierto en cinco países distintos | |
+6 | Ir a un festival en otro continente | |
+4 | Conocer en persona a un músico que admiras | |
+3 | Aprenderte una canción entera en otro idioma | |

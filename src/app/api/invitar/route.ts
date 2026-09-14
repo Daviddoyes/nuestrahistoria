@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { createClient as createServerClient } from '@/lib/supabase/server'
-import { createServiceRoleClient } from '@/lib/supabase-server'
+import { createServiceRoleClient } from '@/lib/supabase/service'
 
 const FROM = 'GooALS <hola@gooals.app>'
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://gooals.app'

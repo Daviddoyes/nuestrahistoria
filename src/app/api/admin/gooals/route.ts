@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server'
-import { createServiceRoleClient } from '@/lib/supabase-server'
-import { isAdminRequest } from '@/lib/admin-auth'
+import { createServiceRoleClient } from '@/lib/supabase/service'
+import { esAdmin } from '@/lib/admin-auth'
 import type { Gooal, GooalLugar } from '@/types/planes'
 
 const CATEGORIAS = ['viajes', 'deporte', 'gastronomia', 'cultura', 'aventura', 'musica']
 
 // ── Listado de gooals (con nº de lugares) o lugares de un gooal ──
 export async function GET(request: Request) {
-  if (!isAdminRequest(request)) {
+  if (!await esAdmin()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -49,7 +49,7 @@ export async function GET(request: Request) {
 
 // ── Crear gooal o añadir lugar (según body.tipo) ────────────────
 export async function POST(request: Request) {
-  if (!isAdminRequest(request)) {
+  if (!await esAdmin()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

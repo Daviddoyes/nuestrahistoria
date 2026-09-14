@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff } from 'lucide-react'
-import { createClient } from '@/lib/supabase-browser'
+import { createClient } from '@/lib/supabase/client'
 
 const supabase = createClient()
 
