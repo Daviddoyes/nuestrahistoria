@@ -9,7 +9,7 @@ import {
   BUCKET_PRUEBAS, errorDeArchivo, rutaDePrueba, tipoDePrueba, type TipoPrueba,
 } from '@/lib/prueba-media'
 import type {
-  GooalV2, UserGooal, UserGooalConGooal, MuroPostFeed, UsuarioMini,
+  GooalV2, MuroPostFeed, UsuarioMini,
   EstadoUserGooal, FiltrosCatalogo, FiltrosMapa, GooalMapa, FiltrosPines, PinMapa, Profile,
   PerfilCompleto, Conquistado, Pendiente, EnComun, GooalResumen,
 } from '@/types/gooals'
@@ -463,22 +463,19 @@ export async function getGooalV2(id: string): Promise<GooalV2 | null> {
  * Qué gooals tiene ya el usuario, para pintar los checks del grid.
  *
  * Va aparte del catálogo porque no depende de los filtros ni de la página: se
- * pide una vez al montar Explorar y vale para todas las páginas siguientes.
+ * pide una vez al montar Explorar (o el mapa) y vale para todas las páginas.
+ *
+ * Paginado: sin páginas se cortaba en 1.000 filas sin avisar, y quien tuviera
+ * más veía como pendiente o sin marcar algo que ya había conquistado.
  */
 export async function getMisEstadosGooals(): Promise<Record<string, EstadoUserGooal>> {
   const userId = await getUserId()
   if (!userId) return {}
 
-  const service = createServiceRoleClient()
-  const { data } = await service
-    .from('user_gooals')
-    .select('gooal_id, estado')
-    .eq('user_id', userId)
+  const filas = await listarEstados(createServiceRoleClient(), userId)
 
   const misEstados: Record<string, EstadoUserGooal> = {}
-  for (const fila of (data ?? []) as { gooal_id: string; estado: EstadoUserGooal }[]) {
-    misEstados[fila.gooal_id] = fila.estado
-  }
+  for (const fila of filas) misEstados[fila.gooal_id] = fila.estado
   return misEstados
 }
 
@@ -597,7 +594,7 @@ export async function anadirGooal(gooalId: string): Promise<{ success: boolean; 
       return { success: false, error: 'No se pudo añadir el gooal.' }
     }
 
-    revalidatePath('/mis-gooals')
+    revalidatePath('/perfil')
     return { success: true }
   } catch (e) {
     console.error('[anadirGooal]', e)
@@ -618,49 +615,8 @@ export async function quitarGooal(gooalId: string): Promise<{ success: boolean }
     .eq('gooal_id', gooalId)
     .eq('estado', 'pendiente')
 
-  revalidatePath('/mis-gooals')
+  revalidatePath('/perfil')
   return { success: true }
-}
-
-// ── Mis gooals ───────────────────────────────────────────────
-
-export async function getMisGooals(): Promise<{
-  pendientes: UserGooalConGooal[]
-  completados: UserGooalConGooal[]
-}> {
-  const userId = await getUserId()
-  if (!userId) return { pendientes: [], completados: [] }
-
-  const service = createServiceRoleClient()
-
-  const { data: filas } = await service
-    .from('user_gooals')
-    .select('*')
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false })
-
-  const mios = (filas ?? []) as UserGooal[]
-  if (mios.length === 0) return { pendientes: [], completados: [] }
-
-  const { data: gooals } = await service
-    .from('gooals_v2')
-    .select('*')
-    .in('id', [...new Set(mios.map(m => m.gooal_id))])
-
-  const porId = new Map(((gooals ?? []) as GooalV2[]).map(g => [g.id, g]))
-
-  // Un gooal borrado del catálogo dejaría la fila sin par: se descarta en vez
-  // de romper la lista entera.
-  const conGooal = mios
-    .map(m => ({ ...m, gooal: porId.get(m.gooal_id) }))
-    .filter((m): m is UserGooalConGooal => Boolean(m.gooal))
-
-  return {
-    pendientes: conGooal.filter(m => m.estado === 'pendiente'),
-    completados: conGooal
-      .filter(m => m.estado === 'completado')
-      .sort((a, b) => (b.completado_at ?? b.created_at).localeCompare(a.completado_at ?? a.created_at)),
-  }
 }
 
 const PRUEBA_NO_VALIDA = 'No hemos podido verificar tu prueba. Vuelve a subir la foto o el vídeo.'
@@ -789,7 +745,6 @@ export async function completarGooal(
       .eq('estado', 'completado')
     await service.from('gooals_v2').update({ veces_completado: count ?? 0 }).eq('id', gooalId)
 
-    revalidatePath('/mis-gooals')
     revalidatePath('/muro')
     revalidatePath('/perfil')
 
@@ -975,7 +930,7 @@ function listarEstados(
   service: ReturnType<typeof createServiceRoleClient>,
   userId: string
 ): Promise<{ gooal_id: string; estado: EstadoUserGooal }[]> {
-  return leerTodo('estados del visitante', (desde, hasta) =>
+  return leerTodo('estados de gooals', (desde, hasta) =>
     service
       .from('user_gooals')
       .select('gooal_id, estado')

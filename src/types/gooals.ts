@@ -48,9 +48,6 @@ export type UserGooal = {
   created_at: string
 }
 
-/** Fila de user_gooals con su gooal del catálogo ya resuelto. */
-export type UserGooalConGooal = UserGooal & { gooal: GooalV2 }
-
 /** Autor de un post o miembro de una lista de seguidores. */
 export type UsuarioMini = {
   id: string

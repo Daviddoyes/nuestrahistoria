@@ -217,12 +217,12 @@ function PerfilContenido() {
 
           {/* Lo que os une va lo primero tras la cabecera: es lo primero que se ve de alguien. */}
           {perfil.enComun && (
-            <div style={{ marginTop: 18 }}>
+            <div style={{ marginTop: 14 }}>
               <TarjetaEnComun enComun={perfil.enComun} onVerPendientes={verPendientes} />
             </div>
           )}
 
-          <div style={{ marginTop: 18 }}>
+          <div style={{ marginTop: 14 }}>
             <TarjetaCifras conquistados={perfil.conquistados.length} puntos={perfil.puntos} />
           </div>
 

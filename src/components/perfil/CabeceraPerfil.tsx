@@ -23,9 +23,9 @@ export default function CabeceraPerfil({
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 14, paddingTop: 4 }}>
       {/* El anillo va por fuera con box-shadow y no con el `borde` de Avatar:
-          ese borde crece con el tamaño (a 76 px saldría de 3 px) y va por dentro. */}
-      <div style={{ borderRadius: '50%', boxShadow: `0 0 0 2px ${esPropio ? '#00D1A7' : '#2A2E2C'}`, margin: 2, flexShrink: 0 }}>
-        <Avatar nombre={usuario.nombre} foto={usuario.foto_perfil_url} size={76} />
+          ese borde crece con el tamaño (a 64 px saldría de 2 px) y va por dentro. */}
+      <div style={{ borderRadius: '50%', boxShadow: `0 0 0 1.5px ${esPropio ? '#00D1A7' : '#2A2E2C'}`, margin: 1.5, flexShrink: 0 }}>
+        <Avatar nombre={usuario.nombre} foto={usuario.foto_perfil_url} size={64} />
       </div>
 
       <div style={{ flex: 1, minWidth: 0 }}>

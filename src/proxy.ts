@@ -48,7 +48,7 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith('/perfil') ||
     pathname.startsWith('/muro') ||
     pathname.startsWith('/explorar') ||
-    pathname.startsWith('/mis-gooals') ||
+    pathname.startsWith('/mapa') ||
     // /admin exige sesión aquí; que ADEMÁS seas admin lo comprueba el servidor
     // contra profiles.es_admin, tanto en la página como en cada /api/admin/*.
     pathname.startsWith('/admin')

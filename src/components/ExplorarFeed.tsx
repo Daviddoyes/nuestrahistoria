@@ -1,37 +1,17 @@
 'use client'
 
-import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
-import dynamic from 'next/dynamic'
-import { Search, X, Check, Hourglass, Plus, Map as MapIcon, LayoutGrid } from 'lucide-react'
-import { getCatalogoGooals, getMisEstadosGooals, getGooalV2 } from '@/lib/actions'
+import { useState, useCallback, useEffect, useRef } from 'react'
+import { Search, X, Check, Hourglass, Plus } from 'lucide-react'
+import { getCatalogoGooals, getMisEstadosGooals } from '@/lib/actions'
 import {
   CATEGORIAS, CATEGORIA_LABEL, CATEGORIA_GRADIENTE, DIFICULTADES, DIFICULTAD_META,
   type CategoriaGooal, type DificultadGooal,
 } from '@/lib/gooals'
 import GooalV2DetailModal from './GooalV2DetailModal'
+import ChipCategoria from './ChipCategoria'
 import SugerirGooalSheet from './SugerirGooalSheet'
 import type { ResultadoCompletado } from './CompletarGooalModal'
 import type { GooalV2, EstadoUserGooal } from '@/types/gooals'
-
-/**
- * Leaflet toca `window` nada más cargarse, así que no puede renderizarse en el
- * servidor: con SSR el build revienta. Se carga solo en el navegador y solo
- * cuando el usuario pulsa "Mapa", que además evita meter la librería en el
- * bundle de quien nunca lo abre.
- */
-const MapaGooals = dynamic(() => import('./MapaGooals'), {
-  ssr: false,
-  loading: () => (
-    <div style={{ ...mapaContenedor, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div className="w-5 h-5 border-2 border-[#2A2E2C] border-t-[#00D1A7] rounded-full animate-spin" />
-    </div>
-  ),
-})
-
-/** Cuánto esperamos a que el navegador resuelva la ubicación antes de rendirnos. */
-const ESPERA_UBICACION = 5000
-
-type Vista = 'lista' | 'mapa'
 
 type Props = {
   onCompletado: (resultado: ResultadoCompletado) => void
@@ -55,8 +35,6 @@ export default function ExplorarFeed({ onCompletado }: Props) {
   const [dificultad, setDificultad] = useState<DificultadGooal | null>(null)
   const [seleccionado, setSeleccionado] = useState<GooalV2 | null>(null)
   const [sugiriendo, setSugiriendo] = useState(false)
-  const [vista, setVista] = useState<Vista>('lista')
-  const [posicion, setPosicion] = useState<{ lat: number; lng: number } | null>(null)
 
   // Cada búsqueda o filtro dispara una consulta; si el usuario cambia de
   // opinión mientras vuela, la respuesta vieja no debe pisar a la nueva.
@@ -141,35 +119,6 @@ export default function ExplorarFeed({ onCompletado }: Props) {
     setDificultad(null)
   }
 
-  // Se pide la ubicación al abrir el mapa, no al montar Explorar: preguntar
-  // por el permiso a quien solo quiere la lista es intrusivo. La pantalla no
-  // espera — el mapa arranca en Europa y vuela a la ciudad si llega a tiempo.
-  useEffect(() => {
-    if (vista !== 'mapa' || posicion || !navigator.geolocation) return
-    navigator.geolocation.getCurrentPosition(
-      pos => setPosicion({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      err => console.warn('[mapa] sin ubicación:', err.message),
-      { timeout: ESPERA_UBICACION, maximumAge: 5 * 60 * 1000 },
-    )
-  }, [vista, posicion])
-
-  // Los filtros son los mismos en las dos vistas; se memorizan para que el mapa
-  // no vuelva a consultar en cada rerender del padre.
-  const filtrosMapa = useMemo(
-    () => ({ categoria, dificultad, busqueda: busquedaAplicada }),
-    [categoria, dificultad, busquedaAplicada],
-  )
-
-  // El pin solo trae nueve columnas; la ficha necesita la fila entera.
-  const abrirDesdeMapa = useCallback(async (id: string) => {
-    try {
-      const g = await getGooalV2(id)
-      if (g) setSeleccionado(g)
-    } catch (e) {
-      console.error('[mapa:ficha]', e)
-    }
-  }, [])
-
   /** Tras añadir o completar un gooal desde el modal. */
   const refrescar = useCallback(() => { cargarEstados() }, [cargarEstados])
 
@@ -239,38 +188,10 @@ export default function ExplorarFeed({ onCompletado }: Props) {
               </button>
             )
           })}
-
-          <div style={{ flex: 1 }} />
-
-          <button
-            onClick={() => setVista(v => (v === 'lista' ? 'mapa' : 'lista'))}
-            aria-label={vista === 'lista' ? 'Ver en el mapa' : 'Ver como lista'}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              padding: '6px 12px', borderRadius: 999, fontSize: 12, fontWeight: 600,
-              border: '1px solid #2A2E2C', background: '#1E2120', color: '#FFFFFF',
-              whiteSpace: 'nowrap', flexShrink: 0,
-            }}
-          >
-            {vista === 'lista'
-              ? <><MapIcon style={{ width: 13, height: 13 }} /> Mapa</>
-              : <><LayoutGrid style={{ width: 13, height: 13 }} /> Lista</>}
-          </button>
         </div>
       </div>
 
-      {/* ── Mapa ─────────────────────────────────────────── */}
-      {vista === 'mapa' ? (
-        <div style={mapaContenedor}>
-          <MapaGooals
-            filtros={filtrosMapa}
-            estados={misEstados}
-            posicion={posicion}
-            onSeleccionar={abrirDesdeMapa}
-          />
-        </div>
-      ) : /* ── Grid ───────────────────────────────────────── */
-      cargando ? (
+      {cargando ? (
         <div style={gridEstilo}>
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} style={{ aspectRatio: '1/1', borderRadius: 14, background: '#1E2120' }} className="animate-pulse" />
@@ -368,37 +289,6 @@ const gridEstilo: React.CSSProperties = {
 }
 const gridEstiloSuelto: React.CSSProperties = {
   display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8,
-}
-
-/** El mapa necesita una altura concreta: con height:100% en un padre que
- *  crece con su contenido, Leaflet se queda a cero píxeles. */
-const mapaContenedor: React.CSSProperties = {
-  height: 'calc(100dvh - 300px)',
-  minHeight: 340,
-  margin: '0 12px 24px',
-  borderRadius: 14,
-  overflow: 'hidden',
-  border: '1px solid #2A2E2C',
-}
-
-function ChipCategoria({
-  activo, onClick, children,
-}: { activo: boolean; onClick: () => void; children: React.ReactNode }) {
-  return (
-    <button
-      onClick={onClick}
-      aria-pressed={activo}
-      style={{
-        flexShrink: 0, padding: '7px 14px', borderRadius: 999, fontSize: 12, fontWeight: 500,
-        border: `1px solid ${activo ? '#00D1A7' : '#2A2E2C'}`,
-        background: activo ? 'rgba(0,209,167,0.12)' : 'transparent',
-        color: activo ? '#00D1A7' : '#A3B1AC',
-        transition: 'all 0.2s', whiteSpace: 'nowrap',
-      }}
-    >
-      {children}
-    </button>
-  )
 }
 
 function CardGooal({

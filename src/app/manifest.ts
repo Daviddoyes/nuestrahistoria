@@ -5,7 +5,9 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'GooALS',
     short_name: 'GooALS',
     description: 'Convierte tus intenciones en recuerdos.',
-    start_url: '/',
+    // La app instalada abre directamente en el mapa, la pantalla principal.
+    // Sin sesión, el proxy manda de /mapa al login, que es lo correcto.
+    start_url: '/mapa',
     display: 'standalone',
     orientation: 'portrait',
     background_color: '#0B0B0B',

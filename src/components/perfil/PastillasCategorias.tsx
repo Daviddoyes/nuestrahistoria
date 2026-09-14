@@ -11,35 +11,48 @@ type Props = { conteos: ConteoCategoria[] }
  */
 export default function PastillasCategorias({ conteos }: Props) {
   return (
-    <div
-      role="group"
-      aria-label="Gooals conquistados por categoría"
-      style={{
-        display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none',
-        // Sangra hasta los bordes de la pantalla para que se note que desliza.
-        margin: '0 -20px', padding: '0 20px 2px',
-      }}
-    >
-      {conteos.map(({ categoria, conquistados }) => {
-        const vacia = conquistados === 0
-        return (
-          <span
-            key={categoria}
-            style={{
-              flexShrink: 0, display: 'flex', alignItems: 'center', gap: 7,
-              background: '#161817', border: '1px solid #2A2E2C', borderRadius: 999,
-              padding: '7px 12px', fontSize: 13, color: '#FFFFFF', whiteSpace: 'nowrap',
-            }}
-          >
+    // Sangra hasta los bordes de la pantalla para que se note que desliza.
+    <div style={{ position: 'relative', margin: '0 -20px' }}>
+      <div
+        role="group"
+        aria-label="Gooals conquistados por categoría"
+        style={{
+          display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none',
+          // A la derecha, 8 px más que el degradado: al llegar al final la última
+          // pastilla queda entera y no medio tapada.
+          padding: '0 32px 2px 20px',
+        }}
+      >
+        {conteos.map(({ categoria, conquistados }) => {
+          const vacia = conquistados === 0
+          return (
             <span
-              aria-hidden
-              style={{ width: 8, height: 8, borderRadius: '50%', background: CATEGORIA_COLOR[categoria], opacity: vacia ? 0.45 : 1 }}
-            />
-            {CATEGORIA_LABEL[categoria]}
-            <span style={{ fontWeight: 700, color: vacia ? '#7A8A85' : '#FFFFFF' }}>{conquistados}</span>
-          </span>
-        )
-      })}
+              key={categoria}
+              style={{
+                flexShrink: 0, display: 'flex', alignItems: 'center', gap: 6,
+                background: '#161817', border: '1px solid #2A2E2C', borderRadius: 999,
+                padding: '5px 10px', fontSize: 11, color: '#FFFFFF', whiteSpace: 'nowrap',
+              }}
+            >
+              <span
+                aria-hidden
+                style={{ width: 7, height: 7, borderRadius: '50%', background: CATEGORIA_COLOR[categoria], opacity: vacia ? 0.45 : 1 }}
+              />
+              {CATEGORIA_LABEL[categoria]}
+              <span style={{ fontWeight: 700, color: vacia ? '#7A8A85' : '#FFFFFF' }}>{conquistados}</span>
+            </span>
+          )
+        })}
+      </div>
+
+      {/* Sin este degradado la fila parece cortada por un fallo, no algo que se desliza. */}
+      <span
+        aria-hidden
+        style={{
+          position: 'absolute', top: 0, right: 0, bottom: 0, width: 24, pointerEvents: 'none',
+          background: 'linear-gradient(to left, #0B0B0B, rgba(11,11,11,0))',
+        }}
+      />
     </div>
   )
 }

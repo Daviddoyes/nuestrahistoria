@@ -2,14 +2,16 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Newspaper, Compass, Trophy, User } from 'lucide-react'
+import { Map as MapIcon, Newspaper, Compass, User } from 'lucide-react'
 
-export type Tab = 'muro' | 'explorar' | 'mis-gooals' | 'perfil'
+export type Tab = 'mapa' | 'explorar' | 'muro' | 'perfil'
 
+// El mapa va primero: es la pantalla principal. "Mis gooals" ya no existe como
+// pestaña; conquistados y pendientes viven en el perfil.
 const TABS: { id: Tab; href: string; label: string; Icon: typeof Newspaper }[] = [
-  { id: 'muro', href: '/muro', label: 'Muro', Icon: Newspaper },
+  { id: 'mapa', href: '/mapa', label: 'Mapa', Icon: MapIcon },
   { id: 'explorar', href: '/explorar', label: 'Explorar', Icon: Compass },
-  { id: 'mis-gooals', href: '/mis-gooals', label: 'Mis Gooals', Icon: Trophy },
+  { id: 'muro', href: '/muro', label: 'Muro', Icon: Newspaper },
   { id: 'perfil', href: '/perfil', label: 'Perfil', Icon: User },
 ]
 
@@ -21,7 +23,7 @@ type Props = {
 
 export default function BottomNav({ activeTab, fotoPerfil }: Props) {
   const pathname = usePathname()
-  const actual = activeTab ?? TABS.find(t => pathname.startsWith(t.href))?.id ?? 'muro'
+  const actual = activeTab ?? TABS.find(t => pathname.startsWith(t.href))?.id ?? 'mapa'
 
   return (
     <nav

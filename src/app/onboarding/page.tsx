@@ -93,7 +93,7 @@ export default function OnboardingPage() {
         .single()
 
       if (!profile) { router.push('/'); return }
-      if (profile.onboarding_completado === true) { router.push('/muro'); return }
+      if (profile.onboarding_completado === true) { router.push('/mapa'); return }
 
       const n = profile.nombre || ''
       setNombre(n)
@@ -180,7 +180,7 @@ export default function OnboardingPage() {
         .eq('id', user.id)
 
       if (error) throw error
-      router.push('/muro')
+      router.push('/mapa')
     } catch (err) {
       console.error('[Onboarding] error:', err)
       setFinishError(err instanceof Error ? err.message : JSON.stringify(err))

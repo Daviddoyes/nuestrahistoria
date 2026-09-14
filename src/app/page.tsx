@@ -1,13 +1,64 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, X } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { tomarDestinoPendiente } from '@/lib/redireccion'
+import PantallaMarca from '@/components/PantallaMarca'
 type Tab = 'login' | 'register'
 
 export default function AuthPage() {
   const router = useRouter()
+  const supabase = useMemo(() => createClient(), [])
+
+  // Mientras se decide si hay sesión no se pinta el formulario: se vería un
+  // instante antes de salir hacia el mapa.
+  const [comprobando, setComprobando] = useState(true)
+
+  /**
+   * Quien ya tiene sesión no debe ver el login. Reglas, en este orden:
+   *   1. mientras se comprueba, PantallaMarca (el render de abajo)
+   *   2. sin sesión: el formulario, como siempre
+   *   3. con sesión y ?invite=…: se queda aquí sin redirigir. Ese código aún no
+   *      lo lee nadie, pero la puerta queda abierta para cuando se use
+   *   4. con sesión y un destino pendiente válido: ahí, manda más que el mapa
+   *   5. si no: /onboarding o /mapa según onboarding_completado
+   */
+  useEffect(() => {
+    let vivo = true
+    const mostrarFormulario = () => { if (vivo) setComprobando(false) }
+
+    const decidir = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return mostrarFormulario()
+
+        if (new URLSearchParams(window.location.search).get('invite')) return mostrarFormulario()
+
+        const destino = tomarDestinoPendiente()
+        if (destino) { router.replace(destino); return }
+
+        const { data: perfil } = await supabase
+          .from('profiles')
+          .select('onboarding_completado')
+          .eq('id', user.id)
+          .single()
+
+        // replace y no push: si no, "atrás" desde el mapa volvería aquí y
+        // rebotaría otra vez hacia delante.
+        router.replace(perfil?.onboarding_completado ? '/mapa' : '/onboarding')
+      } catch (e) {
+        // Si no se puede comprobar, el formulario: peor es quedarse en la pantalla de marca.
+        console.error('[inicio] comprobando sesión:', e)
+        mostrarFormulario()
+      }
+    }
+
+    decidir()
+    return () => { vivo = false }
+  }, [supabase, router])
+
   const [tab, setTab] = useState<Tab>('login')
   const [nombre, setNombre] = useState('')
   const [email, setEmail] = useState('')
@@ -20,8 +71,6 @@ export default function AuthPage() {
   const [resetEmail, setResetEmail] = useState('')
   const [resetLoading, setResetLoading] = useState(false)
   const [resetSent, setResetSent] = useState(false)
-
-  const supabase = createClient()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -39,11 +88,11 @@ export default function AuthPage() {
       return
     }
 
-    // Return the user to a pending destination (e.g. a public plan link)
-    const redirect = localStorage.getItem('post_login_redirect')
-    if (redirect) {
-      localStorage.removeItem('post_login_redirect')
-      router.push(redirect)
+    // Si iba a un sitio concreto antes de tener que entrar, se le devuelve ahí.
+    // Validado: sin validar, este login servía para redirigir a otra web.
+    const destino = tomarDestinoPendiente()
+    if (destino) {
+      router.push(destino)
       return
     }
 
@@ -54,7 +103,7 @@ export default function AuthPage() {
       .single()
 
     if (profile?.onboarding_completado) {
-      router.push('/muro')
+      router.push('/mapa')
     } else {
       router.push('/onboarding')
     }
@@ -117,6 +166,8 @@ export default function AuthPage() {
     'w-full px-4 py-3.5 rounded-xl border border-[#2A2E2C] bg-[#2A2E2C] text-[#FFFFFF] placeholder-[#7A8A85] focus:outline-none focus:border-[#00D1A7] text-base'
   const labelClass =
     'block text-[10px] font-medium uppercase tracking-[0.12em] text-[#7A8A85] mb-1.5'
+
+  if (comprobando) return <PantallaMarca />
 
   return (
     <>
