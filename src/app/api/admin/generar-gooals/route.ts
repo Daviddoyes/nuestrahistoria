@@ -2,10 +2,21 @@ import { NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { esAdmin } from '@/lib/admin-auth'
 import {
-  CATEGORIAS, PUNTOS_MAX, PUNTOS_MIN, esCategoria, puntosEnEscala,
+  CATEGORIAS, PUNTOS_MAX, PUNTOS_MIN, esCategoria, puntosEnEscala, type CategoriaGooal,
 } from '@/lib/gooals'
 
 const CANTIDAD = 20
+
+// El nombre solo no basta: "vida" o "eventos" se entienden de mil maneras. Es la
+// misma regla con la que se repartió el catálogo (supabase/fase3g.sql).
+const QUE_ENTRA: Record<CategoriaGooal, string> = {
+  viajes: 'sitios construidos por el ser humano que visitar: monumentos, ciudades, museos',
+  naturaleza: 'lo que se ve o dónde se está: paisajes, cumbres, fauna, fenómenos naturales',
+  eventos: 'asistir a algo: conciertos, festivales, partidos, espectáculos, fiestas',
+  deporte: 'hacer una actividad física o de riesgo, no solo verla',
+  gastronomia: 'probar platos, bebidas o restaurantes',
+  vida: 'un título o hito personal que se consigue: cursos, certificaciones, carnés',
+}
 
 // Structured outputs: la respuesta viene validada contra este esquema, así que
 // no hace falta limpiar ```json ni arriesgarse con un JSON.parse a ciegas.
@@ -62,7 +73,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Categoría no válida' }, { status: 400 })
   }
 
-  const prompt = `Genera ${CANTIDAD} "gooals" (retos vitales que apetece conseguir) de la categoría "${categoria}", pensados para gente de ${zona}.
+  const prompt = `Genera ${CANTIDAD} "gooals" (retos vitales que apetece conseguir) de la categoría "${categoria}" (${QUE_ENTRA[categoria]}), pensados para gente de ${zona}.
 
 Un gooal es algo concreto que una persona puede lograr y demostrar con una foto.
 

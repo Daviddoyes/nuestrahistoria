@@ -2,10 +2,18 @@
 """GooALS — convierte los PDFs de retos en SQL + JSON para sembrar gooals_v2.
 
     python generar_sql.py ../../RETOS          # los 6 PDFs de golpe
-    python generar_sql.py ../../RETOS musica   # solo una categoria
+    python generar_sql.py ../../RETOS aventura # solo un origen (un PDF)
 
 Escribe output/<categoria>.sql (idempotente, para el SQL Editor de Supabase) y
 gooals.json (que consume insertar.mjs para sembrar via API REST).
+
+ORIGEN Y CATEGORIA NO SON LO MISMO. Los PDFs llegan con siete categorias de
+origen (viajes, deporte, aventura, gastronomia, cultura, musica, espectaculos)
+y la app tiene seis (viajes, naturaleza, eventos, deporte, gastronomia, vida).
+Todo el script trabaja por origen, que es como vienen los PDFs, y solo al
+final reparte en las seis con reparto_categorias.txt. Por eso aqui siguen
+apareciendo "aventura" o "cultura": son nombres de PDF, no de categoria. Cada
+fila de gooals.json guarda los dos: 'origen' y 'categoria'.
 
 Los PDFs traen tres formatos distintos; hay un parser para cada uno:
 
@@ -441,6 +449,81 @@ TRABAJOS = [
 ]
 
 
+# ── Las seis categorias ──────────────────────────────────────────────
+# Mismas que CATEGORIAS en src/lib/gooals.ts y que la restriccion
+# gooals_v2_categoria_valida de supabase/fase3g.sql. La base rechaza cualquier
+# otra, asi que una categoria de origen nunca debe llegar a la salida.
+CATEGORIAS = ['viajes', 'naturaleza', 'eventos', 'deporte', 'gastronomia', 'vida']
+
+# Adonde va cada origen si reparto_categorias.txt no dice otra cosa.
+DESTINO_POR_DEFECTO = {
+    'viajes': 'viajes',
+    'deporte': 'deporte',
+    'gastronomia': 'gastronomia',
+    'cultura': 'viajes',
+    'musica': 'eventos',
+    'espectaculos': 'eventos',
+    'aventura': 'naturaleza',
+}
+
+
+def leer_reparto():
+    """{(origen, titulo): (categoria, dudosa)} desde reparto_categorias.txt.
+
+    Solo trae las excepciones al destino por defecto y las dudosas. La clave
+    es el titulo final, el que queda en gooals.json: ya limpio, fusionado y
+    desambiguado con el pais o la ciudad.
+    """
+    ruta = Path(__file__).parent / 'reparto_categorias.txt'
+    reparto = {}
+    if not ruta.is_file():
+        print('  !! falta reparto_categorias.txt: todo irá a su destino por defecto',
+              file=sys.stderr)
+        return reparto
+    for n, linea in enumerate(ruta.read_text(encoding='utf-8').splitlines(), 1):
+        linea = linea.strip()
+        if not linea or linea.startswith('#'):
+            continue
+        campos = [c.strip() for c in linea.split('|')]
+        if len(campos) not in (3, 4) or campos[0] not in DESTINO_POR_DEFECTO \
+                or campos[2] not in CATEGORIAS or (len(campos) == 4 and campos[3] != 'dudosa'):
+            print(f'  reparto_categorias.txt:{n} línea mal formada, la salto: {linea}',
+                  file=sys.stderr)
+            continue
+        reparto[(campos[0], campos[1])] = (campos[2], len(campos) == 4)
+    return reparto
+
+
+def repartir(por_origen, reparto):
+    """De las filas por origen a las filas por categoria nueva.
+
+    Cada fila conserva de donde vino en 'origen' y lleva 'categoria_dudosa'.
+    Los dos campos se colocan justo detras de 'categoria', en el mismo orden
+    que tiene ya gooals.json, para que regenerar no ensucie el diff.
+    """
+    salida = {c: [] for c in CATEGORIAS}
+    usadas = set()
+    for origen, filas in por_origen.items():
+        for r in filas:
+            clave = (origen, r['titulo'])
+            categoria, dudosa = reparto.get(clave, (DESTINO_POR_DEFECTO[origen], False))
+            if clave in reparto:
+                usadas.add(clave)
+            fila = {}
+            for k, v in r.items():
+                if k == 'categoria':
+                    fila['categoria'] = categoria
+                    fila['origen'] = origen
+                    fila['categoria_dudosa'] = dudosa
+                else:
+                    fila[k] = v
+            salida[categoria].append(fila)
+    # Una línea del reparto que no encuentra su reto es un título que ha cambiado
+    # en el PDF o en las limpiezas: ese reto habrá ido a su destino por defecto.
+    sin_usar = [k for k in reparto if k[0] in por_origen and k not in usadas]
+    return {c: filas for c, filas in salida.items() if filas}, sin_usar
+
+
 # ══ Limpieza y salida ══
 
 # ── 1. "pais" generico que no es un lugar -> null ────────────────────
@@ -627,7 +710,7 @@ def ambito_de(r, cat):
         return 'lugar'
     if r.get('ciudad'):
         return 'lugar'
-    if r.get('pais') and cat in ('cultura', 'aventura'):
+    if r.get('pais') and cat in ('viajes', 'naturaleza'):
         return 'lugar'
     return 'personal'
 
@@ -639,6 +722,7 @@ def sql_categoria(cat, rows):
     (disparador de supabase/fase3f.sql). Aqui se sigue usando internamente,
     porque es lo que traen los PDFs, pero solo para decidir los puntos.
     Todo nace en 'borrador': se publica al verificarlo en el panel.
+    `cat` es la categoria NUEVA: las filas ya pasaron por repartir().
     """
     rep = {k: sum(1 for r in rows if r['dificultad'] == k) for k in PUNTOS}
     L = [
@@ -648,20 +732,23 @@ def sql_categoria(cat, rows):
         f'-- {len(rows)} gooals · ' + ' · '.join(f'{k}: {v}' for k, v in rep.items())
         + f' · {sum(r["puntos"] for r in rows)} puntos en total',
         '--',
-        '-- Idempotente: compara título + categoría, así que relanzarlo no duplica.',
+        '-- Idempotente: compara solo el título, así que relanzarlo no duplica.',
+        '-- Solo el título y no título + categoría: si en el panel se le cambia la',
+        '-- categoría a un gooal, relanzar esto lo volvería a meter en la de antes.',
         '-- ═══════════════════════════════════════════════════════════',
         '',
-        'insert into gooals_v2 (titulo, descripcion, categoria, puntos, ciudad, pais, activo, estado, ambito)',
-        "select v.titulo, v.descripcion, v.categoria, v.puntos, v.ciudad, v.pais, true, 'borrador', v.ambito",
+        'insert into gooals_v2 (titulo, descripcion, categoria, categoria_dudosa, puntos, ciudad, pais, activo, estado, ambito)',
+        "select v.titulo, v.descripcion, v.categoria, v.categoria_dudosa, v.puntos, v.ciudad, v.pais, true, 'borrador', v.ambito",
         'from (values',
         ',\n'.join(
             f'  ({lit(r["titulo"])}, {lit(r["descripcion"])}, {lit(cat)}, '
+            f'{"true" if r.get("categoria_dudosa") else "false"}, '
             f'{r["puntos"]}, {lit(r["ciudad"])}, {lit(r["pais"])}, {lit(ambito_de(r, cat))})'
             for r in rows
         ),
-        ') as v(titulo, descripcion, categoria, puntos, ciudad, pais, ambito)',
+        ') as v(titulo, descripcion, categoria, categoria_dudosa, puntos, ciudad, pais, ambito)',
         'where not exists (',
-        '  select 1 from gooals_v2 g where g.titulo = v.titulo and g.categoria = v.categoria',
+        '  select 1 from gooals_v2 g where g.titulo = v.titulo',
         ');',
         '',
     ]
@@ -787,7 +874,6 @@ def main():
           f"{'cede':>6}{'mano':>6}{'final':>7}   dificultad")
     descuadre = []
     for cat, filas_cat in salida.items():
-        (destino / f'{cat}.sql').write_text(sql_categoria(cat, filas_cat), encoding='utf-8')
         c = cuentas[cat]
         rep = {k: sum(1 for r in filas_cat if r['dificultad'] == k) for k in PUNTOS}
         print(f"  {cat:12}{c['declarados']:>6}{c['extraidos']:>8}"
@@ -818,34 +904,59 @@ def main():
         print('No he generado nada.', file=sys.stderr)
         return 1
 
-    # Las coordenadas las pone geocodificar.mjs, que tarda casi una hora. Sin
-    # esto, cualquier regeneracion del catalogo las borraria y habria que volver
-    # a geocodificar desde cero.
+    # ── De los siete origenes a las seis categorias ──
+    salida, sin_usar = repartir(salida, leer_reparto())
+    print('\n  reparto: ' + ' · '.join(
+        f"{c} {len(f)}" + (f" ({sum(1 for r in f if r['categoria_dudosa'])} dudosas)"
+                           if any(r['categoria_dudosa'] for r in f) else '')
+        for c, f in salida.items()))
+    if sin_usar:
+        print(f'  !! {len(sin_usar)} líneas de reparto_categorias.txt no encuentran su reto'
+              ' (título cambiado): esos retos han ido a su destino por defecto.', file=sys.stderr)
+        for origen, titulo in sin_usar[:10]:
+            print(f'     {origen} | {titulo}', file=sys.stderr)
+
+    # Con un solo origen, un <categoria>.sql tendría solo un trozo de la
+    # categoría y se confundiría con el completo: lleva el origen delante.
+    for cat, filas_cat in salida.items():
+        nombre = f'{solo}-a-{cat}.sql' if solo else f'{cat}.sql'
+        (destino / nombre).write_text(sql_categoria(cat, filas_cat), encoding='utf-8')
+
+    # Lo que pusieron a mano los scripts de OpenStreetMap, que tardan horas:
+    #   lat, lng, geo, geo_encontrado  geocodificar.mjs (casi una hora)
+    #   geo_clase, geo_tipo            qué tipo de sitio es según OpenStreetMap
+    #                                  (1.183 consultas, una por segundo)
+    # Sin esto, cualquier regeneración del catálogo los borraría y habría que
+    # volver a preguntar desde cero.
+    #
+    # Se busca por título y NO por categoría + título: al pasar a seis categorías
+    # un reto puede cambiar de categoría sin cambiar de título, y el título ya es
+    # único en todo el catálogo (lo garantiza el dedupe cruzado de arriba).
+    CONSERVAR = ('lat', 'lng', 'geo', 'geo_encontrado', 'geo_clase', 'geo_tipo')
     destino_json = Path(__file__).parent / 'gooals.json'
     if destino_json.is_file():
         try:
             previo = json.loads(destino_json.read_text(encoding='utf-8'))
         except (ValueError, OSError):
             previo = {}
-        coords = {}
-        for cat_previa, filas_previas in previo.items():
+        guardados = {}
+        for filas_previas in previo.values():
             for r in filas_previas:
-                if r.get('lat') is not None or r.get('geo'):
-                    coords[(cat_previa, r['titulo'])] = {
-                        k: r[k] for k in ('lat', 'lng', 'geo', 'geo_encontrado')
-                        if k in r
-                    }
+                # 'geo_clase' en r, aunque valga null: null significa "se preguntó
+                # y OpenStreetMap no lo confirmó", y perderlo haría repetir la consulta.
+                if r.get('lat') is not None or r.get('geo') or 'geo_clase' in r:
+                    guardados[r['titulo']] = {k: r[k] for k in CONSERVAR if k in r}
         rescatadas = 0
-        for cat_nueva, filas_nuevas in salida.items():
+        for filas_nuevas in salida.values():
             for r in filas_nuevas:
-                guardado = coords.get((cat_nueva, r['titulo']))
+                guardado = guardados.get(r['titulo'])
                 if guardado:
                     r.update(guardado)
                     rescatadas += 1
-        if coords:
-            print(f'\ncoordenadas conservadas: {rescatadas} de {len(coords)}')
-            if rescatadas < len(coords):
-                print(f'  {len(coords) - rescatadas} se pierden porque su título ha cambiado;'
+        if guardados:
+            print(f'\ncoordenadas y tipos de sitio conservados: {rescatadas} de {len(guardados)}')
+            if rescatadas < len(guardados):
+                print(f'  {len(guardados) - rescatadas} se pierden porque su título ha cambiado;'
                       ' vuelve a lanzar geocodificar.mjs para recuperarlas.')
 
     destino_json.write_text(

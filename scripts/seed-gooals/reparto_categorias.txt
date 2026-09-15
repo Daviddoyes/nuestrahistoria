@@ -1,0 +1,1691 @@
+# GooALS — reparto de los retos en las seis categorías
+#
+#   viajes · naturaleza · eventos · deporte · gastronomia · vida
+#
+# Los PDFs siguen llegando con sus siete categorías de origen. Cada origen
+# tiene un destino por defecto (en DESTINO_POR_DEFECTO de generar_sql.py):
+#
+#   viajes -> viajes        deporte -> deporte      gastronomia -> gastronomia
+#   cultura -> viajes       musica -> eventos       espectaculos -> eventos
+#   aventura -> naturaleza
+#
+# Aquí solo están las excepciones: los retos que van a otra categoría, y los
+# que la regla no tenía claros ("dudosa": la categoría es la mejor apuesta y en
+# el panel se pueden sacar con el filtro "Categoría dudosa").
+#
+# La regla para decidir: lo que VES o DÓNDE ESTÁS es naturaleza, HACER la
+# actividad es deporte y el TÍTULO que consigues (cursos, certificaciones) es vida.
+#
+# Mismo reparto que aplicó supabase/fase3g.sql a la base (15-9-2026).
+# Formato: origen | título tal como sale del PDF | categoría [| dudosa]
+
+## viajes (por defecto a viajes)
+viajes | Visitar 4,000 Islands | naturaleza
+viajes | Visitar Abel Tasman National Park | naturaleza
+viajes | Visitar Abha and Asir mountains | naturaleza
+viajes | Visitar Abisko National Park | naturaleza
+viajes | Visitar Abu Simbel | viajes | dudosa
+viajes | Visitar Acantilados de Étretat | naturaleza
+viajes | Visitar Acatenango volcano | naturaleza
+viajes | Visitar Aconcagua | naturaleza
+viajes | Visitar Acrópolis y Partenón | viajes | dudosa
+viajes | Visitar Actun Tunichil Muknal Cave | naturaleza
+viajes | Visitar Ada Bojana | naturaleza
+viajes | Visitar Adam's Peak | naturaleza
+viajes | Visitar Addo Elephant National Park | naturaleza
+viajes | Visitar Addu Atoll | naturaleza
+viajes | Visitar Adršpach-Teplice Rocks | naturaleza
+viajes | Visitar Ágora Antigua | viajes | dudosa
+viajes | Visitar Akagera National Park | naturaleza
+viajes | Visitar Akamas Peninsula | naturaleza
+viajes | Visitar Al Ahsa Oasis | naturaleza
+viajes | Visitar Al Ain Oasis | naturaleza
+viajes | Visitar Al Balad | viajes | dudosa
+viajes | Visitar Al Soudah | viajes | dudosa
+viajes | Visitar Al Wahbah Crater | naturaleza
+viajes | Visitar Al-Khazneh | viajes | dudosa
+viajes | Visitar Al-Ula and Hegra | viajes | dudosa
+viajes | Visitar Ala Archa National Park | naturaleza
+viajes | Visitar Ala-Kul Lake | naturaleza
+viajes | Visitar Åland Islands | naturaleza
+viajes | Visitar Alcatraz | naturaleza
+viajes | Visitar Aldabra Atoll | naturaleza
+viajes | Visitar Alejandro de Humboldt National Park | naturaleza
+viajes | Visitar Aletsch Glacier | naturaleza
+viajes | Visitar Alishan | viajes | dudosa
+viajes | Visitar Alpbach | viajes | dudosa
+viajes | Visitar Altai Tavan Bogd National Park | naturaleza
+viajes | Visitar Altun Ha | viajes | dudosa
+viajes | Visitar Altyn Arashan | viajes | dudosa
+viajes | Visitar Amador Causeway | viajes | dudosa
+viajes | Visitar Amazon rainforest | naturaleza
+viajes | Visitar Amazonas and Leticia | naturaleza
+viajes | Visitar Amber Mountain National Park | naturaleza
+viajes | Visitar Ambergris Caye | naturaleza
+viajes | Visitar Amboseli National Park | naturaleza
+viajes | Visitar Andasibe-Mantadia National Park | naturaleza
+viajes | Visitar Angel Falls | naturaleza
+viajes | Visitar Annapurna Base Camp | viajes | dudosa
+viajes | Visitar Annapurna Circuit | viajes | dudosa
+viajes | Visitar Annecy y su lago | naturaleza
+viajes | Visitar Anse Cocos | naturaleza
+viajes | Visitar Anse Georgette | naturaleza
+viajes | Visitar Anse Intendance | viajes | dudosa
+viajes | Visitar Anse Lazio | naturaleza
+viajes | Visitar Anse Source d'Argent | naturaleza
+viajes | Visitar Antelope Canyon | naturaleza
+viajes | Visitar Antigua Guatemala | viajes | dudosa
+viajes | Visitar Aoraki/Mount Cook | naturaleza
+viajes | Visitar Apo Reef | naturaleza
+viajes | Visitar Appenzell y Ebenalp | viajes | dudosa
+viajes | Visitar Appleton Estate | viajes | dudosa
+viajes | Visitar Apuseni Mountains | naturaleza
+viajes | Visitar Aqaba and Red Sea | viajes | dudosa
+viajes | Visitar Aran Islands | naturaleza
+viajes | Visitar Arashiyama Bamboo Grove | viajes | dudosa
+viajes | Visitar Archipelago Trail | naturaleza
+viajes | Visitar Arctic Circle | viajes | dudosa
+viajes | Visitar Ardenas | viajes | dudosa
+viajes | Visitar Areguá | viajes | dudosa
+viajes | Visitar Arenal Volcano | naturaleza
+viajes | Visitar Areni wine region | viajes | dudosa
+viajes | Visitar Ari Atoll whale shark areas | naturaleza
+viajes | Visitar Ark of Bukhara | viajes | dudosa
+viajes | Visitar Arslanbob walnut forest | naturaleza
+viajes | Visitar Arugam Bay | naturaleza
+viajes | Visitar Arusha National Park | naturaleza
+viajes | Visitar Asunción historic center | viajes | dudosa
+viajes | Visitar Atacama Desert | naturaleza
+viajes | Visitar Atlantic Ocean Road | viajes | dudosa
+viajes | Visitar Atlas Mountains | naturaleza
+viajes | Visitar Atomium | viajes | dudosa
+viajes | Visitar Augrabies Falls | naturaleza
+viajes | Visitar Aukštaitija National Park | naturaleza
+viajes | Visitar Aurora Sky Station | viajes | dudosa
+viajes | Visitar Avenue of the Baobabs | viajes | dudosa
+viajes | Visitar Awash National Park | naturaleza
+viajes | Visitar Axum obelisks | viajes | dudosa
+viajes | Visitar Aydarkul Lake | naturaleza
+viajes | Visitar Ayutthaya Historical Park | naturaleza | dudosa
+viajes | Visitar Azure Window site/Dwejra Bay | naturaleza
+viajes | Visitar Baa Atoll Biosphere Reserve | naturaleza
+viajes | Visitar Bacalar Lagoon | viajes | dudosa
+viajes | Visitar Baga Gazriin Chuluu | naturaleza
+viajes | Visitar Bahía de Kotor | naturaleza
+viajes | Visitar Bahía de las Águilas | naturaleza
+viajes | Visitar Bahia Palace | viajes | dudosa
+viajes | Visitar Baining Fire Dance region | viajes | dudosa
+viajes | Visitar Baiyer River Sanctuary region | naturaleza
+viajes | Visitar Bako National Park | naturaleza
+viajes | Visitar Bale Mountains National Park | naturaleza
+viajes | Visitar Bamberg histórico | viajes | dudosa
+viajes | Visitar Banana Reef | naturaleza
+viajes | Visitar Banaue Rice Terraces | naturaleza
+viajes | Visitar Banda Islands | naturaleza
+viajes | Visitar Banff National Park | naturaleza
+viajes | Visitar Bangweulu Wetlands | naturaleza
+viajes | Visitar Banteay Srei | viajes | dudosa
+viajes | Visitar Baptism Site at Bethany Beyond the Jordan | viajes | dudosa
+viajes | Visitar Baracoa | viajes | dudosa
+viajes | Visitar Bariloche and Nahuel Huapi | naturaleza
+viajes | Visitar Barton Creek Cave | naturaleza
+viajes | Visitar Batad Rice Terraces | viajes | dudosa
+viajes | Visitar Batu Caves | naturaleza
+viajes | Visitar Bay of Fundy | naturaleza
+viajes | Visitar Bay of Islands | naturaleza
+viajes | Visitar Bay of Pigs | naturaleza
+viajes | Visitar Bayon | viajes | dudosa
+viajes | Visitar Beagle Channel | viajes | dudosa
+viajes | Visitar Beau Vallon | viajes | dudosa
+viajes | Visitar Belize Barrier Reef | naturaleza
+viajes | Visitar Bellapais Abbey | viajes | dudosa
+viajes | Visitar Belle Mare | viajes | dudosa
+viajes | Visitar Belogradchik Rocks | naturaleza
+viajes | Visitar Benagil Cave | naturaleza
+viajes | Visitar Beqa Lagoon | naturaleza
+viajes | Visitar Bernina Express | viajes | dudosa
+viajes | Visitar Bieszczady Mountains | naturaleza
+viajes | Visitar Big Ben y Westminster | viajes | dudosa
+viajes | Visitar Big Sur | viajes | dudosa
+viajes | Visitar Bigăr region waterfalls | naturaleza
+viajes | Visitar Bimmah Sinkhole | viajes | dudosa
+viajes | Visitar Binnenhof | viajes | dudosa
+viajes | Visitar Biogradska Gora | naturaleza
+viajes | Visitar Biotopo del Quetzal | naturaleza
+viajes | Visitar Bird Island | naturaleza
+viajes | Visitar Black Lake | naturaleza
+viajes | Visitar Black River Gorges National Park | naturaleza
+viajes | Visitar Black River safari | naturaleza
+viajes | Visitar Blagaj Tekke | viajes | dudosa
+viajes | Visitar Blue Bay Marine Park | naturaleza
+viajes | Visitar Blue Cave | naturaleza
+viajes | Visitar Blue Grotto | naturaleza
+viajes | Visitar Blue Hole | naturaleza
+viajes | Visitar Blue Lagoon · Islandia | naturaleza
+viajes | Visitar Blue Lagoon · Jamaica | naturaleza
+viajes | Visitar Blue Lagoon · Laos | naturaleza
+viajes | Visitar Blue Lagoon · Malta | naturaleza
+viajes | Visitar Blue Mountain Peak | naturaleza
+viajes | Visitar Blue Mountains · Australia | naturaleza
+viajes | Visitar Blue Mountains · Jamaica | naturaleza
+viajes | Visitar Blue Nile Falls | naturaleza
+viajes | Visitar Blyde River Canyon | naturaleza
+viajes | Visitar Bocas del Toro | viajes | dudosa
+viajes | Visitar Bogotá Monserrate | viajes | dudosa
+viajes | Visitar Bokor National Park | naturaleza
+viajes | Visitar Bolaven Plateau | naturaleza
+viajes | Visitar Bondi Beach | naturaleza
+viajes | Visitar Bonito | viajes | dudosa
+viajes | Visitar Boquete | viajes | dudosa
+viajes | Visitar Bora Bora Lagoon | naturaleza
+viajes | Visitar Borjomi | viajes | dudosa
+viajes | Visitar Bornholm | naturaleza
+viajes | Visitar Boseong Green Tea Fields | viajes | dudosa
+viajes | Visitar Bósforo | naturaleza
+viajes | Visitar Bosque de Białowieża | naturaleza
+viajes | Visitar Boston Bay | naturaleza
+viajes | Visitar Boudhanath | viajes | dudosa
+viajes | Visitar Boulders Beach | naturaleza
+viajes | Visitar Bouma National Heritage Park | naturaleza | dudosa
+viajes | Visitar Brasília modernist core | viajes | dudosa
+viajes | Visitar Bridge on the River Kwai | viajes | dudosa
+viajes | Visitar Brujas histórico | viajes | dudosa
+viajes | Visitar Bryce Canyon | naturaleza
+viajes | Visitar Buenos Aires Obelisk | viajes | dudosa
+viajes | Visitar Bunaken Marine Park | naturaleza | dudosa
+viajes | Visitar Burj Al Arab | viajes | dudosa
+viajes | Visitar Burj Khalifa | viajes | dudosa
+viajes | Visitar Butrint | viajes | dudosa
+viajes | Visitar Bwindi Impenetrable National Park | naturaleza
+viajes | Visitar Cabarete | naturaleza
+viajes | Visitar Cabo da Roca | naturaleza
+viajes | Visitar Cabo Polonio | naturaleza
+viajes | Visitar Cabo San Lucas Arch | naturaleza
+viajes | Visitar Caesarea National Park | naturaleza
+viajes | Visitar Cahuita National Park | naturaleza
+viajes | Visitar Cajas National Park | naturaleza
+viajes | Visitar Cala Macarella | naturaleza
+viajes | Visitar Calanques de Marsella y Cassis | naturaleza
+viajes | Visitar Caldera de Santorini | viajes | dudosa
+viajes | Visitar Cameron Highlands | naturaleza
+viajes | Visitar Camiguin Island | naturaleza
+viajes | Visitar Caminito del Rey | viajes | dudosa
+viajes | Visitar Campos de lavanda | naturaleza
+viajes | Visitar Canaima National Park | naturaleza
+viajes | Visitar Cango Caves | naturaleza
+viajes | Visitar Canopy Walk | naturaleza
+viajes | Visitar Caño Cristales | naturaleza
+viajes | Visitar Caño Island Biological Reserve | naturaleza
+viajes | Visitar Capadocia en globo | viajes | dudosa
+viajes | Visitar Cape Cross seal colony | naturaleza
+viajes | Visitar Cape Greco | naturaleza
+viajes | Visitar Cape Kaliakra | naturaleza
+viajes | Visitar Cape Kolka | naturaleza
+viajes | Visitar Cape Point | naturaleza
+viajes | Visitar Capri y Faraglioni | viajes | dudosa
+viajes | Visitar Caracas Ávila/Waraira Repano | viajes | dudosa
+viajes | Visitar Caracol | viajes | dudosa
+viajes | Visitar Cardamom Mountains | naturaleza
+viajes | Visitar Carretera Austral | naturaleza
+viajes | Visitar Cataratas de Krimml | naturaleza
+viajes | Visitar Cataratas del Rin | naturaleza
+viajes | Visitar Catatumbo lightning region | viajes | dudosa
+viajes | Visitar Caye Caulker | naturaleza
+viajes | Visitar Cayo Coco | naturaleza
+viajes | Visitar Cayo Guillermo | viajes | dudosa
+viajes | Visitar Cayo Jutías | naturaleza
+viajes | Visitar Cayo Levantado | naturaleza
+viajes | Visitar Ceahlău Massif | naturaleza
+viajes | Visitar Cenote Ik Kil | naturaleza
+viajes | Visitar Central Kalahari Game Reserve | viajes | dudosa
+viajes | Visitar Central Park | naturaleza | dudosa
+viajes | Visitar Cerro Akatî | naturaleza
+viajes | Visitar Cerro Corá National Park | naturaleza
+viajes | Visitar Cerro Tres Kandu | naturaleza
+viajes | Visitar Český Krumlov | viajes | dudosa
+viajes | Visitar Cetinje historic center | viajes | dudosa
+viajes | Visitar Chaco region | viajes | dudosa
+viajes | Visitar Chamarel Waterfall | naturaleza
+viajes | Visitar Chamonix y Mont Blanc | naturaleza
+viajes | Visitar Chan Chan | viajes | dudosa
+viajes | Visitar Chapada Diamantina | naturaleza
+viajes | Visitar Chapada dos Veadeiros | naturaleza
+viajes | Visitar Chapman's Peak Drive | naturaleza
+viajes | Visitar Charvak Reservoir | naturaleza
+viajes | Visitar Chefchaouen | viajes | dudosa
+viajes | Visitar Chemka Hot Springs | naturaleza
+viajes | Visitar Chichén Itzá | naturaleza
+viajes | Visitar Chiloé churches and palafitos | viajes | dudosa
+viajes | Visitar Chimanimani Mountains | naturaleza
+viajes | Visitar Chimborazo Reserve | naturaleza
+viajes | Visitar Chimgan Mountains | naturaleza
+viajes | Visitar Chimpanzee trekking | viajes | dudosa
+viajes | Visitar Chinatown | viajes | dudosa
+viajes | Visitar Chinhoyi Caves | naturaleza
+viajes | Visitar Chishimba Falls | naturaleza
+viajes | Visitar Chitwan National Park | naturaleza
+viajes | Visitar Chobe National Park | naturaleza
+viajes | Visitar Chobe River | naturaleza
+viajes | Visitar Chocolate Hills | viajes | dudosa
+viajes | Visitar Chon-Kemin Valley | naturaleza
+viajes | Visitar Chungará Lake | naturaleza
+viajes | Visitar Churchill polar bear region | viajes | dudosa
+viajes | Visitar Chyulu Hills | viajes | dudosa
+viajes | Visitar Cienfuegos | viajes | dudosa
+viajes | Visitar Cinque Terre | viajes | dudosa
+viajes | Visitar Ciudad Perdida | viajes | dudosa
+viajes | Visitar Clarke Quay | viajes | dudosa
+viajes | Visitar Cliffs of Moher | naturaleza
+viajes | Visitar Cloud 9 floating platform | naturaleza
+viajes | Visitar Cockscomb Basin Wildlife Sanctuary | naturaleza
+viajes | Visitar Cocora Valley | naturaleza
+viajes | Visitar Coffee Cultural Landscape | viajes | dudosa
+viajes | Visitar Coiba National Park | naturaleza
+viajes | Visitar Colca Canyon | naturaleza
+viajes | Visitar Colina Gellért | viajes | dudosa
+viajes | Visitar Colmar | viajes | dudosa
+viajes | Visitar Colo-i-Suva Forest Park | naturaleza
+viajes | Visitar Colonia del Sacramento | viajes | dudosa
+viajes | Visitar Comuna 13 | viajes | dudosa
+viajes | Visitar Côn Đảo Islands | naturaleza
+viajes | Visitar Congo Nile Trail | naturaleza
+viajes | Visitar Conguillío National Park | naturaleza
+viajes | Visitar Connemara National Park | naturaleza
+viajes | Visitar Constanza valley | naturaleza
+viajes | Visitar Cook's Bay | naturaleza
+viajes | Visitar Copacabana | viajes | dudosa
+viajes | Visitar Copolia Trail | naturaleza
+viajes | Visitar Copper Canyon | naturaleza
+viajes | Visitar Coral Coast | naturaleza
+viajes | Visitar Corcovado National Park | naturaleza
+viajes | Visitar Coro historic center | viajes | dudosa
+viajes | Visitar Coron lagoons | naturaleza
+viajes | Visitar Costa Amalfitana | naturaleza
+viajes | Visitar Cotopaxi National Park | naturaleza
+viajes | Visitar Cotswolds | viajes | dudosa
+viajes | Visitar Cousin Island | naturaleza
+viajes | Visitar Cradle Mountain-Lake St Clair | naturaleza
+viajes | Visitar Creux du Van | viajes | dudosa
+viajes | Visitar Cu Chi Tunnels | viajes | dudosa
+viajes | Visitar Cuenca historic center | viajes | dudosa
+viajes | Visitar Cueva de las Manos | naturaleza
+viajes | Visitar Cueva del Guácharo | naturaleza
+viajes | Visitar Cuevas de Aggtelek | naturaleza
+viajes | Visitar Cuevas de Postojna | naturaleza
+viajes | Visitar Cuevas de Škocjan | naturaleza
+viajes | Visitar Curieuse Island | naturaleza
+viajes | Visitar Curonian Spit | naturaleza
+viajes | Visitar Dades Gorge | naturaleza
+viajes | Visitar Daintree Rainforest | naturaleza
+viajes | Visitar Damaraland | viajes | dudosa
+viajes | Visitar Dammam Corniche | viajes | dudosa
+viajes | Visitar Dana Biosphere Reserve | naturaleza
+viajes | Visitar Danakil Depression | naturaleza
+viajes | Visitar Danum Valley | naturaleza
+viajes | Visitar Đavolja Varoš | viajes | dudosa
+viajes | Visitar Dead Sea | viajes | dudosa
+viajes | Visitar Dead Sea shore | naturaleza
+viajes | Visitar Deadvlei | viajes | dudosa
+viajes | Visitar Defensores del Chaco National Park | naturaleza
+viajes | Visitar Delft histórico | viajes | dudosa
+viajes | Visitar Delos | naturaleza
+viajes | Visitar Delta del Danubio | naturaleza
+viajes | Visitar Đerdap National Park | naturaleza
+viajes | Visitar Desert Castles | viajes | dudosa
+viajes | Visitar Desert safari dunes | naturaleza
+viajes | Visitar Dettifoss | viajes | dudosa
+viajes | Visitar Devil's Pool | naturaleza
+viajes | Visitar Devil's Throat Cave | naturaleza
+viajes | Visitar Dhërmi Beach | naturaleza
+viajes | Visitar Dhigurah | viajes | dudosa
+viajes | Visitar Diamond Beach | naturaleza
+viajes | Visitar Diani Beach | naturaleza
+viajes | Visitar Dilijan National Park | naturaleza
+viajes | Visitar Dingle Peninsula | naturaleza
+viajes | Visitar Dingli Cliffs | naturaleza
+viajes | Visitar Diriyah At-Turaif | viajes | dudosa
+viajes | Visitar DMZ observation areas | viajes | dudosa
+viajes | Visitar Doi Inthanon | naturaleza
+viajes | Visitar Doi Suthep | naturaleza
+viajes | Visitar Dolomitas | naturaleza
+viajes | Visitar Dome of the Rock | viajes | dudosa
+viajes | Visitar Dotonbori | viajes | dudosa
+viajes | Visitar Doubtful Sound | naturaleza
+viajes | Visitar Duke of York Islands | naturaleza
+viajes | Visitar Dún Aonghasa | viajes | dudosa
+viajes | Visitar Duna de Pilat | naturaleza
+viajes | Visitar Dunas de Słowiński | naturaleza
+viajes | Visitar Dune 45 | viajes | dudosa
+viajes | Visitar Dunn's River Falls | naturaleza
+viajes | Visitar Durban Golden Mile | viajes | dudosa
+viajes | Visitar Durbuy | viajes | dudosa
+viajes | Visitar Durmitor National Park | naturaleza
+viajes | Visitar Eagle hunter region | viajes | dudosa
+viajes | Visitar Easter Island moai | naturaleza
+viajes | Visitar Eastern Highlands | naturaleza
+viajes | Visitar Edfu Temple | viajes | dudosa
+viajes | Visitar Edge of the World | viajes | dudosa
+viajes | Visitar Eduardo Avaroa Andean Fauna Reserve | naturaleza
+viajes | Visitar Éfeso | viajes | dudosa
+viajes | Visitar Ein Gedi | viajes | dudosa
+viajes | Visitar Eisriesenwelt | viajes | dudosa
+viajes | Visitar El Limón Waterfall | naturaleza
+viajes | Visitar El Mirador | viajes | dudosa
+viajes | Visitar El Nido | viajes | dudosa
+viajes | Visitar El Tatio geysers | naturaleza
+viajes | Visitar El Valle de Antón | naturaleza
+viajes | Visitar Elephant Rock | naturaleza
+viajes | Visitar Elsen Tasarkhai dunes | naturaleza
+viajes | Visitar Emerald Sea | viajes | dudosa
+viajes | Visitar Entoto Mountain | naturaleza
+viajes | Visitar Epidauro | viajes | dudosa
+viajes | Visitar Epupa Falls | naturaleza
+viajes | Visitar Erawan Falls | naturaleza
+viajes | Visitar Erg Chebbi | viajes | dudosa
+viajes | Visitar Erta Ale volcano | naturaleza
+viajes | Visitar Estrasburgo y Petite France | viajes | dudosa
+viajes | Visitar Etosha National Park | naturaleza
+viajes | Visitar Everest Base Camp | naturaleza
+viajes | Visitar Everglades National Park | naturaleza
+viajes | Visitar Fakarava Atoll | naturaleza
+viajes | Visitar Fansipan | viajes | dudosa
+viajes | Visitar Farasan Islands | naturaleza
+viajes | Visitar Félicité Island | naturaleza
+viajes | Visitar Fernando de Noronha | viajes | dudosa
+viajes | Visitar Fes el-Bali | viajes | dudosa
+viajes | Visitar Fig Tree Bay | naturaleza
+viajes | Visitar Fish River Canyon | naturaleza
+viajes | Visitar Flåm Railway | viajes | dudosa
+viajes | Visitar Flaming Cliffs Bayanzag | naturaleza
+viajes | Visitar Flic en Flac | viajes | dudosa
+viajes | Visitar Flores | viajes | dudosa
+viajes | Visitar Florianópolis beaches | naturaleza
+viajes | Visitar Fo Guang Shan | viajes | dudosa
+viajes | Visitar Fox Glacier | naturaleza
+viajes | Visitar Franz Josef Glacier | naturaleza
+viajes | Visitar Fray Bentos Industrial Landscape | viajes | dudosa
+viajes | Visitar Frenchman's Cove | viajes | dudosa
+viajes | Visitar Fruška Gora National Park | naturaleza
+viajes | Visitar Fuego volcano viewpoint | naturaleza
+viajes | Visitar Fuentes Georginas | naturaleza
+viajes | Visitar Fulhadhoo | naturaleza
+viajes | Visitar Fuvahmulah tiger shark diving | naturaleza
+viajes | Visitar Galápagos Islands | naturaleza
+viajes | Visitar Galería Uffizi | viajes | dudosa
+viajes | Visitar Galerías Reales Saint-Hubert | viajes | dudosa
+viajes | Visitar Gamla Stan | viajes | dudosa
+viajes | Visitar Garden Route | naturaleza
+viajes | Visitar Gardens by the Bay | viajes | dudosa
+viajes | Visitar Garganta de Samaria | naturaleza
+viajes | Visitar Garganta Vintgar | naturaleza
+viajes | Visitar Gargantas del Verdon | naturaleza
+viajes | Visitar Garzón wine region | viajes | dudosa
+viajes | Visitar Gauja National Park | naturaleza
+viajes | Visitar Gcwihaba Caves | naturaleza
+viajes | Visitar Geirangerfjord | naturaleza
+viajes | Visitar Georgian Military Highway | viajes | dudosa
+viajes | Visitar Geysir geothermal area | viajes | dudosa
+viajes | Visitar Għajn Tuffieħa | viajes | dudosa
+viajes | Visitar Giant's Causeway | naturaleza
+viajes | Visitar Giethoorn | viajes | dudosa
+viajes | Visitar Gili Islands | naturaleza
+viajes | Visitar Giraffe Centre | viajes | dudosa
+viajes | Visitar Gishwati-Mukura National Park | naturaleza
+viajes | Visitar Gjipe Beach | naturaleza
+viajes | Visitar Glacier Express | naturaleza
+viajes | Visitar Glen Coe | naturaleza
+viajes | Visitar Gobi Desert | naturaleza
+viajes | Visitar Gocta Waterfall | naturaleza
+viajes | Visitar God's Window | viajes | dudosa
+viajes | Visitar Goðafoss | viajes | dudosa
+viajes | Visitar Gokyo Lakes | naturaleza
+viajes | Visitar Golden Bay | naturaleza
+viajes | Visitar Golden Circle | viajes | dudosa
+viajes | Visitar Gonarezhou National Park | naturaleza
+viajes | Visitar Gornergrat | naturaleza
+viajes | Visitar Goroka cultural region | naturaleza
+viajes | Visitar Gothenburg archipelago | naturaleza
+viajes | Visitar Gouda histórico | viajes | dudosa
+viajes | Visitar Gran Sabana | naturaleza
+viajes | Visitar Grand Anse | naturaleza
+viajes | Visitar Grand Baie | viajes | dudosa
+viajes | Visitar Grand Canyon | naturaleza
+viajes | Visitar Graz y Schlossberg | viajes | dudosa
+viajes | Visitar Great Astrolabe Reef | naturaleza
+viajes | Visitar Great Barrier Reef | naturaleza
+viajes | Visitar Great Blue Hole | viajes | dudosa
+viajes | Visitar Great Kemeri Bog Boardwalk | naturaleza
+viajes | Visitar Great Ocean Road | viajes | dudosa
+viajes | Visitar Green Island | naturaleza
+viajes | Visitar Grey Glacier | naturaleza
+viajes | Visitar Grindelwald First | viajes | dudosa
+viajes | Visitar Gris Gris | viajes | dudosa
+viajes | Visitar Gros Morne National Park | naturaleza
+viajes | Visitar Grossglockner High Alpine Road | viajes | dudosa
+viajes | Visitar Grote Markt | viajes | dudosa
+viajes | Visitar Grunas Waterfall | naturaleza
+viajes | Visitar Guanajuato historic center | viajes | dudosa
+viajes | Visitar Guatapé and Piedra del Peñol | viajes | dudosa
+viajes | Visitar Gudauri | naturaleza
+viajes | Visitar Guinness Storehouse | viajes | dudosa
+viajes | Visitar Gulf of Chiriquí National Marine Park | naturaleza | dudosa
+viajes | Visitar Gulhi | viajes | dudosa
+viajes | Visitar Gullfoss | viajes | dudosa
+viajes | Visitar Gunung Mulu National Park | naturaleza
+viajes | Visitar Gutmanis Cave | naturaleza
+viajes | Visitar Gyeongju historic areas | viajes | dudosa
+viajes | Visitar Hà Giang Loop | viajes | dudosa
+viajes | Visitar Ha Long Bay | naturaleza
+viajes | Visitar Haeundae Beach | naturaleza
+viajes | Visitar Half Moon Caye | viajes | dudosa
+viajes | Visitar Hallasan | naturaleza
+viajes | Visitar Hallerbos en flor | viajes | dudosa
+viajes | Visitar Hallstatt | viajes | dudosa
+viajes | Visitar Hang Sơn Đoòng region | viajes | dudosa
+viajes | Visitar Hanifaru Bay | naturaleza
+viajes | Visitar Harar Jugol | viajes | dudosa
+viajes | Visitar Hatta mountains and dam | viajes | dudosa
+viajes | Visitar Hawai'i Volcanoes National Park | naturaleza
+viajes | Visitar Hawker centres | viajes | dudosa
+viajes | Visitar Hell's Gate National Park | viajes | dudosa
+viajes | Visitar Henri Pittier National Park | naturaleza
+viajes | Visitar Hierve el Agua | viajes | dudosa
+viajes | Visitar High Coast | naturaleza
+viajes | Visitar Hiiumaa Island | naturaleza
+viajes | Visitar Hill of Crosses | viajes | dudosa
+viajes | Visitar Himarë | viajes | dudosa
+viajes | Visitar Historic center of Cusco | viajes | dudosa
+viajes | Visitar Hiva Oa | naturaleza
+viajes | Visitar Hluhluwe-Imfolozi | naturaleza
+viajes | Visitar Hoàn Kiếm Lake | naturaleza
+viajes | Visitar Hobbitenango area | viajes | dudosa
+viajes | Visitar Hobbiton | viajes | dudosa
+viajes | Visitar Hol Chan Marine Reserve | naturaleza
+viajes | Visitar Hollókő | viajes | dudosa
+viajes | Visitar Hollywood Sign | viajes | dudosa
+viajes | Visitar Horton Plains and World's End | viajes | dudosa
+viajes | Visitar Hoyo Azul | viajes | dudosa
+viajes | Visitar HP Reef | naturaleza
+viajes | Visitar Huacachina Oasis | naturaleza
+viajes | Visitar Huascarán National Park | naturaleza
+viajes | Visitar Hulhumalé beach | naturaleza
+viajes | Visitar Huon Peninsula | naturaleza
+viajes | Visitar Hustai National Park | naturaleza
+viajes | Visitar Hvar Town | viajes | dudosa
+viajes | Visitar Hwange National Park | naturaleza
+viajes | Visitar Icefields Parkway | viajes | dudosa
+viajes | Visitar Icehotel | naturaleza
+viajes | Visitar Iguazú Falls · Argentina | naturaleza
+viajes | Visitar Iguazu Falls · Brasil | naturaleza
+viajes | Visitar Ijen Crater | naturaleza
+viajes | Visitar Île aux Aigrettes | naturaleza
+viajes | Visitar Île aux Cerfs | naturaleza
+viajes | Visitar Île Sainte-Marie | naturaleza
+viajes | Visitar Ilha Grande | naturaleza
+viajes | Visitar Incahuasi Island | naturaleza
+viajes | Visitar Ingapirca | viajes | dudosa
+viajes | Visitar Innsbruck y Golden Roof | viajes | dudosa
+viajes | Visitar Interlaken | viajes | dudosa
+viajes | Visitar Intramuros | viajes | dudosa
+viajes | Visitar Ipanema | viajes | dudosa
+viajes | Visitar Irazú Volcano | naturaleza
+viajes | Visitar Isalo National Park | naturaleza
+viajes | Visitar Isla de los Museos | viajes | dudosa
+viajes | Visitar Isla de Rügen y Königsstuhl | naturaleza
+viajes | Visitar Isla de Skye | naturaleza
+viajes | Visitar Isla del Sol | naturaleza
+viajes | Visitar Isla Holbox | naturaleza
+viajes | Visitar Islas Wadden | naturaleza
+viajes | Visitar Issyk-Kul Lake | naturaleza
+viajes | Visitar Jajce Waterfall | naturaleza
+viajes | Visitar James Bond Island | naturaleza
+viajes | Visitar Jarabacoa | viajes | dudosa
+viajes | Visitar Jasna Góra Monastery | viajes | dudosa
+viajes | Visitar Jasper National Park | naturaleza
+viajes | Visitar Jebel Akhdar | viajes | dudosa
+viajes | Visitar Jebel Hafeet | naturaleza
+viajes | Visitar Jebel Jais | naturaleza
+viajes | Visitar Jebel Jais Flight | deporte
+viajes | Visitar Jebel Shams | viajes | dudosa
+viajes | Visitar Jeddah Corniche | viajes | dudosa
+viajes | Visitar Jeju Island | naturaleza
+viajes | Visitar Jericho and Mount of Temptation | naturaleza
+viajes | Visitar Jericoacoara | viajes | dudosa
+viajes | Visitar Jesuit Missions of La Santísima Trinidad | viajes | dudosa
+viajes | Visitar Jesús de Tavarangue | viajes | dudosa
+viajes | Visitar Jeti-Ögüz | viajes | dudosa
+viajes | Visitar Jewel Changi Airport | viajes | dudosa
+viajes | Visitar Jigokudani Snow Monkey Park | naturaleza | dudosa
+viajes | Visitar Jinja Source of the Nile | viajes | dudosa
+viajes | Visitar Jiuzhaigou Valley | naturaleza
+viajes | Visitar Jökulsárlón Glacier Lagoon | naturaleza
+viajes | Visitar José Ignacio | viajes | dudosa
+viajes | Visitar Jotunheimen National Park | naturaleza
+viajes | Visitar Jungfraujoch | naturaleza
+viajes | Visitar Jurassic Coast | naturaleza
+viajes | Visitar Jūrmala beach | naturaleza
+viajes | Visitar K'gari/Fraser Island | naturaleza
+viajes | Visitar Kaali crater | naturaleza
+viajes | Visitar Kadavu Island | naturaleza
+viajes | Visitar Kafue National Park | naturaleza
+viajes | Visitar Kakadu National Park | naturaleza
+viajes | Visitar Kakheti wine region | viajes | dudosa
+viajes | Visitar Kakslauttanen region igloos | viajes | dudosa
+viajes | Visitar Kalambo Falls | naturaleza
+viajes | Visitar Kalemegdan | viajes | dudosa
+viajes | Visitar Kalyan Minaret | viajes | dudosa
+viajes | Visitar Kampong Glam | viajes | dudosa
+viajes | Visitar Kampot riverside | viajes | dudosa
+viajes | Visitar Kanazawa Kenroku-en | viajes | dudosa
+viajes | Visitar Kandy Lake | naturaleza
+viajes | Visitar Kaokoland | viajes | dudosa
+viajes | Visitar Karakol Gorge | naturaleza
+viajes | Visitar Karakorum and Erdene Zuu | viajes | dudosa
+viajes | Visitar Karhunkierros Trail | naturaleza
+viajes | Visitar Karijini National Park | naturaleza
+viajes | Visitar Karlovy Vary | viajes | dudosa
+viajes | Visitar Kasanka National Park | naturaleza
+viajes | Visitar Kata Tjuta | naturaleza
+viajes | Visitar Kawasan Falls | naturaleza
+viajes | Visitar Kel-Suu Lake | naturaleza
+viajes | Visitar Kelimutu Lakes | naturaleza
+viajes | Visitar Kemeri National Park | naturaleza
+viajes | Visitar Kenting National Park | naturaleza
+viajes | Visitar Kerala Backwaters | viajes | dudosa
+viajes | Visitar Kernavė archaeological site | viajes | dudosa
+viajes | Visitar Kgalagadi region | viajes | dudosa
+viajes | Visitar Khama Rhino Sanctuary | naturaleza
+viajes | Visitar Khao Sok National Park | naturaleza
+viajes | Visitar Khndzoresk cave village | viajes | dudosa
+viajes | Visitar Khone Phapheng Falls | naturaleza
+viajes | Visitar Khongoryn Els dunes | naturaleza
+viajes | Visitar Khorgo Volcano | naturaleza
+viajes | Visitar Khövsgöl Lake | naturaleza
+viajes | Visitar Khwai Community Area | naturaleza
+viajes | Visitar Kibale National Park | naturaleza
+viajes | Visitar Kidepo Valley National Park | naturaleza
+viajes | Visitar Kilim Geoforest Park | naturaleza
+viajes | Visitar Killarney National Park | naturaleza
+viajes | Visitar Kilmainham Gaol | viajes | dudosa
+viajes | Visitar Kimbe Bay | naturaleza
+viajes | Visitar Kinabalu National Park | naturaleza
+viajes | Visitar Kings Canyon | naturaleza
+viajes | Visitar Kirindy Reserve | naturaleza
+viajes | Visitar Kirkjufell | viajes | dudosa
+viajes | Visitar Kiruna | viajes | dudosa
+viajes | Visitar Kjeragbolten | naturaleza
+viajes | Visitar Koh Lipe | naturaleza
+viajes | Visitar Koh Rong | naturaleza
+viajes | Visitar Koh Rong Samloem | naturaleza
+viajes | Visitar Koh Tao | viajes | dudosa
+viajes | Visitar Kokoda Track | viajes | dudosa
+viajes | Visitar Köl-Tör Lake | naturaleza
+viajes | Visitar Koli National Park | naturaleza
+viajes | Visitar Kom Ombo Temple | viajes | dudosa
+viajes | Visitar Komani Lake | naturaleza
+viajes | Visitar Komodo National Park | naturaleza
+viajes | Visitar Koprivshtitsa | viajes | dudosa
+viajes | Visitar Kornati National Park | naturaleza
+viajes | Visitar Kourion | viajes | dudosa
+viajes | Visitar Kranjska Gora | naturaleza
+viajes | Visitar Kravica Waterfalls | naturaleza
+viajes | Visitar Kruger National Park | naturaleza
+viajes | Visitar Ksamil Islands | naturaleza
+viajes | Visitar Kuang Si Falls | naturaleza
+viajes | Visitar Kubu Island | naturaleza
+viajes | Visitar Kuélap | viajes | dudosa
+viajes | Visitar Kungsleden Trail | naturaleza
+viajes | Visitar Kunya-Ark | viajes | dudosa
+viajes | Visitar Kutná Hora y osario de Sedlec | viajes | dudosa
+viajes | Visitar La Boca and Caminito | viajes | dudosa
+viajes | Visitar La Candelaria | viajes | dudosa
+viajes | Visitar La Fortuna Waterfall | naturaleza
+viajes | Visitar La Mano sculpture | naturaleza
+viajes | Visitar La Paz cable car | viajes | dudosa
+viajes | Visitar La Paz Waterfall Gardens | viajes | dudosa
+viajes | Visitar La Tortuga Island | naturaleza
+viajes | Visitar Lago Achensee | naturaleza
+viajes | Visitar Lago Balaton | naturaleza
+viajes | Visitar Lago Bled | naturaleza
+viajes | Visitar Lago Bohinj | naturaleza
+viajes | Visitar Lago de Como | naturaleza
+viajes | Visitar Lago de Ginebra | naturaleza
+viajes | Visitar Lago de Lucerna | naturaleza
+viajes | Visitar Lago Oeschinen | naturaleza
+viajes | Visitar Lago Wörthersee | naturaleza
+viajes | Visitar Lagoa do Fogo | naturaleza
+viajes | Visitar Laguna 69 | naturaleza
+viajes | Visitar Laguna Colorada | naturaleza
+viajes | Visitar Laguna de los Tres | naturaleza
+viajes | Visitar Laguna de Mucubají | naturaleza
+viajes | Visitar Laguna de Rocha | naturaleza
+viajes | Visitar Laguna Dudú | naturaleza
+viajes | Visitar Laguna Verde | naturaleza
+viajes | Visitar Lahemaa National Park | naturaleza
+viajes | Visitar Lake Atitlán | naturaleza
+viajes | Visitar Lake Bunyonyi | naturaleza
+viajes | Visitar Lake Chamo | naturaleza
+viajes | Visitar Lake District | viajes | dudosa
+viajes | Visitar Lake Kariba · Zambia | naturaleza
+viajes | Visitar Lake Kariba · Zimbabue | naturaleza
+viajes | Visitar Lake Kawaguchi | naturaleza
+viajes | Visitar Lake Kivu | naturaleza
+viajes | Visitar Lake Kutubu | naturaleza
+viajes | Visitar Lake Louise | naturaleza
+viajes | Visitar Lake Manyara National Park | naturaleza
+viajes | Visitar Lake Mburo National Park | naturaleza
+viajes | Visitar Lake Muhazi | naturaleza
+viajes | Visitar Lake Mývatn | naturaleza
+viajes | Visitar Lake Naivasha | naturaleza
+viajes | Visitar Lake Nakuru National Park | naturaleza
+viajes | Visitar Lake Natron | naturaleza
+viajes | Visitar Lake Petén Itzá | naturaleza
+viajes | Visitar Lake Saimaa | naturaleza
+viajes | Visitar Lake Sevan | naturaleza
+viajes | Visitar Lake Skadar | naturaleza
+viajes | Visitar Lake Tana monasteries | naturaleza
+viajes | Visitar Lake Tanganyika | naturaleza
+viajes | Visitar Lake Tekapo | naturaleza
+viajes | Visitar Lake Titicaca | naturaleza
+viajes | Visitar Lake Titicaca and Uros Islands | naturaleza
+viajes | Visitar Lake Toba | naturaleza
+viajes | Visitar Lake Turkana | naturaleza
+viajes | Visitar Lake Van and Akdamar | naturaleza
+viajes | Visitar Lake Ypacaraí | naturaleza
+viajes | Visitar Lamanai | viajes | dudosa
+viajes | Visitar Landmannalaugar | viajes | dudosa
+viajes | Visitar Langtang Valley | naturaleza
+viajes | Visitar Larnaca Salt Lake | naturaleza
+viajes | Visitar Las Lajas Sanctuary | viajes | dudosa
+viajes | Visitar Las Vegas Strip | viajes | dudosa
+viajes | Visitar Lauca National Park | naturaleza
+viajes | Visitar Laughing Bird Caye | naturaleza
+viajes | Visitar Lauterbrunnen | viajes | dudosa
+viajes | Visitar Le Morne Brabant | viajes | dudosa
+viajes | Visitar Le Souffleur | viajes | dudosa
+viajes | Visitar Lednice-Valtice | viajes | dudosa
+viajes | Visitar Legzira Beach | naturaleza
+viajes | Visitar Lençóis Maranhenses | naturaleza
+viajes | Visitar Lenin Peak base area | naturaleza
+viajes | Visitar Lepenski Vir | viajes | dudosa
+viajes | Visitar Levi | naturaleza
+viajes | Visitar Li River | naturaleza
+viajes | Visitar Liepāja beach | naturaleza
+viajes | Visitar Lima historic center | viajes | dudosa
+viajes | Visitar Limpopo-Lipadi reserve region | viajes | dudosa
+viajes | Visitar Lindos | viajes | dudosa
+viajes | Visitar Linyanti Wildlife Reserve | naturaleza
+viajes | Visitar Lipa Cave | naturaleza
+viajes | Visitar Little Adam's Peak | naturaleza
+viajes | Visitar Little India | viajes | dudosa
+viajes | Visitar Liuwa Plain National Park | naturaleza
+viajes | Visitar Livingston | viajes | dudosa
+viajes | Visitar Llogara Pass | naturaleza
+viajes | Visitar Loch Ness | naturaleza
+viajes | Visitar Lofoten Islands | naturaleza
+viajes | Visitar Logarska Dolina | viajes | dudosa
+viajes | Visitar Lokobe Reserve | naturaleza
+viajes | Visitar Longji Rice Terraces | viajes | dudosa
+viajes | Visitar Los Frailes Beach | naturaleza
+viajes | Visitar Los Haitises National Park | naturaleza
+viajes | Visitar Los Roques Archipelago | naturaleza
+viajes | Visitar Los Tres Ojos | naturaleza
+viajes | Visitar Los Túneles | viajes | dudosa
+viajes | Visitar Lost Waterfalls trail | naturaleza
+viajes | Visitar Lotus Pond | naturaleza
+viajes | Visitar Lovćen National Park | naturaleza
+viajes | Visitar Lower Zambezi National Park | naturaleza
+viajes | Visitar Lumangwe Falls | naturaleza
+viajes | Visitar Lumbini | viajes | dudosa
+viajes | Visitar Luminous Lagoon | naturaleza
+viajes | Visitar Lusaka National Park | naturaleza
+viajes | Visitar Lyabi-Hauz | viajes | dudosa
+viajes | Visitar Lycian Way | viajes | dudosa
+viajes | Visitar Ma'in Hot Springs | naturaleza
+viajes | Visitar Maafushi | naturaleza
+viajes | Visitar Maasai Mara National Reserve | naturaleza
+viajes | Visitar Maastricht y Vrijthof | viajes | dudosa
+viajes | Visitar Machalilla National Park | naturaleza
+viajes | Visitar Macondé viewpoint | viajes | dudosa
+viajes | Visitar Madaba Mosaic Map | viajes | dudosa
+viajes | Visitar Madang reefs | naturaleza
+viajes | Visitar Madidi National Park | naturaleza
+viajes | Visitar Mafia Island | naturaleza
+viajes | Visitar Makarska Riviera | viajes | dudosa
+viajes | Visitar Makgadikgadi Pans | naturaleza
+viajes | Visitar Malecón | viajes | dudosa
+viajes | Visitar Malmö Turning Torso | viajes | dudosa
+viajes | Visitar Mamanuca Islands | naturaleza
+viajes | Visitar Mana Pools National Park | naturaleza
+viajes | Visitar Mangart Saddle | naturaleza
+viajes | Visitar Manneken Pis | viajes | dudosa
+viajes | Visitar Manta Point | naturaleza
+viajes | Visitar Manuel Antonio National Park | naturaleza
+viajes | Visitar Marble Caves | naturaleza
+viajes | Visitar Maribor y Old Vine | viajes | dudosa
+viajes | Visitar Marienplatz | viajes | dudosa
+viajes | Visitar Marina Bay Sands | viajes | dudosa
+viajes | Visitar Markthal | viajes | dudosa
+viajes | Visitar Marsaxlokk | naturaleza
+viajes | Visitar Martha Brae River | naturaleza
+viajes | Visitar Masada | viajes | dudosa
+viajes | Visitar Masoala National Park | naturaleza
+viajes | Visitar Matera | viajes | dudosa
+viajes | Visitar Materuni Waterfalls | naturaleza
+viajes | Visitar Matira Beach | naturaleza
+viajes | Visitar Matobo National Park | naturaleza
+viajes | Visitar Matsalu National Park | naturaleza
+viajes | Visitar Matterhorn | naturaleza
+viajes | Visitar Matusadona National Park | naturaleza
+viajes | Visitar Maupiti | naturaleza
+viajes | Visitar Maya Bay | naturaleza
+viajes | Visitar Mayon Volcano | naturaleza
+viajes | Visitar Mdina | viajes | dudosa
+viajes | Visitar Médanos de Coro | viajes | dudosa
+viajes | Visitar Medellín Metrocable | viajes | dudosa
+viajes | Visitar Medina of Marrakech | viajes | dudosa
+viajes | Visitar Meeting of the Waters | naturaleza
+viajes | Visitar Mekong Delta | naturaleza
+viajes | Visitar Mekong River cruise | viajes | dudosa
+viajes | Visitar Melbourne laneways | viajes | dudosa
+viajes | Visitar Melnik | viajes | dudosa
+viajes | Visitar Mendoza wine region | viajes | dudosa
+viajes | Visitar Mérida cable car | viajes | dudosa
+viajes | Visitar Merlion Park | naturaleza | dudosa
+viajes | Visitar Merzouga dunes | naturaleza
+viajes | Visitar Mestia | viajes | dudosa
+viajes | Visitar Meteora | viajes | dudosa
+viajes | Visitar Metropolitan Natural Park | naturaleza | dudosa
+viajes | Visitar Mgahinga Gorilla National Park | naturaleza
+viajes | Visitar Micenas | viajes | dudosa
+viajes | Visitar Mikulov | viajes | dudosa
+viajes | Visitar Mikumi National Park | naturaleza
+viajes | Visitar Milford Sound | naturaleza
+viajes | Visitar Milne Bay dive sites | naturaleza
+viajes | Visitar Mina de sal de Wieliczka | viajes | dudosa
+viajes | Visitar Mindo cloud forest | naturaleza
+viajes | Visitar Miniatur Wunderland | viajes | dudosa
+viajes | Visitar Minneriya National Park | naturaleza
+viajes | Visitar Miraflores cliffs | naturaleza
+viajes | Visitar Mission Lodge viewpoint | viajes | dudosa
+viajes | Visitar Mitad del Mundo | viajes | dudosa
+viajes | Visitar Mnajdra | naturaleza
+viajes | Visitar Mnemba Atoll | naturaleza
+viajes | Visitar Moalboal sardine run | naturaleza
+viajes | Visitar Mochima National Park | naturaleza
+viajes | Visitar Mokolodi Nature Reserve | naturaleza
+viajes | Visitar Molinos de Kinderdijk | viajes | dudosa
+viajes | Visitar Molinos de Mykonos | viajes | dudosa
+viajes | Visitar Monarch Butterfly Biosphere Reserve | naturaleza
+viajes | Visitar Monday Falls | naturaleza
+viajes | Visitar Monemvasia | viajes | dudosa
+viajes | Visitar Møns Klint | viajes | dudosa
+viajes | Visitar Mont-Saint-Michel | naturaleza
+viajes | Visitar Monte Nemrut | naturaleza
+viajes | Visitar Montes Tatras | naturaleza
+viajes | Visitar Monteverde Cloud Forest | naturaleza
+viajes | Visitar Montreal Old Port | viajes | dudosa
+viajes | Visitar Monument Valley | naturaleza
+viajes | Visitar Monuriki Island | naturaleza
+viajes | Visitar Moorea Belvedere Lookout | viajes | dudosa
+viajes | Visitar Moraine Lake | naturaleza
+viajes | Visitar Moremi Game Reserve | naturaleza
+viajes | Visitar Morne Seychellois National Park | naturaleza
+viajes | Visitar Morrocoy National Park | naturaleza
+viajes | Visitar Morskie Oko | viajes | dudosa
+viajes | Visitar Mosi-oa-Tunya National Park | naturaleza
+viajes | Visitar Motovun | viajes | dudosa
+viajes | Visitar Mount Aragats | naturaleza
+viajes | Visitar Mount Ararat viewpoint | naturaleza
+viajes | Visitar Mount Bisoke | naturaleza
+viajes | Visitar Mount Bromo | naturaleza
+viajes | Visitar Mount Elgon | naturaleza
+viajes | Visitar Mount Everest viewpoints | naturaleza
+viajes | Visitar Mount Fitz Roy | naturaleza
+viajes | Visitar Mount Fuji | naturaleza
+viajes | Visitar Mount Hagen cultural region | naturaleza
+viajes | Visitar Mount Huangshan | naturaleza
+viajes | Visitar Mount Karisimbi | naturaleza
+viajes | Visitar Mount Kazbek | naturaleza
+viajes | Visitar Mount Kenya | naturaleza
+viajes | Visitar Mount Kilimanjaro | naturaleza
+viajes | Visitar Mount Kinabalu | naturaleza
+viajes | Visitar Mount Longonot | naturaleza
+viajes | Visitar Mount Nebo | naturaleza
+viajes | Visitar Mount of Olives | naturaleza
+viajes | Visitar Mount Otemanu | naturaleza
+viajes | Visitar Mount Phousi | naturaleza
+viajes | Visitar Mount Pinatubo crater lake | naturaleza
+viajes | Visitar Mount Rinjani | naturaleza
+viajes | Visitar Mount Roraima | naturaleza
+viajes | Visitar Mount Sinai | naturaleza
+viajes | Visitar Mount Taranaki | naturaleza
+viajes | Visitar Mount Tavurvur | naturaleza
+viajes | Visitar Mount Wilhelm | naturaleza
+viajes | Visitar Mountain gorilla trekking · Ruanda | naturaleza
+viajes | Visitar Mountain gorilla trekking · Uganda | naturaleza
+viajes | Visitar Mountain Pine Ridge Forest Reserve | naturaleza
+viajes | Visitar Mui Ne sand dunes | naturaleza
+viajes | Visitar Munda Wanga | viajes | dudosa
+viajes | Visitar Murchison Falls | naturaleza
+viajes | Visitar Murchison Falls National Park | naturaleza
+viajes | Visitar Musandam fjords | naturaleza
+viajes | Visitar Musanze Caves | naturaleza
+viajes | Visitar Mutarazi Falls | naturaleza
+viajes | Visitar Mutinondo Wilderness | viajes | dudosa
+viajes | Visitar Mutrah Corniche | viajes | dudosa
+viajes | Visitar Mỹ Sơn Sanctuary | viajes | dudosa
+viajes | Visitar Myeongdong | viajes | dudosa
+viajes | Visitar Myrtos Beach | naturaleza
+viajes | Visitar Mystic Mountain | naturaleza
+viajes | Visitar Nærøyfjord | viajes | dudosa
+viajes | Visitar Nahanni National Park Reserve | naturaleza
+viajes | Visitar Nairobi National Park | naturaleza
+viajes | Visitar Nam Et-Phou Louey | viajes | dudosa
+viajes | Visitar Nami Island | naturaleza
+viajes | Visitar NamibRand Nature Reserve | naturaleza
+viajes | Visitar Nara Park and Tōdai-ji | naturaleza | dudosa
+viajes | Visitar Nata Bird Sanctuary | viajes | dudosa
+viajes | Visitar Natadola Beach | naturaleza
+viajes | Visitar Nauyaca Waterfalls | naturaleza
+viajes | Visitar Navagio | naturaleza
+viajes | Visitar Nechisar National Park | naturaleza
+viajes | Visitar Newgrange | viajes | dudosa
+viajes | Visitar Ngorongoro Crater | naturaleza
+viajes | Visitar Niagara Falls · Canadá | naturaleza
+viajes | Visitar Niagara Falls · Estados Unidos | naturaleza
+viajes | Visitar Nid d'Aigle | naturaleza
+viajes | Visitar Nida dunes | naturaleza
+viajes | Visitar Night Safari | naturaleza
+viajes | Visitar Nile felucca cruise | viajes | dudosa
+viajes | Visitar Nile rafting | deporte
+viajes | Visitar Ningaloo Reef | naturaleza
+viajes | Visitar Ninh Bình and Tràng An | viajes | dudosa
+viajes | Visitar Nissi Beach | naturaleza
+viajes | Visitar Noel Kempff Mercado National Park | naturaleza
+viajes | Visitar Nordkette | naturaleza
+viajes | Visitar North Ari Atoll dive sites | naturaleza
+viajes | Visitar North Cape | naturaleza
+viajes | Visitar Nosara | viajes | dudosa
+viajes | Visitar Nosy Be | viajes | dudosa
+viajes | Visitar Nosy Iranja | viajes | dudosa
+viajes | Visitar Nsumbu National Park | naturaleza
+viajes | Visitar Nuku Hiva | naturaleza
+viajes | Visitar Nungwi Beach | naturaleza
+viajes | Visitar Nurata Mountains | naturaleza
+viajes | Visitar Nusa Penida | naturaleza
+viajes | Visitar Nuuksio National Park | naturaleza
+viajes | Visitar Nuwara Eliya tea country | viajes | dudosa
+viajes | Visitar Nxai Pan National Park | viajes | dudosa
+viajes | Visitar Nyanga National Park | naturaleza
+viajes | Visitar Nyungwe National Park | naturaleza
+viajes | Visitar Oaxaca historic center | viajes | dudosa
+viajes | Visitar Óbidos | viajes | dudosa
+viajes | Visitar Okavango Delta | naturaleza
+viajes | Visitar Ol Pejeta Conservancy | naturaleza
+viajes | Visitar Olduvai Gorge | naturaleza
+viajes | Visitar Olomouc y columna de la Trinidad | viajes | dudosa
+viajes | Visitar Oludeniz Blue Lagoon | naturaleza
+viajes | Visitar Omo Valley | naturaleza
+viajes | Visitar Ontika limestone cliff | naturaleza
+viajes | Visitar Opunohu Bay | naturaleza
+viajes | Visitar Orchard Road | viajes | dudosa
+viajes | Visitar Orinoco Delta | naturaleza
+viajes | Visitar Orkhon Valley | naturaleza
+viajes | Visitar Osa Peninsula | naturaleza
+viajes | Visitar Osh Sulaiman-Too | viajes | dudosa
+viajes | Visitar Oslob whale shark area | viajes | dudosa
+viajes | Visitar Osumi Canyon | naturaleza
+viajes | Visitar Oulanka National Park | naturaleza
+viajes | Visitar Our Lady of the Rocks | naturaleza
+viajes | Visitar Ouro Preto | viajes | dudosa
+viajes | Visitar Ouzoud Falls | naturaleza
+viajes | Visitar Pacaya volcano | naturaleza
+viajes | Visitar Pacific Rim National Park | naturaleza
+viajes | Visitar Paje Beach | naturaleza
+viajes | Visitar Pak Ou Caves | naturaleza
+viajes | Visitar Paklenica National Park | naturaleza
+viajes | Visitar Palanga beach | naturaleza
+viajes | Visitar Palenque | viajes | dudosa
+viajes | Visitar Pamplemousses Botanical Garden | viajes | dudosa
+viajes | Visitar Pamukkale | viajes | dudosa
+viajes | Visitar Pangong Lake | naturaleza
+viajes | Visitar Pantanal | naturaleza
+viajes | Visitar Pão de Açúcar | naturaleza
+viajes | Visitar Papallacta hot springs | naturaleza
+viajes | Visitar Paphos Archaeological Park | naturaleza | dudosa
+viajes | Visitar Paracas National Reserve | naturaleza
+viajes | Visitar Pärnu beach | naturaleza
+viajes | Visitar Parque Güell | naturaleza | dudosa
+viajes | Visitar Parque Hoge Veluwe | naturaleza | dudosa
+viajes | Visitar Parque Nacional Hortobágy | naturaleza
+viajes | Visitar Parque Nacional Krka | naturaleza
+viajes | Visitar Parque Nacional Lagos de Plitvice | naturaleza
+viajes | Visitar Parque Nacional Mljet | naturaleza
+viajes | Visitar Parque Nacional Suiza Bohemia | naturaleza
+viajes | Visitar Patuxai | viajes | dudosa
+viajes | Visitar Pearl Islands | naturaleza
+viajes | Visitar Peggy's Cove | naturaleza
+viajes | Visitar Pemba Island | naturaleza
+viajes | Visitar Penghu Islands | naturaleza
+viajes | Visitar Perast | viajes | dudosa
+viajes | Visitar Pergamon | viajes | dudosa
+viajes | Visitar Perhentian Islands | naturaleza
+viajes | Visitar Peričnik Waterfall | naturaleza
+viajes | Visitar Perito Moreno Glacier | naturaleza
+viajes | Visitar Perućica rainforest | naturaleza
+viajes | Visitar Petra tou Romiou | viajes | dudosa
+viajes | Visitar Phang Nga Bay | naturaleza
+viajes | Visitar Phi Phi Islands | naturaleza
+viajes | Visitar Phnom Sampeau | viajes | dudosa
+viajes | Visitar Phong Nha-Kẻ Bàng | viajes | dudosa
+viajes | Visitar Pico Bolívar | naturaleza
+viajes | Visitar Pico do Arieiro | naturaleza
+viajes | Visitar Pico Duarte | naturaleza
+viajes | Visitar Picos de Europa | naturaleza
+viajes | Visitar Pigeon Island National Park | naturaleza
+viajes | Visitar Piha Beach | naturaleza
+viajes | Visitar Pilsner Urquell Brewery | viajes | dudosa
+viajes | Visitar Pink Beach | naturaleza
+viajes | Visitar Piran | viajes | dudosa
+viajes | Visitar Piriápolis and Cerro San Antonio | viajes | dudosa
+viajes | Visitar Pirin National Park | naturaleza
+viajes | Visitar Piva Lake and Canyon | naturaleza
+viajes | Visitar Placencia | viajes | dudosa
+viajes | Visitar Playa Ancón | naturaleza
+viajes | Visitar Playa de Balos | naturaleza
+viajes | Visitar Playa Dorada | naturaleza
+viajes | Visitar Playa Rincón | naturaleza
+viajes | Visitar Pliva Lakes | naturaleza
+viajes | Visitar Poás Volcano | naturaleza
+viajes | Visitar Point Venus | naturaleza
+viajes | Visitar Pokhara and Phewa Lake | naturaleza
+viajes | Visitar Pompeya | viajes | dudosa
+viajes | Visitar Ponta da Piedade | naturaleza
+viajes | Visitar Poon Hill | naturaleza
+viajes | Visitar Port Moresby Nature Park | naturaleza | dudosa
+viajes | Visitar Potosí Cerro Rico | naturaleza
+viajes | Visitar Praia da Marinha | naturaleza
+viajes | Visitar Prambanan | viajes | dudosa
+viajes | Visitar Pravčická brána | viajes | dudosa
+viajes | Visitar Preikestolen | naturaleza
+viajes | Visitar Prince Edward Island National Park | naturaleza
+viajes | Visitar Prohodna Eyes of God Cave | naturaleza
+viajes | Visitar Prokletije National Park | naturaleza
+viajes | Visitar Prokoško Lake | naturaleza
+viajes | Visitar Providencia | viajes | dudosa
+viajes | Visitar Puerto Plata cable car | viajes | dudosa
+viajes | Visitar Puerto Princesa Underground River | viajes | dudosa
+viajes | Visitar Puerto Varas and Osorno Volcano | viajes | dudosa
+viajes | Visitar Pulau Ubin | naturaleza
+viajes | Visitar Pumalín Douglas Tompkins National Park | naturaleza
+viajes | Visitar Punta Cana and Bávaro Beach | naturaleza
+viajes | Visitar Punta del Diablo | naturaleza
+viajes | Visitar Punta del Este | naturaleza
+viajes | Visitar Purmamarca and Cerro de los Siete Colores | viajes | dudosa
+viajes | Visitar Quebrada de Humahuaca | viajes | dudosa
+viajes | Visitar Quebrada de los Cuervos | viajes | dudosa
+viajes | Visitar Queen Elizabeth National Park | naturaleza
+viajes | Visitar Quilotoa crater lake | naturaleza
+viajes | Visitar Quito historic center | viajes | dudosa
+viajes | Visitar Quiver Tree Forest | naturaleza
+viajes | Visitar Rabaul volcanoes | naturaleza
+viajes | Visitar Rabbit Island | naturaleza
+viajes | Visitar Råbjerg Mile | viajes | dudosa
+viajes | Visitar Raiatea Taputapuātea | naturaleza
+viajes | Visitar Railay Beach | naturaleza
+viajes | Visitar Rainbow Mountain | naturaleza
+viajes | Visitar Rainbow Reef | naturaleza
+viajes | Visitar Raja Ampat | viajes | dudosa
+viajes | Visitar Rambla de Montevideo | viajes | dudosa
+viajes | Visitar Ramla Bay | viajes | dudosa
+viajes | Visitar Rangiroa Blue Lagoon | naturaleza
+viajes | Visitar Rano Raraku | viajes | dudosa
+viajes | Visitar Ranomafana National Park | naturaleza
+viajes | Visitar Rara Lake | naturaleza
+viajes | Visitar Ras Al Jinz turtle reserve | naturaleza
+viajes | Visitar Ras Mohammed National Park | naturaleza
+viajes | Visitar Reach Falls | naturaleza
+viajes | Visitar Red Sea coast reefs | naturaleza
+viajes | Visitar Red Tsingy | naturaleza
+viajes | Visitar Reichstag | viajes | dudosa
+viajes | Visitar Reine | viajes | dudosa
+viajes | Visitar Reynisfjara | viajes | dudosa
+viajes | Visitar Rick's Cafe cliffs | naturaleza
+viajes | Visitar Rijal Almaa | viajes | dudosa
+viajes | Visitar Rila National Park | naturaleza
+viajes | Visitar Rincón de la Vieja National Park | naturaleza
+viajes | Visitar Ring of Kerry | viajes | dudosa
+viajes | Visitar Rio Celeste | naturaleza
+viajes | Visitar Rio Dulce | naturaleza
+viajes | Visitar Rio On Pools | naturaleza
+viajes | Visitar Robben Island | naturaleza
+viajes | Visitar Rochester Falls | naturaleza
+viajes | Visitar Romsdalseggen | viajes | dudosa
+viajes | Visitar Rose Hall Great House | viajes | dudosa
+viajes | Visitar Rosh Hanikra | viajes | dudosa
+viajes | Visitar Rothenburg ob der Tauber | viajes | dudosa
+viajes | Visitar Rotorua geothermal areas | naturaleza
+viajes | Visitar Rottnest Island | naturaleza
+viajes | Visitar Route of the Seven Lakes | naturaleza
+viajes | Visitar Rovinj | viajes | dudosa
+viajes | Visitar Roy's Peak | naturaleza
+viajes | Visitar Royal Hill of Ambohimanga | viajes | dudosa
+viajes | Visitar Ruaha National Park | naturaleza
+viajes | Visitar Rummu Quarry | viajes | dudosa
+viajes | Visitar Ruta de las Cascadas | naturaleza
+viajes | Visitar Rwenzori Mountains | naturaleza
+viajes | Visitar S.E.A. Aquarium | viajes | dudosa
+viajes | Visitar Saaremaa Island | naturaleza
+viajes | Visitar Sabeto Hot Springs | naturaleza
+viajes | Visitar Sächsische Schweiz | viajes | dudosa
+viajes | Visitar Sacred Valley | naturaleza
+viajes | Visitar Sacsayhuamán | naturaleza
+viajes | Visitar Sainte Anne Marine National Park | naturaleza
+viajes | Visitar Sajama National Park | naturaleza
+viajes | Visitar Salalah and Wadi Darbat | viajes | dudosa
+viajes | Visitar Salar de Atacama | naturaleza
+viajes | Visitar Salar de Uyuni | naturaleza
+viajes | Visitar Salento | viajes | dudosa
+viajes | Visitar Salinas Grandes | naturaleza
+viajes | Visitar Salto hot springs | naturaleza
+viajes | Visitar Saltos del Monday | naturaleza
+viajes | Visitar Samaná Bay | naturaleza
+viajes | Visitar Samburu National Reserve | naturaleza
+viajes | Visitar San Agustín Archaeological Park | naturaleza | dudosa
+viajes | Visitar San Andrés Island | naturaleza
+viajes | Visitar San Blas/Guna Yala Islands | naturaleza
+viajes | Visitar San Cosme y Damián Mission | viajes | dudosa
+viajes | Visitar San Miguel de Allende | viajes | dudosa
+viajes | Visitar San Rafael Glacier | naturaleza
+viajes | Visitar Sandwich Harbour | viajes | dudosa
+viajes | Visitar Sani Pass | naturaleza
+viajes | Visitar Santa Catalina | viajes | dudosa
+viajes | Visitar Santa Teresa | viajes | dudosa
+viajes | Visitar Santa Teresa National Park | naturaleza
+viajes | Visitar Santiago Cerro San Cristóbal | viajes | dudosa
+viajes | Visitar Santiago de Cuba historic center | viajes | dudosa
+viajes | Visitar Santo Domingo Colonial Zone | viajes | dudosa
+viajes | Visitar Saona Island | naturaleza
+viajes | Visitar Sapa rice terraces | viajes | dudosa
+viajes | Visitar Sarajevo Baščaršija | viajes | dudosa
+viajes | Visitar Sarek National Park | naturaleza
+viajes | Visitar Šargan Eight railway | viajes | dudosa
+viajes | Visitar Sary-Chelek Biosphere Reserve | naturaleza
+viajes | Visitar Save Valley Conservancy | naturaleza
+viajes | Visitar Savuti | naturaleza
+viajes | Visitar Sawa-i-Lau Caves | naturaleza
+viajes | Visitar Sea Caves | naturaleza
+viajes | Visitar Sea of Galilee | viajes | dudosa
+viajes | Visitar Selous/Nyerere National Park | viajes | dudosa
+viajes | Visitar Selva Negra | naturaleza
+viajes | Visitar Semuc Champey | viajes | dudosa
+viajes | Visitar Senja | viajes | dudosa
+viajes | Visitar Sentosa Island | naturaleza
+viajes | Visitar Seongsan Ilchulbong | viajes | dudosa
+viajes | Visitar Seoraksan National Park | naturaleza
+viajes | Visitar Sepik River | naturaleza
+viajes | Visitar Sepilok Orangutan Centre | viajes | dudosa
+viajes | Visitar Serengeti National Park | naturaleza
+viajes | Visitar Sete Cidades | viajes | dudosa
+viajes | Visitar Sevanavank | viajes | dudosa
+viajes | Visitar Seven Colored Earths | viajes | dudosa
+viajes | Visitar Seven Mile Beach | naturaleza
+viajes | Visitar Seven Sisters | viajes | dudosa
+viajes | Visitar Shah-i-Zinda | viajes | dudosa
+viajes | Visitar Shark Ray Alley | naturaleza
+viajes | Visitar Sheldrick Wildlife Trust | naturaleza
+viajes | Visitar Shibuya Crossing | viajes | dudosa
+viajes | Visitar Shifen Waterfall | naturaleza
+viajes | Visitar Shiwa Ng'andu | viajes | dudosa
+viajes | Visitar Siargao Cloud 9 | viajes | dudosa
+viajes | Visitar Sierra Nevada National Park | naturaleza
+viajes | Visitar Siete Lagos de Rila | naturaleza
+viajes | Visitar Sigatoka Sand Dunes | naturaleza
+viajes | Visitar Sighișoara | viajes | dudosa
+viajes | Visitar Sigiriya | naturaleza
+viajes | Visitar Silhouette Island | naturaleza
+viajes | Visitar Silk Cayes | naturaleza
+viajes | Visitar Simien Mountains National Park | naturaleza
+viajes | Visitar Similan Islands | naturaleza
+viajes | Visitar Singapore Zoo | viajes | dudosa
+viajes | Visitar Sipadan Island | naturaleza
+viajes | Visitar Sipi Falls | naturaleza
+viajes | Visitar Siwa Oasis | naturaleza
+viajes | Visitar Skagen and Grenen | viajes | dudosa
+viajes | Visitar Skazka Canyon | naturaleza
+viajes | Visitar Skeleton Coast | naturaleza
+viajes | Visitar Skellig Michael | viajes | dudosa
+viajes | Visitar Slieve League | naturaleza
+viajes | Visitar Slītere National Park | naturaleza
+viajes | Visitar Snæfellsjökull National Park | naturaleza
+viajes | Visitar Snoopy Island | naturaleza
+viajes | Visitar Snowdonia/Eryri | naturaleza
+viajes | Visitar Soberanía National Park | viajes | dudosa
+viajes | Visitar Sof Omar Caves | naturaleza
+viajes | Visitar Sognefjord | viajes | dudosa
+viajes | Visitar Sol de Mañana geysers | naturaleza
+viajes | Visitar Song-Kul Lake | naturaleza
+viajes | Visitar Soomaa National Park | naturaleza
+viajes | Visitar Sossusvlei | viajes | dudosa
+viajes | Visitar South Ari Atoll reefs | naturaleza
+viajes | Visitar South Luangwa National Park | viajes | dudosa
+viajes | Visitar Southern Ridges | viajes | dudosa
+viajes | Visitar Ssese Islands | naturaleza
+viajes | Visitar St. Moritz | viajes | dudosa
+viajes | Visitar Starfish Beach | naturaleza
+viajes | Visitar Stari Grad Plain | naturaleza
+viajes | Visitar Stellenbosch wine region | naturaleza
+viajes | Visitar Stockholm Archipelago | naturaleza
+viajes | Visitar Štrbački Buk | naturaleza
+viajes | Visitar Sucre historic center | viajes | dudosa
+viajes | Visitar Sugba Lagoon | naturaleza
+viajes | Visitar Sukhothai Historical Park | naturaleza | dudosa
+viajes | Visitar Sumidero Canyon | naturaleza
+viajes | Visitar Sun Moon Lake | naturaleza
+viajes | Visitar Suncheon Bay Wetland | naturaleza
+viajes | Visitar Suomenlinna | viajes | dudosa
+viajes | Visitar Sur dhow yards | viajes | dudosa
+viajes | Visitar Sutjeska National Park | naturaleza
+viajes | Visitar Svaneti | viajes | dudosa
+viajes | Visitar Svartifoss | viajes | dudosa
+viajes | Visitar Sveti Stefan | viajes | dudosa
+viajes | Visitar Swakopmund | naturaleza
+viajes | Visitar Ta Prohm | viajes | dudosa
+viajes | Visitar Taal Volcano | naturaleza
+viajes | Visitar Table Mountain | naturaleza
+viajes | Visitar Taboga Island | naturaleza
+viajes | Visitar Tad Fane Waterfall | naturaleza
+viajes | Visitar Taha'a vanilla island | naturaleza
+viajes | Visitar Tahiti Fautaua Waterfall | naturaleza
+viajes | Visitar Taif mountains | naturaleza
+viajes | Visitar Taipei 101 | viajes | dudosa
+viajes | Visitar Talampaya National Park | naturaleza
+viajes | Visitar Taman Negara | viajes | dudosa
+viajes | Visitar Tamarin Bay | naturaleza
+viajes | Visitar Tamarindo | viajes | dudosa
+viajes | Visitar Tara National Park | naturaleza
+viajes | Visitar Tara River Canyon | naturaleza
+viajes | Visitar Tarangire National Park | naturaleza
+viajes | Visitar Taroko Gorge | naturaleza
+viajes | Visitar Tarsier Sanctuary | viajes | dudosa
+viajes | Visitar Tash Rabat | viajes | dudosa
+viajes | Visitar Tatacoa Desert | naturaleza
+viajes | Visitar Taveuni Island | naturaleza
+viajes | Visitar Tavoro Waterfalls | naturaleza
+viajes | Visitar Tayrona National Park | naturaleza
+viajes | Visitar Teahupo'o | viajes | dudosa
+viajes | Visitar Teide | naturaleza
+viajes | Visitar Tel Aviv beachfront | viajes | dudosa
+viajes | Visitar Telč | viajes | dudosa
+viajes | Visitar Temae Beach | naturaleza
+viajes | Visitar Tenorio Volcano National Park | naturaleza
+viajes | Visitar Teotihuacán | viajes | dudosa
+viajes | Visitar Terelj National Park | naturaleza
+viajes | Visitar Terkhiin Tsagaan Lake | naturaleza
+viajes | Visitar Termas del Daymán | naturaleza
+viajes | Visitar Terracotta Army | viajes | dudosa
+viajes | Visitar Tham Chang Cave | naturaleza
+viajes | Visitar The Blue Eye | viajes | dudosa
+viajes | Visitar Theth National Park | naturaleza
+viajes | Visitar Three Cities | viajes | dudosa
+viajes | Visitar Thulusdhoo | viajes | dudosa
+viajes | Visitar Tianmen Mountain | naturaleza
+viajes | Visitar Tiger Leaping Gorge | naturaleza
+viajes | Visitar Tigray cliff churches | viajes | dudosa
+viajes | Visitar Tihany | viajes | dudosa
+viajes | Visitar Tikal | viajes | dudosa
+viajes | Visitar Tikehau Atoll | naturaleza
+viajes | Visitar Tilicho Lake | naturaleza
+viajes | Visitar Timanfaya | viajes | dudosa
+viajes | Visitar Tioman Island | naturaleza
+viajes | Visitar Tiputa Pass | naturaleza
+viajes | Visitar Todra Gorge | naturaleza
+viajes | Visitar Tokaj wine region | viajes | dudosa
+viajes | Visitar Tokyo Skytree | viajes | dudosa
+viajes | Visitar Toledo histórico | viajes | dudosa
+viajes | Visitar Tongariro Alpine Crossing | naturaleza
+viajes | Visitar Tonlé Sap | naturaleza
+viajes | Visitar Topes de Collantes | viajes | dudosa
+viajes | Visitar Toraja highlands | naturaleza
+viajes | Visitar Torotoro National Park | naturaleza
+viajes | Visitar Torres del Paine National Park | viajes | dudosa
+viajes | Visitar Tortuga Bay | naturaleza
+viajes | Visitar Tortuguero National Park | naturaleza
+viajes | Visitar Toubkal National Park | naturaleza
+viajes | Visitar Transalpina Road | viajes | dudosa
+viajes | Visitar Transfăgărășan Highway | viajes | dudosa
+viajes | Visitar Trebević | naturaleza
+viajes | Visitar Triglav National Park | naturaleza
+viajes | Visitar Trinidad | viajes | dudosa
+viajes | Visitar Trinity College and Book of Kells | viajes | dudosa
+viajes | Visitar Trobriand Islands | naturaleza
+viajes | Visitar Trogir histórico | viajes | dudosa
+viajes | Visitar Trollstigen | viajes | dudosa
+viajes | Visitar Trolltunga | viajes | dudosa
+viajes | Visitar Tromsø aurora boreal | naturaleza
+viajes | Visitar Troodos Mountains | naturaleza
+viajes | Visitar Trou aux Biches | naturaleza
+viajes | Visitar Trulli de Alberobello | viajes | dudosa
+viajes | Visitar Tsagaan Suvarga | viajes | dudosa
+viajes | Visitar Tsavo East National Park | naturaleza
+viajes | Visitar Tsavo West National Park | naturaleza
+viajes | Visitar Tsingy de Bemaraha | naturaleza
+viajes | Visitar Tsitsikamma National Park | naturaleza
+viajes | Visitar Tsodilo Hills | viajes | dudosa
+viajes | Visitar Tufi fjords | naturaleza
+viajes | Visitar Tuli Block | viajes | dudosa
+viajes | Visitar Tumpak Sewu Waterfall | naturaleza
+viajes | Visitar Tunnel of Hope | viajes | dudosa
+viajes | Visitar Twelve Apostles | viajes | dudosa
+viajes | Visitar Twin Lakes Burera and Ruhondo | naturaleza
+viajes | Visitar Twyfelfontein | viajes | dudosa
+viajes | Visitar Ubud rice terraces | viajes | dudosa
+viajes | Visitar Udawalawe National Park | naturaleza
+viajes | Visitar Ukulhas | viajes | dudosa
+viajes | Visitar Uluru | naturaleza
+viajes | Visitar Una National Park | naturaleza
+viajes | Visitar Uplistsikhe cave town | viajes | dudosa
+viajes | Visitar Upper Mustang | viajes | dudosa
+viajes | Visitar Urho Kekkonen National Park | naturaleza
+viajes | Visitar Usambara Mountains | naturaleza
+viajes | Visitar Ushguli | naturaleza
+viajes | Visitar Uvac Special Nature Reserve | naturaleza
+viajes | Visitar Vaadhoo bioluminescent beach | naturaleza
+viajes | Visitar Val d'Orcia | naturaleza
+viajes | Visitar Valbona Valley | naturaleza
+viajes | Visitar Valdés Peninsula | naturaleza
+viajes | Visitar Valle de Engadina | naturaleza
+viajes | Visitar Valle de la Luna · Bolivia | naturaleza
+viajes | Visitar Valle de la Luna · Chile | naturaleza
+viajes | Visitar Valle de los Ingenios | naturaleza
+viajes | Visitar Valle de los Templos | viajes | dudosa
+viajes | Visitar Valle de Wachau | naturaleza
+viajes | Visitar Valle del Duero | naturaleza
+viajes | Visitar Valle del Lunarejo | naturaleza
+viajes | Visitar Valle del Rin y Loreley | naturaleza
+viajes | Visitar Valle del Soča | naturaleza
+viajes | Visitar Vallée de Mai | viajes | dudosa
+viajes | Visitar Valletta | viajes | dudosa
+viajes | Visitar Valley of Flowers | naturaleza
+viajes | Visitar Valley of the Kings | naturaleza
+viajes | Visitar Valparaíso hills | viajes | dudosa
+viajes | Visitar Vang Vieng karst landscape | viajes | dudosa
+viajes | Visitar Varadero Beach | naturaleza
+viajes | Visitar Vardzia cave monastery | viajes | dudosa
+viajes | Visitar Varirata National Park | naturaleza
+viajes | Visitar Vatnajökull National Park | naturaleza
+viajes | Visitar Velika Planina | viajes | dudosa
+viajes | Visitar Venta Rapid | naturaleza
+viajes | Visitar Victoria Falls · Zambia | naturaleza
+viajes | Visitar Victoria Falls · Zimbabue | naturaleza
+viajes | Visitar Vigeland Sculpture Park | naturaleza | dudosa
+viajes | Visitar Viña del Mar | viajes | dudosa
+viajes | Visitar Viñales Valley | naturaleza
+viajes | Visitar Viru Bog | naturaleza
+viajes | Visitar Volcán Barú | naturaleza
+viajes | Visitar Volcanoes National Park | naturaleza
+viajes | Visitar Volubilis | viajes | dudosa
+viajes | Visitar Vøringsfossen | viajes | dudosa
+viajes | Visitar Vrelo Bosne | viajes | dudosa
+viajes | Visitar Wadden Sea National Park | naturaleza
+viajes | Visitar Wadi Bani Khalid | naturaleza
+viajes | Visitar Wadi Ghul | viajes | dudosa
+viajes | Visitar Wadi Mujib | viajes | dudosa
+viajes | Visitar Wadi Rum | viajes | dudosa
+viajes | Visitar Wadi Shab | naturaleza
+viajes | Visitar Wahiba Sands | viajes | dudosa
+viajes | Visitar Wai-O-Tapu | naturaleza
+viajes | Visitar Waikiki Beach | naturaleza
+viajes | Visitar Waitomo Glowworm Caves | naturaleza
+viajes | Visitar Walvis Bay | naturaleza
+viajes | Visitar Watamu Marine National Park | naturaleza
+viajes | Visitar Waterberg Plateau | naturaleza
+viajes | Visitar Waterloo Battlefield | viajes | dudosa
+viajes | Visitar Wenchi Crater Lake | naturaleza
+viajes | Visitar West Lake | naturaleza
+viajes | Visitar Whistler | viajes | dudosa
+viajes | Visitar White Beach | naturaleza
+viajes | Visitar White Desert | naturaleza
+viajes | Visitar Whitehaven Beach | naturaleza
+viajes | Visitar Wicklow Mountains | naturaleza
+viajes | Visitar Wineglass Bay | naturaleza
+viajes | Visitar Wings of Tatev | viajes | dudosa
+viajes | Visitar World's View | viajes | dudosa
+viajes | Visitar Xochimilco | viajes | dudosa
+viajes | Visitar Yad Vashem | viajes | dudosa
+viajes | Visitar Yakushima | naturaleza
+viajes | Visitar Yala National Park | naturaleza
+viajes | Visitar Yangmingshan National Park | naturaleza
+viajes | Visitar Yangshuo karst landscape | viajes | dudosa
+viajes | Visitar Yasawa Islands | naturaleza
+viajes | Visitar Yasuní National Park | naturaleza
+viajes | Visitar Yaxhá | viajes | dudosa
+viajes | Visitar Ybycuí National Park | naturaleza
+viajes | Visitar Yehliu Geopark | naturaleza
+viajes | Visitar Yellowstone National Park | naturaleza
+viajes | Visitar Ylläs | naturaleza
+viajes | Visitar Yolyn Am | viajes | dudosa
+viajes | Visitar Yosemite National Park | naturaleza
+viajes | Visitar YS Falls | naturaleza
+viajes | Visitar Yungas Death Road | viajes | dudosa
+viajes | Visitar Zadar Sea Organ | viajes | dudosa
+viajes | Visitar Zambezi River canoe safari | naturaleza
+viajes | Visitar Zambezi River safari | naturaleza
+viajes | Visitar Zamość renacentista | viajes | dudosa
+viajes | Visitar Zell am See | viajes | dudosa
+viajes | Visitar Žemaitija National Park | naturaleza
+viajes | Visitar Zhangjiajie National Forest Park | naturaleza
+viajes | Visitar Zion National Park | naturaleza
+viajes | Visitar Ziwa Rhino Sanctuary | naturaleza
+viajes | Visitar Zlatni Rat | viajes | dudosa
+viajes | Visitar Zugspitze | naturaleza
+viajes | Visitar Þingvellir National Park | naturaleza
+
+## deporte (por defecto a deporte)
+deporte | Aprender autodetención con piolet en curso | vida
+deporte | Completar un curso de conducción off-road | vida
+deporte | Completar un curso de iniciación al paracaidismo | vida
+deporte | Completar un curso de iniciación al parapente | vida
+deporte | Hacer un curso de técnica de carving | vida
+
+## musica (por defecto a eventos)
+musica | Aprender a pinchar y hacer una sesión | vida
+musica | Aprender a tocar un instrumento | vida
+musica | Aprenderte una canción entera en otro idioma | vida
+musica | Cantar delante de público | vida
+musica | Cantar en un coro | vida
+musica | Cantar en un karaoke delante de desconocidos | vida
+musica | Componer una canción propia | vida
+musica | Comprar un vinilo en una tienda de discos | eventos | dudosa
+musica | Conocer en persona a un músico que admiras | eventos | dudosa
+musica | Dar un concierto de pago | vida
+musica | Grabar una canción en un estudio | vida
+musica | Participar en una jam session | vida
+musica | Salir de fiesta en Ibiza | eventos | dudosa
+musica | Salir de fiesta hasta que amanezca | eventos | dudosa
+musica | Tocar en una banda o grupo | vida
+musica | Tocar un instrumento en la calle | vida
+musica | Tocar una canción entera delante de público | vida
+musica | Viajar a otro país solo para ver un concierto | eventos | dudosa
+
+## cultura (por defecto a viajes)
+cultura | Asistir a ARCOmadrid | eventos
+cultura | Asistir a Art Basel | eventos
+cultura | Asistir a Berlinale | eventos
+cultura | Asistir a Busan International Film Festival | eventos
+cultura | Asistir a Carnaval de Binche | eventos
+cultura | Asistir a Carnaval de Cadiz | eventos
+cultura | Asistir a Documenta en una edicion vigente | eventos
+cultura | Asistir a Festival au Desert o equivalente cuando sea seguro | eventos
+cultura | Asistir a Festival de Avignon | eventos
+cultura | Asistir a Festival de Cannes | eventos
+cultura | Asistir a Festival de Guca | eventos
+cultura | Asistir a Festival de Santa Lucia | eventos
+cultura | Asistir a Festival de Sighisoara Medieval | eventos
+cultura | Asistir a Frieze London | eventos
+cultura | Asistir a Jerash Festival | eventos
+cultura | Asistir a Maslenitsa | eventos
+cultura | Asistir a Paris Photo | eventos
+cultura | Asistir a Royal Edinburgh Military Tattoo | eventos
+cultura | Asistir a San Sebastian Film Festival | eventos
+cultura | Asistir a Semana Santa en Sevilla | eventos
+cultura | Asistir a Sundance Film Festival | eventos
+cultura | Asistir a Toronto International Film Festival | eventos
+cultura | Asistir a una mascleta | eventos
+cultura | Asistir a una representacion en Arena di Verona | eventos
+cultura | Asistir a Venice Biennale Arte | eventos
+cultura | Asistir a Venice Film Festival | eventos
+cultura | Asistir a Viena Opera Ball o un gran baile tradicional | eventos
+cultura | Asistir a Whirling Dervishes en contexto respetuoso | eventos
+cultura | Asistir al Palio di Siena | eventos
+cultura | Escuchar Concierto de Año Nuevo en Viena si se logra entrada | eventos
+cultura | Hacer un tour de estudios de cine | eventos | dudosa
+cultura | Seguir la Barcelona literaria de Carlos Ruiz Zafon | eventos
+cultura | Seguir la Praga de Kafka | eventos
+cultura | Seguir los escenarios literarios de James Joyce | eventos
+cultura | Ver ballet en Bolshoi Theatre | eventos
+cultura | Ver ballet en Mariinsky Theatre | eventos
+cultura | Ver ballet en Opera de Paris | eventos
+cultura | Ver bharatanatyam | eventos
+cultura | Ver bunraku | eventos
+cultura | Ver cante alentejano | eventos
+cultura | Ver castellers en una diada | eventos
+cultura | Ver danza Apsara | eventos
+cultura | Ver danza barong | eventos
+cultura | Ver danza derviche sema en contexto cultural | eventos
+cultura | Ver danza Khon | eventos
+cultura | Ver desfile de samba en Sambadromo | eventos
+cultura | Ver fado en una casa tradicional | eventos
+cultura | Ver flamenco en un tablao de referencia | eventos
+cultura | Ver gamelan en vivo | eventos
+cultura | Ver haka en contexto maori respetuoso | eventos
+cultura | Ver kathakali | eventos
+cultura | Ver kecak en Uluwatu | eventos
+cultura | Ver pansori | eventos
+cultura | Ver rebetiko en vivo | eventos
+cultura | Ver sumo desde perspectiva cultural | eventos
+cultura | Ver teatro kabuki | eventos
+cultura | Ver teatro noh | eventos
+cultura | Ver un musical en Broadway | eventos
+cultura | Ver un musical en West End | eventos
+cultura | Ver una actuacion de didgeridoo por artistas aborigenes | eventos
+cultura | Ver una ceremonia de tambores taiko | eventos
+cultura | Ver una funcion de water puppetry | eventos
+cultura | Ver una opera en Metropolitan Opera | eventos
+cultura | Ver una opera en Palais Garnier | eventos
+cultura | Ver una opera en Royal Opera House | eventos
+cultura | Ver una opera en Sydney Opera House | eventos
+cultura | Ver una opera en Teatro La Fenice | eventos
+cultura | Ver una opera en Wiener Staatsoper | eventos
+cultura | Ver una performance de qawwali | eventos
+cultura | Ver una representacion de Beijing Opera | eventos
+cultura | Ver una representacion de Shakespeare en Globe Theatre | eventos
+cultura | Ver una zambra en Sacromonte | eventos
+cultura | Vivir Albuquerque Balloon Fiesta desde su dimension cultural | eventos
+cultura | Vivir Bali Arts Festival | eventos
+cultura | Vivir Boryeong Mud Festival | eventos
+cultura | Vivir Busojaras | eventos
+cultura | Vivir Calgary Stampede como tradicion occidental | eventos
+cultura | Vivir Cape Town Minstrel Carnival | eventos
+cultura | Vivir Carnaval de Barranquilla | eventos
+cultura | Vivir Carnaval de Negros y Blancos | eventos
+cultura | Vivir Carnaval de Oruro | eventos
+cultura | Vivir Carnaval de Rijeka | eventos
+cultura | Vivir Carnaval de Rio | eventos
+cultura | Vivir Carnaval de Salvador | eventos
+cultura | Vivir Carnaval de Santa Cruz de Tenerife | eventos
+cultura | Vivir Carnaval de Venecia | eventos
+cultura | Vivir Carnaval de Veracruz | eventos
+cultura | Vivir Chinese New Year | eventos
+cultura | Vivir Chuseok en contexto cultural | eventos
+cultura | Vivir Constitution Day | eventos
+cultura | Vivir Dashain | eventos
+cultura | Vivir Dia de Muertos | eventos
+cultura | Vivir Durbar festival | eventos
+cultura | Vivir Durga Puja | eventos
+cultura | Vivir Edinburgh Festival Fringe | eventos
+cultura | Vivir Eid en comunidad invitada | eventos
+cultura | Vivir Esala Perahera | eventos
+cultura | Vivir Feria de Abril | eventos
+cultura | Vivir Feria de las Flores | eventos
+cultura | Vivir Festa Junina | eventos
+cultura | Vivir Festival de Gnaoua | eventos
+cultura | Vivir Festival of Lights | eventos
+cultura | Vivir Fete de la Musique en Paris | eventos
+cultura | Vivir Fiesta de la Tirana | eventos
+cultura | Vivir Galungan | eventos
+cultura | Vivir Hanami en temporada | eventos
+cultura | Vivir Harbin Ice Festival | eventos
+cultura | Vivir Hoi An Lantern Festival | eventos
+cultura | Vivir Homowo | eventos
+cultura | Vivir Infiorata en una ciudad italiana | eventos
+cultura | Vivir Juhannus | eventos
+cultura | Vivir King's Day | eventos
+cultura | Vivir Kukeri | eventos
+cultura | Vivir Kumbh Mela en una edicion oficial | eventos
+cultura | Vivir Lantern Festival | eventos
+cultura | Vivir Loi Krathong | eventos
+cultura | Vivir Mid-Autumn Festival | eventos
+cultura | Vivir Midsummer | eventos
+cultura | Vivir Moussem cultural tradicional | eventos
+cultura | Vivir Naadam | eventos
+cultura | Vivir Nevruz | eventos
+cultura | Vivir Nowruz | eventos
+cultura | Vivir Oktoberfest desde su tradicion bávara | eventos
+cultura | Vivir Onam | eventos
+cultura | Vivir Ouidah Voodoo Festival | eventos
+cultura | Vivir Paro Tsechu | eventos
+cultura | Vivir Patum de Berga | eventos
+cultura | Vivir Powwow con acceso publico y respeto de protocolos | eventos
+cultura | Vivir Ramadan y un iftar comunitario con respeto local | eventos
+cultura | Vivir Semana Santa en Antigua | eventos
+cultura | Vivir Setsubun en un templo | eventos
+cultura | Vivir Song and Dance Festival | eventos
+cultura | Vivir St Patrick's Day | eventos
+cultura | Vivir Sydney New Year's Eve desde perspectiva cultural | eventos
+cultura | Vivir Tbilisoba | eventos
+cultura | Vivir Tet | eventos
+cultura | Vivir Thaipusam | eventos
+cultura | Vivir Timkat | eventos
+cultura | Vivir Trinidad Carnival | eventos
+cultura | Vivir Umhlanga Reed Dance con respeto y acceso permitido | eventos
+cultura | Vivir un mercado navideño historico | eventos
+cultura | Vivir Up Helly Aa | eventos
+cultura | Vivir Vardavar | eventos
+cultura | Vivir Virgen de la Candelaria | eventos
+cultura | Vivir White Nights | eventos
+cultura | Vivir Yi Peng | eventos
+
+## aventura (por defecto a naturaleza)
+aventura | Aprender a encender fuego y construir refugio en curso bushcraft | vida
+aventura | Aprender kitesurf y navegar solo | deporte
+aventura | Aprender maniobras basicas de bodyflight | deporte
+aventura | Aprender un 180 en snowboard | deporte
+aventura | Aprender un salto basico en snowpark | deporte
+aventura | Aprender wingfoil | deporte
+aventura | Bajar una duna en sandboard | deporte
+aventura | Bajar una pista completa en snowboard | deporte
+aventura | Bañarse en agua helada | deporte
+aventura | Bucear bajo hielo | deporte
+aventura | Bucear con mantarrayas | deporte
+aventura | Bucear en Blue Hole | deporte
+aventura | Bucear en cenotes de Yucatan | deporte
+aventura | Bucear en Galapagos | deporte
+aventura | Bucear en la Gran Barrera de Coral | deporte
+aventura | Bucear en Silfra entre placas tectonicas | deporte
+aventura | Bucear en un arrecife tropical | deporte
+aventura | Bucear en un pecio | deporte
+aventura | Caminar por el borde exterior de un rascacielos | naturaleza | dudosa
+aventura | Completar Alta Via 1 | naturaleza | dudosa
+aventura | Completar Camino Inca a Machu Picchu | naturaleza | dudosa
+aventura | Completar certificacion Advanced Open Water | vida
+aventura | Completar certificacion Open Water | vida
+aventura | Completar curso de apnea nivel 1 | vida
+aventura | Completar curso de apnea nivel 2 | vida
+aventura | Completar curso Rescue Diver | vida
+aventura | Completar el Annapurna Circuit | naturaleza | dudosa
+aventura | Completar el GR20 | naturaleza | dudosa
+aventura | Completar el Laugavegur Trail | naturaleza | dudosa
+aventura | Completar el O Circuit | naturaleza | dudosa
+aventura | Completar el Tour du Mont Blanc | naturaleza | dudosa
+aventura | Completar el W Trek | naturaleza | dudosa
+aventura | Completar Huayhuash Circuit | naturaleza | dudosa
+aventura | Completar un circuito de cuerdas a gran altura | deporte
+aventura | Completar un ninja warrior course | deporte
+aventura | Completar una carrera de obstaculos con barro | deporte
+aventura | Completar una carrera Tough Mudder | deporte
+aventura | Completar una ruta de orientacion sin GPS | deporte
+aventura | Completar una Spartan Sprint | deporte
+aventura | Completar una Spartan Trifecta | deporte
+aventura | Completar una vía ferrata | deporte
+aventura | Completar West Highland Way | naturaleza | dudosa
+aventura | Conducir por pistas del interior de Islandia con 4x4 | deporte
+aventura | Conducir un coche de rally en circuito | deporte
+aventura | Conducir un quad o buggy por dunas | deporte
+aventura | Conducir un superdeportivo en circuito | deporte
+aventura | Conducir una moto de nieve | deporte
+aventura | Copilotar un coche de rally | deporte
+aventura | Cruzar el Tongariro Alpine Crossing | naturaleza | dudosa
+aventura | Cruzar un desierto en 4x4 | deporte
+aventura | Cruzar un puente tibetano de gran altura | naturaleza | dudosa
+aventura | Cruzar un puerto alpino en moto | deporte
+aventura | Cruzar un valle en tirolina | deporte
+aventura | Curso de conduccion 4x4 | vida
+aventura | Curso de conduccion sobre hielo | vida
+aventura | Descender a Waitomo y hacer black-water rafting | deporte
+aventura | Descender con rapel a una sima | deporte
+aventura | Dormir en hamaca en selva | naturaleza | dudosa
+aventura | Dormir en un campamento de nieve tras llegar con raquetas | naturaleza | dudosa
+aventura | Dormir una noche en vivac de montana | naturaleza | dudosa
+aventura | Escalar en roca en una zona clásica | deporte
+aventura | Escalar una cascada de hielo | deporte
+aventura | Escalar una via deportiva de grado inicial | deporte
+aventura | Esqui acuatico | deporte
+aventura | Esquiar un día de nieve polvo | deporte
+aventura | Esquiar una jornada completa en estación | deporte
+aventura | Explorar una mina abandonada para visitas de aventura | naturaleza | dudosa
+aventura | Flyboard sobre el mar | deporte
+aventura | Guiar un trineo de perros | deporte
+aventura | Hacer coasteering en una costa rocosa | deporte
+aventura | Hacer descenso de barrancos | deporte
+aventura | Hacer el Mount Rinjani trek | naturaleza | dudosa
+aventura | Hacer espeleología deportiva | naturaleza | dudosa
+aventura | Hacer geocaching en un entorno remoto | deporte
+aventura | Hacer heliesquí con guía | deporte
+aventura | Hacer kayak de mar en una travesía guiada | deporte
+aventura | Hacer parkour en entorno urbano | deporte
+aventura | Hacer puenting desde un puente o una presa | deporte
+aventura | Hacer rafting en aguas bravas | deporte
+aventura | Hacer rafting y trekking en selva de Ecuador | deporte
+aventura | Hacer rapel de 50 m | deporte
+aventura | Hacer rapel en cascada | deporte
+aventura | Hacer supervivencia 24 h | naturaleza | dudosa
+aventura | Hacer supervivencia 48 h | naturaleza | dudosa
+aventura | Hacer trekking al Tiger's Nest | naturaleza | dudosa
+aventura | Hacer trekking en Patagonia sobre hielo | naturaleza | dudosa
+aventura | Hacer un curso basico de espeleologia | vida
+aventura | Hacer un pendulo gigante | deporte
+aventura | Hacer un trekking de varios días en montaña | naturaleza | dudosa
+aventura | Hacer una inmersion desde barco liveaboard | deporte
+aventura | Hacer una inmersion profunda de 30 m | deporte
+aventura | Hacer una jornada de freeride | deporte
+aventura | Hacer una ruta 4x4 por el Salar de Uyuni | deporte
+aventura | Hacer una ruta de varios días en moto | deporte
+aventura | Hacer una travesia con raquetas de nieve | naturaleza | dudosa
+aventura | Hacer una travesía de esquí de montaña | deporte
+aventura | Hydrospeed en un rio de aguas bravas | deporte
+aventura | Kneeboard | deporte
+aventura | Lanzarse en un swing gigante sobre un cañón | deporte
+aventura | Montar en jet boat por un cañón fluvial | deporte
+aventura | Nadar con rayas en aguas abiertas | deporte
+aventura | Navegar en windsurf con viento fuerte | deporte
+aventura | Parasailing sobre una bahia tropical | deporte
+aventura | Participar en una carrera amateur de karting | deporte
+aventura | Participar en una carrera de orientacion de aventura | deporte
+aventura | Pasar una semana en liveaboard de buceo | deporte
+aventura | Pilotar un kart de competicion | deporte
+aventura | Pilotar una moto de agua en una ruta costera | deporte
+aventura | Probar trampolin freestyle | deporte
+aventura | Probar un simulador de caida libre indoor | deporte
+aventura | Rafting en el rio Zambeze bajo Victoria Falls | deporte
+aventura | Riverboarding en Nueva Zelanda | deporte
+aventura | Rodar en un circuito de F1 con instructor | deporte
+aventura | Ruta de motocross en circuito | deporte
+aventura | Ruta enduro | deporte
+aventura | Saltar en paracaídas en tándem | deporte
+aventura | Salto BASE tandem desde Kjerag | deporte
+aventura | Snorkel con mantarrayas de noche | deporte
+aventura | Snorkel en cenote | deporte
+aventura | Sobrevolar un paisaje en helicóptero | deporte
+aventura | Subir por escaleras exteriores de un rascacielos | naturaleza | dudosa
+aventura | Tubing rapido detras de lancha | deporte
+aventura | Viajar en avion de bush y aterrizar en pista remota | deporte
+aventura | Volar en ala delta en tándem | deporte
+aventura | Volar en globo al amanecer | deporte
+aventura | Volar en parapente en tándem | deporte
+aventura | Vuelo acrobatico en avion | deporte
+aventura | Vuelo en globo sobre Capadocia | deporte
+aventura | Vuelo en globo sobre Serengeti | deporte
+aventura | Vuelo en hidroavion sobre Vancouver | deporte
+aventura | Vuelo en planeador sobre los Alpes | deporte

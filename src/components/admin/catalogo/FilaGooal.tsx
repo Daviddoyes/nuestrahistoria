@@ -69,7 +69,7 @@ export default function FilaGooal({
    * pasa por aquí a propósito: lo normal es corregir y verificar de un tirón, y
    * verificar sin guardar lo corregido dejaría publicado lo de antes.
    */
-  const guardar = async (extra: { estado?: GooalAdmin['estado']; activo?: boolean } = {}) => {
+  const guardar = async (extra: { estado?: GooalAdmin['estado']; activo?: boolean; categoria_dudosa?: false } = {}) => {
     setGuardado({ fase: 'guardando' })
     try {
       const res = await fetch('/api/admin/gooals-v2', {
@@ -172,6 +172,25 @@ export default function FilaGooal({
 
       {/* ── Avisos de lo que va a pasar al guardar ── */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginTop: 8, paddingLeft: 40 }}>
+        {gooal.categoria_dudosa && (
+          <div style={{ ...aviso, color: '#FFD54F', background: 'rgba(255,213,79,0.1)', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
+            <span style={{ flex: 1, minWidth: 160 }}>
+              {borrador?.categoria
+                ? 'Categoría dudosa: al guardar la nueva, deja de estarlo.'
+                : 'Categoría dudosa: el reparto no lo tenía claro. Cámbiala o dala por buena.'}
+            </span>
+            {!borrador?.categoria && (
+              <button
+                type="button"
+                onClick={() => guardar({ categoria_dudosa: false })}
+                disabled={ocupado}
+                style={{ minHeight: 32, padding: '0 10px', borderRadius: 8, border: '1px solid rgba(255,213,79,0.45)', color: '#FFD54F', fontSize: 12, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}
+              >
+                <Check style={{ width: 13, height: 13 }} /> {hayCambios ? 'Guardar y dar por buena' : 'Es correcta'}
+              </button>
+            )}
+          </div>
+        )}
         {v.ambito === 'personal' && tienePin && (
           <p style={{ ...aviso, color: '#FFD54F', background: 'rgba(255,213,79,0.1)' }}>
             Al guardar como personal se le quitará el pin: si no es un sitio, sobra.

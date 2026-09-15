@@ -21,6 +21,11 @@ export type GooalV2 = {
   titulo: string
   descripcion: string | null
   categoria: CategoriaGooal
+  /**
+   * La regla del reparto en seis categorías no estaba segura: la categoría es la
+   * mejor apuesta y el gooal se ve igual. Solo sirve para repasarlo en el panel.
+   */
+  categoria_dudosa: boolean
   /** Solo lectura: la calcula la base a partir de los puntos. Ver dificultadDePuntos. */
   dificultad: DificultadGooal
   puntos: number
@@ -128,7 +133,7 @@ export type PerfilCompleto = {
   puntos: number
   conquistados: Conquistado[]
   pendientes: Pendiente[]
-  /** Las siete categorías: primero las que tienen algo, de más a menos; luego las de 0. */
+  /** Las seis categorías: primero las que tienen algo, de más a menos; luego las de 0. */
   porCategoria: ConteoCategoria[]
   /** null en el perfil propio. */
   enComun: EnComun | null
@@ -164,6 +169,8 @@ export type FiltrosAdmin = {
   ambito: AmbitoGooal | 'todos'
   /** Solo los de ámbito lugar que aún no tienen coordenadas. */
   sinPin: boolean
+  /** Solo los que el reparto en seis categorías dejó marcados como dudosos. */
+  categoriaDudosa: boolean
 }
 
 /** Filtros de Explorar. Viajan a la query, no se aplican en el cliente. */

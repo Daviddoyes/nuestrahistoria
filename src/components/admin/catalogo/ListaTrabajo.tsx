@@ -12,7 +12,7 @@ const ESPERA_BUSQUEDA = 300
 
 /** Por defecto, BORRADOR: es donde está el trabajo pendiente. */
 const FILTROS_INICIALES: FiltrosAdmin = {
-  busqueda: '', estado: 'borrador', categoria: 'todas', ambito: 'todos', sinPin: false,
+  busqueda: '', estado: 'borrador', categoria: 'todas', ambito: 'todos', sinPin: false, categoriaDudosa: false,
 }
 
 type Resultado = { clave: string; gooals: GooalAdmin[]; total: number; porPagina: number } | { clave: string; error: string }
@@ -54,6 +54,7 @@ export default function ListaTrabajo({ recarga }: Props) {
     let vivo = true
     const params = new URLSearchParams({ pagina: String(pagina), estado: filtros.estado, categoria: filtros.categoria, ambito: filtros.ambito })
     if (filtros.sinPin) params.set('sinPin', '1')
+    if (filtros.categoriaDudosa) params.set('categoriaDudosa', '1')
     if (filtros.busqueda) params.set('busqueda', filtros.busqueda)
 
     fetch(`/api/admin/gooals-v2?${params}`)
@@ -231,9 +232,11 @@ export default function ListaTrabajo({ recarga }: Props) {
             </div>
           ) : gooals.length === 0 ? (
             <p style={{ fontSize: 14, color: '#7A8A85', textAlign: 'center', padding: '28px 0' }}>
-              {filtros.estado === 'borrador' && !filtros.busqueda && !filtros.sinPin && filtros.categoria === 'todas' && filtros.ambito === 'todos'
+              {filtros.estado === 'borrador' && !filtros.busqueda && !filtros.sinPin && !filtros.categoriaDudosa && filtros.categoria === 'todas' && filtros.ambito === 'todos'
                 ? 'No queda nada en borrador. Todo revisado.'
-                : 'Ningún gooal coincide con estos filtros.'}
+                : filtros.categoriaDudosa && filtros.estado === 'todos' && !filtros.busqueda && !filtros.sinPin && filtros.categoria === 'todas' && filtros.ambito === 'todos'
+                  ? 'No queda ninguna categoría dudosa. Todo revisado.'
+                  : 'Ningún gooal coincide con estos filtros.'}
             </p>
           ) : (
             <ul style={{ display: 'flex', flexDirection: 'column', gap: 8, opacity: cargando ? 0.55 : 1, transition: 'opacity 0.15s' }}>

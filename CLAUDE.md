@@ -103,12 +103,33 @@ La regla, para cuando haya que decidir sobre uno nuevo:
 > una cueva única). **Se va cuando es una sede intercambiable** (una estación,
 > un spot, un circuito).
 
-Por eso `viajes` y `cultura` llevan lugar en todas sus filas y `deporte` no lo
-lleva en ninguna.
+Por eso `viajes` lleva lugar en todas sus filas y `deporte` no lo lleva en
+ninguna.
+
+### Seis categorías, y la base no acepta otras
+
+`viajes · naturaleza · eventos · deporte · gastronomia · vida`. Hubo siete
+(con `cultura`, `musica`, `aventura` y `espectaculos`); se repartieron el
+15-9-2026 con `supabase/fase3g.sql`, y desde entonces la restricción
+`gooals_v2_categoria_valida` rechaza cualquier otro nombre.
+
+La regla para decidir la categoría de un gooal:
+
+> Lo que **VES** o **DÓNDE ESTÁS** → `naturaleza`. **HACER** la actividad →
+> `deporte`. El **TÍTULO** que consigues (cursos, certificaciones) → `vida`.
+
+Las categorías viven en `src/lib/gooals.ts` (nombre, color, degradado e icono
+de lucide), y hay copias en `scripts/seed-gooals/insertar.mjs` y
+`generar_sql.py`. `categoria_dudosa = true` marca los que la regla no tenía
+claros: llevan la mejor apuesta, se ven igual y se repasan en el panel con el
+filtro "Categoría dudosa".
+
+`profiles.intereses` NO usa estos nombres: guarda los intereses del onboarding
+(`viajes`, `gastronomia`, `musica`, `deporte`, `cultura`), que son otra lista.
 
 ### El catálogo tiene menos retos que los PDFs, y está bien
 
-Los PDFs declaran 5.218; en `gooals_v2` hay 4.931. **No es una fuga.** Se
+Los PDFs declaran 5.218; en `gooals_v2` hay 4.726. **No es una fuga.** Se
 descartan por tres motivos, y `generar_sql.py` imprime un cuadre que dice
 exactamente cuántos por cada uno:
 
@@ -116,6 +137,10 @@ exactamente cuántos por cada uno:
 - títulos repetidos dentro del propio PDF
 - copias que se lleva otra categoría (un sitio está en dos PDFs y daría puntos
   dos veces)
+
+Los PDFs siguen llegando con las siete categorías viejas: en el pipeline son el
+**origen** de cada reto, no su categoría. `generar_sql.py` reparte al final en
+las seis con `scripts/seed-gooals/reparto_categorias.txt`.
 
 Lo único que valida al parser es que las columnas `PDF` y `extrae` del cuadre
 coincidan. Si no coinciden, el script lo avisa por stderr.

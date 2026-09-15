@@ -84,6 +84,7 @@ export async function GET(request: Request) {
   const categoria = params.get('categoria')
   const ambito = params.get('ambito')
   const sinPin = params.get('sinPin') === '1'
+  const categoriaDudosa = params.get('categoriaDudosa') === '1'
   const busqueda = limpiarBusqueda(params.get('busqueda') ?? '')
 
   const service = createServiceRoleClient()
@@ -96,6 +97,7 @@ export async function GET(request: Request) {
   if (categoria && esCategoria(categoria)) query = query.eq('categoria', categoria)
   if (ambito === 'lugar' || ambito === 'personal') query = query.eq('ambito', ambito)
   if (sinPin) query = query.eq('ambito', 'lugar').is('lat', null)
+  if (categoriaDudosa) query = query.eq('categoria_dudosa', true)
   if (busqueda) query = query.ilike('titulo', `%${busqueda}%`)
 
   const desde = pagina * POR_PAGINA
@@ -194,7 +196,12 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: `Categoría no válida. Son: ${CATEGORIAS.join(', ')}` }, { status: 400 })
     }
     cambios.categoria = String(body.categoria)
+    // Elegir la categoría a mano ES revisarla: la marca de dudosa sobra.
+    cambios.categoria_dudosa = false
   }
+
+  // "Es correcta": se da por buena la categoría que ya tiene, sin cambiarla.
+  if (body.categoria_dudosa === false) cambios.categoria_dudosa = false
 
   // La dificultad no se acepta: sale de los puntos (la recalcula la base).
   if (body.puntos !== undefined) {

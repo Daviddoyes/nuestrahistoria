@@ -267,7 +267,7 @@ export async function toggleLike(postId: string): Promise<{ liked: boolean; like
  * Los filtros van en la query y no en el cliente a propósito: PostgREST corta
  * en 1.000 filas por defecto, así que traerse el catálogo entero (4.900 gooals)
  * y filtrar en memoria devolvía solo el último trozo insertado — Explorar se
- * quedaba sin viajes, sin deporte y sin aventura, y filtrar por esas categorías
+ * quedaba sin viajes y sin deporte, y filtrar por esas categorías
  * no daba ningún resultado.
  */
 export async function getCatalogoGooals(filtros: FiltrosCatalogo = {}): Promise<{

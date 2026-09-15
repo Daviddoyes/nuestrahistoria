@@ -74,8 +74,8 @@ export function htmlRelanzamiento(
   <p style="font-size: 16px; line-height: 1.7; color: #C0C0C0; margin: 0 0 20px 0;">
     Llevo un tiempo trabajando en una actualización grande, y la app va a cambiar
     por completo. Deja de ir de organizar planes con gente y pasa a ser una lista
-    de casi 5.000 retos —viajes, deporte, gastronomía, cultura, música y
-    aventura— que vas marcando cuando los haces. Cada uno suma puntos según lo
+    de casi 5.000 retos —viajes, naturaleza, eventos, deporte, gastronomía y
+    vida— que vas marcando cuando los haces. Cada uno suma puntos según lo
     que cueste, subes de nivel, y lo que completas aparece en un muro que ven
     quienes te siguen.
   </p>

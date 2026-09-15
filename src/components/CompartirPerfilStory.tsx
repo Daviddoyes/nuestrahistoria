@@ -4,13 +4,17 @@ import { useState } from 'react'
 import { Share2 } from 'lucide-react'
 import {
   STORY_W, STORY_H, ACENTO, aBase64, cargarImg, drawCover, wrapText,
-  rectRedondeado, compartirCanvas,
+  rectRedondeado, compartirCanvas, iconoCategoriaImg,
 } from '@/lib/story-canvas'
 import { calcularNivel, progresoNivel } from '@/lib/niveles'
-import { CATEGORIA_EMOJI, CATEGORIA_LABEL } from '@/lib/gooals'
+import { CATEGORIA_COLOR, CATEGORIA_LABEL } from '@/lib/gooals'
 import type { PerfilCompleto } from '@/types/gooals'
 
 type Props = { perfil: PerfilCompleto }
+
+/** Icono de categoría en la lista de la Story, del alto de las mayúsculas del texto de 34px. */
+const LADO_ICONO = 36
+const HUECO_ICONO = 14
 
 /** Imagen 1080×1920 con las stats del perfil, lista para Stories. */
 export default function CompartirPerfilStory({ perfil }: Props) {
@@ -128,16 +132,22 @@ export default function CompartirPerfilStory({ perfil }: Props) {
       // Categorías con algo conquistado, de más a menos. En la imagen no caben las
       // de 0: aquí se enseña lo vivido, no lo que falta por probar.
       const conProgreso = perfil.porCategoria.filter(s => s.conquistados > 0).slice(0, 6)
+      const iconos = await Promise.all(conProgreso.map(s => iconoCategoriaImg(s.categoria, CATEGORIA_COLOR[s.categoria], LADO_ICONO)))
       let cy = barraY + 160
       ctx.font = '500 34px Inter, system-ui, sans-serif'
-      for (const s of conProgreso) {
+      ctx.textAlign = 'left'
+      conProgreso.forEach((s, i) => {
+        // Icono y texto se centran JUNTOS: centrar solo el texto dejaría el icono
+        // colgando a la izquierda en una línea corta y pegado en una larga.
+        const texto = `${CATEGORIA_LABEL[s.categoria]} · ${s.conquistados}`
+        const ancho = LADO_ICONO + HUECO_ICONO + ctx.measureText(texto).width
+        const x = (STORY_W - ancho) / 2
+        ctx.drawImage(iconos[i], x, cy - LADO_ICONO + 6, LADO_ICONO, LADO_ICONO)
         ctx.fillStyle = '#A3B1AC'
-        ctx.fillText(
-          `${CATEGORIA_EMOJI[s.categoria]}  ${CATEGORIA_LABEL[s.categoria]} · ${s.conquistados}`,
-          STORY_W / 2, cy
-        )
+        ctx.fillText(texto, x + LADO_ICONO + HUECO_ICONO, cy)
         cy += 54
-      }
+      })
+      ctx.textAlign = 'center'
 
       ctx.fillStyle = '#7A8A85'
       ctx.font = '400 32px Inter, system-ui, sans-serif'

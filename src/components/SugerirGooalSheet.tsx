@@ -3,9 +3,8 @@
 import { useState } from 'react'
 import { X, Check } from 'lucide-react'
 import { sugerirGooal } from '@/lib/actions'
-import {
-  CATEGORIAS, CATEGORIA_LABEL, CATEGORIA_EMOJI, type CategoriaGooal,
-} from '@/lib/gooals'
+import { CATEGORIAS, CATEGORIA_LABEL, type CategoriaGooal } from '@/lib/gooals'
+import IconoCategoria from '@/components/IconoCategoria'
 
 type Props = {
   /** Lo que el usuario tenía escrito en el buscador cuando no encontró nada. */
@@ -134,7 +133,7 @@ export default function SugerirGooalSheet({
                       transition: 'all 0.2s',
                     }}
                   >
-                    <span>{CATEGORIA_EMOJI[c]}</span> {CATEGORIA_LABEL[c]}
+                    <IconoCategoria categoria={c} tamano={15} /> {CATEGORIA_LABEL[c]}
                   </button>
                 )
               })}

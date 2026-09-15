@@ -1,9 +1,32 @@
 // Utilidades de canvas para generar imágenes 1080×1920 de Stories.
 // Solo se pueden importar desde componentes de cliente: usan DOM y canvas.
 
+import { createElement } from 'react'
+import { flushSync } from 'react-dom'
+import { createRoot } from 'react-dom/client'
+import { CATEGORIA_ICONO, TRAZO_ICONO_CATEGORIA, type CategoriaGooal } from '@/lib/gooals'
+
 export const STORY_W = 1080
 export const STORY_H = 1920
 export const ACENTO = '#00D1A7'
+
+/**
+ * El icono de una categoría como imagen para dibujarla en el canvas.
+ *
+ * El canvas no sabe pintar componentes: se renderiza el mismo icono de la app
+ * en un div suelto, se lee su SVG y se carga como imagen. Así la Story lleva
+ * exactamente el dibujo que se ve en pantalla, sin copiar sus trazados a mano.
+ */
+export async function iconoCategoriaImg(categoria: CategoriaGooal, color: string, lado: number): Promise<HTMLImageElement> {
+  const contenedor = document.createElement('div')
+  const raiz = createRoot(contenedor)
+  flushSync(() => {
+    raiz.render(createElement(CATEGORIA_ICONO[categoria], { size: lado, color, strokeWidth: TRAZO_ICONO_CATEGORIA }))
+  })
+  const svg = contenedor.innerHTML
+  raiz.unmount()
+  return cargarImg('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg))
+}
 
 /** Imagen remota → dataURL. Vía proxy para que el canvas no quede "tainted" por CORS. */
 export async function aBase64(url: string): Promise<string> {

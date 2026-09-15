@@ -65,7 +65,7 @@ function ModalShell({
 // ── Nuevo gooal ──────────────────────────────────────────────
 function NuevoGooalModal({ onClose, onSaved }: { onClose: () => void; onSaved: () => void }) {
   const [f, setF] = useState({
-    titulo: '', descripcion: '', categoria: 'aventura' as CategoriaGooal,
+    titulo: '', descripcion: '', categoria: 'viajes' as CategoriaGooal,
     puntos: PUNTOS_MIN,
     ciudad: '', pais: 'España', imagen_url: '', activo: true,
   })
@@ -150,7 +150,7 @@ function NuevoGooalModal({ onClose, onSaved }: { onClose: () => void; onSaved: (
 
 // ── Generar con IA ───────────────────────────────────────────
 function GenerarIAModal({ onClose, onSaved }: { onClose: () => void; onSaved: () => void }) {
-  const [categoria, setCategoria] = useState<CategoriaGooal>('aventura')
+  const [categoria, setCategoria] = useState<CategoriaGooal>('viajes')
   const [zona, setZona] = useState('España')
   const [generando, setGenerando] = useState(false)
   const [guardando, setGuardando] = useState(false)

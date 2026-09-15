@@ -7,7 +7,7 @@ type Props = { conteos: ConteoCategoria[] }
 
 /**
  * Cuántos gooals hay en cada categoría, en una fila deslizable. Las de 0 se
- * quedan al final y apagadas, no se quitan: "Música 0" invita a probar algo nuevo.
+ * quedan al final y apagadas, no se quitan: "Vida 0" invita a probar algo nuevo.
  */
 export default function PastillasCategorias({ conteos }: Props) {
   return (

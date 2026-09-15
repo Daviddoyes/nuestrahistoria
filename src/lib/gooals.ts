@@ -1,7 +1,16 @@
 // Constantes compartidas del catálogo de gooals v2. Vive fuera de actions.ts
 // porque ese módulo es 'use server' y allí todo lo exportado debe ser async.
 
-export type CategoriaGooal = 'viajes' | 'deporte' | 'musica' | 'gastronomia' | 'cultura' | 'aventura' | 'espectaculos'
+import { Award, Dumbbell, Landmark, Mountain, Ticket, UtensilsCrossed, type LucideIcon } from 'lucide-react'
+
+/**
+ * Las seis categorías. La base solo acepta estas (gooals_v2_categoria_valida, en
+ * supabase/fase3g.sql). Para repartir un gooal nuevo:
+ *   lo que VES o DÓNDE ESTÁS  -> naturaleza
+ *   HACER la actividad        -> deporte
+ *   el TÍTULO que consigues   -> vida (cursos, certificaciones)
+ */
+export type CategoriaGooal = 'viajes' | 'naturaleza' | 'eventos' | 'deporte' | 'gastronomia' | 'vida'
 export type DificultadGooal = 'facil' | 'dificil' | 'epico'
 /** Solo los 'verificado' se enseñan en el catálogo. */
 export type EstadoGooal = 'borrador' | 'verificado'
@@ -9,55 +18,59 @@ export type EstadoGooal = 'borrador' | 'verificado'
 export type AmbitoGooal = 'lugar' | 'personal'
 
 export const CATEGORIAS: CategoriaGooal[] = [
-  'viajes', 'deporte', 'musica', 'gastronomia', 'cultura', 'aventura', 'espectaculos',
+  'viajes', 'naturaleza', 'eventos', 'deporte', 'gastronomia', 'vida',
 ]
 
 export const CATEGORIA_LABEL: Record<CategoriaGooal, string> = {
   viajes: 'Viajes',
+  naturaleza: 'Naturaleza',
+  eventos: 'Eventos',
   deporte: 'Deporte',
-  musica: 'Música',
   gastronomia: 'Gastronomía',
-  cultura: 'Cultura',
-  aventura: 'Aventura',
-  espectaculos: 'Espectáculos',
+  vida: 'Vida',
 }
 
-export const CATEGORIA_EMOJI: Record<CategoriaGooal, string> = {
-  viajes: '✈️',
-  deporte: '🏃',
-  musica: '🎵',
-  gastronomia: '🍜',
-  cultura: '🎨',
-  aventura: '🧗',
-  espectaculos: '🎟️',
+/**
+ * Icono de cada categoría. Iconos de trazo y no emojis: un emoji cambia de
+ * dibujo y de color según el móvil, y no se puede teñir con el color de la
+ * categoría. Se pintan con IconoCategoria, que fija el grosor del trazo.
+ */
+export const CATEGORIA_ICONO: Record<CategoriaGooal, LucideIcon> = {
+  viajes: Landmark,
+  naturaleza: Mountain,
+  eventos: Ticket,
+  deporte: Dumbbell,
+  gastronomia: UtensilsCrossed,
+  vida: Award,
 }
+
+/** Grosor del trazo de los iconos de categoría: más fino que el 2 de lucide, a juego con Poppins. */
+export const TRAZO_ICONO_CATEGORIA = 1.75
 
 export const CATEGORIA_COLOR: Record<CategoriaGooal, string> = {
   viajes: '#38BDF8',
+  naturaleza: '#84CC16',
+  eventos: '#EC4899',
   deporte: '#FF6B4A',
-  musica: '#A855F7',
   gastronomia: '#F59E0B',
-  cultura: '#EC4899',
-  aventura: '#84CC16',
-  espectaculos: '#FACC15',
+  vida: '#A855F7',
 }
 
 /** Fondo de las cards sin imagen: degradado del color de su categoría. */
 export const CATEGORIA_GRADIENTE: Record<CategoriaGooal, string> = {
   viajes: 'linear-gradient(145deg, #0C4A6E 0%, #38BDF8 100%)',
+  naturaleza: 'linear-gradient(145deg, #365314 0%, #84CC16 100%)',
+  eventos: 'linear-gradient(145deg, #831843 0%, #EC4899 100%)',
   deporte: 'linear-gradient(145deg, #7F2418 0%, #FF6B4A 100%)',
-  musica: 'linear-gradient(145deg, #4C1D95 0%, #A855F7 100%)',
   gastronomia: 'linear-gradient(145deg, #78350F 0%, #F59E0B 100%)',
-  cultura: 'linear-gradient(145deg, #831843 0%, #EC4899 100%)',
-  aventura: 'linear-gradient(145deg, #365314 0%, #84CC16 100%)',
-  espectaculos: 'linear-gradient(145deg, #713F12 0%, #FACC15 100%)',
+  vida: 'linear-gradient(145deg, #4C1D95 0%, #A855F7 100%)',
 }
 
 /**
- * Cuántos gooals conquistados hay en cada categoría, con las siete siempre
+ * Cuántos gooals conquistados hay en cada categoría, con las seis siempre
  * presentes: primero las que tienen algo (de más a menos), luego las de 0.
  *
- * Las de 0 no se quitan a propósito. "Música 0" es lo que empuja a probar algo
+ * Las de 0 no se quitan a propósito. "Vida 0" es lo que empuja a probar algo
  * distinto, y la app va de haber probado muchas cosas, no de profundizar en una.
  *
  * Sustituye a los porcentajes por categoría, que necesitaban el total del
@@ -131,13 +144,14 @@ export function dificultadDePuntos(puntos: number): DificultadGooal | null {
  * Si un gooal va al mapa ('lugar') o no necesita coordenadas nunca ('personal').
  *
  * No basta con "tiene coordenadas": Troya o el Cotopaxi son sitios aunque aún no
- * tengan pin. Con ciudad, o con país en cultura y aventura, es un lugar. En el
- * resto un país suele ser el origen de un plato ("Probar ceviche peruano"), no
- * un sitio al que ir; lo fino se corrige a mano en el panel.
+ * tengan pin. Con ciudad, o con país en viajes y naturaleza, es un lugar. En el
+ * resto un país suele ser el origen de un plato ("Probar ceviche peruano") o de
+ * nada en concreto, no un sitio al que ir; lo fino se corrige a mano en el panel.
  *
- * Es la misma regla que rellenó la columna en supabase/fase3f.sql, y la repiten
- * los scripts de siembra (insertar.mjs, generar_sql.py). Si cambia aquí,
- * cambia allí.
+ * Solo en viajes y naturaleza porque son las dos categorías de sitios: ahí un
+ * país sin ciudad sigue siendo un lugar ("Vuelo en globo sobre Capadocia"). La
+ * repiten los scripts de siembra (insertar.mjs, generar_sql.py): si cambia
+ * aquí, cambia allí.
  */
 export function ambitoDeGooal(g: {
   categoria: string
@@ -147,7 +161,7 @@ export function ambitoDeGooal(g: {
 }): AmbitoGooal {
   if (g.lat != null) return 'lugar'
   if (g.ciudad) return 'lugar'
-  if (g.pais && (g.categoria === 'cultura' || g.categoria === 'aventura')) return 'lugar'
+  if (g.pais && (g.categoria === 'viajes' || g.categoria === 'naturaleza')) return 'lugar'
   return 'personal'
 }
 
@@ -155,14 +169,18 @@ export function esCategoria(valor: string): valor is CategoriaGooal {
   return (CATEGORIAS as string[]).includes(valor)
 }
 
-/** Categoría normalizada, tolerante a acentos y mayúsculas de la IA o del admin. */
+/**
+ * Categoría normalizada, tolerante a acentos y mayúsculas de la IA o del admin.
+ * Lo que no se reconoce va a viajes, la categoría más grande, y nunca a un nombre
+ * que la base rechazaría.
+ */
 export function normalizarCategoriaGooal(valor: string | null | undefined): CategoriaGooal {
   const limpio = (valor ?? '')
     .trim()
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
-  return esCategoria(limpio) ? limpio : 'aventura'
+  return esCategoria(limpio) ? limpio : 'viajes'
 }
 
 /** "hace 3 h", "hace 2 d"... para la cabecera de cada post del muro. */

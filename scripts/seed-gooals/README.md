@@ -11,8 +11,25 @@ python generar_sql.py ../../RETOS
 # 2. gooals.json -> Supabase (idempotente)
 node insertar.mjs --dry-run     # cuenta lo que insertaría, no escribe
 node insertar.mjs               # inserta de verdad
-node insertar.mjs musica        # solo una categoría
+node insertar.mjs naturaleza    # solo una categoría
 ```
+
+## Origen y categoría
+
+Los PDFs llegan con **siete categorías de origen** (viajes, deporte, aventura,
+gastronomía, cultura, música, espectáculos) y la app tiene **seis categorías**
+(viajes, naturaleza, eventos, deporte, gastronomía, vida). `generar_sql.py`
+trabaja todo el rato por origen y solo al final reparte:
+
+- cada origen tiene un destino por defecto (`DESTINO_POR_DEFECTO`):
+  cultura → viajes, música y espectáculos → eventos, aventura → naturaleza;
+- `reparto_categorias.txt` lista las excepciones y las **dudosas**, con la
+  regla: lo que VES o DÓNDE ESTÁS → naturaleza, HACER la actividad → deporte, el
+  TÍTULO que consigues → vida.
+
+Cada fila de `gooals.json` lleva `origen`, `categoria` y `categoria_dudosa`.
+Por eso en este directorio siguen apareciendo "aventura" o "cultura": son
+nombres de PDF, nunca categorías que lleguen a la base (que las rechazaría).
 
 `insertar.mjs` usa `fetch` nativo (Node 18+) y lee `NEXT_PUBLIC_SUPABASE_URL` y
 `SUPABASE_SERVICE_ROLE_KEY` de `.env.local`. No hace falta instalar nada.
@@ -109,7 +126,7 @@ Los puntos nunca se leen del PDF: salen del baremo, el mismo que aplica la app e
   prioridad (`PRIORIDAD` en `generar_sql.py`: viajes › deporte › gastronomía ›
   música › aventura › cultura). Son 90 retos, 85 de ellos viajes↔cultura.
   Solo se aplica generando las seis categorías de una pasada, no con `python
-  generar_sql.py ../../RETOS musica`.
+  generar_sql.py ../../RETOS musica` (un solo PDF).
 - **Vacía `pais`** cuando la fuente pone un genérico en vez de un lugar
   (`Centro autorizado`, `Destino especializado`, `Rocodromo o roca`…).
 - **Restituye tildes** en nombres de país y ciudad (`Espana` → `España`), que los
@@ -150,14 +167,16 @@ entrada — esquiar un día, parapente en tándem, quad por dunas.
   se verifican en `/admin`. Entran con `activo = true` y sin imagen; `imagen_url`
   queda a `null` y se rellena desde el panel.
 - Cada gooal entra con su **`ambito`**: `lugar` si tiene coordenadas, ciudad, o
-  país en cultura/aventura; `personal` en el resto. La regla está repetida en
+  país en viajes/naturaleza; `personal` en el resto. La regla está repetida en
   `insertar.mjs`, `generar_sql.py` y `src/lib/gooals.ts`.
 - **La dificultad no se escribe.** Aquí se usa para decidir los puntos (es lo que
   traen los PDFs), pero la base la recalcula siempre a partir de los puntos con un
   disparador. Si los puntos dicen otra cosa, mandan los puntos.
 - Requiere `supabase/fase3.sql` (crea la tabla) y `supabase/fase3f.sql` (estado,
   ámbito y el disparador de la dificultad).
-- Los `.sql` de `output/` generados antes del 15-9-2026 aún escriben la dificultad
-  y no llevan estado ni ámbito: regenéralos con `generar_sql.py` antes de usarlos.
+- Los `.sql` de `output/` generados antes del 15-9-2026 aún escriben la dificultad,
+  no llevan estado ni ámbito y usan las siete categorías viejas (`aventura.sql`,
+  `cultura.sql`…), que la base ya rechaza: regenéralos con `generar_sql.py` antes
+  de usarlos.
 - Es un script **local** de siembra, como `scripts/generar-experiencias/`. No
   forma parte de la app Next.js y no se despliega en Vercel.

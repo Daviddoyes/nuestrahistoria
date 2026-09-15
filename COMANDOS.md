@@ -58,19 +58,23 @@ avisa por stderr. Que el total final sea menor que el del PDF es normal: son las
 fusiones y las copias cedidas a otra categoría. Está explicado en
 `scripts/seed-gooals/README.md`.
 
-`insertar.mjs` es idempotente: compara título + categoría, así que relanzarlo no
-duplica nada. Solo mete lo que falte.
+`insertar.mjs` es idempotente: compara el título, en cualquier categoría, así
+que relanzarlo no duplica nada. Solo mete lo que falte.
 
-Una sola categoría:
+Los PDFs traen siete categorías de **origen** y la app tiene seis. El reparto
+de uno a otro está en `scripts/seed-gooals/reparto_categorias.txt`: si quieres
+que un reto vaya a otra categoría, cámbialo ahí.
+
+Un solo PDF (por su origen) y una sola categoría (de las seis):
 
 ```bash
-python generar_sql.py ../../RETOS musica
-node insertar.mjs musica
+python generar_sql.py ../../RETOS aventura   # escribe output/aventura-a-<categoría>.sql
+node insertar.mjs naturaleza
 ```
 
-> Ojo: generando una sola categoría **no se aplica el dedupe entre categorías**,
-> porque para saber que "Visitar Museo del Prado" está en viajes hay que haber
-> generado viajes. Para el catálogo bueno, genera siempre las seis.
+> Ojo: generando un solo PDF **no se aplica el dedupe entre PDFs**, porque
+> para saber que "Visitar Museo del Prado" está en viajes hay que haber
+> generado viajes. Para el catálogo bueno, genera siempre todos.
 
 ### Rehacer una categoría entera
 
@@ -85,22 +89,22 @@ En el **SQL Editor de Supabase**:
 select count(*)
 from user_gooals ug
 join gooals_v2 g on g.id = ug.gooal_id
-where g.categoria = 'aventura';
+where g.categoria = 'naturaleza';
 
-delete from gooals_v2 where categoria = 'aventura';
+delete from gooals_v2 where categoria = 'naturaleza';
 ```
 
 Y luego, desde `scripts/seed-gooals/`:
 
 ```bash
-node insertar.mjs aventura
+node insertar.mjs naturaleza
 ```
 
 Si el count no da 0, **no borres**: desactiva en vez de borrar, así el histórico
 de puntos de la gente sigue en pie.
 
 ```sql
-update gooals_v2 set activo = false where categoria = 'aventura';
+update gooals_v2 set activo = false where categoria = 'naturaleza';
 ```
 
 ---

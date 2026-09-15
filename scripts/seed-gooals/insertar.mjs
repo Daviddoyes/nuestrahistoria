@@ -3,14 +3,17 @@
  * GooALS — siembra del catálogo gooals_v2 desde gooals.json.
  *
  *   node scripts/seed-gooals/insertar.mjs            # inserta todo
- *   node scripts/seed-gooals/insertar.mjs musica     # solo una categoría
+ *   node scripts/seed-gooals/insertar.mjs naturaleza # solo una categoría
  *   node scripts/seed-gooals/insertar.mjs --dry-run  # no escribe, solo cuenta
  *
  *   node scripts/seed-gooals/insertar.mjs --coordenadas  # solo sube lat/lng
  *   node scripts/seed-gooals/insertar.mjs --traer-coordenadas  # las baja al fichero
  *
- * Idempotente: antes de insertar se trae los (titulo, categoria) que ya están
- * en la tabla y solo manda los que faltan. Relanzarlo no duplica nada.
+ * Idempotente: antes de insertar se trae los títulos que ya están en la tabla
+ * y solo manda los que faltan. Relanzarlo no duplica nada.
+ *
+ * Las categorías son las seis de la app (las claves de gooals.json). Si alguna
+ * no lo es, se para antes de tocar nada: la base la rechazaría a mitad de lote.
  *
  * Requiere Node 18+ (usa fetch nativo) y SUPABASE_SERVICE_ROLE_KEY en .env.local.
  * Script local de siembra: no forma parte de la app y no se despliega.
@@ -51,6 +54,10 @@ const args = process.argv.slice(2);
 const dryRun = args.includes('--dry-run');
 const soloCategoria = args.find((a) => !a.startsWith('-'));
 
+// Copia de CATEGORIAS en src/lib/gooals.ts (este script no puede importar
+// TypeScript). La base solo acepta estas: gooals_v2_categoria_valida.
+const CATEGORIAS = ['viajes', 'naturaleza', 'eventos', 'deporte', 'gastronomia', 'vida'];
+
 const catalogo = JSON.parse(readFileSync(join(aqui, 'gooals.json'), 'utf8'));
 const categorias = soloCategoria ? [soloCategoria] : Object.keys(catalogo);
 for (const c of categorias) {
@@ -58,6 +65,14 @@ for (const c of categorias) {
     console.error(`Categoría desconocida: ${c}. Hay: ${Object.keys(catalogo).join(', ')}`);
     process.exit(1);
   }
+}
+// Un gooals.json de antes del reparto en seis categorías trae "aventura" o
+// "cultura": mejor pararlo aquí que a mitad de un lote de 500.
+const invalidas = Object.keys(catalogo).filter((c) => !CATEGORIAS.includes(c));
+if (invalidas.length > 0) {
+  console.error(`gooals.json trae categorías que la base no acepta: ${invalidas.join(', ')}.`);
+  console.error(`Son: ${CATEGORIAS.join(', ')}. Regenéralo con generar_sql.py.`);
+  process.exit(1);
 }
 
 // ── Helpers REST ────────────────────────────────────────────────────
@@ -72,18 +87,29 @@ async function pedir(ruta, opciones = {}) {
   return res;
 }
 
-/** Títulos que ya están en la tabla para una categoría (paginado de 1000). */
-async function titulosExistentes(categoria) {
+/**
+ * Títulos que ya están en la tabla, en CUALQUIER categoría (paginado de 1000).
+ *
+ * En cualquiera y no solo en la suya: si en el panel se le cambia la categoría a
+ * un gooal (lo normal al repasar las dudosas), buscar solo en la del fichero lo
+ * daría por nuevo y lo volvería a meter duplicado.
+ */
+let titulosEnTabla = null;
+async function titulosExistentes() {
+  if (titulosEnTabla) return titulosEnTabla;
   const vistos = new Set();
   for (let desde = 0; ; desde += 1000) {
     const res = await pedir(
-      `gooals_v2?select=titulo&categoria=eq.${encodeURIComponent(categoria)}`,
+      // Orden por id: sin un orden fijo, las páginas pueden solaparse y saltarse filas.
+      'gooals_v2?select=titulo&order=id',
       { headers: { Range: `${desde}-${desde + 999}` } },
     );
     const filas = await res.json();
     for (const f of filas) vistos.add(f.titulo);
-    if (filas.length < 1000) return vistos;
+    if (filas.length < 1000) break;
   }
+  titulosEnTabla = vistos;
+  return vistos;
 }
 
 const LOTE = 500;
@@ -96,13 +122,13 @@ const LOTE = 500;
 function ambitoDe(f) {
   if (f.lat != null) return 'lugar';
   if (f.ciudad) return 'lugar';
-  if (f.pais && (f.categoria === 'cultura' || f.categoria === 'aventura')) return 'lugar';
+  if (f.pais && (f.categoria === 'viajes' || f.categoria === 'naturaleza')) return 'lugar';
   return 'personal';
 }
 
 async function sembrar(categoria) {
   const filas = catalogo[categoria];
-  const yaEstan = await titulosExistentes(categoria);
+  const yaEstan = await titulosExistentes();
   const nuevas = filas.filter((f) => !yaEstan.has(f.titulo));
 
   const saltadas = filas.length - nuevas.length;
@@ -121,6 +147,8 @@ async function sembrar(categoria) {
       titulo: f.titulo,
       descripcion: f.descripcion,
       categoria: f.categoria,
+      // Lo marca reparto_categorias.txt: la regla no tenía clara la categoría.
+      categoria_dudosa: f.categoria_dudosa ?? false,
       // Sin dificultad: la calcula la base a partir de los puntos (fase3f.sql).
       // En gooals.json sigue existiendo, pero solo como dato de trabajo del PDF.
       puntos: f.puntos,

@@ -24,7 +24,7 @@
  *
  * Solo se geocodifican los gooals con ciudad Y país. Los que solo tienen país
  * son una zona, no un punto, y los deslocalizados (deporte entero, las fusiones
- * de aventura) no van al mapa a propósito.
+ * del PDF de aventura) no van al mapa a propósito.
  *
  * Es reanudable: guarda cada 25 y al relanzarlo salta los que ya tienen
  * coordenadas. Si lo cortas con Ctrl+C no pierdes lo hecho.
@@ -55,8 +55,9 @@ const soloFallidos = args.includes('--fallidos')
 const recuperar = args.includes('--recuperar')
 const iLimite = args.indexOf('--limite')
 const limite = iLimite >= 0 ? parseInt(args[iLimite + 1], 10) : Infinity
-// --solo <categoria> acota a una categoría, para poder rehacer solo una sin
-// tirar abajo las horas de geocodificado de las demás.
+// --solo <categoria u origen> acota a una categoría (naturaleza) o a un PDF de
+// origen (espectaculos), para poder rehacer solo eso sin tirar abajo las horas
+// de geocodificado del resto.
 const iSolo = args.indexOf('--solo')
 const soloCategoria = iSolo >= 0 ? args[iSolo + 1] : null
 
@@ -82,7 +83,9 @@ const TRAS_EN = / en (?!.* en )/i
 function sitioDe(r) {
   if (r.geo_consulta) return r.geo_consulta
   let t = r.titulo.split(' · ')[0]
-  if (r.categoria === 'espectaculos' && TRAS_EN.test(t)) {
+  // Por origen y no por categoría: eventos mezcla los espectáculos con lo que
+  // vino de música y cultura, y a esos otros no les vale esta regla.
+  if (r.origen === 'espectaculos' && TRAS_EN.test(t)) {
     t = t.split(TRAS_EN).pop()
   }
   return t.replace(VERBOS, '').replace(ARTICULOS, '').trim()
@@ -123,7 +126,8 @@ const catalogo = JSON.parse(readFileSync(FICHERO, 'utf8'))
 const todos = Object.values(catalogo).flat()
 
 const candidatos = todos.filter(r => {
-  if (soloCategoria && r.categoria !== soloCategoria) return false
+  // Vale tanto una categoría (naturaleza) como un origen (espectaculos).
+  if (soloCategoria && r.categoria !== soloCategoria && r.origen !== soloCategoria) return false
   if (!r.ciudad || !r.pais) return false          // sin lugar concreto
   if (soloFallidos) return r.geo === 'sin-resultado'
   // Los que llevan geo_consulta entran siempre: esa columna se escribió a mano

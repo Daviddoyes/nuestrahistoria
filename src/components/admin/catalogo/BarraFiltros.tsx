@@ -37,7 +37,7 @@ function Chip({ activo, onClick, children }: { activo: boolean; onClick: () => v
   )
 }
 
-/** Buscador, estado, categoría, ámbito y "sin pin", con el número de resultados siempre a la vista. */
+/** Buscador, estado, categoría, ámbito, "sin pin" y "categoría dudosa", con el número de resultados siempre a la vista. */
 export default function BarraFiltros({ filtros, texto, onTexto, onCambiar, total, cargando }: Props) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -75,6 +75,15 @@ export default function BarraFiltros({ filtros, texto, onTexto, onCambiar, total
         <span style={{ width: 1, height: 20, background: '#2A2E2C', margin: '0 4px' }} />
         <Chip activo={filtros.sinPin} onClick={() => onCambiar({ sinPin: !filtros.sinPin })}>
           Sin pin
+        </Chip>
+        {/* Los dudosos están casi todos verificados: con el filtro de estado en
+            "Borrador" (el de entrada) saldrían casi vacíos. Por eso al activarlo
+            se pasa a "Todos"; si alguien vuelve a elegir un estado, se respeta. */}
+        <Chip
+          activo={filtros.categoriaDudosa}
+          onClick={() => onCambiar(filtros.categoriaDudosa ? { categoriaDudosa: false } : { categoriaDudosa: true, estado: 'todos' })}
+        >
+          Categoría dudosa
         </Chip>
       </div>
 
