@@ -778,7 +778,7 @@ alter table gooals_v2 drop constraint if exists gooals_v2_categoria_valida;
 alter table gooals_v2 add constraint gooals_v2_categoria_valida
   check (categoria in ('viajes', 'naturaleza', 'eventos', 'deporte', 'gastronomia', 'vida'));
 
-drop table fase3g_excepciones;
+drop table if exists fase3g_excepciones;
 
 commit;
 
