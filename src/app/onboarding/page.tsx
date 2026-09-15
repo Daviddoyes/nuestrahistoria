@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Check, Camera } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { getGooalsOnboarding, anadirGooal } from '@/lib/actions'
-import { CATEGORIA_GRADIENTE, DIFICULTAD_META } from '@/lib/gooals'
+import { CATEGORIA_GRADIENTE, DIFICULTAD_META, type CategoriaGooal } from '@/lib/gooals'
 import CompletarGooalModal, { type ResultadoCompletado } from '@/components/CompletarGooalModal'
 import type { GooalV2 } from '@/types/gooals'
 
@@ -28,15 +28,19 @@ const CON_QUIEN_OPTIONS: { id: CompaniaId; icon: string; label: string }[] = [
 ]
 
 // Las categorías del catálogo v2 que cubre cada interés del onboarding.
-const CATEGORIAS_POR_INTERES: Record<InterId, string[]> = {
-  viajes: ['viajes', 'aventura'],
+// Los intereses son otra lista y conservan sus ids viejos a propósito: es lo que
+// ya hay guardado en profiles.intereses, y se rehará al rehacer el onboarding.
+// Hasta entonces, aquí se traducen a las seis categorías para que las
+// sugerencias no caigan en el plan B de getGooalsOnboarding.
+const CATEGORIAS_POR_INTERES: Record<InterId, CategoriaGooal[]> = {
+  viajes: ['viajes', 'naturaleza'],
   gastronomia: ['gastronomia'],
-  musica: ['musica'],
+  musica: ['eventos'],
   deporte: ['deporte'],
-  cultura: ['cultura'],
+  cultura: ['viajes', 'eventos'],
 }
 
-function categoriasDe(intereses: InterId[]): string[] {
+function categoriasDe(intereses: InterId[]): CategoriaGooal[] {
   return [...new Set(intereses.flatMap(i => CATEGORIAS_POR_INTERES[i]))]
 }
 
