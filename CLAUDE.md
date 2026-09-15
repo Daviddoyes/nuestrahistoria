@@ -55,7 +55,13 @@ la solución es una Server Action, no una política nueva.
 
 `/admin` exige sesión (en `src/proxy.ts`) **y** que `profiles.es_admin` sea
 `true`, que se comprueba en el servidor con `esAdmin()` de `@/lib/admin-auth`.
-Toda ruta bajo `/api/admin/` y `/api/admin-stats` empieza por esa comprobación.
+
+El panel son cuatro pestañas, una ruta cada una: `/admin/gooals` (abre por
+defecto), `/admin/usuarios`, `/admin/metricas` y `/admin/comunicaciones`.
+`src/app/admin/layout.tsx` comprueba el permiso y pinta las pestañas, pero **eso
+solo decide qué se pinta**: un layout no se repite al cambiar de pestaña. Cada
+página que lee datos, cada ruta bajo `/api/admin/` y cada Server Action vuelve a
+llamar a `esAdmin()` por su cuenta.
 
 Nunca metas una contraseña de admin en un componente de cliente: el bundle es
 público. Esto ya pasó una vez y expuso el email de todos los usuarios.
@@ -88,7 +94,8 @@ añadido o conquistado es suyo aunque el gooal pase a borrador. Hay un comentari
 en cada una de esas consultas; no lo "arregles".
 
 Nacen `verificado`: aprobar una sugerencia y crear uno a mano en el panel.
-Nacen `borrador`: el pipeline de siembra y "Generar con IA".
+Nacen `borrador`: el pipeline de siembra, "Generar con IA" y la importación CSV
+(`/admin/gooals/importar`).
 
 ### Un gooal es una experiencia, no un sitio
 

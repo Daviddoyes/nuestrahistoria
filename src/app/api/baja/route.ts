@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createServiceRoleClient } from '@/lib/supabase/service'
-import { firmaBajaValida } from '@/lib/email-relanzamiento'
+import { firmaBajaValida } from '@/lib/email-baja'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://gooals.app'
 

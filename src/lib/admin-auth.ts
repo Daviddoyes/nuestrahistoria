@@ -7,8 +7,8 @@ import { createServiceRoleClient } from '@/lib/supabase/service'
  * Antes esto era una contraseña compartida (`ADMIN_KEY`) que el panel mandaba
  * en una cabecera. Como el panel es un componente de cliente, esa contraseña
  * viajaba en el bundle: cualquiera podía leerla en las devtools y llamar a
- * /api/admin/* — incluido /api/admin-stats, que devuelve el email de todos los
- * usuarios.
+ * /api/admin/* — incluida la ruta de estadísticas de entonces, que devolvía el
+ * email de todos los usuarios.
  *
  * Ahora se comprueba en el servidor contra `profiles.es_admin`, que el cliente
  * nunca ve. La sesión viaja en la cookie, así que las llamadas del panel no

@@ -8,7 +8,6 @@ export type Profile = {
   email: string
   username: string | null
   foto_perfil_url: string | null
-  edad: number | null
   created_at: string
   onboarding_completado?: boolean
   intereses?: string[]
@@ -147,6 +146,8 @@ export type PerfilCompleto = {
  *   sin-resultado no encontró nada: no hay pin
  *   rehacer       se cambió la ciudad o el país en el panel con el pin ya puesto:
  *                 el pin puede apuntar al sitio equivocado y hay que rehacerlo
+ *   (null)        nadie lo ha buscado todavía: un lugar recién creado o importado,
+ *                 o un personal, que no va al mapa nunca
  */
 export type GeoGooal = 'fiable' | 'revisar' | 'solo-ciudad' | 'sin-resultado' | 'rehacer'
 
@@ -155,6 +156,8 @@ export type GooalAdmin = GooalV2 & {
   lat: number | null
   lng: number | null
   geo: GeoGooal | null
+  /** Con qué texto buscarlo en el mapa cuando el título no basta. Lo trae la importación CSV. */
+  geo_consulta: string | null
   /** Personas que lo tienen en su lista, pendiente o conquistado. Si es > 0 no se puede borrar. */
   enListas: number
   /** Personas que lo han conquistado. */

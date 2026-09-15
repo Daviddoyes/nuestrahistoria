@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, X, Sparkles } from 'lucide-react'
+import Link from 'next/link'
+import { Plus, X, Sparkles, Upload } from 'lucide-react'
 import {
   CATEGORIAS, CATEGORIA_LABEL, DIFICULTAD_META, PUNTOS_MIN,
   dificultadDePuntos, puntosEnEscala, type CategoriaGooal,
@@ -283,7 +284,17 @@ export default function GooalsV2Section() {
           <span style={{ fontSize: 12, color: '#A3B1AC' }}>Buscar, corregir y verificar</span>
         </div>
 
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <Link
+            href="/admin/gooals/importar"
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6, padding: '9px 12px', borderRadius: 10,
+              background: 'transparent', border: '1px solid #2A2E2C', color: '#FFFFFF',
+              fontSize: 12, fontWeight: 600, textDecoration: 'none', whiteSpace: 'nowrap',
+            }}
+          >
+            <Upload style={{ width: 13, height: 13 }} /> Importar CSV
+          </Link>
           <button
             onClick={() => setShowIA(true)}
             style={{
