@@ -63,6 +63,15 @@ solo decide qué se pinta**: un layout no se repite al cambiar de pestaña. Cada
 página que lee datos, cada ruta bajo `/api/admin/` y cada Server Action vuelve a
 llamar a `esAdmin()` por su cuenta.
 
+**Comunicaciones manda correos reales.** El freno está repetido en el servidor
+(`src/app/admin/comunicaciones/acciones.ts`), no solo en la pantalla: solo se
+envía el texto exacto de la última prueba, hay que escribir ENVIAR, la cifra
+confirmada tiene que coincidir con la de ese momento y una campaña pasa de
+`borrador` a `enviando` una sola vez. El índice único `(user_id, campana)` de
+`emails_enviados` y la clave de idempotencia de Resend impiden que a nadie le
+llegue dos veces, también al reanudar un envío cortado. Todo correo lleva
+`enlaceBaja()` de `src/lib/email-baja.ts`.
+
 Nunca metas una contraseña de admin en un componente de cliente: el bundle es
 público. Esto ya pasó una vez y expuso el email de todos los usuarios.
 

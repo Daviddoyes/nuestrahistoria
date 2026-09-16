@@ -6,7 +6,7 @@
 import { createServiceRoleClient } from '@/lib/supabase/service'
 import { CATEGORIAS, type CategoriaGooal } from '@/lib/gooals'
 
-type Servicio = ReturnType<typeof createServiceRoleClient>
+export type Servicio = ReturnType<typeof createServiceRoleClient>
 
 /** Lo máximo que devuelve PostgREST por consulta. Si se pide más, corta sin avisar. */
 const PAGINA_BASE = 1000
@@ -17,7 +17,7 @@ const PAGINA_BASE = 1000
  * `consulta` recibe el rango y devuelve la consulta YA ordenada por una columna
  * única (el id): sin un orden fijo, las páginas pueden solaparse y saltarse filas.
  */
-async function leerTodo<T>(
+export async function leerTodo<T>(
   consulta: (desde: number, hasta: number) => PromiseLike<{ data: unknown[] | null; error: { message: string } | null }>,
 ): Promise<T[]> {
   const filas: T[] = []
@@ -57,7 +57,7 @@ export type UsuarioAdmin = {
   esAdmin: boolean
 }
 
-type CuentaAuth = { id: string; email?: string; created_at: string; last_sign_in_at?: string | null }
+export type CuentaAuth = { id: string; email?: string; created_at: string; last_sign_in_at?: string | null }
 
 /**
  * Todas las cuentas de auth.users, página a página.
@@ -65,7 +65,7 @@ type CuentaAuth = { id: string; email?: string; created_at: string; last_sign_in
  * Antes se pedía solo la página 1 de 1.000: con la cuenta 1.001 el panel habría
  * empezado a perder usuarios sin decir nada.
  */
-async function cuentasAuth(service: Servicio): Promise<CuentaAuth[]> {
+export async function cuentasAuth(service: Servicio): Promise<CuentaAuth[]> {
   const cuentas: CuentaAuth[] = []
   for (let pagina = 1; ; pagina++) {
     const { data, error } = await service.auth.admin.listUsers({ page: pagina, perPage: PAGINA_BASE })

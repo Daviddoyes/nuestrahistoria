@@ -2,31 +2,11 @@ import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { createServiceRoleClient } from '@/lib/supabase/service'
-
-const FROM = 'GooALS <hola@gooals.app>'
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://gooals.app'
+import { REMITENTE_INVITACIONES } from '@/lib/email-remitente'
+import { htmlBase, textoBase } from '@/lib/email-plantilla'
+import { partesInvitacion } from '@/lib/email-invitacion'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-function inviteHtml(nombreInvitador: string, token: string) {
-  return `
-      <div style="font-family: Inter, system-ui, sans-serif; max-width: 480px; margin: 0 auto; background: #0B0B0B; color: #FFFFFF; padding: 48px 32px;">
-        <p style="font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #00D1A7; margin: 0 0 32px 0;">GooALS</p>
-        <h1 style="font-size: 28px; font-weight: 700; margin: 0 0 16px 0; color: #FFFFFF;">${nombreInvitador} quiere que vivas más.</h1>
-        <p style="font-size: 15px; line-height: 1.7; color: #999; margin: 0 0 32px 0;">
-          Te ha invitado a unirte a GooALS — la app para convertir tus intenciones en recuerdos.
-          Crea tu bucket list, vívela y compártela.
-        </p>
-        <a href="${APP_URL}/invite/${token}"
-           style="display: inline-block; background: #00D1A7; color: #0B0B0B; text-decoration: none; padding: 14px 32px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 8px;">
-          Unirme a GooALS
-        </a>
-        <p style="font-size: 12px; color: #7A8A85; margin: 40px 0 0 0; line-height: 1.6;">
-          Si no conoces a ${nombreInvitador} ignora este mensaje.
-        </p>
-      </div>
-    `
-}
 
 export async function POST(request: Request) {
   // El invitador sale de la sesión, no del body: si no, cualquiera podría
@@ -75,13 +55,17 @@ export async function POST(request: Request) {
 
   const { token } = inv as { token: string }
 
+  const partes = partesInvitacion(nombreInvitador, token)
+
   try {
     const resend = new Resend(process.env.RESEND_API_KEY)
     const { error: sendError } = await resend.emails.send({
-      from: FROM,
+      from: REMITENTE_INVITACIONES,
       to: destino,
-      subject: `${nombreInvitador} te invita a unirse a GooALS`,
-      html: inviteHtml(nombreInvitador, token),
+      subject: partes.asunto,
+      html: htmlBase(partes),
+      // En texto plano además del HTML: sin ella, más correos acaban en spam.
+      text: textoBase(partes),
     })
 
     // Resend devuelve el fallo en el body, no lanzando: sin esto la UI diría

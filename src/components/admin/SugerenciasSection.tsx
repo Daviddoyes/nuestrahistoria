@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { RefreshCw, Check, X } from 'lucide-react'
 import {
   CATEGORIAS, CATEGORIA_LABEL, CATEGORIA_COLOR, PUNTOS_MIN, type CategoriaGooal,
@@ -18,37 +18,46 @@ export default function SugerenciasSection() {
   const [estado, setEstado] = useState<EstadoSugerencia>('pendiente')
   const [sugerencias, setSugerencias] = useState<GooalSugerencia[]>([])
   const [pendientes, setPendientes] = useState(0)
-  const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
   const [trabajando, setTrabajando] = useState<string | null>(null)
+  /** Sube al pulsar "Recargar": es lo que vuelve a lanzar la petición. */
+  const [refresco, setRefresco] = useState(0)
+  /** Qué pestaña corresponde a lo que hay pintado. Si no es la actual, es que está cargando. */
+  const [cargado, setCargado] = useState<string | null>(null)
 
   // Ediciones del admin antes de aprobar, por id de sugerencia.
   const [ediciones, setEdiciones] = useState<Record<string, {
     titulo: string; categoria: CategoriaGooal; puntos: number
   }>>({})
 
-  const cargar = useCallback(async () => {
-    setCargando(true)
-    try {
-      const res = await fetch(`/api/admin/sugerencias?estado=${estado}`)
-      const json = await res.json()
-      if (!res.ok) throw new Error(json.error ?? 'Error')
-      setSugerencias(json.sugerencias)
-      setPendientes(json.pendientes)
-      setEdiciones(Object.fromEntries(
-        (json.sugerencias as GooalSugerencia[]).map(s => [
-          s.id, { titulo: s.titulo, categoria: s.categoria, puntos: PUNTOS_MIN },
-        ]),
-      ))
-      setError('')
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'No he podido cargar las sugerencias')
-    } finally {
-      setCargando(false)
-    }
-  }, [estado])
+  // "Cargando" no es un estado que se encienda a mano: es que lo pintado todavía
+  // no corresponde a lo que se está pidiendo. Así el efecto no toca el estado
+  // nada más entrar, que es lo que provocaba renders en cascada.
+  const clave = `${estado}|${refresco}`
+  const cargando = cargado !== clave
 
-  useEffect(() => { cargar() }, [cargar])
+  useEffect(() => {
+    let vivo = true
+    fetch(`/api/admin/sugerencias?estado=${estado}`)
+      .then(async res => {
+        const json = await res.json()
+        if (!vivo) return
+        if (!res.ok) throw new Error(json.error ?? 'Error')
+        setSugerencias(json.sugerencias)
+        setPendientes(json.pendientes)
+        setEdiciones(Object.fromEntries(
+          (json.sugerencias as GooalSugerencia[]).map(s => [
+            s.id, { titulo: s.titulo, categoria: s.categoria, puntos: PUNTOS_MIN },
+          ]),
+        ))
+        setError('')
+      })
+      .catch(e => { if (vivo) setError(e instanceof Error ? e.message : 'No he podido cargar las sugerencias') })
+      .finally(() => { if (vivo) setCargado(clave) })
+    return () => { vivo = false }
+  }, [clave, estado])
+
+  const recargar = () => setRefresco(n => n + 1)
 
   const revisar = async (id: string, accion: 'aprobar' | 'rechazar') => {
     setTrabajando(id)
@@ -96,7 +105,7 @@ export default function SugerenciasSection() {
           )}
         </p>
         <button
-          onClick={cargar}
+          onClick={recargar}
           aria-label="Recargar"
           style={{ padding: 6, color: '#7A8A85' }}
         >

@@ -2,13 +2,14 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Plus, X, Sparkles, Upload } from 'lucide-react'
+import { Plus, Sparkles, Upload } from 'lucide-react'
 import {
   CATEGORIAS, CATEGORIA_LABEL, DIFICULTAD_META, PUNTOS_MIN,
   dificultadDePuntos, puntosEnEscala, type CategoriaGooal,
 } from '@/lib/gooals'
 import SelectorPuntos from './SelectorPuntos'
 import ListaTrabajo from './catalogo/ListaTrabajo'
+import DialogoPanel from './DialogoPanel'
 
 const HEADERS = { 'Content-Type': 'application/json' }
 
@@ -34,32 +35,14 @@ const btnPrimary: React.CSSProperties = {
   fontWeight: 600, fontSize: 14, border: 'none', cursor: 'pointer', width: '100%',
 }
 
+/** Los dos formularios de alta. Llevan sus propios botones dentro: se cierran con la X, Escape o pulsando fuera. */
 function ModalShell({
   title, onClose, children,
 }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
-    <div
-      style={{
-        position: 'fixed', inset: 0, zIndex: 50, background: 'rgba(0,0,0,0.6)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16,
-      }}
-      onClick={e => e.target === e.currentTarget && onClose()}
-    >
-      <div style={{
-        width: '100%', maxWidth: 460, maxHeight: '88vh', overflowY: 'auto',
-        background: '#1E2120', border: '1px solid #2A2E2C', borderRadius: 16, padding: 20,
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-          <p style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#00D1A7', fontWeight: 700 }}>
-            {title}
-          </p>
-          <button onClick={onClose} aria-label="Cerrar" style={{ background: 'none', border: 'none', color: '#7A8A85', cursor: 'pointer', padding: 4 }}>
-            <X style={{ width: 16, height: 16 }} />
-          </button>
-        </div>
-        {children}
-      </div>
-    </div>
+    <DialogoPanel titulo={title} onCerrar={onClose} ancho={460}>
+      <div style={{ color: '#FFFFFF', paddingTop: 4 }}>{children}</div>
+    </DialogoPanel>
   )
 }
 

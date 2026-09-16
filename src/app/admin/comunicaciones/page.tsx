@@ -1,16 +1,37 @@
-import { Mail } from 'lucide-react'
+import { esAdmin } from '@/lib/admin-auth'
+import { createServiceRoleClient } from '@/lib/supabase/service'
+import { leerHistorial, recuentoGrupos } from '@/lib/comunicaciones'
+import Comunicaciones from '@/components/admin/comunicaciones/Comunicaciones'
 
 export const metadata = { title: 'Comunicaciones · GooALS Admin' }
 
-/** Pestaña visible pero vacía a propósito: se construye en un paso aparte, con su SQL. */
-export default function AdminComunicacionesPage() {
-  return (
-    <div style={{ background: '#161817', border: '1px solid #2A2E2C', borderRadius: 16, padding: '40px 24px', textAlign: 'center' }}>
-      <Mail aria-hidden style={{ width: 28, height: 28, color: '#7A8A85', margin: '0 auto' }} />
-      <p className="fuente-titular" style={{ fontSize: 18, fontWeight: 600, marginTop: 12 }}>En construcción</p>
-      <p style={{ fontSize: 13, color: '#7A8A85', marginTop: 8, lineHeight: 1.6, maxWidth: 380, marginInline: 'auto' }}>
-        Aquí podrás enviar un correo a un grupo de usuarios, probarlo antes en tu cuenta y ver lo que ya se ha enviado.
+/**
+ * Tiempo máximo de las Server Actions de esta página (el envío va dentro). Con
+ * lotes de 100 y 600 ms entre lotes, 300 s dan para decenas de miles de correos.
+ * Si aun así se cortara, la campaña queda como parada y se reanuda sin repetir a nadie.
+ */
+export const maxDuration = 300
+
+export default async function AdminComunicacionesPage() {
+  // El layout decide qué se pinta, pero no protege la lectura: esto va antes de tocar la base.
+  if (!await esAdmin()) return null
+
+  const service = createServiceRoleClient()
+  let datos
+  try {
+    const [historial, grupos] = await Promise.all([leerHistorial(service), recuentoGrupos(service)])
+    datos = { historial, grupos }
+  } catch (e) {
+    console.error('[admin/comunicaciones]', e)
+    const faltaTabla = e instanceof Error && /emails_campanas|campana_id/.test(e.message)
+    return (
+      <p role="alert" style={{ fontSize: 14, lineHeight: 1.6, color: '#FF5252', background: 'rgba(255,82,82,0.12)', borderRadius: 12, padding: '12px 14px' }}>
+        {faltaTabla
+          ? 'Falta la tabla de campañas en la base: pega supabase/fase3i.sql en el SQL Editor de Supabase y recarga.'
+          : 'No se pudo cargar esta pestaña. Recarga la página para intentarlo de nuevo.'}
       </p>
-    </div>
-  )
+    )
+  }
+
+  return <Comunicaciones historial={datos.historial} grupos={datos.grupos} configurado={Boolean(process.env.RESEND_API_KEY)} />
 }

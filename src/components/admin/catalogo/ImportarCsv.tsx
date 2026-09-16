@@ -326,20 +326,23 @@ export default function ImportarCsv() {
               </button>
             )}
 
-            {/* Duplicadas: aparte, porque no hay nada que corregir en ellas. */}
+            {/* Duplicadas: aparte, porque no hay nada que corregir en ellas. A la vista y
+                no plegadas: con solo el número no se sabe cuáles son. */}
             {duplicadas.length > 0 && (
-              <details style={{ marginTop: 18, background: '#161817', border: '1px solid #2A2E2C', borderRadius: 12, padding: '10px 14px' }}>
-                <summary style={{ cursor: 'pointer', fontSize: 14, fontWeight: 600, color: '#FFD54F', minHeight: 32, display: 'flex', alignItems: 'center' }}>
+              <div style={{ marginTop: 18, background: '#161817', border: '1px solid rgba(255,213,79,0.35)', borderRadius: 12, padding: '12px 14px' }}>
+                <p style={{ fontSize: 14, fontWeight: 600, color: '#FFD54F' }}>
                   {numero(duplicadas.length)} {duplicadas.length === 1 ? 'duplicada' : 'duplicadas'} · no se importan
-                </summary>
-                <ul style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                </p>
+                <ul style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 6, maxHeight: 360, overflowY: 'auto' }}>
                   {duplicadas.map(r => (
-                    <li key={r.fila.linea} style={{ listStyle: 'none', fontSize: 12, color: '#A3B1AC', lineHeight: 1.5 }}>
-                      <span style={{ fontFamily: MONO, color: '#7A8A85' }}>Línea {r.fila.linea}</span> · <span style={{ color: '#FFFFFF' }}>{r.fila.titulo}</span> · {r.motivo}
+                    <li key={r.fila.linea} style={{ listStyle: 'none', fontSize: 13, color: '#A3B1AC', lineHeight: 1.5, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                      <span style={{ fontFamily: MONO, color: '#7A8A85', minWidth: 70 }}>Línea {r.fila.linea}</span>
+                      <span style={{ color: '#FFFFFF', flex: '1 1 220px' }}>{r.fila.titulo}</span>
+                      <span style={{ color: '#FFD54F' }}>{r.motivo}</span>
                     </li>
                   ))}
                 </ul>
-              </details>
+              </div>
             )}
           </section>
         )}
