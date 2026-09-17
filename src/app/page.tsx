@@ -155,9 +155,13 @@ export default function AuthPage() {
     e.preventDefault()
     if (!resetEmail.trim()) return
     setResetLoading(true)
-    await supabase.auth.resetPasswordForEmail(resetEmail.trim(), {
-      redirectTo: 'https://gooals.app/auth/callback?next=/reset-password',
-    })
+    // Por nuestra ruta y no con supabase.auth: así el enlace no depende del
+    // navegador donde se pidió y sirve al abrirlo en el móvil. Ver /api/recuperar.
+    await fetch('/api/recuperar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: resetEmail.trim() }),
+    }).catch(() => {})
     setResetLoading(false)
     setResetSent(true)
   }

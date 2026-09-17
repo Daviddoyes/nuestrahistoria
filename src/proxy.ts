@@ -8,6 +8,10 @@ export async function proxy(request: NextRequest) {
   const isPublic =
     pathname === '/' ||
     pathname.startsWith('/reset-password') ||
+    pathname.startsWith('/enlace-caducado') ||
+    // /auth/confirm y /auth/callback abren la sesión: tienen que poder poner sus
+    // propias cookies sin que el proxy las pise.
+    pathname.startsWith('/auth/') ||
     pathname.startsWith('/invite') ||
     pathname.startsWith('/download') ||
     pathname.startsWith('/api/')

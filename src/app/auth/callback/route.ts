@@ -30,7 +30,10 @@ export async function GET(request: Request) {
     if (!error) {
       return NextResponse.redirect(`${origin}${next}`)
     }
-    console.log('[callback] falling back to login')
+    console.log('[callback] el enlace no se ha podido canjear')
+    // Enlace viejo (de los que iban por PKCE) o ya usado: se explica en vez de
+    // dejar a la persona en la pantalla de entrar sin saber qué ha pasado.
+    return NextResponse.redirect(`${origin}/enlace-caducado`)
   }
 
   return NextResponse.redirect(`${origin}/`)
