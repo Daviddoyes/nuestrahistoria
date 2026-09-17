@@ -1,6 +1,6 @@
 import ImportarCsv from '@/components/admin/catalogo/ImportarCsv'
 
-export const metadata = { title: 'Importar CSV · GooALS Admin' }
+export const metadata = { title: 'Importar CSV · gooals admin' }
 
 /**
  * Importación masiva de gooals desde un CSV.

@@ -4,7 +4,7 @@ import { createClient as createServerClient } from '@/lib/supabase/server'
 import { COOKIE_RECUPERACION, permisoValido } from '@/lib/recuperacion'
 import FormularioContrasena from '@/components/FormularioContrasena'
 
-export const metadata = { title: 'Nueva contraseña · GooALS' }
+export const metadata = { title: 'Nueva contraseña · gooals' }
 
 /**
  * Elegir contraseña nueva.

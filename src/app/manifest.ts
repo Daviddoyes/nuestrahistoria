@@ -2,8 +2,8 @@ import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'GooALS',
-    short_name: 'GooALS',
+    name: 'gooals',
+    short_name: 'gooals',
     description: 'Convierte tus intenciones en recuerdos.',
     // La app instalada abre directamente en el mapa, la pantalla principal.
     // Sin sesión, el proxy manda de /mapa al login, que es lo correcto.

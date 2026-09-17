@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Check, Smartphone } from 'lucide-react'
 import { detectPlatform, isStandalone, type Platform } from '@/lib/platform'
 import InstallStepsSheet from './InstallStepsSheet'
+import Logotipo from '@/components/Logotipo'
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => void
@@ -93,12 +94,7 @@ export default function DownloadLanding() {
     >
       <div className="w-full flex-1 flex flex-col items-center" style={{ maxWidth: 400 }}>
         {/* ── Header ──────────────────────────────────────── */}
-        <p
-          className="text-[#00D1A7] font-semibold"
-          style={{ fontSize: 12, letterSpacing: '0.3em', textTransform: 'uppercase' }}
-        >
-          GooALS
-        </p>
+        <Logotipo alto={26} />
 
         <h1
           className="text-[#FFFFFF] text-center mt-7"
@@ -130,7 +126,7 @@ export default function DownloadLanding() {
             </button>
           ) : platform === 'android' ? (
             <button onClick={handleInstall} disabled={installing} className={`${botonClase} rounded-xl`}>
-              {installing ? 'Instalando...' : 'Instalar GooALS'}
+              {installing ? 'Instalando...' : 'Instalar gooals'}
             </button>
           ) : (
             <div className="flex flex-col items-center">

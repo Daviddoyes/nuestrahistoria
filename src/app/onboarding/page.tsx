@@ -8,6 +8,7 @@ import { getGooalsOnboarding, anadirGooal } from '@/lib/actions'
 import { CATEGORIA_GRADIENTE, DIFICULTAD_META, type CategoriaGooal } from '@/lib/gooals'
 import CompletarGooalModal, { type ResultadoCompletado } from '@/components/CompletarGooalModal'
 import type { GooalV2 } from '@/types/gooals'
+import Diana from '@/components/Diana'
 
 type InterId = 'viajes' | 'gastronomia' | 'musica' | 'deporte' | 'cultura'
 type CompaniaId = 'pareja' | 'amigos' | 'familia' | 'solo'
@@ -239,9 +240,7 @@ export default function OnboardingPage() {
         <div style={screenStyle}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 28 }}>
             <div>
-              <div className="w-10 h-10 rounded-full bg-[#00D1A7] flex items-center justify-center mb-6">
-                <span className="text-[#0B0B0B] font-bold text-sm tracking-wide">G</span>
-              </div>
+              <div className="mb-6"><Diana tamano={40} /></div>
               <h1 className=" text-3xl font-bold text-[#FFFFFF] leading-tight mb-2">
                 ¿Cómo te llaman?
               </h1>

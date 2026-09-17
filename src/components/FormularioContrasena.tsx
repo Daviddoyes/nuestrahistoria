@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff } from 'lucide-react'
 import { cambiarContrasena } from '@/app/reset-password/acciones'
+import Diana from '@/components/Diana'
 
 const MINIMO = 6
 
@@ -49,9 +50,7 @@ export default function FormularioContrasena() {
     >
       <div className="w-full max-w-sm mx-auto">
         <div className="mb-10">
-          <div className="w-10 h-10 rounded-full bg-[#00D1A7] flex items-center justify-center mb-4">
-            <span className="text-[#0B0B0B] font-bold text-sm tracking-wide">G</span>
-          </div>
+          <div className="mb-4"><Diana tamano={40} /></div>
           <h1 className="fuente-titular text-3xl font-bold text-[#FFFFFF] tracking-tight">Nueva contraseña</h1>
           <p className="text-sm text-[#7A8A85] mt-2">Elige una contraseña segura.</p>
           <div className="h-px w-12 bg-[#00D1A7] mt-3" />

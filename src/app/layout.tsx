@@ -30,12 +30,12 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: "GooALS",
+  title: "gooals",
   description: "Convierte tus intenciones en recuerdos.",
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'GooALS',
+    title: 'gooals',
   },
   // Sin `icons`: favicon.ico, icon.svg y apple-icon.png viven en src/app/ y
   // Next pone las etiquetas solo. Se generan con scripts/generar-iconos.mjs.

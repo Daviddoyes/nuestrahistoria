@@ -3,7 +3,7 @@ import { createServiceRoleClient } from '@/lib/supabase/service'
 import { leerHistorial, recuentoGrupos } from '@/lib/comunicaciones'
 import Comunicaciones from '@/components/admin/comunicaciones/Comunicaciones'
 
-export const metadata = { title: 'Comunicaciones · GooALS Admin' }
+export const metadata = { title: 'Comunicaciones · gooals admin' }
 
 /**
  * Tiempo máximo de las Server Actions de esta página (el envío va dentro). Con

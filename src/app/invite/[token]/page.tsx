@@ -2,6 +2,7 @@
 
 import { use, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Logotipo from '@/components/Logotipo'
 
 // En Next 16 `params` es una promesa también en Client Components: hay que
 // leerla con `use()`, la firma síncrona de la v14 ya no compila.
@@ -28,12 +29,7 @@ export default function InvitePage({ params }: { params: Promise<{ token: string
       justifyContent: 'center', flexDirection: 'column',
       gap: 16, padding: 32,
     }}>
-      <p style={{
-        color: '#00D1A7', fontSize: 11,
-        letterSpacing: '0.2em', textTransform: 'uppercase',
-      }}>
-        GooALS
-      </p>
+      <Logotipo alto={24} />
       <h1 style={{
         color: '#FFFFFF', fontSize: 24,
         fontWeight: 700, textAlign: 'center',

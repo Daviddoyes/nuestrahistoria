@@ -3,7 +3,7 @@ import { leerMetricas } from '@/lib/admin-datos'
 import { CATEGORIA_COLOR, CATEGORIA_LABEL } from '@/lib/gooals'
 import IconoCategoria from '@/components/IconoCategoria'
 
-export const metadata = { title: 'Métricas · GooALS Admin' }
+export const metadata = { title: 'Métricas · gooals admin' }
 
 const numero = (n: number) => n.toLocaleString('es-ES')
 const porcentaje = (parte: number, total: number) => (total > 0 ? Math.round((parte / total) * 100) : 0)

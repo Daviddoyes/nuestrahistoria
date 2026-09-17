@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import PedirEnlaceContrasena from '@/components/PedirEnlaceContrasena'
+import Diana from '@/components/Diana'
 
-export const metadata = { title: 'El enlace ya no vale · GooALS' }
+export const metadata = { title: 'El enlace ya no vale · gooals' }
 
 /**
  * Adonde va a parar un enlace de contraseña caducado, ya usado o manipulado.
@@ -18,9 +19,7 @@ export default function EnlaceCaducadoPage() {
     >
       <div className="w-full max-w-sm mx-auto">
         <div className="mb-8">
-          <div className="w-10 h-10 rounded-full bg-[#00D1A7] flex items-center justify-center mb-4">
-            <span className="text-[#0B0B0B] font-bold text-sm tracking-wide">G</span>
-          </div>
+          <div className="mb-4"><Diana tamano={40} /></div>
           <h1 className="fuente-titular text-3xl font-bold text-[#FFFFFF] tracking-tight">
             Este enlace ya no vale
           </h1>

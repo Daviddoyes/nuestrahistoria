@@ -2,7 +2,7 @@
 //
 //   node scripts/generar-iconos.mjs
 //
-// Fuente única: public/marca/gooals-icono-oscuro.svg. Si la marca cambia, se
+// Fuente única: public/marca/gooals-icono.svg (la diana en Aurora). Si la marca cambia, se
 // cambia ese SVG y se vuelve a ejecutar esto; no se retocan PNG a mano.
 //
 // Usa sharp, que ya viene instalado con Next (no es dependencia directa).
@@ -10,23 +10,31 @@
 import sharp from 'sharp'
 import { readFileSync, writeFileSync, mkdirSync } from 'fs'
 
-const FUENTE = 'public/marca/gooals-icono-oscuro.svg'
+const FUENTE = 'public/marca/gooals-icono.svg'
 const FONDO = '#0B0B0B'
 
-/** Ancho del dibujo respecto al lado del icono. */
-const ANCHO_NORMAL = 0.62
+/**
+ * Ancho del dibujo respecto al lado del icono.
+ *
+ * 0.78 y no menos: a 16 px, que es como se ve en la pestaña del navegador, con
+ * el 62 % anterior el anillo de la diana se quedaba fino y no se leía. Probado
+ * en una pestaña de Chrome de verdad a 16, 32 y 48.
+ */
+const ANCHO_NORMAL = 0.78
 /**
  * En el "maskable" Android recorta el icono en círculo, gota o squircle, y solo
- * garantiza visible el 80 % central. Al 52 % el dibujo cabe dentro con margen.
+ * garantiza visible el 80 % central. Sube con el normal, pero se queda por
+ * debajo de ese 80 %: la diana es un círculo, así que con 0.65 entra entera
+ * aunque el recorte sea el más agresivo.
  */
-const ANCHO_MASKABLE = 0.52
+const ANCHO_MASKABLE = 0.65
 
 /**
  * Centrado óptico: cuánto se sube el dibujo, en fracción del lado.
- * El icono es más pesado abajo (la base ancha del triángulo); centrado
- * geométricamente parece caído.
+ * Con la diana va a 0: es un círculo, así que el centro geométrico y el óptico
+ * son el mismo. Lo necesitaba el logo anterior, más pesado por abajo.
  */
-const SUBIDA_OPTICA = Number(process.env.SUBIDA_OPTICA ?? 0.02)
+const SUBIDA_OPTICA = Number(process.env.SUBIDA_OPTICA ?? 0)
 
 const original = readFileSync(FUENTE, 'utf8')
 const [vx, vy, vw] = original.match(/viewBox="([^"]+)"/)[1].split(/\s+/).map(Number)
@@ -59,7 +67,7 @@ function svgCuadrado(caja, ancho) {
   const x = (L - w) / 2
   const y = (L - h) / 2 - L * SUBIDA_OPTICA
   const r = (n) => +n.toFixed(2)
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${L} ${L}" role="img" aria-label="GooALS">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${L} ${L}" role="img" aria-label="gooals">
   <rect width="${L}" height="${L}" fill="${FONDO}"/>
   <svg x="${r(x)}" y="${r(y)}" width="${r(w)}" height="${r(h)}" viewBox="${r(caja.x)} ${r(caja.y)} ${r(caja.w)} ${r(caja.h)}">${contenido}</svg>
 </svg>

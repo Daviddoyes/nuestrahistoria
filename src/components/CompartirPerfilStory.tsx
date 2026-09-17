@@ -158,7 +158,7 @@ export default function CompartirPerfilStory({ perfil }: Props) {
 
       ctx.fillStyle = ACENTO
       ctx.font = '700 34px Inter, system-ui, sans-serif'
-      ctx.fillText('GooALS.app', STORY_W / 2, STORY_H - 110)
+      ctx.fillText('gooals.app', STORY_W / 2, STORY_H - 110)
 
       await compartirCanvas(canvas, 'gooals-perfil.png', perfil.usuario.nombre)
     } catch (err) {

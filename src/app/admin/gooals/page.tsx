@@ -1,7 +1,7 @@
 import GooalsV2Section from '@/components/admin/GooalsV2Section'
 import SugerenciasSection from '@/components/admin/SugerenciasSection'
 
-export const metadata = { title: 'Gooals · GooALS Admin' }
+export const metadata = { title: 'Gooals · gooals admin' }
 
 /**
  * Pestaña Gooals: el catálogo y las sugerencias.

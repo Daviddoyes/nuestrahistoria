@@ -1,5 +1,7 @@
 'use client'
 
+import Logotipo from './Logotipo'
+
 type Props = {
   /** Para el fundido de salida del splash. Por defecto, visible del todo. */
   opacidad?: number
@@ -28,15 +30,7 @@ export default function PantallaMarca({ opacidad = 1 }: Props) {
         pointerEvents: 'none',
       }}
     >
-      {/* width/height con la proporción del SVG (3828×723) para que no salte. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/marca/gooals-logotipo-oscuro.svg"
-        alt="GooALS"
-        width={169}
-        height={32}
-        style={{ height: 32, width: 'auto', display: 'block' }}
-      />
+      <Logotipo alto={32} />
     </div>
   )
 }

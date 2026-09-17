@@ -5,7 +5,7 @@ import { createClient as createServerClient } from '@/lib/supabase/server'
 import { listarUsuarios } from '@/lib/admin-datos'
 import BotonAdmin from '@/components/admin/usuarios/BotonAdmin'
 
-export const metadata = { title: 'Usuarios · GooALS Admin' }
+export const metadata = { title: 'Usuarios · gooals admin' }
 
 type Props = { searchParams: Promise<{ q?: string | string[]; pagina?: string | string[] }> }
 

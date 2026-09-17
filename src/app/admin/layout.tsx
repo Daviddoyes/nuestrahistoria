@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { esAdmin } from '@/lib/admin-auth'
+import Logotipo from '@/components/Logotipo'
 import PestanasAdmin from '@/components/admin/PestanasAdmin'
 
-export const metadata = { title: 'GooALS Admin' }
+export const metadata = { title: 'gooals admin' }
 
 /**
  * Marco del panel: comprueba el permiso y pinta las cuatro pestañas.
@@ -18,9 +19,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     return (
       <main style={{ minHeight: '100dvh', background: '#0B0B0B', display: 'flex', alignItems: 'center', justifyContent: 'center', paddingInline: 24 }}>
         <div style={{ width: '100%', maxWidth: 340, textAlign: 'center' }}>
-          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.25em', color: '#00D1A7', textTransform: 'uppercase', marginBottom: 8 }}>
-            GooALS ADMIN
-          </p>
+          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 8, marginBottom: 8 }}>
+            <Logotipo alto={20} />
+            <span style={{ fontSize: 15, color: '#7A8A85' }}>admin</span>
+          </div>
           <div style={{ width: 40, height: 1, background: '#00D1A7', margin: '0 auto 28px' }} />
           <p style={{ fontSize: 15, color: '#A3B1AC', lineHeight: 1.6, marginBottom: 10 }}>
             Esta cuenta no tiene acceso al panel.
@@ -44,9 +46,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div style={{ minHeight: '100dvh', background: '#0B0B0B', color: '#FFFFFF' }}>
       <header style={{ position: 'sticky', top: 0, zIndex: 20, background: '#0B0B0B', borderBottom: '1px solid #2A2E2C' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', paddingInline: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, minHeight: 48 }}>
-          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.25em', color: '#00D1A7', textTransform: 'uppercase' }}>
-            GooALS ADMIN
-          </p>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 7 }}>
+            <Logotipo alto={17} />
+            <span style={{ fontSize: 13, color: '#7A8A85' }}>admin</span>
+          </div>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#7A8A85', textDecoration: 'none', minHeight: 40 }}>
             <ArrowLeft style={{ width: 13, height: 13 }} /> Volver a la app
           </Link>

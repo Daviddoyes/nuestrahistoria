@@ -1,6 +1,7 @@
 'use client'
 
 import BottomNav, { type Tab } from './BottomNav'
+import Logotipo from './Logotipo'
 
 type Props = {
   tab: Tab
@@ -26,18 +27,7 @@ export default function AppShell({ tab, fotoPerfil, header, children }: Props) {
       }}
     >
       <div className="flex-shrink-0 flex items-center justify-center" style={{ height: 36 }}>
-        {/* <img> y no next/image: es un SVG vectorial fijo, no hay nada que
-            optimizar, y next/image exige activar dangerouslyAllowSVG.
-            width/height reservan el hueco (proporción 3828×723) para que la
-            cabecera no salte al cargar. */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/marca/gooals-logotipo-oscuro.svg"
-          alt="GooALS"
-          width={90}
-          height={17}
-          style={{ height: 17, width: 'auto', display: 'block' }}
-        />
+        <Logotipo alto={18} />
       </div>
 
       {header && <div className="flex-shrink-0">{header}</div>}

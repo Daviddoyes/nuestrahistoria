@@ -6,6 +6,7 @@ import { Eye, EyeOff, X } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { tomarDestinoPendiente } from '@/lib/redireccion'
 import PantallaMarca from '@/components/PantallaMarca'
+import Logotipo from '@/components/Logotipo'
 type Tab = 'login' | 'register'
 
 export default function AuthPage() {
@@ -181,12 +182,7 @@ export default function AuthPage() {
       >
         <div className="w-full max-w-sm mx-auto">
           <div className="mb-10">
-            <div className="w-10 h-10 rounded-full bg-[#00D1A7] flex items-center justify-center mb-4">
-              <span className="text-[#0B0B0B] font-bold text-sm tracking-wide">G</span>
-            </div>
-            <h1 className=" text-3xl font-bold text-[#FFFFFF] tracking-tight">
-              GooALS
-            </h1>
+            <Logotipo alto={30} />
             <p className="text-sm text-[#7A8A85] mt-2">Convierte tus intenciones en recuerdos.</p>
             <div className="h-px w-12 bg-[#00D1A7] mt-3" />
           </div>

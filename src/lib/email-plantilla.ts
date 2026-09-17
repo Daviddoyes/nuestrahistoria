@@ -170,7 +170,7 @@ export function htmlBase(partes: PartesCorreo): string {
   <tr><td align="center" style="padding:32px 16px;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:520px;">
       ${avisoPrueba}
-      <tr><td style="padding:0 4px 18px 4px;font-size:13px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:${AURORA_DARK};">GooALS</td></tr>
+      <tr><td style="padding:0 4px 18px 4px;font-size:20px;font-weight:700;letter-spacing:-0.01em;color:${AURORA_DARK};">gooals</td></tr>
       <tr><td bgcolor="${BLANCO}" style="background:${BLANCO};border:1px solid ${LINEA};border-radius:16px;padding:32px 28px;">
         ${titular}
         ${parrafos}

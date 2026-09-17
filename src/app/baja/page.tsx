@@ -1,7 +1,8 @@
 import Link from 'next/link'
+import Logotipo from '@/components/Logotipo'
 
 export const metadata = {
-  title: 'Baja de correos · GooALS',
+  title: 'Baja de correos · gooals',
   robots: { index: false, follow: false },
 }
 
@@ -19,12 +20,7 @@ export default async function BajaPage({
       alignItems: 'center', justifyContent: 'center', padding: '0 24px',
     }}>
       <div style={{ width: '100%', maxWidth: 380, textAlign: 'center' }}>
-        <p style={{
-          fontSize: 11, fontWeight: 700, letterSpacing: '0.25em',
-          color: '#00D1A7', textTransform: 'uppercase', marginBottom: 8,
-        }}>
-          GooALS
-        </p>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}><Logotipo alto={22} /></div>
         <div style={{ width: 40, height: 1, background: '#00D1A7', margin: '0 auto 28px' }} />
 
         {ok ? (
