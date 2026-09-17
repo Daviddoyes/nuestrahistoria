@@ -6,40 +6,12 @@ import {
   CATEGORIAS, PUNTOS_MIN, ambitoDeGooal, esCategoria, normalizarCategoriaGooal, puntosEnEscala,
   type EstadoGooal,
 } from '@/lib/gooals'
-import type { GooalAdmin } from '@/types/gooals'
+import {
+  COLUMNAS, COLUMNAS_REPASO, COLUMNAS_SIN_REVISION, aGooalAdmin, leerFila, sinTablaDeRepaso,
+} from '@/lib/admin-gooals'
 
 /** Filas por página de la lista de trabajo. Traer los 4.726 de golpe congelaba el navegador. */
 const POR_PAGINA = 50
-
-/**
- * Columnas de la lista de trabajo. Los dos recuentos van en la MISMA consulta,
- * como recursos incrustados de PostgREST, en vez de una consulta por fila:
- *   tenido       cuántas filas de user_gooals tiene (pendiente o conquistado)
- *   conquistado  las mismas, filtradas a 'completado' con el filtro de abajo
- * Se cuenta desde user_gooals y no con veces_completado, que es una copia.
- */
-const COLUMNAS = '*, tenido:user_gooals(count), conquistado:user_gooals(count)'
-
-type FilaConRecuentos = Omit<GooalAdmin, 'enListas' | 'conquistados'> & {
-  tenido: { count: number }[] | null
-  conquistado: { count: number }[] | null
-}
-
-function aGooalAdmin(f: FilaConRecuentos): GooalAdmin {
-  const { tenido, conquistado, ...gooal } = f
-  return { ...gooal, enListas: tenido?.[0]?.count ?? 0, conquistados: conquistado?.[0]?.count ?? 0 }
-}
-
-async function leerFila(service: ReturnType<typeof createServiceRoleClient>, id: string) {
-  const { data, error } = await service
-    .from('gooals_v2')
-    .select(COLUMNAS)
-    .eq('conquistado.estado', 'completado')
-    .eq('id', id)
-    .maybeSingle()
-  if (error || !data) return null
-  return aGooalAdmin(data as unknown as FilaConRecuentos)
-}
 
 /**
  * Fila lista para insertar.
@@ -85,28 +57,54 @@ export async function GET(request: Request) {
   const ambito = params.get('ambito')
   const sinPin = params.get('sinPin') === '1'
   const categoriaDudosa = params.get('categoriaDudosa') === '1'
+  const repaso = params.get('repaso')
+  const enRepaso = repaso === 'traducciones' || repaso === 'decidir'
   const busqueda = limpiarBusqueda(params.get('busqueda') ?? '')
 
   const service = createServiceRoleClient()
-  let query = service
-    .from('gooals_v2')
-    .select(COLUMNAS, { count: 'exact' })
-    .eq('conquistado.estado', 'completado')
-
-  if (estado === 'borrador' || estado === 'verificado') query = query.eq('estado', estado)
-  if (categoria && esCategoria(categoria)) query = query.eq('categoria', categoria)
-  if (ambito === 'lugar' || ambito === 'personal') query = query.eq('ambito', ambito)
-  if (sinPin) query = query.eq('ambito', 'lugar').is('lat', null)
-  if (categoriaDudosa) query = query.eq('categoria_dudosa', true)
-  if (busqueda) query = query.ilike('titulo', `%${busqueda}%`)
-
   const desde = pagina * POR_PAGINA
-  // Alfabético por título: los parecidos quedan juntos y los duplicados saltan a
-  // la vista. El id desempata para que ninguna fila baile entre páginas.
-  const { data, count, error } = await query
-    .order('titulo', { ascending: true })
-    .order('id', { ascending: true })
-    .range(desde, desde + POR_PAGINA - 1)
+
+  const pedir = (columnas: string, conRepaso: boolean) => {
+    let query = service
+      .from('gooals_v2')
+      .select(columnas, { count: 'exact' })
+      .eq('conquistado.estado', 'completado')
+
+    // El !inner de COLUMNAS_REPASO deja fuera a los que no tienen repaso; estos
+    // filtros dejan fuera además los ya decididos, los que la IA dio por buenos
+    // y la otra cola. En 'decidir' entran los señalados SIN propuesta: también
+    // hay que decidirlos, y son justo los que no se pueden confirmar en bloque.
+    if (conRepaso) {
+      query = query
+        .eq('revision.estado', 'pendiente')
+        .eq('revision.tipo', repaso === 'traducciones' ? 'traduccion' : 'criterio')
+    }
+
+    if (estado === 'borrador' || estado === 'verificado') query = query.eq('estado', estado)
+    if (categoria && esCategoria(categoria)) query = query.eq('categoria', categoria)
+    if (ambito === 'lugar' || ambito === 'personal') query = query.eq('ambito', ambito)
+    if (sinPin) query = query.eq('ambito', 'lugar').is('lat', null)
+    if (categoriaDudosa) query = query.eq('categoria_dudosa', true)
+    if (busqueda) query = query.ilike('titulo', `%${busqueda}%`)
+
+    // Alfabético por título: los parecidos quedan juntos y los duplicados saltan a
+    // la vista. El id desempata para que ninguna fila baile entre páginas.
+    return query
+      .order('titulo', { ascending: true })
+      .order('id', { ascending: true })
+      .range(desde, desde + POR_PAGINA - 1)
+  }
+
+  let { data, count, error } = await pedir(enRepaso ? COLUMNAS_REPASO : COLUMNAS, enRepaso)
+
+  // Sin tabla de repaso todavía: el catálogo se sigue pudiendo trabajar, solo que
+  // sin repaso. Los dos filtros del repaso no pueden tener resultados, y lo dicen.
+  if (sinTablaDeRepaso(error)) {
+    if (enRepaso) {
+      return NextResponse.json({ gooals: [], total: 0, porPagina: POR_PAGINA, sinRepaso: true })
+    }
+    ({ data, count, error } = await pedir(COLUMNAS_SIN_REVISION, false))
+  }
 
   if (error) {
     console.error('[admin/gooals-v2 GET]', error)
@@ -114,7 +112,7 @@ export async function GET(request: Request) {
   }
 
   return NextResponse.json({
-    gooals: ((data ?? []) as unknown as FilaConRecuentos[]).map(aGooalAdmin),
+    gooals: (data ?? []).map(aGooalAdmin),
     total: count ?? 0,
     porPagina: POR_PAGINA,
   })

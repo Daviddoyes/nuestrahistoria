@@ -151,6 +151,41 @@ export type PerfilCompleto = {
  */
 export type GeoGooal = 'fiable' | 'revisar' | 'solo-ciudad' | 'sin-resultado' | 'rehacer'
 
+/**
+ * En qué punto está el repaso de un título (tabla `gooals_revision`).
+ *
+ *   ok          la IA lo dio por bueno: no hay nada que decidir
+ *   pendiente   hay propuesta esperando decisión
+ *   aceptado    se aplicó la propuesta tal cual
+ *   editado     se aplicó un título escrito a mano
+ *   descartado  el título se queda como estaba
+ */
+export type EstadoRevision = 'ok' | 'pendiente' | 'aceptado' | 'editado' | 'descartado'
+
+/**
+ * Qué clase de trabajo es.
+ *   traduccion  el gooal está bien y el título está mal escrito (inglés a
+ *               medias, tildes, falta el verbo). Mecánico: se confirma en bloque.
+ *   criterio    rompe una de las cinco reglas. Se decide de una en una.
+ */
+export type TipoRevision = 'traduccion' | 'criterio'
+
+/** Lo que la IA opina de un título, con su propuesta de recambio. */
+export type RevisionGooal = {
+  /**
+   * El título tal como estaba al juzgarlo. Si ya no coincide con el actual, es
+   * que alguien lo cambió después y la propuesta se hizo sobre otro texto.
+   */
+  titulo_original: string
+  /** Cuál de las cinco reglas de `@/lib/criterio-gooals` rompe. null si cumple. */
+  regla: number | null
+  motivo: string | null
+  titulo_propuesto: string | null
+  estado: EstadoRevision
+  tipo: TipoRevision
+  titulo_final: string | null
+}
+
 /** Un gooal tal como lo trabaja el panel de admin: la fila completa y cuánta gente lo tiene. */
 export type GooalAdmin = GooalV2 & {
   lat: number | null
@@ -162,6 +197,8 @@ export type GooalAdmin = GooalV2 & {
   enListas: number
   /** Personas que lo han conquistado. */
   conquistados: number
+  /** Lo que la IA opina de su título. null si aún no le ha tocado el repaso. */
+  revision: RevisionGooal | null
 }
 
 /** Filtros de la lista de trabajo del panel. */
@@ -174,6 +211,12 @@ export type FiltrosAdmin = {
   sinPin: boolean
   /** Solo los que el reparto en seis categorías dejó marcados como dudosos. */
   categoriaDudosa: boolean
+  /**
+   * Qué parte del repaso se está mirando. Son dos colas distintas y no se
+   * mezclan: las traducciones se confirman en bloque, el criterio se decide de
+   * una en una.
+   */
+  repaso: 'ninguno' | 'traducciones' | 'decidir'
 }
 
 /** Filtros de Explorar. Viajan a la query, no se aplican en el cliente. */

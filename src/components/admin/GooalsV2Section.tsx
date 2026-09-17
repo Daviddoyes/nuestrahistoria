@@ -9,6 +9,7 @@ import {
 } from '@/lib/gooals'
 import SelectorPuntos from './SelectorPuntos'
 import ListaTrabajo from './catalogo/ListaTrabajo'
+import RecordatorioCriterio from './RecordatorioCriterio'
 import DialogoPanel from './DialogoPanel'
 
 const HEADERS = { 'Content-Type': 'application/json' }
@@ -81,6 +82,8 @@ function NuevoGooalModal({ onClose, onSaved }: { onClose: () => void; onSaved: (
           <input style={inputStyle} value={f.titulo} autoFocus placeholder="Dormir bajo las estrellas"
             onChange={e => setF({ ...f, titulo: e.target.value })} />
         </div>
+
+        <RecordatorioCriterio />
 
         <div>
           <label style={labelStyle}>Categoría</label>
@@ -193,6 +196,8 @@ function GenerarIAModal({ onClose, onSaved }: { onClose: () => void; onSaved: ()
             <input style={inputStyle} value={zona} onChange={e => setZona(e.target.value)} placeholder="España" />
           </div>
         </div>
+
+        <RecordatorioCriterio plegado />
 
         <button
           onClick={generar}

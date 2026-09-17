@@ -7,6 +7,7 @@ import {
 } from '@/lib/gooals'
 import type { GooalSugerencia, EstadoSugerencia } from '@/types/gooals'
 import SelectorPuntos from './SelectorPuntos'
+import RecordatorioCriterio from './RecordatorioCriterio'
 
 const PESTANAS: { estado: EstadoSugerencia; label: string }[] = [
   { estado: 'pendiente', label: 'Pendientes' },
@@ -129,6 +130,10 @@ export default function SugerenciasSection() {
           </button>
         ))}
       </div>
+
+      {estado === 'pendiente' && (
+        <div style={{ marginBottom: 12 }}><RecordatorioCriterio plegado /></div>
+      )}
 
       {error && (
         <p className="text-sm text-[#FF5252] bg-[rgba(255,82,82,0.14)] rounded-lg" style={{ padding: '9px 12px', marginBottom: 12 }}>

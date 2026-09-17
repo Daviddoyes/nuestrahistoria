@@ -87,6 +87,28 @@ export default function BarraFiltros({ filtros, texto, onTexto, onCambiar, total
         </Chip>
       </div>
 
+      {/* ── El repaso de títulos: dos colas que no se mezclan ──
+          Traducciones es trabajo mecánico y se confirma en bloque; Por decidir
+          se mira de una en una. Son excluyentes: mezclarlas entierra las
+          decisiones de verdad bajo cientos de traducciones.
+          Como las dudosas, caen sobre todo en verificados, así que al activarlas
+          se pasa a "Todos" o saldría casi vacío. */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
+        <span style={{ fontSize: 12, color: '#7A8A85' }}>Repaso de títulos:</span>
+        <Chip
+          activo={filtros.repaso === 'traducciones'}
+          onClick={() => onCambiar(filtros.repaso === 'traducciones' ? { repaso: 'ninguno' } : { repaso: 'traducciones', estado: 'todos' })}
+        >
+          Traducciones
+        </Chip>
+        <Chip
+          activo={filtros.repaso === 'decidir'}
+          onClick={() => onCambiar(filtros.repaso === 'decidir' ? { repaso: 'ninguno' } : { repaso: 'decidir', estado: 'todos' })}
+        >
+          Por decidir
+        </Chip>
+      </div>
+
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
         <select
           aria-label="Categoría"

@@ -6,6 +6,7 @@ import BarraFiltros from './BarraFiltros'
 import BarraLote from './BarraLote'
 import FilaGooal, { type BorradorFila } from './FilaGooal'
 import Confirmacion from './Confirmacion'
+import RecordatorioCriterio from '../RecordatorioCriterio'
 
 /** Respiro del buscador: no se consulta en cada tecla. */
 const ESPERA_BUSQUEDA = 300
@@ -13,14 +14,19 @@ const ESPERA_BUSQUEDA = 300
 /** Por defecto, BORRADOR: es donde está el trabajo pendiente. */
 const FILTROS_INICIALES: FiltrosAdmin = {
   busqueda: '', estado: 'borrador', categoria: 'todas', ambito: 'todos', sinPin: false, categoriaDudosa: false,
+  repaso: 'ninguno',
 }
 
-type Resultado = { clave: string; gooals: GooalAdmin[]; total: number; porPagina: number } | { clave: string; error: string }
+type Resultado =
+  // sinRepaso: la tabla de propuestas aún no existe (falta pegar fase3k.sql).
+  | { clave: string; gooals: GooalAdmin[]; total: number; porPagina: number; sinRepaso?: boolean }
+  | { clave: string; error: string }
 
 type Pendiente =
   | { tipo: 'descartar'; accion: () => void; filas: number }
   | { tipo: 'lote'; estado: 'verificado' | 'borrador'; ids: string[] }
   | { tipo: 'borrar'; gooal: GooalAdmin }
+  | { tipo: 'traducciones'; ids: string[] }
 
 type Props = {
   /** Cambia desde fuera (tras crear un gooal) para volver a pedir la página. */
@@ -55,6 +61,7 @@ export default function ListaTrabajo({ recarga }: Props) {
     const params = new URLSearchParams({ pagina: String(pagina), estado: filtros.estado, categoria: filtros.categoria, ambito: filtros.ambito })
     if (filtros.sinPin) params.set('sinPin', '1')
     if (filtros.categoriaDudosa) params.set('categoriaDudosa', '1')
+    if (filtros.repaso !== 'ninguno') params.set('repaso', filtros.repaso)
     if (filtros.busqueda) params.set('busqueda', filtros.busqueda)
 
     fetch(`/api/admin/gooals-v2?${params}`)
@@ -62,7 +69,7 @@ export default function ListaTrabajo({ recarga }: Props) {
         const json = await res.json().catch(() => ({}))
         if (!vivo) return
         if (!res.ok) setResultado({ clave, error: json.error ?? 'No se pudo cargar el catálogo.' })
-        else setResultado({ clave, gooals: json.gooals, total: json.total, porPagina: json.porPagina })
+        else setResultado({ clave, gooals: json.gooals, total: json.total, porPagina: json.porPagina, sinRepaso: json.sinRepaso })
       })
       .catch(() => { if (vivo) setResultado({ clave, error: 'No se pudo cargar el catálogo. Revisa la conexión.' }) })
     return () => { vivo = false }
@@ -185,10 +192,52 @@ export default function ListaTrabajo({ recarga }: Props) {
     }
   }
 
+  /**
+   * Confirma de golpe las traducciones de esta página.
+   *
+   * Solo aquí: arreglar un título mal escrito es mecánico y se ve de un vistazo.
+   * Lo de criterio se decide de una en una, y por eso este botón no existe en la
+   * otra cola (ni el servidor lo aceptaría: exige tipo='traduccion').
+   */
+  const aplicarTraducciones = async (ids: string[]) => {
+    setAplicando(true)
+    setAviso('')
+    try {
+      const res = await fetch('/api/admin/revision/lote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids }),
+      })
+      const json = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(json.error ?? 'No se pudieron aplicar.')
+      const saltadas = (json.saltadas ?? []) as { titulo: string; porque: string }[]
+      setAviso(
+        `${json.aplicadas} ${json.aplicadas === 1 ? 'traducción aplicada' : 'traducciones aplicadas'} ✓`
+        + (saltadas.length ? ` · ${saltadas.length} sin tocar: ${saltadas.map(s => `«${s.titulo}» (${s.porque})`).join(', ')}` : ''),
+      )
+      setSeleccion(new Set())
+      // Aquí sí se vuelve a pedir la página: han cambiado 50 filas de golpe y las
+      // aplicadas tienen que desaparecer de la cola.
+      setRefresco(n => n + 1)
+    } catch (e) {
+      setAviso(e instanceof Error ? e.message : 'No se pudieron aplicar.')
+    } finally {
+      setAplicando(false)
+      setPendiente(null)
+    }
+  }
+
+  /** Las traducciones de esta página que aún tienen recambio escrito. */
+  const traduccionesEnPagina = filtros.repaso === 'traducciones'
+    ? gooals.filter(g => g.revision?.estado === 'pendiente' && g.revision.titulo_propuesto)
+    : []
+
   const sinGuardarEnLote = (ids: string[]) => ids.filter(id => borradores[id]).length
 
   return (
     <div>
+      <div style={{ marginBottom: 10 }}><RecordatorioCriterio plegado /></div>
+
       <BarraFiltros
         filtros={filtros}
         texto={textoBusqueda}
@@ -217,6 +266,22 @@ export default function ListaTrabajo({ recarga }: Props) {
         </div>
       ) : (
         <>
+          {traduccionesEnPagina.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 10, background: 'rgba(0,209,167,0.07)', border: '1px solid rgba(0,209,167,0.35)', borderRadius: 10, padding: '10px 12px', marginBottom: 10 }}>
+              <p style={{ flex: 1, minWidth: 200, fontSize: 13, color: '#A3B1AC', lineHeight: 1.4 }}>
+                Títulos mal escritos, no gooals mal planteados: léelos y confírmalos de golpe.
+              </p>
+              <button
+                type="button"
+                onClick={() => setPendiente({ tipo: 'traducciones', ids: traduccionesEnPagina.map(g => g.id) })}
+                disabled={aplicando}
+                style={{ minHeight: 40, padding: '0 14px', borderRadius: 8, border: 'none', background: '#00D1A7', color: '#0B0B0B', fontSize: 13, fontWeight: 700 }}
+              >
+                Aceptar las {traduccionesEnPagina.length} de esta página
+              </button>
+            </div>
+          )}
+
           <BarraLote
             seleccionados={seleccion.size}
             enPagina={gooals.length}
@@ -232,11 +297,17 @@ export default function ListaTrabajo({ recarga }: Props) {
             </div>
           ) : gooals.length === 0 ? (
             <p style={{ fontSize: 14, color: '#7A8A85', textAlign: 'center', padding: '28px 0' }}>
-              {filtros.estado === 'borrador' && !filtros.busqueda && !filtros.sinPin && !filtros.categoriaDudosa && filtros.categoria === 'todas' && filtros.ambito === 'todos'
-                ? 'No queda nada en borrador. Todo revisado.'
-                : filtros.categoriaDudosa && filtros.estado === 'todos' && !filtros.busqueda && !filtros.sinPin && filtros.categoria === 'todas' && filtros.ambito === 'todos'
-                  ? 'No queda ninguna categoría dudosa. Todo revisado.'
-                  : 'Ningún gooal coincide con estos filtros.'}
+              {datos?.sinRepaso
+                ? 'Todavía no hay repaso de títulos: falta pegar supabase/fase3k.sql y pasar el script.'
+                : filtros.repaso === 'traducciones'
+                  ? 'No queda ninguna traducción por confirmar.'
+                  : filtros.repaso === 'decidir'
+                    ? 'No queda nada por decidir en el repaso de títulos.'
+                  : filtros.estado === 'borrador' && !filtros.busqueda && !filtros.sinPin && !filtros.categoriaDudosa && filtros.categoria === 'todas' && filtros.ambito === 'todos'
+                    ? 'No queda nada en borrador. Todo revisado.'
+                    : filtros.categoriaDudosa && filtros.estado === 'todos' && !filtros.busqueda && !filtros.sinPin && filtros.categoria === 'todas' && filtros.ambito === 'todos'
+                      ? 'No queda ninguna categoría dudosa. Todo revisado.'
+                      : 'Ningún gooal coincide con estos filtros.'}
             </p>
           ) : (
             <ul style={{ display: 'flex', flexDirection: 'column', gap: 8, opacity: cargando ? 0.55 : 1, transition: 'opacity 0.15s' }}>
@@ -327,6 +398,21 @@ export default function ListaTrabajo({ recarga }: Props) {
           peligro
           ocupado={aplicando}
           onConfirmar={() => borrar(pendiente.gooal)}
+          onCancelar={() => setPendiente(null)}
+        />
+      )}
+
+      {pendiente?.tipo === 'traducciones' && (
+        <Confirmacion
+          titulo={`Aceptar ${pendiente.ids.length} traducciones`}
+          texto={
+            `Vas a cambiar el título de ${pendiente.ids.length} ${pendiente.ids.length === 1 ? 'gooal' : 'gooals'} de golpe, por el que propone la IA. `
+            + 'Son arreglos de cómo está escrito el título: lo que hace la persona no cambia. '
+            + 'Si alguno ya tuviera ese título, ese se queda como está y te lo digo.'
+          }
+          confirmar="Aceptar todas"
+          ocupado={aplicando}
+          onConfirmar={() => aplicarTraducciones(pendiente.ids)}
           onCancelar={() => setPendiente(null)}
         />
       )}

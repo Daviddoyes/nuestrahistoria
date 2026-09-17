@@ -8,6 +8,7 @@ import {
 } from '@/lib/gooals'
 import type { GooalAdmin } from '@/types/gooals'
 import SelectorPuntos from '../SelectorPuntos'
+import PropuestaTitulo from './PropuestaTitulo'
 
 // Leaflet toca `window` al cargarse: solo en el navegador, y solo al abrir un pin.
 const MiniMapaPin = dynamic(() => import('./MiniMapaPin'), {
@@ -124,6 +125,9 @@ export default function FilaGooal({
           {gooal.estado}
         </span>
       </div>
+
+      {/* ── Lo que la IA propone para el título ── */}
+      <PropuestaTitulo gooal={gooal} onGuardado={onGuardado} ocupado={ocupado} />
 
       {/* ── Puntos y dificultad ── */}
       <div style={{ marginTop: 10, paddingLeft: 40 }}>

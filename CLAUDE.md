@@ -106,6 +106,64 @@ Nacen `verificado`: aprobar una sugerencia y crear uno a mano en el panel.
 Nacen `borrador`: el pipeline de siembra, "Generar con IA" y la importación CSV
 (`/admin/gooals/importar`).
 
+### Las cinco reglas de un gooal
+
+Esto es **el criterio editorial del catálogo**: lo que separa un gooal bueno de
+uno que hay que reescribir. Sale de corregir a mano cientos de títulos malos.
+
+El texto exacto vive en un solo sitio, `src/lib/criterio-gooals.ts`
+(`REGLAS_GOOAL` y `PRINCIPIO_GOOAL`). Lo de aquí abajo es una copia para leer;
+**si el criterio cambia, se cambia en ese fichero**, y el prompt de la IA y el
+recordatorio del panel cambian solos.
+
+1. **La prueba de la foto.** ¿Qué foto demuestra esto? Si esa foto podría ser de
+   otras cincuenta cosas, el título está mal.
+   MAL: «Probar un plato que no sabías pronunciar» · BIEN: «Comerte un escorpión»
+   *Matiz, en comida:* la línea está **dentro del plato**, no en la forma del
+   título. Vale lo raro, lo extremo o lo difícil de conseguir (escorpión, fugu,
+   casu marzu, hormigas culonas); no vale la comida corriente de otro país por
+   muy extranjera que sea (currywurst, gyros, soba). La pregunta es si eso se lo
+   come cualquiera un martes en ese país o es una rareza. Y ojo: la regla 1 **no**
+   pregunta si el gooal es impresionante, sino si la foto es inconfundible.
+2. **Concreto, nunca una categoría.** Una cosa que se hace, no un grupo de cosas.
+   MAL: «Probar un deporte que no habías practicado nunca» · BIEN: «Practicar pádel»
+3. **Si hay un sitio con nombre, el sitio es el gooal.** Cuando la gracia está en
+   el lugar, el lugar va en el título con su nombre.
+   MAL: «Desayunar en un mercado» · BIEN: «Visitar el mercado de la Boqueria»
+4. **Sin coletillas de condición.** Nada de "durante 30 días", "delante de
+   desconocidos" o "de más de dos metros".
+   MAL: «Cantar en un karaoke delante de desconocidos» · BIEN: «Cantar en un karaoke»
+5. **El logro nombrable, no el proceso.** Lo que se consigue y se puede decir en
+   voz alta, no el camino.
+   MAL: «Aprender un idioma hasta poder conversar» · BIEN: «Sacarse el C1 de inglés»
+
+Y por encima de las cinco:
+
+> Un gooal tiene que ser **MEMORABLE, no fácil**. Que dos personas hayan
+> aprendido a nadar no las conecta; que las dos hayan hecho el Camino, un 10K o
+> una carrera universitaria, sí. **No se baja el listón para llenar perfiles.**
+
+Quién lo aplica hoy:
+
+- **"Generar con IA"** (`src/app/api/admin/generar-gooals/route.ts`) mete las
+  cinco reglas en el prompt con `criterioParaPrompt()`.
+- **El panel**, al crear o corregir a mano, las enseña con
+  `<RecordatorioCriterio />` (`src/components/admin/RecordatorioCriterio.tsx`):
+  crear un gooal, generar con IA, la lista de trabajo y aprobar sugerencias.
+- **No hay validador automático, a propósito.** Un título malo casi nunca lo es
+  por la forma, sino por el sentido: una regla automática rechazaría buenos y
+  dejaría pasar malos. Decide una persona.
+
+Para encontrar los que ya están mal en el catálogo:
+`supabase/consultas/titulos-sospechosos.sql` (la vía rápida, solo SQL) y el
+**repaso con IA**: `scripts/revisar-titulos/` juzga cada título con estas reglas
+y deja una propuesta en la tabla `gooals_revision` (`supabase/fase3k.sql`). La IA
+no cambia nunca un título: solo propone, y decide David en `/admin/gooals`, en
+dos colas que **no se mezclan**: "Traducciones" (el título está mal escrito; es
+mecánico y se confirma en bloque) y "Por decidir" (rompe una regla; una a una,
+sin botón de bloque a propósito). Es un trabajo temporal; cuando acabe, la
+tabla se borra y el panel sigue funcionando sin ella.
+
 ### Un gooal es una experiencia, no un sitio
 
 Un gooal debe ser algo distinto de hacer, no la misma actividad en otro lugar.

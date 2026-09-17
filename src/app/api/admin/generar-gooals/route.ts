@@ -4,6 +4,7 @@ import { esAdmin } from '@/lib/admin-auth'
 import {
   CATEGORIAS, PUNTOS_MAX, PUNTOS_MIN, esCategoria, puntosEnEscala, type CategoriaGooal,
 } from '@/lib/gooals'
+import { criterioParaPrompt } from '@/lib/criterio-gooals'
 
 const CANTIDAD = 20
 
@@ -33,7 +34,11 @@ const SCHEMA = {
           categoria: { type: 'string', enum: CATEGORIAS },
           // Sin dificultad: se deduce de los puntos. Pedir las dos cosas dejaba
           // que la IA devolviera un "facil" de 9 puntos.
-          puntos: { type: 'integer', minimum: PUNTOS_MIN, maximum: PUNTOS_MAX },
+          //
+          // Y sin minimum/maximum: el esquema de las respuestas validadas no los
+          // admite y la API contesta 400, así que la generación fallaba SIEMPRE.
+          // El rango 1-10 lo comprueba puntosEnEscala() más abajo.
+          puntos: { type: 'integer' },
           ciudad: { type: 'string' },
           pais: { type: 'string' },
         },
@@ -77,11 +82,13 @@ export async function POST(request: Request) {
 
 Un gooal es algo concreto que una persona puede lograr y demostrar con una foto.
 
+${criterioParaPrompt()}
+
 Reglas de los campos:
-- titulo: en español, en infinitivo, menos de 70 caracteres. Concreto y demostrable con una foto ("Nadar en una cala secreta", no "Disfrutar del mar").
+- titulo: en español, en infinitivo, menos de 70 caracteres. Tiene que cumplir las cinco reglas de arriba.
 - descripcion: 2 frases aspiracionales en español. NO menciones marcas, empresas ni locales concretos. Habla de la experiencia: qué se siente, qué se vive.
 - categoria: exactamente "${categoria}".
-- puntos: un entero de 1 a 10 según lo que cueste conseguirlo. De 1 a 3, algo de un rato y sin preparación. De 4 a 7, algo que requiere planificación, dinero o entrenamiento. De 8 a 10, un hito de los que se cuentan toda la vida. Dentro de cada tramo, más puntos cuanto más cueste.
+- puntos: un entero de ${PUNTOS_MIN} a ${PUNTOS_MAX} según lo que cueste conseguirlo. De 1 a 3, algo de un rato y sin preparación. De 4 a 7, algo que requiere planificación, dinero o entrenamiento. De 8 a 10, un hito de los que se cuentan toda la vida. Dentro de cada tramo, más puntos cuanto más cueste.
 - ciudad y pais: si el gooal es de un sitio concreto, indícalos; si vale en cualquier parte, pon cadena vacía en ambos.
 
 Reparte los puntos: aproximadamente la mitad de 1 a 3, un tercio de 4 a 7 y el resto de 8 a 10.
