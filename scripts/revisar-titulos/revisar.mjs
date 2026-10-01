@@ -321,7 +321,13 @@ async function main() {
 
       // Y la comprobación que NO depende de que se porte bien: un título que ya
       // existe daría puntos dos veces por el mismo recuerdo.
-      if (propuesta && yaEnElCatalogo.has(clave(propuesta))) {
+      //
+      // Chocar CONSIGO MISMO no cuenta. Una propuesta que solo pone tildes o
+      // añade un artículo tiene la misma clave que el título original, y sin
+      // esta salvedad se descartaban justo los arreglos más fáciles y seguros:
+      // «Hacer kayak en la Antartida» → «...Antártida» se frenaba a sí mismo.
+      const esElMismoTitulo = clave(propuesta) === clave(g.titulo)
+      if (propuesta && !esElMismoTitulo && yaEnElCatalogo.has(clave(propuesta))) {
         motivo = `${motivo ?? ''} (proponía «${propuesta}», pero ese título ya existe en el catálogo)`.trim().slice(0, 500)
         propuesta = ''
         deLaTanda.duplicadas++
