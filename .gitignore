@@ -46,5 +46,3 @@ next-env.d.ts
 /Claude outputs/
 
 
-# Informes que genera el geocodificador: salida, se rehacen lanzándolo.
-/scripts/catalogo-nuevo/geocodificacion-*.csv

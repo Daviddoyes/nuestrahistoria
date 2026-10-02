@@ -91,6 +91,34 @@ const ASENTAMIENTOS = new Set([
   'municipality', 'borough', 'district', 'city_district',
 ])
 
+/**
+ * El país del gooal, en español, traducido a código ISO.
+ *
+ * Hace falta porque el gooal dice "República Checa" y Nominatim devuelve
+ * "Czechia": comparar los nombres no funciona en ningún idioma. El código de dos
+ * letras no depende del idioma.
+ *
+ * Un país que no esté en esta lista NO se da por bueno a ciegas: la respuesta se
+ * rechaza y sale en el informe, para añadirlo aquí a mano. Mejor un rechazo
+ * visible que un pin en otro continente.
+ */
+const ISO = {
+  'alemania': 'de', 'bélgica': 'be', 'belgica': 'be', 'botsuana': 'bw', 'brasil': 'br',
+  'canadá': 'ca', 'canada': 'ca', 'catar': 'qa', 'chile': 'cl', 'china': 'cn',
+  'corea del sur': 'kr', 'korea del sud': 'kr', 'croacia': 'hr', 'cuba': 'cu',
+  'dinamarca': 'dk', 'egipto': 'eg', 'emiratos árabes unidos': 'ae',
+  'emiratos arabes unidos': 'ae', 'españa': 'es', 'espana': 'es',
+  'estados unidos': 'us', 'grecia': 'gr', 'groenlandia': 'gl', 'india': 'in',
+  'indonesia': 'id', 'islandia': 'is', 'israel': 'il', 'italia': 'it',
+  'japón': 'jp', 'japon': 'jp', 'kenia': 'ke', 'marruecos': 'ma', 'mónaco': 'mc',
+  'monaco': 'mc', 'namibia': 'na', 'nepal': 'np', 'noruega': 'no',
+  'países bajos': 'nl', 'paises bajos': 'nl', 'perú': 'pe', 'peru': 'pe',
+  'polinesia francesa': 'pf', 'portugal': 'pt', 'reino unido': 'gb',
+  'república checa': 'cz', 'republica checa': 'cz', 'singapur': 'sg',
+  'tailandia': 'th', 'tanzania': 'tz', 'turquía': 'tr', 'turquia': 'tr',
+  'vietnam': 'vn', 'zambia': 'zm',
+}
+
 /** Palabras que no distinguen un sitio de otro al comparar nombres. */
 const VACIAS = new Set([
   'de', 'del', 'la', 'el', 'los', 'las', 'y', 'a', 'al', 'en', 'of', 'the', 'and',
@@ -139,7 +167,6 @@ function variantes(consulta) {
  */
 function comprobar(resultado, nombreSitio, paisEsperado, ciudadEsperada) {
   const tipo = resultado.type ?? ''
-  if (TIPOS_MALOS.has(tipo)) return null
 
   // El nombre tiene que compartir al menos una palabra que distinga.
   //
@@ -157,20 +184,46 @@ function comprobar(resultado, nombreSitio, paisEsperado, ciudadEsperada) {
   // la de un huerto comunitario de Brooklyn incluye "Brooklyn". Comparando con
   // la dirección, los dos colaban. Quitar ciudad y país de la búsqueda no
   // bastaba: el engaño venía de los barrios.
-  const texto = sinAcentos(resultado.name || (resultado.display_name ?? '').split(',')[0])
+  //
+  // Se compara contra TODAS las variantes de nombre que devuelve namedetails
+  // (name, name:es, name:en, old_name...), no solo contra una. Así el filtro
+  // deja de depender del idioma en los dos sentidos: antes, pidiendo los
+  // nombres en español, «Karlův most» no habría casado con «Puente de Carlos»,
+  // que es el fallo que tuvimos del revés con el Vesubio.
+  const nombres = [resultado.name, ...Object.values(resultado.namedetails ?? {})]
+    .filter(Boolean)
+  if (nombres.length === 0) nombres.push((resultado.display_name ?? '').split(',')[0])
+  const texto = sinAcentos(nombres.join(' | '))
   // Por trozos y no por palabras enteras: «Reichstag» tiene que valer para
   // «Reichstagsgebäude», y «Chouara» para «Tanneries Chouara». Comparar palabra
   // a palabra rechazaba respuestas correctas.
-  const encaja = [...buscadas].some(p => texto.includes(p))
-  if (buscadas.size > 0 && !encaja) return null
+  const acertadas = [...buscadas].filter(p => texto.includes(p)).length
+  if (buscadas.size > 0 && acertadas === 0) return null
 
-  // Y el país tiene que ser el mismo. Es lo que separa un sitio homónimo al otro
-  // lado del mundo del que se buscaba.
-  const pais = resultado.address?.country ?? ''
-  if (paisEsperado && pais) {
-    const p1 = significativas(pais)
-    const p2 = significativas(paisEsperado)
-    if (p2.size > 0 && ![...p2].some(x => p1.has(x))) return null
+  // La lista negra de tipos SOLO se aplica cuando el parecido es flojo.
+  //
+  // Un tipo "malo" no es malo siempre: Marina Bay Sands ES un hotel, y para
+  // «Bañarte en la piscina del Marina Bay Sands» el hotel es exactamente el
+  // sitio. Rechazarlo por ser un hotel era un falso rechazo.
+  //
+  // Con dos o más palabras distintivas acertadas, el nombre ya identifica el
+  // sitio y el tipo da igual. Con una sola, la lista negra sigue mandando: por
+  // eso el "Atomium" alquiler de bicis —una sola palabra— se sigue cayendo.
+  if (acertadas < 2 && TIPOS_MALOS.has(tipo)) return null
+
+  // Y EL PAÍS. Por código ISO de dos letras, no por nombre: el gooal dice
+  // "República Checa" y Nominatim devuelve "Czechia". Es lo que separa un sitio
+  // homónimo al otro lado del mundo del que se buscaba.
+  //
+  // Devuelve 'fuera' en vez de null para poder contarlo aparte en el informe:
+  // "no encontré nada" y "encontré algo en otro país" son dos problemas
+  // distintos y se arreglan de forma distinta.
+  const esperado = ISO[sinAcentos(paisEsperado ?? '').trim()]
+  const devuelto = (resultado.address?.country_code ?? '').toLowerCase()
+  if (paisEsperado) {
+    if (!esperado) return 'sin-pais'    // país que no está en la tabla ISO
+    if (!devuelto) return 'sin-pais'    // Nominatim no dice de qué país es
+    if (devuelto !== esperado) return 'fuera'
   }
 
   const importancia = Number(resultado.importance ?? 0)
@@ -186,8 +239,7 @@ function comprobar(resultado, nombreSitio, paisEsperado, ciudadEsperada) {
 
 async function buscar(q) {
   const url = 'https://nominatim.openstreetmap.org/search'
-    + `?q=${encodeURIComponent(q)}&format=jsonv2&addressdetails=1&limit=5`
-    + '&accept-language=es,en'
+    + `?q=${encodeURIComponent(q)}&format=jsonv2&addressdetails=1&namedetails=1&limit=5`
   // Español CON respaldo en inglés, y no una cosa ni la otra por separado. Sin
   // idioma, los nombres vuelven en el local ("Vesuvio", "Reichstagsgebäude") y
   // no casan con una consulta escrita en español. Solo en español, el orden de
@@ -245,6 +297,8 @@ for (const g of cola) {
   const nombreSitio = consulta.split(',')[0].trim()
   let elegido = null
   let usada = null
+  // Para poder contar aparte los que se caen por país, que es otro problema.
+  let rechazo = null
 
   for (const v of variantes(consulta)) {
     const r = await buscar(v)
@@ -264,17 +318,26 @@ for (const g of cola) {
     }
     for (const fila of r.filas ?? []) {
       const marca = comprobar(fila, nombreSitio, g.pais, g.ciudad)
+      if (marca === 'fuera' || marca === 'sin-pais') { rechazo = { marca, fila }; continue }
       if (marca) { elegido = { fila, marca }; usada = v; break }
     }
     if (elegido) break
   }
 
   if (!elegido) {
-    sinPin.push({ ...g, porque: 'ninguna respuesta era claramente el sitio' })
+    // Se distingue "no encontré nada" de "encontré algo en otro país": son dos
+    // problemas distintos y se arreglan distinto. El de país es el peligroso,
+    // porque habría puesto un pin a miles de kilómetros.
+    const porque = rechazo?.marca === 'fuera'
+      ? `cae FUERA DEL PAÍS: ${rechazo.fila.name || rechazo.fila.display_name?.slice(0, 40)} está en ${rechazo.fila.address?.country ?? '?'} y el gooal dice ${g.pais}`
+      : rechazo?.marca === 'sin-pais'
+        ? `no se pudo comprobar el país (${g.pais ?? 'el gooal no lo dice'})`
+        : 'ninguna respuesta era claramente el sitio'
+    sinPin.push({ ...g, porque, fuera: rechazo?.marca === 'fuera' })
     if (!seco) {
       await service.from('gooals_v2').update({ geo: 'sin-resultado' }).eq('id', g.id)
     }
-    console.log(`${i}/${cola.length}  ✗  «${g.titulo}»  —  ${consulta}`)
+    console.log(`${i}/${cola.length}  ✗  «${g.titulo}»  —  ${porque}`)
     continue
   }
 
