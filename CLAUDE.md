@@ -25,7 +25,7 @@ Este proyecto lo lleva alguien que **no es programador**. Eso cambia dos cosas:
 src/app/          rutas (App Router). Casi todas son componentes de cliente.
 src/components/   UI. admin/ son las secciones del panel.
 src/lib/          lógica compartida
-src/types/        tipos. gooals.ts = Fase 3; planes.ts = arquitectura anterior.
+src/types/        tipos. Solo gooals.ts; planes.ts era de la v1 y ya no está.
 supabase/*.sql    esquema. NO se ejecuta solo: se pega en el SQL Editor.
 scripts/          herramientas locales de siembra. No forman parte de la app.
 RETOS/            los PDFs fuente del catálogo.

@@ -99,7 +99,8 @@ export default function AuthPage() {
 
     const { data: profile } = await supabase
       .from('profiles')
-      .select('pareja_id, onboarding_completado')
+      // pareja_id era de la v1 (la app de parejas). Se leía aquí y no se usaba.
+      .select('onboarding_completado')
       .eq('id', data.user.id)
       .single()
 
