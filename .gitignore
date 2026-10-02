@@ -45,3 +45,6 @@ next-env.d.ts
 # Descargas personales de David (imágenes de marca, capturas): no son del proyecto
 /Claude outputs/
 
+
+# Informes que genera el geocodificador: salida, se rehacen lanzándolo.
+/scripts/catalogo-nuevo/geocodificacion-*.csv
