@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Check, Smartphone } from 'lucide-react'
+import { Check, Smartphone, User, Compass, Map as MapIcon, Camera } from 'lucide-react'
 import { detectPlatform, isStandalone, type Platform } from '@/lib/platform'
 import InstallStepsSheet from './InstallStepsSheet'
 import Logotipo from '@/components/Logotipo'
@@ -12,6 +12,19 @@ type BeforeInstallPromptEvent = Event & {
 }
 
 const APP_URL = 'gooals.app'
+
+/**
+ * Lo que la app hace HOY. La lista anterior prometía «Planes» e «Historias»,
+ * dos pantallas de la versión 1 que ya no existen: quien instalaba buscando eso
+ * no lo encontraba. Si se añade o se quita una sección de la app, esta lista se
+ * cambia con ella.
+ */
+const LO_QUE_HAY = [
+  { Icono: User, titulo: 'Tu perfil de experiencias', texto: 'Todo lo que has vivido en un solo sitio, con sus puntos.' },
+  { Icono: Compass, titulo: 'Un catálogo de retos', texto: 'Cosas concretas que hacer, de fáciles a épicas.' },
+  { Icono: MapIcon, titulo: 'El mapa', texto: 'Dónde está cada reto y cuáles tienes cerca.' },
+  { Icono: Camera, titulo: 'La prueba con foto', texto: 'Un reto cuenta cuando subes la foto o el vídeo.' },
+]
 
 /**
  * QR de https://gooals.app/download, generado una vez y embebido: sin librería
@@ -107,7 +120,7 @@ export default function DownloadLanding() {
           className="text-center mt-4"
           style={{ fontSize: 16, fontWeight: 400, color: '#7A8A85', lineHeight: 1.6 }}
         >
-          Crea tu bucket list, vívela y compártela.
+          Elige retos de verdad, consiéguelos y demuéstralo con una foto.
         </p>
 
         {/* ── CTA por plataforma ──────────────────────────── */}
@@ -145,31 +158,26 @@ export default function DownloadLanding() {
           )}
         </div>
 
-        {/* ── Social proof ────────────────────────────────── */}
-        <div className="w-full mt-12 flex flex-col items-center">
-          <p className="text-[13px] text-[#7A8A85] text-center">
-            Únete a la comunidad que vive más.
-          </p>
-
-          <ul className="flex items-center justify-center gap-5 mt-5">
-            {[
-              { emoji: '📋', label: 'Planes' },
-              { emoji: '📸', label: 'Historias' },
-              { emoji: '🌍', label: 'Explorar' },
-            ].map(({ emoji, label }) => (
-              <li key={label} className="flex flex-col items-center gap-1.5">
-                <span
-                  className="flex items-center justify-center rounded-xl bg-[#1E2120] border border-[#2A2E2C]"
-                  style={{ width: 44, height: 44, fontSize: 19 }}
-                  aria-hidden
-                >
-                  {emoji}
-                </span>
-                <span className="text-[11px] text-[#7A8A85]">{label}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {/* ── Qué hay dentro ───────────────────────── */}
+        {/* En filas y no en tres columnas: cada una necesita una frase para que
+            se entienda, y una palabra suelta debajo de un icono no la da. */}
+        <ul className="w-full mt-12 flex flex-col" style={{ gap: 18 }}>
+          {LO_QUE_HAY.map(({ Icono, titulo, texto }) => (
+            <li key={titulo} style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+              <span
+                aria-hidden
+                className="flex items-center justify-center rounded-xl bg-[#1E2120] border border-[#2A2E2C] shrink-0"
+                style={{ width: 40, height: 40, color: '#00D1A7' }}
+              >
+                <Icono style={{ width: 18, height: 18 }} />
+              </span>
+              <div style={{ minWidth: 0 }}>
+                <p className="text-[14px] font-semibold text-[#FFFFFF]" style={{ lineHeight: 1.35 }}>{titulo}</p>
+                <p className="text-[13px] text-[#7A8A85]" style={{ lineHeight: 1.5, marginTop: 2 }}>{texto}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
 
       {/* ── Footer ────────────────────────────────────────── */}

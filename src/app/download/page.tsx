@@ -2,7 +2,9 @@ import type { Metadata } from 'next'
 import DownloadLanding from '@/components/DownloadLanding'
 
 const TITLE = 'Instala gooals'
-const DESCRIPTION = 'Crea tu bucket list, vívela y compártela.'
+// Es lo que se ve en la tarjeta del enlace al compartirlo, así que dice lo que
+// la app hace hoy, igual que la propia página.
+const DESCRIPTION = 'Elige retos de verdad, consiéguelos y demuéstralo con una foto.'
 
 // Esta URL se comparte desde la bio de Instagram y desde Stories, así que la
 // tarjeta del enlace es la primera impresión: sin Open Graph, Instagram pinta
