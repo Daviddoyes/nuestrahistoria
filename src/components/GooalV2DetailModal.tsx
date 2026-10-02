@@ -30,6 +30,7 @@ export default function GooalV2DetailModal({
   const [vecesCompletado, setVecesCompletado] = useState(gooal.veces_completado)
   const [ultimos, setUltimos] = useState<UsuarioMini[]>([])
   const [completando, setCompletando] = useState<'lista' | 'directo' | null>(null)
+  const [recienAnadido, setRecienAnadido] = useState(false)
 
   const color = CATEGORIA_COLOR[gooal.categoria]
   const dificultad = DIFICULTAD_META[gooal.dificultad]
@@ -52,12 +53,25 @@ export default function GooalV2DetailModal({
     return () => { vivo = false }
   }, [gooal.id])
 
+  // Antes, al añadir, solo cambiaba el texto de un botón: la ficha se quedaba
+  // igual y parecía que no había pasado nada. Ahora se ve la confirmación y la
+  // ficha se cierra sola, que es la señal de que la acción terminó.
+  useEffect(() => {
+    if (!recienAnadido) return
+    const t = setTimeout(cerrar, 1500)
+    return () => clearTimeout(t)
+    // cerrar no va en la lista a propósito: se rehace en cada pintada y
+    // reiniciaría el temporizador sin parar.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [recienAnadido])
+
   const handleAnadir = async () => {
     setAnadiendo(true)
     setError('')
     const res = await anadirGooal(gooal.id)
     if (res.success) {
       setEstadoLocal('pendiente')
+      setRecienAnadido(true)
       onCambio()
     } else {
       setError(res.error ?? 'No se pudo añadir el gooal.')
@@ -191,7 +205,15 @@ export default function GooalV2DetailModal({
 
           {/* Acciones */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 28 }}>
-            {estadoLocal === 'completado' ? (
+            {recienAnadido ? (
+              <div
+                role="status"
+                className="w-full py-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
+                style={{ background: '#00D1A7', color: '#0B0B0B' }}
+              >
+                <Check className="w-4 h-4" /> Añadido a tus pendientes
+              </div>
+            ) : estadoLocal === 'completado' ? (
               <div
                 className="w-full py-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
                 style={{ background: 'rgba(0,209,167,0.14)', color: '#00D1A7' }}
