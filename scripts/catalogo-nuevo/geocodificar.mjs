@@ -103,20 +103,23 @@ const ASENTAMIENTOS = new Set([
  * visible que un pin en otro continente.
  */
 const ISO = {
-  'alemania': 'de', 'bélgica': 'be', 'belgica': 'be', 'botsuana': 'bw', 'brasil': 'br',
-  'canadá': 'ca', 'canada': 'ca', 'catar': 'qa', 'chile': 'cl', 'china': 'cn',
-  'corea del sur': 'kr', 'korea del sud': 'kr', 'croacia': 'hr', 'cuba': 'cu',
-  'dinamarca': 'dk', 'egipto': 'eg', 'emiratos árabes unidos': 'ae',
-  'emiratos arabes unidos': 'ae', 'españa': 'es', 'espana': 'es',
-  'estados unidos': 'us', 'grecia': 'gr', 'groenlandia': 'gl', 'india': 'in',
-  'indonesia': 'id', 'islandia': 'is', 'israel': 'il', 'italia': 'it',
-  'japón': 'jp', 'japon': 'jp', 'kenia': 'ke', 'marruecos': 'ma', 'mónaco': 'mc',
-  'monaco': 'mc', 'namibia': 'na', 'nepal': 'np', 'noruega': 'no',
-  'países bajos': 'nl', 'paises bajos': 'nl', 'perú': 'pe', 'peru': 'pe',
-  'polinesia francesa': 'pf', 'portugal': 'pt', 'reino unido': 'gb',
-  'república checa': 'cz', 'republica checa': 'cz', 'singapur': 'sg',
-  'tailandia': 'th', 'tanzania': 'tz', 'turquía': 'tr', 'turquia': 'tr',
-  'vietnam': 'vn', 'zambia': 'zm',
+  'alemania': 'de', 'antartida': 'aq', 'argentina': 'ar', 'australia': 'au',
+  'austria': 'at', 'belgica': 'be', 'birmania': 'mm', 'bolivia': 'bo',
+  'botsuana': 'bw', 'brasil': 'br', 'camboya': 'kh', 'canada': 'ca',
+  'catar': 'qa', 'chile': 'cl', 'china': 'cn', 'colombia': 'co',
+  'corea del sur': 'kr', 'croacia': 'hr', 'cuba': 'cu', 'dinamarca': 'dk',
+  'ecuador': 'ec', 'egipto': 'eg', 'emiratos arabes unidos': 'ae',
+  'espana': 'es', 'estados unidos': 'us', 'filipinas': 'ph', 'francia': 'fr',
+  'grecia': 'gr', 'groenlandia': 'gl dk', 'hungria': 'hu', 'india': 'in',
+  'indonesia': 'id', 'irlanda': 'ie', 'islandia': 'is', 'islas feroe': 'fo dk',
+  'israel': 'il', 'italia': 'it', 'japon': 'jp', 'jordania': 'jo',
+  'kenia': 'ke', 'korea del sud': 'kr', 'maldivas': 'mv', 'marruecos': 'ma',
+  'mexico': 'mx', 'monaco': 'mc', 'namibia': 'na', 'nepal': 'np',
+  'noruega': 'no', 'nueva zelanda': 'nz', 'paises bajos': 'nl', 'peru': 'pe',
+  'polinesia francesa': 'pf fr', 'portugal': 'pt', 'reino unido': 'gb',
+  'republica checa': 'cz', 'rusia': 'ru', 'singapur': 'sg',
+  'sudafrica': 'za', 'suecia': 'se', 'suiza': 'ch', 'tailandia': 'th',
+  'tanzania': 'tz', 'turquia': 'tr', 'vietnam': 'vn', 'zambia': 'zm',
 }
 
 /** Palabras que no distinguen un sitio de otro al comparar nombres. */
@@ -223,7 +226,11 @@ function comprobar(resultado, nombreSitio, paisEsperado, ciudadEsperada) {
   if (paisEsperado) {
     if (!esperado) return 'sin-pais'    // país que no está en la tabla ISO
     if (!devuelto) return 'sin-pais'    // Nominatim no dice de qué país es
-    if (devuelto !== esperado) return 'fuera'
+    // Varios códigos separados por espacio para los territorios que OSM cuelga
+    // de su metrópoli: la Polinesia Francesa sale como 'fr', no como 'pf', y
+    // Vaitape —que ES Bora Bora— se rechazaba por eso. Lo mismo Groenlandia y
+    // las Feroe, que OSM puede dar como 'dk'.
+    if (!esperado.split(' ').includes(devuelto)) return 'fuera'
   }
 
   const importancia = Number(resultado.importance ?? 0)
@@ -389,7 +396,10 @@ const informe = '﻿' + [
   ...conPin.map(g => ['con pin', g.titulo, g.geo_consulta, g.usada, g.encontrado, g.tipo, g.marca, g.lat, g.lng, '']),
   ...sinPin.map(g => ['SIN PIN', g.titulo, g.geo_consulta, '', '', '', '', '', '', g.porque]),
 ].map(f => f.map(celda).join(',')).join('\r\n') + '\r\n'
-const rutaInforme = `scripts/catalogo-nuevo/geocodificacion-${new Date().toISOString().slice(0, 10)}.csv`
+// Con fecha Y HORA: con solo la fecha, dos pasadas del mismo día se pisaban
+// la una a la otra. Pasó: un informe de 82 filas quedó reducido a 4.
+const sello = new Date().toISOString().slice(0, 16).replace('T', '-').replace(':', '')
+const rutaInforme = `scripts/catalogo-nuevo/geocodificacion-${sello}.csv`
 if (!seco) { writeFileSync(rutaInforme, informe, 'utf8'); console.log(`\nInforme: ${rutaInforme}`) }
 
 const quedan = pendientes.length - cola.length

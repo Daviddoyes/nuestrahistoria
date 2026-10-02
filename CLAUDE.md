@@ -265,6 +265,34 @@ node insertar.mjs
 categoría hay que vaciarla antes en Supabase, comprobando primero que nadie la
 tenga en su lista (`user_gooals` tiene `on delete cascade`).
 
+## Una comprobación a medias es peor que ninguna
+
+Es la lección más cara de este repo y conviene leerla antes de escribir
+cualquier validación.
+
+El geocodificador comprueba que el pin cae en el país que dice el gooal. Para
+eso traduce el país a código ISO con una tabla. **Esa tabla se escribió con los
+43 países de las filas que se estaban arreglando, y en el catálogo había 65.**
+Los 22 que faltaban —Francia, México, Australia, Suiza, Rusia…— pasaron por el
+geocodificador **sin que nadie les comprobara el país**, y el informe decía
+igualmente que todo estaba comprobado.
+
+Una comprobación que solo cubre parte de los datos **es peor que no tenerla**,
+porque parece que protege. Sin ella, uno desconfía y mira; con ella a medias,
+uno se fía.
+
+De ahí tres reglas:
+
+1. **Una tabla de traducción se contrasta contra TODOS los datos**, no contra
+   los que se están tocando. Es una consulta: qué valores distintos hay y
+   cuáles no están en la tabla.
+2. **Lo que no se puede comprobar se rechaza, no se da por bueno.** Un país que
+   no esté en la tabla hace que la respuesta se descarte y salga en el informe.
+   Un rechazo visible siempre es mejor que un pase a ciegas.
+3. **Y el montaje de la prueba también se comprueba.** Un cebo que no se
+   inserta deja una prueba que pasa sin comprobar nada: pasó dos veces con
+   `invitaciones_email`, y la tabla parecía cerrada estando abierta.
+
 ## Convenciones
 
 - **El código y los comentarios, en español.** Es lo que hay en todo el repo.
