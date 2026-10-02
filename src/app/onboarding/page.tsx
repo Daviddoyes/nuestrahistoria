@@ -68,9 +68,6 @@ export default function OnboardingPage() {
   const [usernameValido, setUsernameValido] = useState(true)
   const [checkingUsername, setCheckingUsername] = useState(false)
 
-  // Screen 1 — welcome/age
-  const [edad, setEdad] = useState('')
-
   // Screen 2 — intereses
   const [intereses, setIntereses] = useState<InterId[]>([])
 
@@ -309,7 +306,8 @@ export default function OnboardingPage() {
           </button>
         </div>
 
-        {/* Screen 1 — Bienvenida */}
+        {/* Screen 1 — Bienvenida. Aquí se pedía la edad: no se guardaba en
+            ningún sitio, así que era una pregunta para nada. */}
         <div style={screenStyle}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 32 }}>
             <div>
@@ -320,20 +318,6 @@ export default function OnboardingPage() {
                 Las redes están llenas de vidas perfectas.<br />
                 GooALS es para los que prefieren vivirlas.
               </p>
-            </div>
-            <div>
-              <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#7A8A85] mb-2">
-                ¿Cuántos años tienes?
-              </label>
-              <input
-                type="number"
-                inputMode="numeric"
-                value={edad}
-                onChange={e => setEdad(e.target.value)}
-                placeholder="Tu edad"
-                min={1} max={120}
-                className="w-full px-4 py-3.5 rounded-xl border border-[#2A2E2C] bg-[#2A2E2C] text-[#FFFFFF] placeholder-[#7A8A85] focus:outline-none focus:border-[#00D1A7] text-base"
-              />
             </div>
           </div>
           <button onClick={() => advance(2)} className="w-full bg-[#00D1A7] active:bg-[#00B893] text-[#0B0B0B] font-semibold py-3.5 rounded-xl text-base mt-4">
