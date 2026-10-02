@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { X } from 'lucide-react'
 import { isSafariIOS, isAndroidChrome, isStandalone } from '@/lib/platform'
 import InstallStepsSheet from './InstallStepsSheet'
+import { ALTO_NAV_TOTAL, conBarraInferior } from './BottomNav'
 
 type Platform = 'ios' | 'android' | null
 
@@ -72,14 +73,26 @@ export default function InstallBanner() {
   // /download ya es una landing de instalación entera: el banner encima sobra.
   if (!platform || pathname?.startsWith('/download')) return null
 
+  const hayBarra = conBarraInferior(pathname)
+
   return (
     <>
       <div
         className="fixed left-0 right-0 z-40 bg-[#1E2120]"
         style={{
-          bottom: 0,
+          // ENCIMA de la barra inferior, no sobre ella.
+          //
+          // Estaba en bottom: 0 y con una capa por encima de la barra (z-40
+          // contra z-20), así que en las cuatro pestañas la tapaba entera: quien
+          // no cerrara el banner no podía navegar. Un bloqueo total por un
+          // número.
+          //
+          // El hueco de seguridad del móvil se lo deja a la barra cuando hay
+          // barra: ella ya lo aplica, y sumarlo aquí también lo contaría dos
+          // veces y dejaría el banner flotando.
+          bottom: hayBarra ? `calc(${ALTO_NAV_TOTAL}px + env(safe-area-inset-bottom, 0px))` : 0,
           borderTop: '1px solid #00D1A7',
-          paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+          paddingBottom: hayBarra ? 0 : 'env(safe-area-inset-bottom, 0px)',
         }}
       >
         <div className="flex items-center gap-3 px-4 py-3">

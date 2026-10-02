@@ -6,6 +6,22 @@ import { Map as MapIcon, Newspaper, Compass, User } from 'lucide-react'
 
 export type Tab = 'mapa' | 'explorar' | 'muro' | 'perfil'
 
+/**
+ * Alto de la barra, sin el hueco de seguridad del móvil.
+ *
+ * Vive aquí y se importa: lo tenían escrito a mano AppShell (para reservar el
+ * sitio) y el banner de instalar (para colocarse encima). Con tres copias del
+ * mismo 56, cambiar la altura dejaba algo descolocado en silencio.
+ */
+export const ALTO_NAV = 56
+
+/**
+ * Lo que ocupa la barra de verdad: los 56 de los botones MÁS su borde superior.
+ * Es la medida que hay que usar para reservarle sitio o para colocarse encima:
+ * con 56 pelados se queda 1 px por debajo y el borde se solapa.
+ */
+export const ALTO_NAV_TOTAL = ALTO_NAV + 1
+
 // El mapa va primero: es la pantalla principal. "Mis gooals" ya no existe como
 // pestaña; conquistados y pendientes viven en el perfil.
 const TABS: { id: Tab; href: string; label: string; Icon: typeof Newspaper }[] = [
@@ -19,6 +35,11 @@ type Props = {
   /** Pestaña activa. Si no se pasa, se deduce de la ruta. */
   activeTab?: Tab
   fotoPerfil?: string | null
+}
+
+/** ¿Esta ruta lleva barra inferior? Solo las cuatro pestañas la tienen. */
+export function conBarraInferior(ruta: string | null | undefined): boolean {
+  return TABS.some(t => ruta?.startsWith(t.href))
 }
 
 export default function BottomNav({ activeTab, fotoPerfil }: Props) {
@@ -37,7 +58,7 @@ export default function BottomNav({ activeTab, fotoPerfil }: Props) {
             key={id}
             href={href}
             aria-current={activo ? 'page' : undefined}
-            style={{ height: 56 }}
+            style={{ height: ALTO_NAV }}
             className={`flex-1 flex flex-col items-center justify-center gap-1 active:bg-[#1E2120] transition-colors ${
               activo ? 'text-[#00D1A7]' : 'text-[#7A8A85]'
             }`}

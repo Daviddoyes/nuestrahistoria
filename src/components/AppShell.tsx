@@ -1,6 +1,6 @@
 'use client'
 
-import BottomNav, { type Tab } from './BottomNav'
+import BottomNav, { ALTO_NAV_TOTAL, type Tab } from './BottomNav'
 import Logotipo from './Logotipo'
 
 type Props = {
@@ -23,7 +23,7 @@ export default function AppShell({ tab, fotoPerfil, header, children }: Props) {
       style={{
         height: '100dvh',
         paddingTop: 'env(safe-area-inset-top, 0px)',
-        paddingBottom: 'calc(56px + env(safe-area-inset-bottom, 0px))',
+        paddingBottom: `calc(${ALTO_NAV_TOTAL}px + env(safe-area-inset-bottom, 0px))`,
       }}
     >
       <div className="flex-shrink-0 flex items-center justify-center" style={{ height: 36 }}>
