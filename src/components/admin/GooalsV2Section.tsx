@@ -10,7 +10,7 @@ import {
 import SelectorPuntos from './SelectorPuntos'
 import ListaTrabajo from './catalogo/ListaTrabajo'
 import RecordatorioCriterio from './RecordatorioCriterio'
-import DialogoPanel from './DialogoPanel'
+import DialogoPanel from '@/components/DialogoPanel'
 
 const HEADERS = { 'Content-Type': 'application/json' }
 

@@ -4,7 +4,7 @@ import { Suspense, useState, useEffect, useCallback, useMemo, useRef } from 'rea
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ArrowLeft, Search } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
-import { getPerfil, seguirUsuario, dejarDeSeguir } from '@/lib/actions'
+import { getPerfil, seguirUsuario, dejarDeSeguir, quitarGooal } from '@/lib/actions'
 import AppShell, { PantallaCargando, EstadoVacio } from '@/components/AppShell'
 import ListaUsuariosModal from '@/components/ListaUsuariosModal'
 import EditarPerfilModal from '@/components/EditarPerfilModal'
@@ -130,6 +130,17 @@ function PerfilContenido() {
   const verPendientes = () => {
     setPestana('pendientes')
     pestanasRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  const handleQuitarPendiente = async (gooal: GooalResumen) => {
+    const res = await quitarGooal(gooal.id)
+    if (!res.success) {
+      setError('No hemos podido quitar el gooal. Inténtalo de nuevo.')
+      return
+    }
+    // Silencioso y sin cambiar de pestaña: quien acaba de quitar uno quiere
+    // seguir viendo su lista de pendientes, no volver a conquistados.
+    await cargar(true)
   }
 
   const handleCompletado = async (resultado: ResultadoCompletado) => {
@@ -260,6 +271,7 @@ function PerfilContenido() {
               <ListaPendientes
                 pendientes={perfil.pendientes}
                 onYaLoHice={perfil.esPropio ? setCompletando : undefined}
+                onQuitar={perfil.esPropio ? handleQuitarPendiente : undefined}
               />
             )}
           </div>

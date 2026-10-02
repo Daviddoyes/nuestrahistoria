@@ -1,12 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { X, Plus, Check, Camera, MapPin } from 'lucide-react'
-import { anadirGooal, getDetalleGooal } from '@/lib/actions'
+import { X, Plus, Check, Camera, MapPin, Trash2 } from 'lucide-react'
+import { anadirGooal, quitarGooal, getDetalleGooal } from '@/lib/actions'
 import {
   CATEGORIA_COLOR, CATEGORIA_LABEL, CATEGORIA_GRADIENTE, DIFICULTAD_META,
 } from '@/lib/gooals'
 import Avatar from './Avatar'
+import Confirmacion from './Confirmacion'
 import CompletarGooalModal, { type ResultadoCompletado } from './CompletarGooalModal'
 import type { GooalV2, UsuarioMini, EstadoUserGooal } from '@/types/gooals'
 
@@ -30,7 +31,11 @@ export default function GooalV2DetailModal({
   const [vecesCompletado, setVecesCompletado] = useState(gooal.veces_completado)
   const [ultimos, setUltimos] = useState<UsuarioMini[]>([])
   const [completando, setCompletando] = useState<'lista' | 'directo' | null>(null)
-  const [recienAnadido, setRecienAnadido] = useState(false)
+  // El texto de la barra verde de confirmación, o null si no hay nada que
+  // confirmar. Sirve para añadir y para quitar: el aviso es el mismo.
+  const [confirmacion, setConfirmacion] = useState<string | null>(null)
+  const [quitando, setQuitando] = useState(false)
+  const [preguntandoQuitar, setPreguntandoQuitar] = useState(false)
 
   const color = CATEGORIA_COLOR[gooal.categoria]
   const dificultad = DIFICULTAD_META[gooal.dificultad]
@@ -57,13 +62,13 @@ export default function GooalV2DetailModal({
   // igual y parecía que no había pasado nada. Ahora se ve la confirmación y la
   // ficha se cierra sola, que es la señal de que la acción terminó.
   useEffect(() => {
-    if (!recienAnadido) return
+    if (!confirmacion) return
     const t = setTimeout(cerrar, 1500)
     return () => clearTimeout(t)
     // cerrar no va en la lista a propósito: se rehace en cada pintada y
     // reiniciaría el temporizador sin parar.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [recienAnadido])
+  }, [confirmacion])
 
   const handleAnadir = async () => {
     setAnadiendo(true)
@@ -71,12 +76,28 @@ export default function GooalV2DetailModal({
     const res = await anadirGooal(gooal.id)
     if (res.success) {
       setEstadoLocal('pendiente')
-      setRecienAnadido(true)
+      setConfirmacion('Añadido a tus pendientes')
       onCambio()
     } else {
       setError(res.error ?? 'No se pudo añadir el gooal.')
     }
     setAnadiendo(false)
+  }
+
+  const handleQuitar = async () => {
+    setQuitando(true)
+    setError('')
+    const res = await quitarGooal(gooal.id)
+    if (res.success) {
+      setPreguntandoQuitar(false)
+      setEstadoLocal(undefined)
+      setConfirmacion('Quitado de tus pendientes')
+      onCambio()
+    } else {
+      setPreguntandoQuitar(false)
+      setError('No se pudo quitar el gooal.')
+    }
+    setQuitando(false)
   }
 
   const handleCompletado = (resultado: ResultadoCompletado) => {
@@ -205,13 +226,13 @@ export default function GooalV2DetailModal({
 
           {/* Acciones */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 28 }}>
-            {recienAnadido ? (
+            {confirmacion ? (
               <div
                 role="status"
                 className="w-full py-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
                 style={{ background: '#00D1A7', color: '#0B0B0B' }}
               >
-                <Check className="w-4 h-4" /> Añadido a tus pendientes
+                <Check className="w-4 h-4" /> {confirmacion}
               </div>
             ) : estadoLocal === 'completado' ? (
               <div
@@ -221,12 +242,23 @@ export default function GooalV2DetailModal({
                 <Check className="w-4 h-4" /> Ya lo conseguiste
               </div>
             ) : estadoLocal === 'pendiente' ? (
-              <button
-                onClick={() => setCompletando('lista')}
-                className="w-full py-4 bg-[#00D1A7] active:bg-[#00B893] text-[#0B0B0B] rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors"
-              >
-                <Camera className="w-4 h-4" /> Completar ahora
-              </button>
+              <>
+                <button
+                  onClick={() => setCompletando('lista')}
+                  className="w-full py-4 bg-[#00D1A7] active:bg-[#00B893] text-[#0B0B0B] rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors"
+                >
+                  <Camera className="w-4 h-4" /> Completar ahora
+                </button>
+
+                {/* Hasta ahora un pendiente no se podía quitar de ninguna manera:
+                    quien añadía algo sin querer se lo quedaba para siempre. */}
+                <button
+                  onClick={() => setPreguntandoQuitar(true)}
+                  className="w-full py-3 rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 text-[#7A8A85] active:bg-[#1E2120] transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" /> Quitar de mi lista
+                </button>
+              </>
             ) : (
               <>
                 <button
@@ -255,6 +287,18 @@ export default function GooalV2DetailModal({
         </div>
         </div>
       </div>
+
+      {preguntandoQuitar && (
+        <Confirmacion
+          titulo="Quitar de tus pendientes"
+          texto={`«${gooal.titulo}» saldrá de tu lista. Puedes volver a añadirlo cuando quieras.`}
+          confirmar="Quitar"
+          peligro
+          ocupado={quitando}
+          onConfirmar={handleQuitar}
+          onCancelar={() => setPreguntandoQuitar(false)}
+        />
+      )}
 
       {completando && (
         <CompletarGooalModal

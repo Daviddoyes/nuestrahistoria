@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ShieldCheck } from 'lucide-react'
-import Confirmacion from '@/components/admin/catalogo/Confirmacion'
+import Confirmacion from '@/components/Confirmacion'
 import { cambiarAdmin } from '@/app/admin/usuarios/acciones'
 
 type Props = {

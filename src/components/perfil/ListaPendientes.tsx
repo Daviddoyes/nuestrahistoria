@@ -1,15 +1,18 @@
 'use client'
 
 import { useState } from 'react'
-import { MapPin } from 'lucide-react'
+import { MapPin, Trash2 } from 'lucide-react'
 import { CATEGORIA_GRADIENTE, DIFICULTAD_META } from '@/lib/gooals'
 import type { GooalResumen, Pendiente } from '@/types/gooals'
 import BotonVerMas, { POR_TANDA } from './BotonVerMas'
+import Confirmacion from '@/components/Confirmacion'
 
 type Props = {
   pendientes: Pendiente[]
   /** Solo en el perfil propio. Sin él, la lista es de solo lectura. */
   onYaLoHice?: (gooal: GooalResumen) => void
+  /** También solo en el propio. Quita el pendiente y recarga el perfil. */
+  onQuitar?: (gooal: GooalResumen) => Promise<void>
 }
 
 const pastilla: React.CSSProperties = {
@@ -18,8 +21,23 @@ const pastilla: React.CSSProperties = {
 }
 
 /** Lista de pendientes. Filas y no rejilla: un pendiente todavía no tiene foto. */
-export default function ListaPendientes({ pendientes, onYaLoHice }: Props) {
+export default function ListaPendientes({ pendientes, onYaLoHice, onQuitar }: Props) {
   const [visibles, setVisibles] = useState(POR_TANDA)
+  // El gooal que se está preguntando si quitar, no un simple true: el diálogo
+  // dice el título, y con la lista entera delante hace falta saber cuál es.
+  const [quitandoEste, setQuitandoEste] = useState<GooalResumen | null>(null)
+  const [ocupado, setOcupado] = useState(false)
+
+  const confirmarQuitar = async () => {
+    if (!quitandoEste || !onQuitar) return
+    setOcupado(true)
+    try {
+      await onQuitar(quitandoEste)
+      setQuitandoEste(null)
+    } finally {
+      setOcupado(false)
+    }
+  }
 
   return (
     <>
@@ -72,12 +90,38 @@ export default function ListaPendientes({ pendientes, onYaLoHice }: Props) {
                   Ya lo hice
                 </button>
               )}
+
+              {onQuitar && (
+                <button
+                  onClick={() => setQuitandoEste(gooal)}
+                  aria-label={`Quitar «${gooal.titulo}» de tus pendientes`}
+                  className="active:bg-[#1E2120] transition-colors"
+                  style={{
+                    width: 44, height: 44, borderRadius: 12, flexShrink: 0,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#7A8A85',
+                  }}
+                >
+                  <Trash2 aria-hidden style={{ width: 18, height: 18 }} />
+                </button>
+              )}
             </li>
           )
         })}
       </ul>
 
       <BotonVerMas total={pendientes.length} visibles={visibles} onVerMas={() => setVisibles(v => v + POR_TANDA)} />
+
+      {quitandoEste && (
+        <Confirmacion
+          titulo="Quitar de tus pendientes"
+          texto={`«${quitandoEste.titulo}» saldrá de tu lista. Puedes volver a añadirlo cuando quieras.`}
+          confirmar="Quitar"
+          peligro
+          ocupado={ocupado}
+          onConfirmar={confirmarQuitar}
+          onCancelar={() => setQuitandoEste(null)}
+        />
+      )}
     </>
   )
 }

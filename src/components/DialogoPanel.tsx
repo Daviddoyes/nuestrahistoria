@@ -49,7 +49,8 @@ const enServidor = () => false
 const ENFOCABLES = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
 
 /**
- * Diálogo del panel. Todo lo que evita quedarse atrapado vive aquí, una sola vez:
+ * Diálogo modal de toda la app, panel incluido. Todo lo que evita quedarse
+ * atrapado vive aquí, una sola vez:
  *   - la X y Cancelar se ven siempre: si el contenido no cabe, se desplaza el
  *     contenido, nunca los botones;
  *   - Escape y pulsar fuera cierran;

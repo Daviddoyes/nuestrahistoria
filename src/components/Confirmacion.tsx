@@ -1,6 +1,6 @@
 'use client'
 
-import DialogoPanel from '@/components/admin/DialogoPanel'
+import DialogoPanel from './DialogoPanel'
 
 type Props = {
   titulo: string
@@ -14,8 +14,12 @@ type Props = {
 }
 
 /**
- * Confirmación antes de una acción que no conviene hacer sin querer (borrar un
- * gooal, dar o quitar admin, verificar en bloque...).
+ * Confirmación antes de una acción que no conviene hacer sin querer (quitar un
+ * pendiente, borrar un gooal, dar o quitar admin, verificar en bloque...).
+ *
+ * Vivió un tiempo dentro de admin/. Se sacó de ahí cuando lo empezó a usar
+ * también la app: es el único diálogo de confirmación que hay, y no debe haber
+ * dos.
  *
  * El foco empieza en Cancelar y no en el botón de confirmar, como hacía antes:
  * un Intro pulsado sin mirar ya no borra nada.

@@ -5,7 +5,7 @@ import type { FiltrosAdmin, GooalAdmin } from '@/types/gooals'
 import BarraFiltros from './BarraFiltros'
 import BarraLote from './BarraLote'
 import FilaGooal, { type BorradorFila } from './FilaGooal'
-import Confirmacion from './Confirmacion'
+import Confirmacion from '@/components/Confirmacion'
 import RecordatorioCriterio from '../RecordatorioCriterio'
 
 /** Respiro del buscador: no se consulta en cada tecla. */
