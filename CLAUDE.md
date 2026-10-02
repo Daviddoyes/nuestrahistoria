@@ -45,6 +45,28 @@ sitio, es código viejo: ya no existen.
 
 ### La RLS es deliberadamente restrictiva
 
+**Las políticas viven en `supabase/politicas.sql`, y ese fichero es la verdad.**
+Si la base y ese fichero no coinciden, uno de los dos está mal. Nació de un
+agujero real: alguien añadió a mano una política de lectura en `profiles` desde
+el panel, se quedó, y durante meses cualquiera con la clave pública del
+navegador podía leer los 53 correos. El repo no lo contaba porque no lo sabía.
+
+Tres cosas que hay que saber antes de tocar una política:
+
+1. **Una política NO concede permisos, solo los limita.** Y aquí `anon` y
+   `authenticated` tienen todos los permisos en todas las tablas (el reparto por
+   defecto de Supabase), así que **la RLS es la única cerradura**: cualquier
+   política permisiva que se añada abre la tabla al instante.
+2. **Las políticas del mismo tipo se suman con O.** Basta UNA que diga `true`
+   para que las demás no sirvan de nada. Así se abrió `profiles`: la ancha
+   convivía con la correcta y la anulaba.
+3. **Una tabla sin políticas está cerrada, y eso es lo correcto** para lo que
+   solo toca el servidor. No es un olvido; no le añadas una "para que funcione".
+
+Para comprobarlo desde fuera, que es la única forma de creérselo:
+`node --env-file=.env.local scripts/comprobar-rls.mjs`
+
+
 Solo `gooals_v2` tiene lectura pública. Todo lo demás se lee y escribe con el
 service role desde el servidor. **No se crean políticas de RLS a propósito**:
 así la anon key —que es pública— no puede insertar likes, follows ni posts en

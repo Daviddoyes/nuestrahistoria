@@ -121,14 +121,17 @@ export default function OnboardingPage() {
   const checkUsername = useCallback(async (u: string) => {
     if (u.length < 3) { setUsernameValido(false); return }
     setCheckingUsername(true)
-    const { count } = await supabase
-      .from('profiles')
-      .select('id', { count: 'exact', head: true })
-      .eq('username', u)
-      .neq('id', userId)
-    setUsernameValido((count ?? 0) === 0)
+    // Se pregunta a username_libre() en vez de leer profiles. La tabla ya no
+    // deja ver la fila de otra persona (supabase/fase3m.sql): antes, para saber
+    // si un nombre estaba cogido, el navegador podía leer los 53 perfiles
+    // enteros, con sus correos dentro. La función contesta solo sí o no.
+    const { data: libre, error } = await supabase.rpc('username_libre', { nombre_pedido: u })
+    // Si la pregunta falla, se dice que NO vale. Es lo prudente: el índice
+    // único de la base lo rechazaría igualmente al guardar, y es mejor avisar
+    // ahora que dejar seguir y fallar al final.
+    setUsernameValido(!error && libre === true)
     setCheckingUsername(false)
-  }, [supabase, userId])
+  }, [supabase])
 
   useEffect(() => {
     if (!username) return
