@@ -158,6 +158,22 @@ async function sincronizarContadoresSociales(
 
 // ── Muro ─────────────────────────────────────────────────────
 
+/**
+ * ¿Sigue esta persona a alguien? Solo para el mensaje del muro vacío.
+ *
+ * El muro enseña tus posts MÁS los de quien sigues, así que vacío puede
+ * significar dos cosas distintas y el mensaje tiene que decir la que es.
+ */
+export async function sigoAAlguien(): Promise<boolean> {
+  const userId = await getUserId()
+  if (!userId) return false
+  const { count } = await createServiceRoleClient()
+    .from('follows')
+    .select('following_id', { count: 'exact', head: true })
+    .eq('follower_id', userId)
+  return (count ?? 0) > 0
+}
+
 /** Feed del muro: posts de la gente que sigues + los tuyos, más recientes primero. */
 export async function getMuroFeed(limite = 40): Promise<MuroPostFeed[]> {
   const userId = await getUserId()
