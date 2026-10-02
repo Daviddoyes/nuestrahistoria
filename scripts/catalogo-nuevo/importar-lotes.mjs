@@ -50,6 +50,10 @@ const FICHEROS = [
   // muda de ciudad es un evento abierto y no lleva mapa.
   '7-eventos.csv',
   '8-fiestas.csv',
+  '9-naturaleza.csv',
+  '10-deporte.csv',
+  '11-gastronomia.csv',
+  '12-vida.csv',
 ]
 
 const LOTE = 500      // filas por INSERT, igual que el panel

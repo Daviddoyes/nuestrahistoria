@@ -45,5 +45,3 @@ next-env.d.ts
 # Descargas personales de David (imágenes de marca, capturas): no son del proyecto
 /Claude outputs/
 
-# Las hojas del repaso son salida generada: se rehacen con generar-hoja.mjs.
-/scripts/revisar-titulos/hoja/
