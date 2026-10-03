@@ -266,6 +266,39 @@ node insertar.mjs
 categoría hay que vaciarla antes en Supabase, comprobando primero que nadie la
 tenga en su lista (`user_gooals` tiene `on delete cascade`).
 
+## Si cambia el SIGNIFICADO, cambia el NOMBRE
+
+Es hermana de la de aquí abajo, y sale del día que un gooal pasó de tener dos
+estados a tener tres.
+
+Cuando un campo pasa a querer decir otra cosa, hay que ir a todos los sitios que
+lo leen. El problema es que **el ordenador no avisa de ninguno**: se midió, y al
+ampliar el tipo de los estados de dos valores a tres dio **cero errores**. Todo
+seguía compilando y todo seguía pintando números; solo que algunos eran falsos.
+
+La forma de que el ordenador sí avise es **renombrar el campo**. Entonces deja de
+existir el viejo, y cada sitio que lo lee se convierte en un error que hay que
+visitar a mano. El renombrado no es cosmético: es la herramienta que convierte
+una búsqueda a ojo en una lista cerrada.
+
+El caso que lo demuestra: `ConteoCategoria.conquistados` pasó a contar también
+los vividos. Se renombró a `hechos`, y eso destapó `CompartirPerfilStory`, la
+imagen que se comparte en Stories, que no estaba en la lista de sitios a revisar.
+**Una imagen no da errores**: habría seguido dibujando el número equivocado para
+siempre, y nadie lo habría notado nunca porque no hay nada que mirar.
+
+En la práctica:
+
+1. **Primero renombra, luego cambia el significado.** Al revés, el compilador ya
+   no tiene nada de lo que tirar.
+2. **El nombre nuevo dice lo que el campo quiere decir AHORA**, no de dónde
+   viene: `hechos` y no `conquistadosYVividos`.
+3. **Lo que no se puede renombrar, se escribe.** Una columna de la base es una
+   migración y a veces no compensa: `gooals_v2.veces_completado` cuenta hoy
+   vividos y conquistados y conserva el nombre viejo a propósito. Cuando se
+   decide eso, la razón va en un comentario donde se lee la columna, porque esa
+   es la única señal que va a quedar.
+
 ## Una comprobación a medias es peor que ninguna
 
 Es la lección más cara de este repo y conviene leerla antes de escribir
