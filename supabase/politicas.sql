@@ -92,6 +92,20 @@ create policy "public read gooals_v2 verificados" on gooals_v2
 drop policy if exists "public read completed" on user_gooals;
 create policy "public read completed" on user_gooals
   for select using (estado = 'completado');
+-- PREGUNTA ABIERTA, anotada el 3-10-2026 al añadir el tercer estado:
+-- ¿para qué existe esta política? Hoy NADA de la app lee user_gooals desde el
+-- navegador: el perfil, el muro, el mapa y Explorar pasan todos por el
+-- servidor con el service role, que se salta la RLS. O sea que esta política
+-- no da acceso a ninguna pantalla; solo abre la tabla a cualquiera que tenga
+-- la clave pública y se ponga a preguntar por su cuenta.
+--
+-- Y ahora además lleva el estado escrito dentro, así que ha quedado a medias:
+-- un 'vivido' NO se lee desde el navegador y un 'completado' sí, sin que eso
+-- responda a ninguna decisión. No es un fallo — nada depende de ella — pero es
+-- justo el tipo de regla a medias que luego se confunde con una protección.
+--
+-- NO SE TOCA sin medirlo antes: hay que comprobar pantalla por pantalla que de
+-- verdad nadie la necesita. Decidido dejarla así hasta entonces.
 
 drop policy if exists "users manage own gooals" on user_gooals;
 create policy "users manage own gooals" on user_gooals
