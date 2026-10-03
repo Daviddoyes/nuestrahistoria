@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback, useEffect, useRef } from 'react'
-import { Search, X, Check, Hourglass, Plus } from 'lucide-react'
+import { Search, X, Plus } from 'lucide-react'
 import { getCatalogoGooals, getMisEstadosGooals } from '@/lib/actions'
 import {
   CATEGORIAS, CATEGORIA_LABEL, CATEGORIA_GRADIENTE, DIFICULTADES, DIFICULTAD_META,
@@ -12,6 +12,8 @@ import ChipCategoria from './ChipCategoria'
 import SugerirGooalSheet from './SugerirGooalSheet'
 import type { ResultadoCompletado } from './CompletarGooalModal'
 import type { GooalV2, EstadoUserGooal } from '@/types/gooals'
+import { MARCA_ESTADO } from '@/lib/estado-gooal'
+import MarcaEstadoGooal from './MarcaEstadoGooal'
 
 type Props = {
   onCompletado: (resultado: ResultadoCompletado) => void
@@ -343,14 +345,12 @@ function CardGooal({
         {gooal.titulo}
       </p>
 
-      {estado === 'completado' && (
-        <div style={overlayEstado('rgba(0,209,167,0.55)')}>
-          <Check className="w-8 h-8" style={{ color: '#FFFFFF' }} strokeWidth={2.5} />
-        </div>
-      )}
-      {estado === 'pendiente' && (
-        <div style={overlayEstado('rgba(0,209,167,0.42)')}>
-          <Hourglass className="w-7 h-7" style={{ color: '#0B0B0B' }} strokeWidth={2} />
+      {/* Una sola rama para los tres estados. Antes eran dos `&&` sueltos, y un
+          vivido no casaba con ninguno: la tarjeta salía sin marca, como si no lo
+          tuvieras. El velo y la marca vienen de MARCA_ESTADO, igual que el pin. */}
+      {estado && (
+        <div style={overlayEstado(MARCA_ESTADO[estado].tinte)}>
+          <MarcaEstadoGooal estado={estado} tamano={46} />
         </div>
       )}
     </button>

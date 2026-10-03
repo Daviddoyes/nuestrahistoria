@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { X, Plus, Check, Camera, MapPin, Trash2 } from 'lucide-react'
-import { anadirGooal, quitarGooal, getDetalleGooal } from '@/lib/actions'
+import { anadirGooal, marcarVivido, quitarGooal, getDetalleGooal } from '@/lib/actions'
 import {
   CATEGORIA_COLOR, CATEGORIA_LABEL, CATEGORIA_GRADIENTE, DIFICULTAD_META,
 } from '@/lib/gooals'
@@ -36,6 +36,7 @@ export default function GooalV2DetailModal({
   const [confirmacion, setConfirmacion] = useState<string | null>(null)
   const [quitando, setQuitando] = useState(false)
   const [preguntandoQuitar, setPreguntandoQuitar] = useState(false)
+  const [marcando, setMarcando] = useState(false)
 
   const color = CATEGORIA_COLOR[gooal.categoria]
   const dificultad = DIFICULTAD_META[gooal.dificultad]
@@ -82,6 +83,22 @@ export default function GooalV2DetailModal({
       setError(res.error ?? 'No se pudo añadir el gooal.')
     }
     setAnadiendo(false)
+  }
+
+  // "Ya lo hice, sin foto". No da puntos: eso lo decide el servidor, que para
+  // un vivido no toca ni puntos ni nivel.
+  const handleVivido = async () => {
+    setMarcando(true)
+    setError('')
+    const res = await marcarVivido(gooal.id)
+    if (res.success) {
+      setEstadoLocal('vivido')
+      setConfirmacion('Marcado como vivido')
+      onCambio()
+    } else {
+      setError(res.error ?? 'No se pudo marcar el gooal.')
+    }
+    setMarcando(false)
   }
 
   const handleQuitar = async () => {
@@ -241,6 +258,24 @@ export default function GooalV2DetailModal({
               >
                 <Check className="w-4 h-4" /> Ya lo conseguiste
               </div>
+            ) : estadoLocal === 'vivido' ? (
+              <>
+                {/* Un vivido sube a conquistado subiendo la prueba. Hacia atrás
+                    no se va: eso borraría la foto de un conquistado. */}
+                <button
+                  onClick={() => setCompletando('lista')}
+                  className="w-full py-4 bg-[#00D1A7] active:bg-[#00B893] text-[#0B0B0B] rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors"
+                >
+                  <Camera className="w-4 h-4" /> Subir la prueba y ganar {gooal.puntos} pts
+                </button>
+
+                <button
+                  onClick={() => setPreguntandoQuitar(true)}
+                  className="w-full py-3 rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 text-[#7A8A85] active:bg-[#1E2120] transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" /> Quitar de mi lista
+                </button>
+              </>
             ) : estadoLocal === 'pendiente' ? (
               <>
                 <button
@@ -249,6 +284,8 @@ export default function GooalV2DetailModal({
                 >
                   <Camera className="w-4 h-4" /> Completar ahora
                 </button>
+
+                <BotonSinFoto onClick={handleVivido} ocupado={marcando} />
 
                 {/* Hasta ahora un pendiente no se podía quitar de ninguna manera:
                     quien añadía algo sin querer se lo quedaba para siempre. */}
@@ -272,6 +309,8 @@ export default function GooalV2DetailModal({
                   }
                   {anadiendo ? 'Añadiendo...' : 'Añadir a mi lista'}
                 </button>
+
+                <BotonSinFoto onClick={handleVivido} ocupado={marcando} />
 
                 <button
                   onClick={() => setCompletando('directo')}
@@ -309,5 +348,28 @@ export default function GooalV2DetailModal({
         />
       )}
     </>
+  )
+}
+
+/**
+ * "Ya lo hice, pero no tengo foto".
+ *
+ * Va en gris y no en verde a propósito: el camino que la app quiere es el de la
+ * prueba, que es el que da puntos. Este es la salida para lo que pasó hace diez
+ * años y no tiene foto — que es casi todo lo que le ha pasado a cualquiera.
+ */
+function BotonSinFoto({ onClick, ocupado }: { onClick: () => void; ocupado: boolean }) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={ocupado}
+      className="w-full py-4 rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 border border-[#2A2E2C] text-[#A3B1AC] active:bg-[#1E2120] disabled:opacity-60 transition-colors"
+    >
+      {ocupado
+        ? <span className="w-4 h-4 border-2 border-[#A3B1AC] border-t-transparent rounded-full animate-spin" />
+        : <Check className="w-4 h-4" />
+      }
+      Ya lo hice, sin foto
+    </button>
   )
 }

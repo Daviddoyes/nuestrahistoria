@@ -3,15 +3,21 @@
 import { useState } from 'react'
 import { MapPin, Trash2 } from 'lucide-react'
 import { CATEGORIA_GRADIENTE, DIFICULTAD_META } from '@/lib/gooals'
-import type { GooalResumen, Pendiente } from '@/types/gooals'
+import type { EstadoUserGooal, GooalResumen, Pendiente } from '@/types/gooals'
 import BotonVerMas, { POR_TANDA } from './BotonVerMas'
 import Confirmacion from '@/components/Confirmacion'
+import MarcaEstadoGooal from '@/components/MarcaEstadoGooal'
 
 type Props = {
-  pendientes: Pendiente[]
+  /** Los de esa pestaña: pendientes o vividos. */
+  filas: Pendiente[]
+  /** Cuál de las dos, para la marca y para los textos. */
+  estado: Extract<EstadoUserGooal, 'pendiente' | 'vivido'>
+  /** Texto del botón de la derecha. Sin `onAccion` no se pinta. */
+  textoAccion?: string
   /** Solo en el perfil propio. Sin él, la lista es de solo lectura. */
-  onYaLoHice?: (gooal: GooalResumen) => void
-  /** También solo en el propio. Quita el pendiente y recarga el perfil. */
+  onAccion?: (gooal: GooalResumen) => void
+  /** También solo en el propio. Quita la fila y recarga el perfil. */
   onQuitar?: (gooal: GooalResumen) => Promise<void>
 }
 
@@ -20,8 +26,16 @@ const pastilla: React.CSSProperties = {
   padding: '4px 8px', borderRadius: 999, background: '#1E2120', whiteSpace: 'nowrap',
 }
 
-/** Lista de pendientes. Filas y no rejilla: un pendiente todavía no tiene foto. */
-export default function ListaPendientes({ pendientes, onYaLoHice, onQuitar }: Props) {
+/**
+ * Las filas de una pestaña del perfil que todavía no tiene fotos: pendientes y
+ * vividos. Filas y no rejilla justamente por eso — una rejilla de cuadrados sin
+ * imagen no dice nada.
+ *
+ * Es el mismo componente para los dos porque se ven igual; lo único que cambia
+ * es la marca de la izquierda y lo que hace el botón: un pendiente se marca como
+ * hecho, un vivido sube su prueba y asciende a conquistado.
+ */
+export default function ListaSinFoto({ filas, estado, textoAccion, onAccion, onQuitar }: Props) {
   const [visibles, setVisibles] = useState(POR_TANDA)
   // El gooal que se está preguntando si quitar, no un simple true: el diálogo
   // dice el título, y con la lista entera delante hace falta saber cuál es.
@@ -42,17 +56,24 @@ export default function ListaPendientes({ pendientes, onYaLoHice, onQuitar }: Pr
   return (
     <>
       <ul style={{ display: 'flex', flexDirection: 'column' }}>
-        {pendientes.slice(0, visibles).map(({ userGooalId, gooal }) => {
+        {filas.slice(0, visibles).map(({ userGooalId, gooal }) => {
           const dificultad = DIFICULTAD_META[gooal.dificultad]
           return (
             <li
               key={userGooalId}
               style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '1px solid #2A2E2C' }}
             >
+              {/* El cuadrado de la categoría con la marca del estado encima: la
+                  misma que en la tarjeta de Explorar y en el pin del mapa. */}
               <span
-                aria-hidden
-                style={{ width: 54, height: 54, borderRadius: 10, flexShrink: 0, background: CATEGORIA_GRADIENTE[gooal.categoria] }}
-              />
+                style={{
+                  width: 54, height: 54, borderRadius: 10, flexShrink: 0,
+                  background: CATEGORIA_GRADIENTE[gooal.categoria],
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}
+              >
+                <MarcaEstadoGooal estado={estado} tamano={28} />
+              </span>
 
               <div style={{ flex: 1, minWidth: 0 }}>
                 <p
@@ -78,23 +99,23 @@ export default function ListaPendientes({ pendientes, onYaLoHice, onQuitar }: Pr
                 </div>
               </div>
 
-              {onYaLoHice && (
+              {onAccion && textoAccion && (
                 <button
-                  onClick={() => onYaLoHice(gooal)}
+                  onClick={() => onAccion(gooal)}
                   className="active:bg-[rgba(0,209,167,0.14)] transition-colors"
                   style={{
                     height: 44, padding: '0 12px', borderRadius: 12, flexShrink: 0,
                     border: '1px solid #00D1A7', color: '#00D1A7', fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap',
                   }}
                 >
-                  Ya lo hice
+                  {textoAccion}
                 </button>
               )}
 
               {onQuitar && (
                 <button
                   onClick={() => setQuitandoEste(gooal)}
-                  aria-label={`Quitar «${gooal.titulo}» de tus pendientes`}
+                  aria-label={`Quitar «${gooal.titulo}» de tu lista`}
                   className="active:bg-[#1E2120] transition-colors"
                   style={{
                     width: 44, height: 44, borderRadius: 12, flexShrink: 0,
@@ -109,11 +130,11 @@ export default function ListaPendientes({ pendientes, onYaLoHice, onQuitar }: Pr
         })}
       </ul>
 
-      <BotonVerMas total={pendientes.length} visibles={visibles} onVerMas={() => setVisibles(v => v + POR_TANDA)} />
+      <BotonVerMas total={filas.length} visibles={visibles} onVerMas={() => setVisibles(v => v + POR_TANDA)} />
 
       {quitandoEste && (
         <Confirmacion
-          titulo="Quitar de tus pendientes"
+          titulo="Quitar de tu lista"
           texto={`«${quitandoEste.titulo}» saldrá de tu lista. Puedes volver a añadirlo cuando quieras.`}
           confirmar="Quitar"
           peligro

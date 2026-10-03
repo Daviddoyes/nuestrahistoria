@@ -40,7 +40,16 @@ export type GooalV2 = {
   created_at: string
 }
 
-export type EstadoUserGooal = 'pendiente' | 'completado'
+/**
+ * Los tres estados de un gooal de alguien. 'completado' es lo que el usuario
+ * lee como "Conquistado": en la base NO se renombra, ver src/lib/estado-gooal.ts.
+ *
+ * OJO al ampliar esto: el ordenador NO avisa de los sitios que dan por hecho
+ * "si no es completado, entonces es pendiente". Al pasar de dos estados a tres,
+ * se midió: cero errores de compilación y ocho sitios que mentían. Se buscan a
+ * mano.
+ */
+export type EstadoUserGooal = 'pendiente' | 'vivido' | 'completado'
 
 /** El gooal de un usuario concreto: en su lista o ya conseguido. */
 export type UserGooal = {
@@ -103,10 +112,16 @@ export type Pendiente = {
   gooal: GooalResumen
 }
 
-/** Cuántos gooals ha conquistado alguien en una categoría. */
+/**
+ * Cuántos gooals ha HECHO alguien en una categoría: vividos y conquistados
+ * juntos. Antes contaba solo los conquistados, y con el estado nuevo eso
+ * dejaba el perfil de alguien con veinte vividos lleno de ceros.
+ *
+ * El número grande del perfil es otra cosa y sigue contando solo conquistados.
+ */
 export type ConteoCategoria = {
   categoria: CategoriaGooal
-  conquistados: number
+  hechos: number
 }
 
 /**
@@ -114,9 +129,14 @@ export type ConteoCategoria = {
  * la tarjeta pinta 4 miniaturas y 5 títulos, y el resto es un número.
  */
 export type EnComun = {
-  totalConquistados: number
-  /** Versión de la OTRA persona (su foto), las más recientes primero. */
-  conquistados: Conquistado[]
+  /**
+   * Gooals que habéis HECHO los dos: vividos y conquistados en un solo montón,
+   * sin distinguir. Es el recuerdo compartido lo que conecta, no quién tiene la
+   * foto. Que uno lo tenga vivido y el otro conquistado cuenta igual.
+   */
+  totalHechos: number
+  /** Versión de la OTRA persona (su foto si la tiene), las más recientes primero. */
+  hechos: Conquistado[]
   totalPendientes: number
   pendientes: GooalResumen[]
 }
@@ -131,6 +151,8 @@ export type PerfilCompleto = {
   siguiendo: number
   puntos: number
   conquistados: Conquistado[]
+  /** Lo hizo pero no hay foto. No da puntos; sí cuenta en el perfil y en común. */
+  vividos: Pendiente[]
   pendientes: Pendiente[]
   /** Las seis categorías: primero las que tienen algo, de más a menos; luego las de 0. */
   porCategoria: ConteoCategoria[]

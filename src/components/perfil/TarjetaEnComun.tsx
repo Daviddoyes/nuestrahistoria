@@ -12,11 +12,16 @@ type Props = {
  * Lo que os une: lo primero que se ve de otra persona.
  *
  * Las miniaturas son de SU prueba (lo que ves de ella); si ese gooal suyo no
- * tiene foto, el degradado de la categoría.
+ * tiene foto, el degradado de la categoría. Un gooal que ella tenga como vivido
+ * nunca tiene foto, así que sale con el degradado: igual que uno conquistado
+ * cuya prueba no llegó a subirse.
  */
 export default function TarjetaEnComun({ enComun, onVerPendientes }: Props) {
-  const { totalConquistados, conquistados, totalPendientes, pendientes } = enComun
-  const restoFotos = totalConquistados - conquistados.length
+  // Un solo montón de "lo habéis hecho los dos": vividos y conquistados juntos.
+  // Separarlos obligaría a explicar quién tiene la foto, y eso no es lo que une
+  // a dos personas.
+  const { totalHechos, hechos, totalPendientes, pendientes } = enComun
+  const restoFotos = totalHechos - hechos.length
   const restoTitulos = totalPendientes - pendientes.length
 
   return (
@@ -27,24 +32,25 @@ export default function TarjetaEnComun({ enComun, onVerPendientes }: Props) {
         borderRadius: 16, padding: 16,
       }}
     >
-      {totalConquistados === 0 && totalPendientes === 0 && (
+      {totalHechos === 0 && totalPendientes === 0 && (
         <p style={{ fontSize: 14, color: '#A3B1AC', textAlign: 'center', padding: '6px 0' }}>
           Aún no tenéis gooals en común
         </p>
       )}
 
-      {totalConquistados > 0 && (
+      {totalHechos > 0 && (
         <>
           <p style={{ fontSize: 20, fontWeight: 700, color: '#FFFFFF', lineHeight: 1.2 }}>
-            <span className="fuente-titular" style={{ fontWeight: 800 }}>{totalConquistados}</span>{' '}
-            {totalConquistados === 1 ? 'gooal en común' : 'gooals en común'}
+            <span className="fuente-titular" style={{ fontWeight: 800 }}>{totalHechos}</span>{' '}
+            {totalHechos === 1 ? 'gooal en común' : 'gooals en común'}
           </p>
           <p style={{ fontSize: 12, color: '#A3B1AC', marginTop: 2 }}>
-            {totalConquistados === 1 ? 'Lo habéis conquistado los dos' : 'Los habéis conquistado los dos'}
+            {/* "Hecho" y no "conquistado": aquí dentro hay vividos, que no llevan foto. */}
+            {totalHechos === 1 ? 'Lo habéis hecho los dos' : 'Los habéis hecho los dos'}
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 6, marginTop: 12 }}>
-            {conquistados.map(c => (
+            {hechos.map(c => (
               <div
                 key={c.userGooalId}
                 title={c.gooal.titulo}
@@ -75,7 +81,7 @@ export default function TarjetaEnComun({ enComun, onVerPendientes }: Props) {
         </>
       )}
 
-      {totalConquistados > 0 && totalPendientes > 0 && (
+      {totalHechos > 0 && totalPendientes > 0 && (
         <div style={{ height: 1, background: '#2A2E2C', margin: '14px 0' }} />
       )}
 

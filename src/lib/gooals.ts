@@ -78,17 +78,17 @@ export const CATEGORIA_GRADIENTE: Record<CategoriaGooal, string> = {
  * 5.000 y los porcentajes salían mal. Contando solo lo del usuario no hace falta.
  */
 export function contarPorCategoria(
-  conquistados: { gooal: { categoria: CategoriaGooal } }[]
-): { categoria: CategoriaGooal; conquistados: number }[] {
+  hechos: { gooal: { categoria: CategoriaGooal } }[]
+): { categoria: CategoriaGooal; hechos: number }[] {
   const cuenta = new Map<CategoriaGooal, number>(CATEGORIAS.map(c => [c, 0]))
-  for (const c of conquistados) {
+  for (const c of hechos) {
     if (cuenta.has(c.gooal.categoria)) cuenta.set(c.gooal.categoria, (cuenta.get(c.gooal.categoria) ?? 0) + 1)
   }
   // El desempate por el orden de CATEGORIAS evita que dos categorías empatadas
   // bailen de sitio entre una carga y otra.
   return CATEGORIAS
-    .map(categoria => ({ categoria, conquistados: cuenta.get(categoria) ?? 0 }))
-    .sort((a, b) => b.conquistados - a.conquistados || CATEGORIAS.indexOf(a.categoria) - CATEGORIAS.indexOf(b.categoria))
+    .map(categoria => ({ categoria, hechos: cuenta.get(categoria) ?? 0 }))
+    .sort((a, b) => b.hechos - a.hechos || CATEGORIAS.indexOf(a.categoria) - CATEGORIAS.indexOf(b.categoria))
 }
 
 export const DIFICULTADES: DificultadGooal[] = ['facil', 'dificil', 'epico']

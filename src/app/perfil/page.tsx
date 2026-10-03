@@ -19,7 +19,7 @@ import TarjetaCifras from '@/components/perfil/TarjetaCifras'
 import PastillasCategorias from '@/components/perfil/PastillasCategorias'
 import PestanasPerfil, { type PestanaPerfil } from '@/components/perfil/PestanasPerfil'
 import RejillaConquistados from '@/components/perfil/RejillaConquistados'
-import ListaPendientes from '@/components/perfil/ListaPendientes'
+import ListaSinFoto from '@/components/perfil/ListaSinFoto'
 import VisorLogro from '@/components/perfil/VisorLogro'
 import AjustesSheet from '@/components/perfil/AjustesSheet'
 import type { Conquistado, GooalResumen, PerfilCompleto } from '@/types/gooals'
@@ -245,13 +245,16 @@ function PerfilContenido() {
             <PestanasPerfil
               activa={pestana}
               conquistados={perfil.conquistados.length}
+              vividos={perfil.vividos.length}
               pendientes={perfil.pendientes.length}
               onCambiar={setPestana}
             />
           </div>
 
+          {/* Una rama por pestaña, y no "si es conquistados... si no, pendientes".
+              Ese atajo binario es justo lo que hacía desaparecer a los vividos. */}
           <div role="tabpanel" style={{ paddingTop: pestana === 'conquistados' ? 2 : 0 }}>
-            {pestana === 'conquistados' ? (
+            {pestana === 'conquistados' && (
               perfil.conquistados.length === 0 ? (
                 <EstadoVacio
                   titulo={perfil.esPropio ? 'Aún no has conquistado ningún gooal.' : 'Todavía no ha conquistado ningún gooal.'}
@@ -261,18 +264,42 @@ function PerfilContenido() {
               ) : (
                 <RejillaConquistados conquistados={perfil.conquistados} onAbrir={abrirConquistado} />
               )
-            ) : perfil.pendientes.length === 0 ? (
-              <EstadoVacio
-                titulo={perfil.esPropio ? 'Tu lista de pendientes está vacía.' : 'No tiene gooals pendientes.'}
-                texto={perfil.esPropio ? 'Añade los que quieras vivir desde Explorar.' : undefined}
-                accion={perfil.esPropio ? botonExplorar : undefined}
-              />
-            ) : (
-              <ListaPendientes
-                pendientes={perfil.pendientes}
-                onYaLoHice={perfil.esPropio ? setCompletando : undefined}
-                onQuitar={perfil.esPropio ? handleQuitarPendiente : undefined}
-              />
+            )}
+
+            {pestana === 'vividos' && (
+              perfil.vividos.length === 0 ? (
+                <EstadoVacio
+                  titulo={perfil.esPropio ? 'Todavía no has marcado nada como vivido.' : 'No tiene gooals vividos.'}
+                  texto={perfil.esPropio ? 'Aquí va lo que ya hiciste y no tienes cómo demostrar. Suma en tu perfil y cuenta en lo que compartes con otra gente, pero no da puntos: esos los da la foto.' : undefined}
+                  accion={perfil.esPropio ? botonExplorar : undefined}
+                />
+              ) : (
+                <ListaSinFoto
+                  filas={perfil.vividos}
+                  estado="vivido"
+                  textoAccion="Subir prueba"
+                  onAccion={perfil.esPropio ? setCompletando : undefined}
+                  onQuitar={perfil.esPropio ? handleQuitarPendiente : undefined}
+                />
+              )
+            )}
+
+            {pestana === 'pendientes' && (
+              perfil.pendientes.length === 0 ? (
+                <EstadoVacio
+                  titulo={perfil.esPropio ? 'Tu lista de pendientes está vacía.' : 'No tiene gooals pendientes.'}
+                  texto={perfil.esPropio ? 'Añade los que quieras vivir desde Explorar.' : undefined}
+                  accion={perfil.esPropio ? botonExplorar : undefined}
+                />
+              ) : (
+                <ListaSinFoto
+                  filas={perfil.pendientes}
+                  estado="pendiente"
+                  textoAccion="Ya lo hice"
+                  onAccion={perfil.esPropio ? setCompletando : undefined}
+                  onQuitar={perfil.esPropio ? handleQuitarPendiente : undefined}
+                />
+              )
             )}
           </div>
         </div>

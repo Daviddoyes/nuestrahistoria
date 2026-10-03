@@ -6,7 +6,10 @@ import type { GooalAdmin, RevisionGooal } from '@/types/gooals'
  *
  * Los dos recuentos y el repaso viajan como recursos incrustados de PostgREST
  * en vez de una consulta por fila:
- *   tenido       cuántas filas de user_gooals tiene (pendiente o conquistado)
+ *   tenido       cuántas filas de user_gooals tiene, en cualquier estado
+ *                (pendiente, vivido o conquistado). Sin filtro a propósito: es
+ *                lo que decide si un gooal se puede borrar del catálogo, y un
+ *                vivido de alguien también cuenta.
  *   conquistado  las mismas, filtradas a 'completado' con .eq desde fuera
  *   revision     la opinión de la IA sobre el título, si ya le ha tocado
  * Se cuenta desde user_gooals y no con veces_completado, que es una copia.

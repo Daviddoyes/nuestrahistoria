@@ -129,9 +129,10 @@ export default function CompartirPerfilStory({ perfil }: Props) {
         )
       }
 
-      // Categorías con algo conquistado, de más a menos. En la imagen no caben las
-      // de 0: aquí se enseña lo vivido, no lo que falta por probar.
-      const conProgreso = perfil.porCategoria.filter(s => s.conquistados > 0).slice(0, 6)
+      // Categorías con algo hecho (vivido o conquistado), de más a menos. En la
+      // imagen no caben las de 0: aquí se enseña lo que se ha vivido, no lo que
+      // falta por probar.
+      const conProgreso = perfil.porCategoria.filter(s => s.hechos > 0).slice(0, 6)
       const iconos = await Promise.all(conProgreso.map(s => iconoCategoriaImg(s.categoria, CATEGORIA_COLOR[s.categoria], LADO_ICONO)))
       let cy = barraY + 160
       ctx.font = '500 34px Inter, system-ui, sans-serif'
@@ -139,7 +140,7 @@ export default function CompartirPerfilStory({ perfil }: Props) {
       conProgreso.forEach((s, i) => {
         // Icono y texto se centran JUNTOS: centrar solo el texto dejaría el icono
         // colgando a la izquierda en una línea corta y pegado en una larga.
-        const texto = `${CATEGORIA_LABEL[s.categoria]} · ${s.conquistados}`
+        const texto = `${CATEGORIA_LABEL[s.categoria]} · ${s.hechos}`
         const ancho = LADO_ICONO + HUECO_ICONO + ctx.measureText(texto).width
         const x = (STORY_W - ancho) / 2
         ctx.drawImage(iconos[i], x, cy - LADO_ICONO + 6, LADO_ICONO, LADO_ICONO)

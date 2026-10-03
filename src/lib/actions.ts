@@ -5,6 +5,7 @@ import { createClient as createServerClient } from '@/lib/supabase/server'
 import { createServiceRoleClient } from '@/lib/supabase/service'
 import { calcularNivel } from '@/lib/niveles'
 import { contarPorCategoria, normalizarCategoriaGooal } from '@/lib/gooals'
+import { yaLoHizo } from '@/lib/estado-gooal'
 import { limpiarBusqueda } from '@/lib/busqueda'
 import {
   BUCKET_PRUEBAS, errorDeArchivo, rutaDePrueba, tipoDePrueba, type TipoPrueba,
@@ -633,7 +634,82 @@ export async function anadirGooal(gooalId: string): Promise<{ success: boolean; 
   }
 }
 
-/** Quita un gooal pendiente de la lista. No toca los ya completados. */
+/**
+ * "Ya lo hice, pero no tengo foto": deja el gooal en vivido.
+ *
+ * Un vivido suma en el perfil y cuenta en los gooals en común, pero NO da
+ * puntos ni sube de nivel. Los puntos los da la prueba, siempre, y por eso aquí
+ * no se toca puntos_ganados ni se llama a sincronizarPuntos: esta acción no
+ * puede mover el nivel de nadie ni aunque se la llame mil veces.
+ *
+ * Tampoco publica en el muro: sin foto no hay nada que enseñar.
+ *
+ * SUBIR SÍ, BAJAR NO. Un pendiente asciende a vivido; un conquistado no baja a
+ * vivido nunca, porque se perdería su prueba. Eso lo impide el filtro de estado
+ * del update, no un `if` de la pantalla: una pantalla se puede saltar.
+ */
+export async function marcarVivido(gooalId: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    const userId = await getUserId()
+    if (!userId) return { success: false, error: 'No autenticado' }
+
+    const service = createServiceRoleClient()
+
+    // El mismo portero que anadirGooal: no se marca lo que el catálogo no enseña.
+    const { data: fila } = await service
+      .from('gooals_v2')
+      .select('id, estado, activo')
+      .eq('id', gooalId)
+      .maybeSingle()
+
+    const gooal = fila as { estado: string; activo: boolean } | null
+    if (!gooal || !gooal.activo || gooal.estado !== 'verificado') {
+      return { success: false, error: 'Este gooal ya no está disponible.' }
+    }
+
+    // 1 · Si ya lo tenía pendiente (o vivido, y vuelve a darle), sube a vivido.
+    const { data: tocadas, error: errorUpdate } = await service
+      .from('user_gooals')
+      .update({ estado: 'vivido' })
+      .eq('user_id', userId)
+      .eq('gooal_id', gooalId)
+      .in('estado', ['pendiente', 'vivido'])
+      .select('id')
+
+    if (errorUpdate) {
+      console.error('[marcarVivido] update:', errorUpdate)
+      return { success: false, error: 'No se pudo marcar el gooal.' }
+    }
+    if ((tocadas ?? []).length > 0) {
+      revalidatePath('/perfil')
+      return { success: true }
+    }
+
+    // 2 · No lo tenía en ningún estado que se pueda subir: o no lo tenía, o lo
+    //     tiene conquistado. Se intenta crear; si ya hay fila, el índice único
+    //     (user_id, gooal_id) lo rechaza, y entonces es que está conquistado.
+    const { error: errorInsert } = await service
+      .from('user_gooals')
+      .insert({ user_id: userId, gooal_id: gooalId, estado: 'vivido' })
+
+    if (errorInsert) {
+      return { success: false, error: 'Ya lo tienes conquistado, con su prueba.' }
+    }
+
+    revalidatePath('/perfil')
+    return { success: true }
+  } catch (e) {
+    console.error('[marcarVivido]', e)
+    return { success: false, error: 'No se pudo marcar el gooal.' }
+  }
+}
+
+/**
+ * Quita de la lista un gooal pendiente o vivido.
+ *
+ * Un conquistado NO se quita nunca: se perdería la prueba. Lo impide el filtro
+ * de estado de la consulta, y por eso va ahí y no en un `if` de la pantalla.
+ */
 export async function quitarGooal(gooalId: string): Promise<{ success: boolean }> {
   const userId = await getUserId()
   if (!userId) return { success: false }
@@ -644,7 +720,7 @@ export async function quitarGooal(gooalId: string): Promise<{ success: boolean }
     .delete()
     .eq('user_id', userId)
     .eq('gooal_id', gooalId)
-    .eq('estado', 'pendiente')
+    .in('estado', ['pendiente', 'vivido'])
 
   revalidatePath('/perfil')
   return { success: true }
@@ -972,6 +1048,9 @@ function listarUserGooals(
       )
       .eq('user_id', userId)
       .eq('estado', estado)
+      // Solo lo conquistado tiene fecha propia; vivido y pendiente se ordenan
+      // por cuándo entraron en la lista. Esto era un "si no es completado, es
+      // pendiente", de los que el ordenador no señala.
       .order(estado === 'completado' ? 'completado_at' : 'created_at', { ascending: false, nullsFirst: false })
       .order('id', { ascending: true })
       .range(desde, hasta)
@@ -994,27 +1073,35 @@ function listarEstados(
 }
 
 /**
- * Lo que comparten quien mira y la persona del perfil: gooals que habéis
- * conquistado los dos, y gooals que tenéis pendientes los dos. Se conserva el
- * orden de la otra persona (lo más reciente suyo primero) y su foto.
+ * Lo que comparten quien mira y la persona del perfil: dos montones.
  *
- * SIN filtro de estado, a propósito: cruza listas de lo que cada uno ya tiene.
- * Si un gooal compartido pasa a borrador, los dos lo siguen teniendo en común.
+ * EL PRIMERO JUNTA VIVIDOS Y CONQUISTADOS, a propósito y sin distinguir. Si los
+ * dos habéis hecho el Camino, da igual quién tenga la foto: es el mismo recuerdo
+ * y es lo que os conecta. Por eso también cuenta cuando uno lo tiene vivido y el
+ * otro conquistado — antes caían en montones distintos y no se cruzaban. El
+ * segundo montón sigue siendo lo que los dos tenéis pendiente.
+ *
+ * Se conserva el orden de la otra persona (lo más reciente suyo primero) y su
+ * foto, si la tiene.
+ *
+ * SIN filtro del estado del gooal, a propósito: cruza listas de lo que cada uno
+ * ya tiene. Si un gooal compartido pasa a borrador, los dos lo siguen teniendo
+ * en común.
  */
 function calcularEnComun(
   mios: { gooal_id: string; estado: EstadoUserGooal }[],
-  suyosConquistados: Conquistado[],
+  suyosHechos: Conquistado[],
   suyosPendientes: Pendiente[]
 ): EnComun {
-  const misConquistados = new Set(mios.filter(m => m.estado === 'completado').map(m => m.gooal_id))
+  const misHechos = new Set(mios.filter(m => yaLoHizo(m.estado)).map(m => m.gooal_id))
   const misPendientes = new Set(mios.filter(m => m.estado === 'pendiente').map(m => m.gooal_id))
 
-  const conquistados = suyosConquistados.filter(c => misConquistados.has(c.gooal.id))
+  const hechos = suyosHechos.filter(c => misHechos.has(c.gooal.id))
   const pendientes = suyosPendientes.filter(p => misPendientes.has(p.gooal.id)).map(p => p.gooal)
 
   return {
-    totalConquistados: conquistados.length,
-    conquistados: conquistados.slice(0, EN_COMUN_MINIATURAS),
+    totalHechos: hechos.length,
+    hechos: hechos.slice(0, EN_COMUN_MINIATURAS),
     totalPendientes: pendientes.length,
     pendientes: pendientes.slice(0, EN_COMUN_TITULOS),
   }
@@ -1043,8 +1130,11 @@ export async function getPerfil(username?: string): Promise<PerfilCompleto | nul
   const esPropio = usuario.id === viewerId
   const idVisitante = !esPropio ? viewerId : null
 
-  const [filasConquistados, filasPendientes, seguidoresRes, siguiendoRes, siguiendoloRes, misEstados] = await Promise.all([
+  const [filasConquistados, filasVividos, filasPendientes, seguidoresRes, siguiendoRes, siguiendoloRes, misEstados] = await Promise.all([
     listarUserGooals(service, usuario.id, 'completado'),
+    // La tercera lista. Sin ella un vivido no caía en ninguna de las dos y
+    // desaparecía del perfil entero sin dar ningún error.
+    listarUserGooals(service, usuario.id, 'vivido'),
     listarUserGooals(service, usuario.id, 'pendiente'),
     service.from('follows').select('id', { count: 'exact', head: true }).eq('following_id', usuario.id),
     service.from('follows').select('id', { count: 'exact', head: true }).eq('follower_id', usuario.id),
@@ -1058,20 +1148,30 @@ export async function getPerfil(username?: string): Promise<PerfilCompleto | nul
   // descarta cualquiera que llegue sin él: mejor una casilla menos que una rota.
   const conGooal = (f: FilaUserGooal): f is FilaUserGooal & { gooal: GooalResumen } => Boolean(f.gooal)
 
-  const conquistados: Conquistado[] = filasConquistados.filter(conGooal).map(f => ({
-    userGooalId: f.id,
-    postId: f.posts?.[0]?.id ?? null,
-    foto_url: f.foto_url,
-    video_url: f.video_url,
-    puntos: f.puntos_ganados ?? 0,
-    completado_at: f.completado_at,
-    gooal: f.gooal,
-  }))
+  const aConquistado = (filas: FilaUserGooal[]): Conquistado[] =>
+    filas.filter(conGooal).map(f => ({
+      userGooalId: f.id,
+      postId: f.posts?.[0]?.id ?? null,
+      foto_url: f.foto_url,
+      video_url: f.video_url,
+      puntos: f.puntos_ganados ?? 0,
+      completado_at: f.completado_at,
+      gooal: f.gooal,
+    }))
 
-  const pendientes: Pendiente[] = filasPendientes.filter(conGooal).map(f => ({
-    userGooalId: f.id,
-    gooal: f.gooal,
-  }))
+  // Vividos y pendientes se pintan igual en su pestaña: ninguno tiene foto.
+  const sinFoto = (filas: FilaUserGooal[]): Pendiente[] =>
+    filas.filter(conGooal).map(f => ({ userGooalId: f.id, gooal: f.gooal }))
+
+  const conquistados = aConquistado(filasConquistados)
+  const vividos = sinFoto(filasVividos)
+  const pendientes = sinFoto(filasPendientes)
+
+  // Para el "en común" los vividos viajan con la misma forma que los
+  // conquistados, con la foto a null. La tarjeta ya sabe pintar el degradado de
+  // la categoría cuando no hay foto, así que un vivido compartido se ve igual
+  // que uno conquistado del que la otra persona no subió nada.
+  const hechos = [...conquistados, ...aConquistado(filasVividos)]
 
   return {
     usuario,
@@ -1083,10 +1183,13 @@ export async function getPerfil(username?: string): Promise<PerfilCompleto | nul
     // una caché, y así los puntos cuadran siempre con los gooals que se ven.
     puntos: conquistados.reduce((suma, c) => suma + c.puntos, 0),
     conquistados,
+    vividos,
     pendientes,
-    // Cuenta sobre lo del usuario, sin filtro de estado: sus borradores también suman.
-    porCategoria: contarPorCategoria(conquistados),
-    enComun: misEstados ? calcularEnComun(misEstados, conquistados, pendientes) : null,
+    // Cuenta sobre lo del usuario, sin filtro de estado: sus borradores también
+    // suman. Y cuenta lo HECHO, vividos incluidos: contando solo lo conquistado,
+    // alguien con veinte vividos vería seis ceros.
+    porCategoria: contarPorCategoria(hechos),
+    enComun: misEstados ? calcularEnComun(misEstados, hechos, pendientes) : null,
   }
 }
 

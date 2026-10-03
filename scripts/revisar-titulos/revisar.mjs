@@ -411,8 +411,10 @@ async function main() {
     const conPropuesta = new Set(paraMirarConCalma)
     const suyos = await leerTodo(service, 'user_gooals', 'gooal_id, estado', 'id')
     const tocados = new Set(suyos.filter(f => conPropuesta.has(f.gooal_id)).map(f => f.gooal_id))
-    const conquistados = new Set(suyos.filter(f => f.estado === 'completado' && conPropuesta.has(f.gooal_id)).map(f => f.gooal_id))
-    console.log(`Propuestas sobre gooals que alguien tiene: ${tocados.size} (${conquistados.size} ya conquistados). Salen marcados en el panel.`)
+    // Vividos y conquistados juntos: los dos son "alguien ya lo hizo", y para
+    // decidir si se le cambia el título a un gooal da igual quién tenga la foto.
+    const hechos = new Set(suyos.filter(f => (f.estado === 'completado' || f.estado === 'vivido') && conPropuesta.has(f.gooal_id)).map(f => f.gooal_id))
+    console.log(`Propuestas sobre gooals que alguien tiene: ${tocados.size} (${hechos.size} ya hechos). Salen marcados en el panel.`)
   }
 
   const quedan = catalogo.length - yaHechos.size - resumen.juzgados

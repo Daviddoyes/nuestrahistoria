@@ -16,6 +16,7 @@ import { CATEGORIA_COLOR } from '@/lib/gooals'
 import { ATRIBUCION_MAPA, URL_MOSAICOS } from '@/lib/mapa-mosaicos'
 import type { CategoriaGooal, DificultadGooal } from '@/lib/gooals'
 import type { GooalV2, PinMapa, EstadoUserGooal } from '@/types/gooals'
+import { MARCA_ESTADO } from '@/lib/estado-gooal'
 
 /**
  * Vista por defecto: España entera a nivel de país. Enseña la península, Francia
@@ -84,8 +85,10 @@ const ICONO_POSICION = L.divIcon({
  * para que las dos vistas se lean igual: si en la lista lo conseguido es verde,
  * en el mapa también.
  */
-const VERDE_COMPLETADO = '#00D1A7'
-const TURQUESA_PENDIENTE = '#00D1A7'
+// Los colores del estado ya no se escriben aquí: vienen de MARCA_ESTADO, que es
+// lo que usan también la tarjeta de Explorar y el perfil. Antes había dos
+// constantes con el MISMO turquesa para pendiente y conquistado, así que un pin
+// pendiente y uno conquistado solo se distinguían por el ✓.
 /** Borde de un pin sin estado: el fondo de la app, que lo recorta del mapa. */
 const BORDE_NEUTRO = '#0B0B0B'
 
@@ -107,25 +110,35 @@ type Props = {
  * Pin circular del color de su categoría, con el estado del usuario encima.
  *
  * Ya no lleva el emoji de la dificultad: el pin solo trae cuatro campos y la
- * dificultad no es uno de ellos. El hueco lo ocupa ahora el ✓ de lo conseguido,
+ * dificultad no es uno de ellos. El hueco lo ocupa ahora la marca del estado,
  * que en un mapa dice bastante más.
+ *
+ * La escalera se lee igual que en el resto de la app: ⏳ gris, ✓ con el aro
+ * verde, ✓ sobre el verde relleno. Al conquistarlo el pin se pone verde entero y
+ * pierde el color de su categoría: es a propósito, un conquistado se mira como
+ * tuyo antes que como "de naturaleza".
+ *
+ * Aquí no se puede usar <MarcaEstadoGooal>: Leaflet pinta HTML en texto, fuera
+ * de React. Por eso los colores salen de MARCA_ESTADO y no se escriben otra vez.
  */
 function iconoDe(pin: PinMapa, estado: EstadoUserGooal | undefined): L.DivIcon {
-  const color = CATEGORIA_COLOR[pin.categoria] ?? '#7A8A85'
-  const borde = estado === 'completado' ? VERDE_COMPLETADO
-    : estado === 'pendiente' ? TURQUESA_PENDIENTE
-      : BORDE_NEUTRO
-  const glifo = estado === 'completado' ? '✓' : ''
+  const categoria = CATEGORIA_COLOR[pin.categoria] ?? '#7A8A85'
+  const marca = estado ? MARCA_ESTADO[estado] : null
+  const fondo = marca?.relleno ?? categoria
+  const borde = marca?.color ?? BORDE_NEUTRO
+  const glifo = marca?.glifo ?? ''
+  // Sobre el relleno verde el símbolo va oscuro; sobre el color de la categoría, blanco.
+  const tinta = marca?.relleno ? '#0B0B0B' : '#FFFFFF'
   return L.divIcon({
     className: '',
     iconSize: [26, 26],
     iconAnchor: [13, 13],
     html: `<div style="
       width:26px;height:26px;border-radius:50%;
-      background:${color};border:2px solid ${borde};
+      background:${fondo};border:2px solid ${borde};
       box-shadow:0 1px 4px rgba(0,0,0,0.5);
       display:flex;align-items:center;justify-content:center;
-      color:#FFFFFF;font-size:14px;font-weight:700;line-height:1;">${glifo}</div>`,
+      color:${tinta};font-size:13px;font-weight:700;line-height:1;">${glifo}</div>`,
   })
 }
 

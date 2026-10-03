@@ -6,8 +6,9 @@ import type { ConteoCategoria } from '@/types/gooals'
 type Props = { conteos: ConteoCategoria[] }
 
 /**
- * Cuántos gooals hay en cada categoría, en una fila deslizable. Las de 0 se
- * quedan al final y apagadas, no se quitan: "Vida 0" invita a probar algo nuevo.
+ * Cuántos gooals HECHOS hay en cada categoría —vividos y conquistados juntos—,
+ * en una fila deslizable. Las de 0 se quedan al final y apagadas, no se quitan:
+ * "Vida 0" invita a probar algo nuevo.
  */
 export default function PastillasCategorias({ conteos }: Props) {
   return (
@@ -15,7 +16,7 @@ export default function PastillasCategorias({ conteos }: Props) {
     <div style={{ position: 'relative', margin: '0 -20px' }}>
       <div
         role="group"
-        aria-label="Gooals conquistados por categoría"
+        aria-label="Gooals hechos por categoría"
         style={{
           display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none',
           // A la derecha, 8 px más que el degradado: al llegar al final la última
@@ -23,8 +24,8 @@ export default function PastillasCategorias({ conteos }: Props) {
           padding: '0 32px 2px 20px',
         }}
       >
-        {conteos.map(({ categoria, conquistados }) => {
-          const vacia = conquistados === 0
+        {conteos.map(({ categoria, hechos }) => {
+          const vacia = hechos === 0
           return (
             <span
               key={categoria}
@@ -39,7 +40,7 @@ export default function PastillasCategorias({ conteos }: Props) {
                 style={{ width: 7, height: 7, borderRadius: '50%', background: CATEGORIA_COLOR[categoria], opacity: vacia ? 0.45 : 1 }}
               />
               {CATEGORIA_LABEL[categoria]}
-              <span style={{ fontWeight: 700, color: vacia ? '#7A8A85' : '#FFFFFF' }}>{conquistados}</span>
+              <span style={{ fontWeight: 700, color: vacia ? '#7A8A85' : '#FFFFFF' }}>{hechos}</span>
             </span>
           )
         })}
