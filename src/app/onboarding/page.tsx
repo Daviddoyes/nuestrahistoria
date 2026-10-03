@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { Check, Camera } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
-import { getGooalsOnboarding, anadirGooal } from '@/lib/actions'
+import { getGooalsOnboarding, anadirGooal, marcarVivido } from '@/lib/actions'
 import { CATEGORIA_GRADIENTE, DIFICULTAD_META, type CategoriaGooal } from '@/lib/gooals'
-import CompletarGooalModal, { type ResultadoCompletado } from '@/components/CompletarGooalModal'
-import type { GooalV2 } from '@/types/gooals'
+import MarcaEstadoGooal from '@/components/MarcaEstadoGooal'
+import { MARCA_ESTADO } from '@/lib/estado-gooal'
+import type { EstadoUserGooal, GooalV2 } from '@/types/gooals'
 import Diana from '@/components/Diana'
 
 type InterId = 'viajes' | 'gastronomia' | 'musica' | 'deporte' | 'cultura'
@@ -75,11 +75,13 @@ export default function OnboardingPage() {
   const [conQuien, setConQuien] = useState<CompaniaId[]>([])
 
   // Screen 4 — "¿Ya has hecho alguno de estos?"
+  //
+  // Los estados son los mismos que en el resto de la app, no un vocabulario
+  // propio: aquí había 'hecho' y 'quiero', que querían decir lo mismo pero no se
+  // podían cruzar con nada.
   const [sugeridos, setSugeridos] = useState<GooalV2[] | null>(null)
-  const [estados, setEstados] = useState<Record<string, 'hecho' | 'quiero'>>({})
+  const [estados, setEstados] = useState<Record<string, Extract<EstadoUserGooal, 'pendiente' | 'vivido'>>>({})
   const [anadiendo, setAnadiendo] = useState<string | null>(null)
-  const [puntosIniciales, setPuntosIniciales] = useState(0)
-  const [completando, setCompletando] = useState<GooalV2 | null>(null)
   const [finishing, setFinishing] = useState(false)
   const [finishError, setFinishError] = useState<string | null>(null)
 
@@ -147,6 +149,9 @@ export default function OnboardingPage() {
     setScreen(next)
   }
 
+  // Cuántos ha marcado como vividos en esta pantalla, para el pie.
+  const vividos = Object.values(estados).filter(e => e === 'vivido').length
+
   const toggleConQuien = (id: CompaniaId) => {
     setConQuien(prev => prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id])
   }
@@ -154,15 +159,23 @@ export default function OnboardingPage() {
   const handleQuiero = async (gooal: GooalV2) => {
     setAnadiendo(gooal.id)
     const res = await anadirGooal(gooal.id)
-    if (res.success) setEstados(prev => ({ ...prev, [gooal.id]: 'quiero' }))
+    if (res.success) setEstados(prev => ({ ...prev, [gooal.id]: 'pendiente' }))
     else setFinishError(res.error ?? 'No se pudo añadir el gooal.')
     setAnadiendo(null)
   }
 
-  const handleHecho = (resultado: ResultadoCompletado) => {
-    if (completando) setEstados(prev => ({ ...prev, [completando.id]: 'hecho' }))
-    setPuntosIniciales(resultado.puntosTotales)
-    setCompletando(null)
+  // "Lo hice" YA NO PIDE FOTO. Antes abría la cámara aquí mismo, y nadie sube una
+  // foto de algo que hizo hace diez años mientras se está dando de alta: la
+  // pantalla preguntaba qué habías vivido y casi todo el mundo contestaba que
+  // nada. Ahora lo marca como vivido, que es justo para lo que está el estado.
+  //
+  // No da puntos y no debe darlos: eso llega cuando se sube la prueba.
+  const handleHecho = async (gooal: GooalV2) => {
+    setAnadiendo(gooal.id)
+    const res = await marcarVivido(gooal.id)
+    if (res.success) setEstados(prev => ({ ...prev, [gooal.id]: 'vivido' }))
+    else setFinishError(res.error ?? 'No se pudo marcar el gooal.')
+    setAnadiendo(null)
   }
 
   const handleFinish = async () => {
@@ -416,7 +429,7 @@ export default function OnboardingPage() {
               <h2 className="text-2xl font-bold text-[#FFFFFF] leading-tight mb-1">
                 ¿Ya has hecho alguno de estos?
               </h2>
-              <p className="text-sm text-[#7A8A85]">Marca lo vivido y elige lo que viene.</p>
+              <p className="text-sm text-[#7A8A85]">Marca lo que ya hiciste —sin foto— y elige lo que viene.</p>
             </div>
 
             {sugeridos === null ? (
@@ -469,39 +482,46 @@ export default function OnboardingPage() {
 
                       {estado ? (
                         <span style={{
-                          flexShrink: 0, fontSize: 11, fontWeight: 600, whiteSpace: 'nowrap',
-                          color: estado === 'hecho' ? '#00D1A7' : '#00D1A7',
-                          padding: '8px 10px',
+                          flexShrink: 0, display: 'flex', alignItems: 'center', gap: 6,
+                          fontSize: 11, fontWeight: 600, whiteSpace: 'nowrap',
+                          color: MARCA_ESTADO[estado].color, padding: '8px 6px',
                         }}>
-                          {estado === 'hecho' ? '✓ Conseguido' : '✓ En tu lista'}
+                          <MarcaEstadoGooal estado={estado} tamano={22} />
+                          {estado === 'vivido' ? 'Vivido' : 'En tu lista'}
                         </span>
                       ) : (
-                        <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                        // Los dos botones, apilados y estrechos: en una pantalla de
+                        // móvil, en fila se comían el ancho y el título quedaba en
+                        // "Bañarte en la...". El título es lo que hay que leer para
+                        // decidir; los botones se entienden por su sitio y su color.
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flexShrink: 0, width: 96 }}>
                           <button
-                            onClick={() => setCompletando(g)}
-                            aria-label={`Ya hice: ${g.titulo}`}
+                            onClick={() => handleHecho(g)}
+                            disabled={anadiendo === g.id}
+                            aria-label={`Ya lo hice: ${g.titulo}`}
                             style={{
-                              display: 'flex', alignItems: 'center', gap: 4,
-                              padding: '9px 11px', borderRadius: 10, border: '1px solid #2A2E2C',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              padding: '9px 8px', borderRadius: 10, border: '1px solid #2A2E2C',
                               background: 'transparent', color: '#FFFFFF', fontSize: 11, fontWeight: 600,
                               whiteSpace: 'nowrap', cursor: 'pointer',
+                              opacity: anadiendo === g.id ? 0.6 : 1,
                             }}
                           >
-                            <Camera style={{ width: 12, height: 12 }} /> Lo hice
+                            Lo hice
                           </button>
                           <button
                             onClick={() => handleQuiero(g)}
                             disabled={anadiendo === g.id}
                             aria-label={`Quiero hacer: ${g.titulo}`}
                             style={{
-                              display: 'flex', alignItems: 'center', gap: 4,
-                              padding: '9px 11px', borderRadius: 10, border: 'none',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              padding: '9px 8px', borderRadius: 10, border: 'none',
                               background: '#00D1A7', color: '#0B0B0B', fontSize: 11, fontWeight: 600,
                               whiteSpace: 'nowrap', cursor: 'pointer',
                               opacity: anadiendo === g.id ? 0.6 : 1,
                             }}
                           >
-                            <Check style={{ width: 12, height: 12 }} /> Lo quiero
+                            Lo quiero
                           </button>
                         </div>
                       )}
@@ -512,13 +532,17 @@ export default function OnboardingPage() {
             )}
           </div>
 
+          {/* Aquí ponía "¡Empiezas con N puntos!", y con el estado vivido eso ya no
+              puede pasar: marcar algo sin foto no da puntos. Lo que sí se llena
+              desde el primer día es el perfil y lo que compartes con otra gente,
+              que es lo que de verdad conecta. Se cuenta eso. */}
           <p style={{
             fontSize: 15, fontWeight: 600, textAlign: 'center', marginTop: 12,
-            color: puntosIniciales > 0 ? '#00D1A7' : '#7A8A85', flexShrink: 0,
+            color: vividos > 0 ? '#00D1A7' : '#7A8A85', flexShrink: 0,
           }}>
-            {puntosIniciales > 0
-              ? `¡Empiezas con ${puntosIniciales} puntos!`
-              : 'Sube una prueba de algo que ya hiciste y empiezas con puntos.'}
+            {vividos > 0
+              ? `Empiezas con ${vividos} ${vividos === 1 ? 'gooal vivido' : 'gooals vividos'}`
+              : 'Marca lo que ya hayas hecho: no hace falta foto.'}
           </p>
 
           {finishError && (
@@ -539,14 +563,6 @@ export default function OnboardingPage() {
 
       </div>
 
-      {completando && (
-        <CompletarGooalModal
-          gooal={completando}
-          modo="directo"
-          onClose={() => setCompletando(null)}
-          onCompletado={handleHecho}
-        />
-      )}
     </div>
   )
 }
