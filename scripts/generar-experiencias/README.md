@@ -35,10 +35,9 @@ node index.mjs 5      # solo limpieza de nombres de empresa
 ## Requisitos
 
 - **Node.js 18 o superior** (usa `fetch` nativo).
-- La tabla `experiencias` creada en Supabase — ver `supabase/experiencias.sql`
-  en la raíz del repo. Incluye las columnas `latitud` / `longitud` que este
-  script rellena; si creaste la tabla con una versión anterior, vuelve a
-  ejecutar ese `.sql` (los `add column if not exists` son idempotentes).
+- La tabla `experiencias` — que **ya no existe en Supabase**. Este script es de
+  la v1 y hoy no funciona: está pendiente de retirar. Su SQL se guarda, solo
+  como registro, en `supabase/historico/experiencias.sql`.
 
 ## Configuración
 

@@ -27,6 +27,7 @@ src/components/   UI. admin/ son las secciones del panel.
 src/lib/          lógica compartida
 src/types/        tipos. Solo gooals.ts; planes.ts era de la v1 y ya no está.
 supabase/*.sql    esquema. NO se ejecuta solo: se pega en el SQL Editor.
+supabase/historico/  lo que ya se ejecutó y no se repite. Solo registro.
 scripts/          herramientas locales de siembra. No forman parte de la app.
 RETOS/            los PDFs fuente del catálogo.
 ```
@@ -306,8 +307,12 @@ De ahí tres reglas:
 
 ## Deuda conocida
 
-- `src/lib/actions.ts` tiene ~1.700 líneas con todo mezclado: planes, perfiles,
-  gooals, muro, follows. Pendiente de partir por temas.
-- Conviven tres catálogos: `gooals_v2` (el bueno), `gooals` (v1) y la biblioteca
-  de `experiencias` de la migración. Falta decidir qué se retira.
+- `src/lib/actions.ts` tiene ~1.160 líneas con todo mezclado: perfiles, gooals,
+  muro, follows. Pendiente de partir por temas.
+- `scripts/generar-experiencias/` trabaja contra tablas que ya no existen.
+  Pendiente de retirar.
+- Y lo que NO es deuda, por si alguien lo vuelve a apuntar: ya **no** conviven
+  tres catálogos. `gooals` y `experiencias` se fueron con la v1; hoy la base
+  tiene doce tablas y la única de catálogo es `gooals_v2` (más `gooals_revision`,
+  que es temporal). El SQL de aquello está en `supabase/historico/`.
 - No hay tests.
