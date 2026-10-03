@@ -177,5 +177,5 @@ entrada — esquiar un día, parapente en tándem, quad por dunas.
 - `output/` está vacío a propósito: los `.sql` de antes del 15-9-2026 llevaban
   las siete categorías viejas, que la base rechaza, y se borraron. Se vuelven a
   crear con `generar_sql.py`, ya con las seis.
-- Es un script **local** de siembra, como `scripts/generar-experiencias/`. No
-  forma parte de la app Next.js y no se despliega en Vercel.
+- Es un script **local** de siembra. No forma parte de la app Next.js y no se
+  despliega en Vercel.

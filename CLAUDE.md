@@ -309,8 +309,6 @@ De ahí tres reglas:
 
 - `src/lib/actions.ts` tiene ~1.160 líneas con todo mezclado: perfiles, gooals,
   muro, follows. Pendiente de partir por temas.
-- `scripts/generar-experiencias/` trabaja contra tablas que ya no existen.
-  Pendiente de retirar.
 - Y lo que NO es deuda, por si alguien lo vuelve a apuntar: ya **no** conviven
   tres catálogos. `gooals` y `experiencias` se fueron con la v1; hoy la base
   tiene doce tablas y la única de catálogo es `gooals_v2` (más `gooals_revision`,
