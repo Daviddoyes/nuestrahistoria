@@ -67,7 +67,8 @@ export const MARCA_ESTADO: Record<EstadoUserGooal, MarcaEstado> = {
 }
 
 /**
- * ¿Esto cuenta como "ya lo ha hecho"?
+ * Los dos estados que cuentan como "ya lo ha hecho".
+ *
  *
  * Vivido y conquistado son el mismo recuerdo; lo que cambia es si hay foto. Lo
  * usan los gooals en común y el recuento por categorías del perfil, que van de
@@ -76,6 +77,9 @@ export const MARCA_ESTADO: Record<EstadoUserGooal, MarcaEstado> = {
  * Los PUNTOS no usan esto a propósito: los da la foto, siempre. Quien suma
  * puntos es sincronizarPuntos(), que mira solo 'completado'.
  */
+export const ESTADOS_HECHOS: EstadoUserGooal[] = ['vivido', 'completado']
+
+/** Lo mismo que ESTADOS_HECHOS, para preguntarlo de uno en uno. */
 export function yaLoHizo(estado: EstadoUserGooal | null | undefined): boolean {
-  return estado === 'vivido' || estado === 'completado'
+  return ESTADOS_HECHOS.includes(estado as EstadoUserGooal)
 }

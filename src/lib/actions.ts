@@ -5,7 +5,7 @@ import { createClient as createServerClient } from '@/lib/supabase/server'
 import { createServiceRoleClient } from '@/lib/supabase/service'
 import { calcularNivel } from '@/lib/niveles'
 import { contarPorCategoria, normalizarCategoriaGooal } from '@/lib/gooals'
-import { yaLoHizo } from '@/lib/estado-gooal'
+import { ESTADOS_HECHOS, yaLoHizo } from '@/lib/estado-gooal'
 import { limpiarBusqueda } from '@/lib/busqueda'
 import {
   BUCKET_PRUEBAS, errorDeArchivo, rutaDePrueba, tipoDePrueba, type TipoPrueba,
@@ -140,6 +140,31 @@ async function sincronizarPuntos(
 
   await service.from('profiles').update({ puntos_totales: puntos, nivel }).eq('id', userId)
   return { puntos, nivel }
+}
+
+/**
+ * Recuenta gooals_v2.veces_completado: cuánta gente lo ha HECHO, vividos y
+ * conquistados juntos.
+ *
+ * La columna conserva su nombre viejo a propósito —renombrarla es una migración
+ * y no cambia nada de lo que se ve—, pero lo que cuenta ya no es solo lo que
+ * tiene foto. Es el número que sale en la ficha ("N personas lo han hecho") y el
+ * que ordena Explorar, así que tiene que cuadrar con lo que dice el detalle.
+ *
+ * Se llama desde los TRES sitios que pueden moverlo: completar, marcar como
+ * vivido y quitar de la lista. Si se olvida uno, el número se queda alto para
+ * siempre y nadie se entera.
+ */
+async function sincronizarVecesHecho(
+  service: ReturnType<typeof createServiceRoleClient>,
+  gooalId: string
+): Promise<void> {
+  const { count } = await service
+    .from('user_gooals')
+    .select('id', { count: 'exact', head: true })
+    .eq('gooal_id', gooalId)
+    .in('estado', ESTADOS_HECHOS)
+  await service.from('gooals_v2').update({ veces_completado: count ?? 0 }).eq('id', gooalId)
 }
 
 /** Recuenta seguidores/siguiendo desde follows. Mismo motivo que sincronizarPuntos. */
@@ -564,29 +589,40 @@ export async function sugerirGooal(
   return { ok: true }
 }
 
-/** Detalle social de un gooal: cuánta gente lo ha logrado y quiénes fueron los últimos. */
+/**
+ * Detalle social de un gooal: cuánta gente lo ha HECHO y quiénes fueron los
+ * últimos.
+ *
+ * Cuenta vividos y conquistados juntos, igual que los gooals en común: que
+ * cincuenta personas hayan subido el Teide es lo mismo tengan foto o no. Si
+ * contara solo las que tienen prueba, el número iría a la baja justo cuando la
+ * gente empieza a marcar lo que ya vivió.
+ *
+ * Las caras salen con las conquistas primero, porque un vivido no tiene fecha
+ * de cuándo se logró y se va al final del orden.
+ */
 export async function getDetalleGooal(gooalId: string): Promise<{
-  vecesCompletado: number
+  vecesHecho: number
   ultimos: UsuarioMini[]
 }> {
   const service = createServiceRoleClient()
 
-  const { data: completados, count } = await service
+  const { data: hechos, count } = await service
     .from('user_gooals')
     .select('user_id, completado_at', { count: 'exact' })
     .eq('gooal_id', gooalId)
-    .eq('estado', 'completado')
-    .order('completado_at', { ascending: false })
+    .in('estado', ESTADOS_HECHOS)
+    .order('completado_at', { ascending: false, nullsFirst: false })
     .limit(8)
 
-  const userIds = [...new Set(((completados ?? []) as { user_id: string }[]).map(c => c.user_id))]
-  if (userIds.length === 0) return { vecesCompletado: count ?? 0, ultimos: [] }
+  const userIds = [...new Set(((hechos ?? []) as { user_id: string }[]).map(c => c.user_id))]
+  if (userIds.length === 0) return { vecesHecho: count ?? 0, ultimos: [] }
 
   const { data: perfiles } = await service.from('profiles').select(PERFIL_CAMPOS).in('id', userIds)
   const porId = new Map(((perfiles ?? []) as PerfilRow[]).map(p => [p.id, aUsuarioMini(p)]))
 
   return {
-    vecesCompletado: count ?? 0,
+    vecesHecho: count ?? 0,
     ultimos: userIds.map(id => porId.get(id)).filter((u): u is UsuarioMini => Boolean(u)),
   }
 }
@@ -681,6 +717,7 @@ export async function marcarVivido(gooalId: string): Promise<{ success: boolean;
       return { success: false, error: 'No se pudo marcar el gooal.' }
     }
     if ((tocadas ?? []).length > 0) {
+      await sincronizarVecesHecho(service, gooalId)
       revalidatePath('/perfil')
       return { success: true }
     }
@@ -696,6 +733,7 @@ export async function marcarVivido(gooalId: string): Promise<{ success: boolean;
       return { success: false, error: 'Ya lo tienes conquistado, con su prueba.' }
     }
 
+    await sincronizarVecesHecho(service, gooalId)
     revalidatePath('/perfil')
     return { success: true }
   } catch (e) {
@@ -721,6 +759,10 @@ export async function quitarGooal(gooalId: string): Promise<{ success: boolean }
     .eq('user_id', userId)
     .eq('gooal_id', gooalId)
     .in('estado', ['pendiente', 'vivido'])
+
+  // Quitar un vivido baja el "N lo han hecho" del gooal. Quitar un pendiente no
+  // lo mueve, pero recontar siempre sale más barato que acordarse de cuándo sí.
+  await sincronizarVecesHecho(service, gooalId)
 
   revalidatePath('/perfil')
   return { success: true }
@@ -862,12 +904,7 @@ export async function completarGooal(
     // falla sin avisar es justo lo que tuvo el muro roto sin que nadie lo viera.
     if (postError) console.error('[completarGooal] muro_posts:', postError)
 
-    const { count } = await service
-      .from('user_gooals')
-      .select('id', { count: 'exact', head: true })
-      .eq('gooal_id', gooalId)
-      .eq('estado', 'completado')
-    await service.from('gooals_v2').update({ veces_completado: count ?? 0 }).eq('id', gooalId)
+    await sincronizarVecesHecho(service, gooalId)
 
     revalidatePath('/muro')
     revalidatePath('/perfil')

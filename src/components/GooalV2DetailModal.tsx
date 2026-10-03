@@ -28,7 +28,7 @@ export default function GooalV2DetailModal({
   const [anadiendo, setAnadiendo] = useState(false)
   const [estadoLocal, setEstadoLocal] = useState<EstadoUserGooal | undefined>(estado)
   const [error, setError] = useState('')
-  const [vecesCompletado, setVecesCompletado] = useState(gooal.veces_completado)
+  const [vecesHecho, setVecesHecho] = useState(gooal.veces_completado)
   const [ultimos, setUltimos] = useState<UsuarioMini[]>([])
   const [completando, setCompletando] = useState<'lista' | 'directo' | null>(null)
   // El texto de la barra verde de confirmación, o null si no hay nada que
@@ -52,7 +52,7 @@ export default function GooalV2DetailModal({
     getDetalleGooal(gooal.id)
       .then(d => {
         if (!vivo) return
-        setVecesCompletado(d.vecesCompletado)
+        setVecesHecho(d.vecesHecho)
         setUltimos(d.ultimos)
       })
       .catch(e => console.error('[GooalV2DetailModal]', e))
@@ -227,8 +227,10 @@ export default function GooalV2DetailModal({
           )}
 
           <p style={{ fontSize: 13, color: '#7A8A85', marginTop: 20 }}>
-            <span style={{ color: '#00D1A7', fontWeight: 700 }}>{vecesCompletado}</span>{' '}
-            {vecesCompletado === 1 ? 'persona lo logró' : 'personas lo lograron'}
+            {/* "Lo han hecho" y no "lo lograron": aquí dentro hay vividos, que
+                son el mismo recuerdo sin la foto. */}
+            <span style={{ color: '#00D1A7', fontWeight: 700 }}>{vecesHecho}</span>{' '}
+            {vecesHecho === 1 ? 'persona lo ha hecho' : 'personas lo han hecho'}
           </p>
 
           {ultimos.length > 0 && (
