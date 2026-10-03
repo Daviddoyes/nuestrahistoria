@@ -266,6 +266,38 @@ node insertar.mjs
 categoría hay que vaciarla antes en Supabase, comprobando primero que nadie la
 tenga en su lista (`user_gooals` tiene `on delete cascade`).
 
+## Una señal hecha por personas vale más que una regla tuya
+
+Sale de buscar fotos para el catálogo en Wikipedia, y es general.
+
+Se probaron cuatro maneras de elegir la foto de un gooal. Una de ellas era
+coger **la imagen de portada del artículo de Wikipedia**. Las otras tres eran
+reglas cada vez más finas: que el fichero no se llame "flag" ni "map", que el
+nombre comparta palabras con el gooal, que la imagen tenga datos EXIF de cámara.
+
+La regla del EXIF parecía la más sólida —una foto la hace una cámara, un plano
+escaneado no— y **empeoró el resultado**: tiró la fachada del Museo del Prado,
+que no lleva datos de cámara, y la cambió por un cuadro de dentro del museo.
+
+El motivo es que la portada de un artículo **la eligió una persona** para
+representar ese artículo. Eso ya contiene el juicio que ninguna regla sabe
+emitir. Las reglas sabían decir si era el sitio (coordenadas), si era el tema
+(nombre) y si la hizo una cámara (EXIF); **ninguna sabía si la foto enseña la
+cosa**, que era justo la pregunta.
+
+La regla, para la próxima:
+
+> Antes de escribir una heurística, mira si alguien ya ha hecho ese juicio y lo
+> ha dejado en algún sitio: una portada elegida a mano, una categoría curada,
+> una lista de "imágenes destacadas", un campo que alguien rellenó. Esa señal
+> suele ganarle a la regla, y además no se rompe de maneras raras.
+
+Y su reverso, que es lo que pasó aquí cuatro veces: **cada heurística nueva
+arregla unos casos y rompe otros**, porque es un sustituto de un juicio que no
+sabe hacer. Si se van encadenando, el número automático sube y el real no: la
+primera ronda decía 19 de 20 y eran 10. Cuando eso pasa, la respuesta no es otra
+heurística — es traer candidatas y que decida una persona.
+
 ## Si cambia el SIGNIFICADO, cambia el NOMBRE
 
 Es hermana de la de aquí abajo, y sale del día que un gooal pasó de tener dos
