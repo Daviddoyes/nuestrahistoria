@@ -209,6 +209,48 @@ drop policy if exists "update used" on invitaciones_email;
 
 
 -- ═══════════════════════════════════════════════════════════
+-- LOS CUBOS DE STORAGE
+--
+-- Storage también va por RLS, sobre la tabla storage.objects, y vale lo mismo
+-- que arriba: sin política, cerrado. Lo que cambia es que un cubo puede además
+-- ser "público", y eso NO es una política: es un interruptor que deja LEER sus
+-- objetos por URL a cualquiera, sin pasar por la RLS. Público es solo de
+-- lectura; para escribir sigue haciendo falta una política o la clave secreta.
+--
+--   catalogo       público · fotos de los gooals (Wikimedia). SOLO del catálogo.
+--   gooals-media   privado · las pruebas que sube la gente al conquistar
+--   avatars        público · fotos de perfil
+--   fotos          público · restos de la v1, ya no los lee nadie
+--   momentos       público · restos de la v1, ya no los lee nadie
+--
+-- ── catalogo ───────────────────────────────────────────────
+--
+-- LECTURA: pública. Las fotos del catálogo las ve todo el mundo, igual que
+-- gooals_v2 es la única tabla con lectura pública. No hay nada que proteger:
+-- vienen de Wikimedia Commons y ya eran públicas allí.
+--
+-- ESCRITURA: NINGUNA POLÍTICA, a propósito. Ni insertar, ni actualizar, ni
+-- borrar. Las sube el guion con la clave secreta, que se salta la RLS. Si algún
+-- día hace falta subir una desde el panel, se hace por una Server Action, no
+-- abriendo el cubo: una política de escritura aquí deja a cualquiera con la
+-- clave pública —que viaja en cada visita— llenar el almacén.
+--
+-- ── Y LO QUE NUNCA VA EN 'catalogo' ────────────────────────
+--
+-- LAS FOTOS QUE SUBE LA GENTE NO VAN AQUÍ JAMÁS. Van a 'gooals-media', que es
+-- privado. No es una manía de orden: 'catalogo' es público de lectura, así que
+-- meter ahí la prueba de alguien la publica para todo internet, para siempre y
+-- sin que esa persona se entere.
+--
+-- Es el fallo que se cometería "por comodidad" el día que haya que subir una
+-- foto desde el panel y el cubo del catálogo sea el que está a mano. No se hace.
+-- Un cubo, un tipo de contenido.
+--
+-- Esto no se puede escribir como SQL porque crear un cubo no es SQL: se hace
+-- desde el guion con la clave secreta, o desde el panel de Supabase. Queda aquí
+-- porque este fichero es donde vive la verdad de los permisos.
+
+-- ═══════════════════════════════════════════════════════════
 -- COMPROBACIÓN. Cada consulta por separado.
 -- ═══════════════════════════════════════════════════════════
 
@@ -228,6 +270,7 @@ order by tablename, policyname;
 --   user_gooals          public read completed          SELECT
 --   user_gooals          users manage own gooals        ALL
 --   (y ninguna en gooal_sugerencias, gooals_revision, emails_enviados ni emails_campanas)
+
 
 -- 2 · La RLS, encendida en las doce.
 select relname as tabla, relrowsecurity as rls
