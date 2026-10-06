@@ -6,7 +6,7 @@ import { createServiceRoleClient } from '@/lib/supabase/service'
 import { calcularNivel } from '@/lib/niveles'
 import { contarPorCategoria, normalizarCategoriaGooal } from '@/lib/gooals'
 import { limpiarBusqueda } from '@/lib/busqueda'
-import { amigosDe, puedeVerLaFoto } from '@/lib/permisos'
+import { amigosDe, puedeVerLaFoto, VISIBILIDADES } from '@/lib/permisos'
 import {
   BUCKET_LOGROS, errorDeArchivo, rutaDeRecuerdo, tipoDeRecuerdo, type TipoRecuerdo,
 } from '@/lib/recuerdo-media'
@@ -883,7 +883,13 @@ export async function completarGooal(
   gooalId: string,
   fotoUrl: string | null,
   videoUrl: string | null,
-  descripcion: string | null
+  descripcion: string | null,
+  /**
+   * Quién podrá ver la foto. Llega de la pantalla de subir, donde nace en
+   * "Mis amigos". Se comprueba aquí: el tipo solo vale mientras quien llama es
+   * nuestro código, y esto es una Server Action.
+   */
+  visibilidad: VisibilidadFoto = 'amigos'
 ): Promise<{
   success: boolean
   error?: string
@@ -900,6 +906,8 @@ export async function completarGooal(
 
     const errorRecuerdo = await validarRecuerdo(service, userId, gooalId, fotoUrl, videoUrl)
     if (errorRecuerdo) return { success: false, error: errorRecuerdo }
+
+    if (!VISIBILIDADES.includes(visibilidad)) return { success: false, error: 'Esa opción no existe.' }
 
     // SIN filtro de estado, a propósito. Completar un pendiente propio tiene que
     // funcionar aunque ese gooal haya pasado a borrador después de añadirlo: lo
@@ -948,6 +956,7 @@ export async function completarGooal(
           descripcion: descripcion?.trim() || null,
           puntos_ganados: puntosGanados,
           completado_at: new Date().toISOString(),
+          visibilidad,
         },
         { onConflict: 'user_id,gooal_id' }
       )
@@ -1252,6 +1261,9 @@ export async function getPerfil(username?: string): Promise<PerfilCompleto | nul
         visibilidad: f.visibilidad ?? 'amigos',
         amigos,
       }),
+      // Solo en tu propio perfil: en el de otra persona no hay nada que cambiar,
+      // y lo que esa persona haya elegido no es asunto de quien mira.
+      quienLaVe: esPropio ? (f.visibilidad ?? 'amigos') : null,
     }))
 
   const conseguidos = aLineas(filasConseguidos, losMiosEnEstado(misEstados, 'completado'), true)

@@ -11,9 +11,11 @@ import Avatar from './Avatar'
 import Confirmacion from './Confirmacion'
 import PostDetailModal from './PostDetailModal'
 import CreditoFoto from './CreditoFoto'
+import { HojaQuienLaVe, iconoQuienLaVe, palabraQuienLaVe } from './QuienLaVe'
+import { cambiarVisibilidad } from '@/lib/fotos-privadas'
 import AnadirFotoModal, { type ResultadoCompletado } from './AnadirFotoModal'
 import { ProveedorFotosPrivadas, useFotoPrivada } from './FotosPrivadas'
-import type { GooalV2, UsuarioMini, EstadoUserGooal } from '@/types/gooals'
+import type { GooalV2, UsuarioMini, EstadoUserGooal, VisibilidadFoto } from '@/types/gooals'
 
 type Props = {
   gooal: GooalV2
@@ -26,8 +28,12 @@ type Props = {
    *
    * Es el único sitio de todo el perfil donde se firma una dirección: la lista
    * son títulos y no firma ninguna. Aquí se firma UNA, la que se va a ver.
+   *
+   * `quienLaVe` solo llega cuando la foto es de quien mira, y es lo que permite
+   * cambiarlo desde la propia foto. En la de otra persona va null: ahí no hay
+   * nada que cambiar.
    */
-  logro?: string | null
+  logro?: { userGooalId: string; quienLaVe: VisibilidadFoto | null } | null
   onClose: () => void
   /** Se llama tras añadir o completar, para refrescar el catálogo. */
   onCambio: () => void
@@ -53,6 +59,13 @@ export default function GooalV2DetailModal({
   // El post del muro de quien mira, para poder volver a sus comentarios.
   const [miPostId, setMiPostId] = useState<string | null>(null)
   const [postAbierto, setPostAbierto] = useState(false)
+  // Quién ve la foto, para poder cambiarlo desde encima de ella. Se guarda aquí
+  // y no se lee del prop a secas para que el cambio se vea al instante, sin
+  // esperar a que el perfil de debajo se recargue.
+  const [quienLaVe, setQuienLaVe] = useState<VisibilidadFoto | null>(logro?.quienLaVe ?? null)
+  const [eligiendoQuien, setEligiendoQuien] = useState(false)
+  const [guardandoQuien, setGuardandoQuien] = useState(false)
+  const [errorQuien, setErrorQuien] = useState('')
   const [marcando, setMarcando] = useState(false)
   // Tras marcarlo se ofrece la foto. Es una invitación, no un paso: mientras
   // está puesta, la ficha NO se cierra sola, porque ofrecer algo y quitarlo de
@@ -61,7 +74,7 @@ export default function GooalV2DetailModal({
 
   // Fuera de <ProveedorFotosPrivadas> (Explorar, el mapa) esto no pide nada y
   // devuelve null, así que la cabecera se queda con la foto del catálogo.
-  const { foto, video, refrescar } = useFotoPrivada(logro)
+  const { foto, video, refrescar } = useFotoPrivada(logro?.userGooalId)
   const reintentado = useRef(false)
   // Un solo reintento (la dirección firmada pudo caducar). Si la segunda
   // tampoco carga, el fichero no está: se cae a la foto del catálogo en vez de
@@ -184,7 +197,25 @@ export default function GooalV2DetailModal({
     onCambio()
   }
 
+  const elegirQuienLaVe = async (nueva: VisibilidadFoto) => {
+    if (!logro) return
+    const antes = quienLaVe
+    setQuienLaVe(nueva)        // optimista: la pastilla cambia al tocarla
+    setGuardandoQuien(true)
+    setErrorQuien('')
+    const res = await cambiarVisibilidad(logro.userGooalId, nueva)
+    setGuardandoQuien(false)
+    if (!res.success) {
+      setQuienLaVe(antes)      // y vuelve atrás si el servidor dice que no
+      setErrorQuien(res.error ?? 'No se pudo cambiar quién la ve.')
+      return
+    }
+    setEligiendoQuien(false)
+    onCambio()
+  }
+
   const lugar = [gooal.ciudad, gooal.pais].filter(Boolean).join(', ')
+  const IconoQuien = quienLaVe ? iconoQuienLaVe(quienLaVe) : null
 
   return (
     <>
@@ -267,6 +298,27 @@ export default function GooalV2DetailModal({
             {/* Solo con la foto del CATÁLOGO. Si arriba se está viendo la foto
                 de una persona, acreditar a un fotógrafo de Commons sería
                 atribuirle algo que no ha hecho. */}
+            {/* Encima de la propia foto, que es donde la persona la está
+                mirando y donde se pregunta "¿esto quién lo ve?". Dice en qué
+                está ahora, así que también sirve para enterarse sin tocar. */}
+            {(fotoPropia || videoPropio) && quienLaVe && IconoQuien && (
+              <button
+                onClick={() => { setErrorQuien(''); setEligiendoQuien(true) }}
+                aria-label={`La ven: ${palabraQuienLaVe(quienLaVe)}. Tócalo para cambiarlo`}
+                className="active:opacity-70 transition-opacity"
+                style={{
+                  position: 'absolute', left: 20, bottom: 10,
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  minHeight: 30, padding: '6px 11px', borderRadius: 999,
+                  background: 'rgba(11,11,11,0.62)', border: '1px solid rgba(255,255,255,0.18)',
+                  fontSize: 11, color: '#FFFFFF', whiteSpace: 'nowrap',
+                }}
+              >
+                <IconoQuien aria-hidden style={{ width: 13, height: 13, flexShrink: 0 }} />
+                {palabraQuienLaVe(quienLaVe)}
+              </button>
+            )}
+
             {!fotoPropia && !videoPropio && gooal.imagen_url && (
               <div style={{ position: 'absolute', left: 24, right: 24, bottom: 2, display: 'flex', justifyContent: 'flex-end' }}>
                 <CreditoFoto autor={gooal.foto_autor} licencia={gooal.foto_licencia} origen={gooal.foto_origen} />
@@ -457,6 +509,16 @@ export default function GooalV2DetailModal({
           firmarla. Desde el perfil ya hay uno fuera, pero esta ficha también se
           abre desde Explorar y desde el mapa, donde no lo hay, y allí el post
           saldría sin su foto sin dar ningún error. */}
+      {eligiendoQuien && quienLaVe && (
+        <HojaQuienLaVe
+          valor={quienLaVe}
+          guardando={guardandoQuien}
+          error={errorQuien}
+          onElegir={elegirQuienLaVe}
+          onCerrar={() => setEligiendoQuien(false)}
+        />
+      )}
+
       {postAbierto && miPostId && (
         <ProveedorFotosPrivadas>
           <PostDetailModal

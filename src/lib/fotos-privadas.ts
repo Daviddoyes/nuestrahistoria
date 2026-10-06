@@ -2,7 +2,7 @@
 
 import { createServiceRoleClient } from '@/lib/supabase/service'
 import { createClient as createServerClient } from '@/lib/supabase/server'
-import { amigosDe, puedeVerLaFoto } from '@/lib/permisos'
+import { amigosDe, puedeVerLaFoto, VISIBILIDADES } from '@/lib/permisos'
 import { BUCKET_LOGROS } from '@/lib/recuerdo-media'
 import type { VisibilidadFoto } from '@/types/gooals'
 
@@ -152,6 +152,11 @@ export async function cambiarVisibilidad(
   userGooalId: string,
   visibilidad: VisibilidadFoto,
 ): Promise<{ success: boolean; error?: string }> {
+  // El tipo solo vale mientras el código es el que llama. Esto es una Server
+  // Action: le puede llegar cualquier cosa desde fuera, y la base tiene un CHECK
+  // que reventaría con un error feo en vez de decir que no.
+  if (!VISIBILIDADES.includes(visibilidad)) return { success: false, error: 'Esa opción no existe.' }
+
   const supabase = await createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false, error: 'No autenticado' }

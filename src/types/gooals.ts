@@ -157,6 +157,12 @@ export type LineaPerfil = {
    * es prometer algo y no cumplirlo.
    */
   fotoVisible: boolean
+  /**
+   * Quién ve esa foto, para poder cambiarlo desde la ficha. Solo viaja en TU
+   * perfil: en el de otra persona va null, porque ahí no hay nada que cambiar y
+   * sus ajustes no son asunto de quien mira.
+   */
+  quienLaVe: VisibilidadFoto | null
 }
 
 /** Cuántos gooals ha conseguido alguien en una categoría. */

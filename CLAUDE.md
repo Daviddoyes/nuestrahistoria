@@ -390,6 +390,27 @@ De ahí tres reglas:
    inserta deja una prueba que pasa sin comprobar nada: pasó dos veces con
    `invitaciones_email`, y la tabla parecía cerrada estando abierta.
 
+## Un fichero 'use server' solo exporta funciones async
+
+Y si le pones otra cosa, **no lo caza nada de lo que usamos antes de publicar**.
+
+Pasó añadiendo una constante (`VISIBILIDADES`) a `src/lib/fotos-privadas.ts`,
+que lleva `'use server'` arriba. Lo que ocurrió:
+
+- `npx tsc --noEmit` → limpio.
+- `npm run build` → **"Compiled successfully", y salida 0**.
+- Abrir la app → **Explorar en blanco**, y en la consola del navegador:
+  `A "use server" file can only export async functions, found object.`
+
+Es decir: la comprobación que lo caza es **abrir la página**. Por eso las
+pruebas de este repo entran por la pantalla y leen la consola del navegador
+(`consolaDe()` en el arnés), y no se quedan en que compile.
+
+La regla: si algo que no es una función async tiene que vivir cerca de unas
+Server Actions, va en un módulo normal al lado. Las constantes de los permisos
+están en `src/lib/permisos.ts`, que no lleva directiva, y las importan tanto las
+acciones como el resto.
+
 ## Un insert de varias filas no respeta los valores por defecto
 
 Se descubrió montando una prueba, y el día que alguien escriba un guion de

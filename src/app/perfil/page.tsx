@@ -24,7 +24,7 @@ import ListaPerfil from '@/components/perfil/ListaPerfil'
 import FiltroEnComun from '@/components/perfil/FiltroEnComun'
 import { ProveedorFotosPrivadas } from '@/components/FotosPrivadas'
 import AjustesSheet from '@/components/perfil/AjustesSheet'
-import type { EstadoUserGooal, GooalV2, LineaPerfil, PerfilCompleto } from '@/types/gooals'
+import type { EstadoUserGooal, GooalV2, LineaPerfil, PerfilCompleto, VisibilidadFoto } from '@/types/gooals'
 
 export default function PerfilPage() {
   // useSearchParams obliga a un límite de Suspense para poder prerenderizar.
@@ -39,7 +39,7 @@ export default function PerfilPage() {
 type FichaAbierta = {
   gooal: GooalV2
   /** La fila de esa persona, solo si su foto se puede ver. null si no. */
-  logro: string | null
+  logro: { userGooalId: string; quienLaVe: VisibilidadFoto | null } | null
 }
 
 function PerfilContenido() {
@@ -148,7 +148,10 @@ function PerfilContenido() {
     setError('')
     try {
       const g = await getGooalDeLista(linea.userGooalId)
-      if (g) setFicha({ gooal: g, logro: linea.fotoVisible ? linea.userGooalId : null })
+      if (g) setFicha({
+        gooal: g,
+        logro: linea.fotoVisible ? { userGooalId: linea.userGooalId, quienLaVe: linea.quienLaVe } : null,
+      })
       else setError('Este gooal ya no está disponible.')
     } catch (e) {
       console.error('[perfil:ficha]', e)

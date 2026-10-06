@@ -5,7 +5,8 @@ import { X, ImagePlus } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { completarGooal } from '@/lib/actions'
 import { DIFICULTAD_META, CATEGORIA_LABEL } from '@/lib/gooals'
-import type { GooalV2 } from '@/types/gooals'
+import { SelectorQuienLaVe } from './QuienLaVe'
+import type { GooalV2, VisibilidadFoto } from '@/types/gooals'
 import {
   ACCEPT_SELECTOR, BUCKET_LOGROS, MAX_BYTES_VIDEO, MAX_SEGUNDOS_VIDEO,
   errorDeArchivo, errorDeVideo, esHeic, mimeDeArchivo,
@@ -108,6 +109,9 @@ export default function AnadirFotoModal({ gooal, onClose, onCompletado }: Props)
 
   const [recuerdo, setRecuerdo] = useState<RecuerdoListo | null>(null)
   const [descripcion, setDescripcion] = useState('')
+  // Nace en "Mis amigos", que es también lo que guarda la base por defecto:
+  // quien no toque esto se queda en lo prudente, no en lo abierto.
+  const [quienLaVe, setQuienLaVe] = useState<VisibilidadFoto>('amigos')
   const [preparando, setPreparando] = useState(false)
   const [subiendo, setSubiendo] = useState(false)
   const [error, setError] = useState('')
@@ -218,7 +222,8 @@ export default function AnadirFotoModal({ gooal, onClose, onCompletado }: Props)
         gooal.id,
         recuerdo.esVideo ? null : ruta,
         recuerdo.esVideo ? ruta : null,
-        descripcion.trim() || null
+        descripcion.trim() || null,
+        quienLaVe
       )
 
       if (!res.success) throw new Error(res.error ?? 'No se pudo completar el gooal.')
@@ -345,6 +350,13 @@ export default function AnadirFotoModal({ gooal, onClose, onCompletado }: Props)
                 </button>
               </div>
             )}
+          </div>
+
+          <div>
+            <p className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#7A8A85] mb-1.5">
+              ¿Quién la ve?
+            </p>
+            <SelectorQuienLaVe valor={quienLaVe} onCambiar={setQuienLaVe} ocupado={ocupado} />
           </div>
 
           <div>

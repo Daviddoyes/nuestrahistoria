@@ -23,6 +23,15 @@ import type { VisibilidadFoto } from '@/types/gooals'
  * decisión la toma este código, no la base.
  */
 
+/**
+ * Los tres valores que acepta la columna. Mismo orden que el CHECK de la base.
+ *
+ * Vive aquí y no en fotos-privadas.ts porque aquel fichero es 'use server' y
+ * esos SOLO pueden exportar funciones async. Una constante exportada desde allí
+ * no la para ni TypeScript ni `npm run build`: la página revienta al abrirla.
+ */
+export const VISIBILIDADES: VisibilidadFoto[] = ['privada', 'amigos', 'publica']
+
 /** Las personas con las que alguien se sigue mutuamente. Hoy, sus amigas. */
 export async function amigosDe(userId: string | null | undefined): Promise<Set<string>> {
   if (!userId) return new Set()
