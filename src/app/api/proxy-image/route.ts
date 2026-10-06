@@ -33,13 +33,28 @@ import { createClient as createServerClient } from '@/lib/supabase/server'
  * a privado ESTA RUTA sería justo la forma de saltarse el permiso, así que la
  * cerradura tiene que estar puesta antes.
  *
- * PENDIENTE para cuando las fotos sean privadas: además de pedir sesión, habrá
- * que comprobar que QUIEN PIDE puede ver ESA foto. Con el cubo público todavía
- * no tiene sentido, pero no se puede olvidar.
+ * ── Y CON LAS FOTOS YA PRIVADAS ───────────────────────────
+ *
+ * El cubo de las fotos de la gente ('logros-privados') NO está en la lista. De
+ * ahí solo se sirve lo que venga con una DIRECCIÓN FIRMADA, que es la que da
+ * firmarFotos() tras comprobar quién mira y que caduca. Así el permiso lo sigue
+ * decidiendo un solo sitio y esta ruta no se convierte en la puerta de atrás:
+ * quien no tiene una dirección firmada, aquí tampoco la consigue.
  */
 
-/** Los cubos de los que se acepta servir algo. Ni uno más. */
-const CUBOS = ['gooals-media', 'avatars', 'catalogo']
+/** Los cubos públicos de los que se acepta servir algo. Ni uno más. */
+const CUBOS_PUBLICOS = ['avatars', 'catalogo']
+
+/**
+ * El cubo privado se sirve SOLO por dirección firmada.
+ *
+ * Una dirección firmada ya lleva dentro el permiso: la dio el servidor después
+ * de comprobar quién mira, y caduca. Aquí no hace falta volver a decidir, solo
+ * comprobar que la firma es NUESTRA —mismo proyecto, ruta de firma— y que no se
+ * ha colado otra cosa. Lo que esta ruta NO puede hacer es servir el cubo privado
+ * por dirección a secas: eso sería devolverle la llave a quien no la tiene.
+ */
+const RUTA_FIRMADA = '/storage/v1/object/sign/'
 
 /** Un minuto es de sobra: esto se llama al abrir la pantalla de compartir. */
 const TIEMPO_LIMITE_MS = 8000
@@ -63,8 +78,14 @@ export async function GET(request: Request) {
   let destino: URL
   try { destino = new URL(pedida) } catch { return new NextResponse('Dirección no válida', { status: 400 }) }
 
-  const permitido = CUBOS.some(c => destino.pathname.startsWith(`/storage/v1/object/public/${c}/`))
-  if (destino.origin !== new URL(base).origin || !permitido) {
+  if (destino.origin !== new URL(base).origin) {
+    return new NextResponse('Solo se sirven imágenes de nuestro almacén', { status: 400 })
+  }
+
+  const esPublica = CUBOS_PUBLICOS.some(c => destino.pathname.startsWith(`/storage/v1/object/public/${c}/`))
+  // Una firmada trae su permiso dentro y caduca; sin token no es una firmada.
+  const esFirmada = destino.pathname.startsWith(RUTA_FIRMADA) && destino.searchParams.has('token')
+  if (!esPublica && !esFirmada) {
     return new NextResponse('Solo se sirven imágenes de nuestro almacén', { status: 400 })
   }
 

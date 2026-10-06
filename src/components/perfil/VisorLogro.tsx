@@ -1,6 +1,8 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import { X } from 'lucide-react'
+import { useFotoPrivada } from '@/components/FotosPrivadas'
 import { CATEGORIA_LABEL } from '@/lib/gooals'
 import type { Conquistado } from '@/types/gooals'
 
@@ -16,6 +18,12 @@ type Props = {
  */
 export default function VisorLogro({ conquistado, onClose }: Props) {
   const { gooal, foto_url, video_url, puntos, completado_at } = conquistado
+  // Las direcciones de la fila son rutas de un cubo privado: no se pueden
+  // pintar. La de verdad se pide firmada, y si caduca se vuelve a pedir.
+  const { foto, video, refrescar } = useFotoPrivada(conquistado.userGooalId)
+  const reintentado = useRef(false)
+  useEffect(() => { reintentado.current = false }, [foto, video])
+  const alFallar = () => { if (reintentado.current) return; reintentado.current = true; refrescar() }
   const fecha = completado_at
     ? new Date(completado_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
     : null
@@ -37,11 +45,11 @@ export default function VisorLogro({ conquistado, onClose }: Props) {
       </button>
 
       <article className="w-full max-w-md max-h-[88vh] overflow-y-auto" style={{ background: '#161817', borderRadius: 16 }}>
-        {video_url ? (
-          <video src={video_url} controls playsInline autoPlay style={{ width: '100%', display: 'block', background: '#000' }} />
-        ) : foto_url ? (
+        {video_url && video ? (
+          <video src={video} controls playsInline autoPlay onError={alFallar} style={{ width: '100%', display: 'block', background: '#000' }} />
+        ) : foto_url && foto ? (
           // eslint-disable-next-line @next/next/no-img-element -- foto de Storage de tamaño variable
-          <img src={foto_url} alt={gooal.titulo} style={{ width: '100%', display: 'block' }} />
+          <img src={foto} alt={gooal.titulo} onError={alFallar} style={{ width: '100%', display: 'block' }} />
         ) : (
           <p style={{ padding: '32px 20px 8px', fontSize: 14, color: '#A3B1AC', textAlign: 'center' }}>
             Este gooal se conquistó sin foto ni vídeo guardados.

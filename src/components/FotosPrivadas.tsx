@@ -48,7 +48,15 @@ export function ProveedorFotosPrivadas({ children }: { children: React.ReactNode
   const temporizador = useRef<ReturnType<typeof setTimeout> | null>(null)
   const vivo = useRef(true)
 
-  useEffect(() => () => { vivo.current = false }, [])
+  // Se ENCIENDE al montar y se apaga al desmontar. Encenderla aquí no sobra:
+  // React monta, desmonta y vuelve a montar los componentes en desarrollo, y sin
+  // esta línea la bandera se quedaba apagada para siempre tras el primer ciclo.
+  // Resultado: la respuesta llegaba del servidor y se tiraba, y las fotos no
+  // aparecían nunca. Costó un rato encontrarlo porque no da ningún error.
+  useEffect(() => {
+    vivo.current = true
+    return () => { vivo.current = false }
+  }, [])
 
   const vaciarCola = useCallback(async () => {
     const ids = [...enCola.current]
@@ -66,7 +74,7 @@ export function ProveedorFotosPrivadas({ children }: { children: React.ReactNode
         return nuevo
       })
     } catch (e) {
-      console.error('[FotosPrivadas]', e)
+      console.error('[FotosPrivadas]', String(e))
       if (!vivo.current) return
       setFotos(antes => {
         const nuevo = { ...antes }

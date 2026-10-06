@@ -96,7 +96,10 @@ export type UsuarioMini = {
 export type MuroPostFeed = {
   id: string
   user_id: string
+  /** La fila de user_gooals de la que sale. Es por lo que se piden las fotos. */
+  userGooalId: string | null
   created_at: string
+  /** RUTA dentro del cubo privado, no una dirección pintable. Ver Conquistado. */
   foto_url: string | null
   video_url: string | null
   descripcion: string | null
@@ -111,7 +114,13 @@ export type MuroPostFeed = {
 /** Lo mínimo de un gooal del catálogo para pintarlo en una lista del perfil. */
 export type GooalResumen = Pick<GooalV2, 'id' | 'titulo' | 'categoria' | 'dificultad' | 'puntos' | 'ciudad'>
 
-/** Un gooal conquistado, con su prueba. */
+/**
+ * Un gooal conseguido.
+ *
+ * OJO: `foto_url` y `video_url` guardan la RUTA dentro del cubo privado, NO una
+ * dirección que se pueda pintar. Sirven para saber SI hay foto; para verla, la
+ * pantalla pide la dirección firmada con el userGooalId (ver FotosPrivadas.tsx).
+ */
 export type Conquistado = {
   userGooalId: string
   /** null si al completarlo no llegó a crearse el post del muro. */

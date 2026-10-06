@@ -21,6 +21,7 @@ import PestanasPerfil, { type PestanaPerfil } from '@/components/perfil/Pestanas
 import RejillaConquistados from '@/components/perfil/RejillaConquistados'
 import ListaSinFoto from '@/components/perfil/ListaSinFoto'
 import VisorLogro from '@/components/perfil/VisorLogro'
+import { ProveedorFotosPrivadas } from '@/components/FotosPrivadas'
 import AjustesSheet from '@/components/perfil/AjustesSheet'
 import type { Conquistado, GooalResumen, PerfilCompleto } from '@/types/gooals'
 
@@ -185,7 +186,9 @@ function PerfilContenido() {
   )
 
   return (
-    <>
+    // El proveedor envuelve la pantalla entera, modales incluidos: la rejilla y
+    // el visor piden la misma foto y así sale en una sola llamada.
+    <ProveedorFotosPrivadas>
       <AppShell tab="perfil" fotoPerfil={perfil.esPropio ? perfil.usuario.foto_perfil_url : null}>
         <div style={{ padding: '0 20px 32px' }}>
 
@@ -350,6 +353,6 @@ function PerfilContenido() {
       {celebracion && (
         <CelebracionPuntos resultado={celebracion} onClose={() => setCelebracion(null)} />
       )}
-    </>
+    </ProveedorFotosPrivadas>
   )
 }

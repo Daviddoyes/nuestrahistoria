@@ -1,6 +1,7 @@
 'use client'
 
 import { CATEGORIA_COLOR, CATEGORIA_GRADIENTE } from '@/lib/gooals'
+import { FotoPrivada } from '@/components/FotosPrivadas'
 import type { EnComun } from '@/types/gooals'
 
 type Props = {
@@ -60,8 +61,11 @@ export default function TarjetaEnComun({ enComun, onVerPendientes }: Props) {
                 }}
               >
                 {c.foto_url && (
-                  // eslint-disable-next-line @next/next/no-img-element -- fotos de Storage de tamaño variable
-                  <img src={c.foto_url} alt={c.gooal.titulo} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                  <FotoPrivada
+                    userGooalId={c.userGooalId}
+                    alt={c.gooal.titulo}
+                    style={{ width: '100%', height: '100%' }}
+                  />
                 )}
               </div>
             ))}

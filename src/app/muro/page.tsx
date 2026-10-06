@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { getMuroFeed, getMyProfile, sigoAAlguien } from '@/lib/actions'
 import AppShell, { PantallaCargando, EstadoVacio } from '@/components/AppShell'
 import MuroPostCard from '@/components/MuroPostCard'
+import { ProveedorFotosPrivadas } from '@/components/FotosPrivadas'
 import type { MuroPostFeed, Profile } from '@/types/gooals'
 
 export default function MuroPage() {
@@ -36,6 +37,7 @@ export default function MuroPage() {
   if (!profile) return null
 
   return (
+    <ProveedorFotosPrivadas>
     <AppShell tab="muro" fotoPerfil={profile.foto_perfil_url}>
       <div style={{ padding: '10px 12px 24px' }}>
         {error && (
@@ -76,5 +78,6 @@ export default function MuroPage() {
         )}
       </div>
     </AppShell>
+    </ProveedorFotosPrivadas>
   )
 }

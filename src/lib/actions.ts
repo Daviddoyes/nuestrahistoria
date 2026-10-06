@@ -223,7 +223,7 @@ export async function getMuroFeed(limite = 40): Promise<MuroPostFeed[]> {
     .limit(limite)
 
   const filas = (posts ?? []) as {
-    id: string; user_id: string; gooal_id: string | null; created_at: string
+    id: string; user_id: string; gooal_id: string | null; user_gooal_id: string | null; created_at: string
     foto_url: string | null; video_url: string | null; descripcion: string | null
     puntos: number | null; likes: number | null
   }[]
@@ -253,6 +253,7 @@ export async function getMuroFeed(limite = 40): Promise<MuroPostFeed[]> {
   return filas.map(p => ({
     id: p.id,
     user_id: p.user_id,
+    userGooalId: p.user_gooal_id ?? null,
     created_at: p.created_at,
     foto_url: p.foto_url,
     video_url: p.video_url,
@@ -1253,7 +1254,7 @@ export async function getMuroPost(postId: string): Promise<MuroPostFeed | null> 
   if (!post) return null
 
   const fila = post as {
-    id: string; user_id: string; gooal_id: string | null; created_at: string
+    id: string; user_id: string; gooal_id: string | null; user_gooal_id: string | null; created_at: string
     foto_url: string | null; video_url: string | null; descripcion: string | null
     puntos: number | null; likes: number | null
   }
@@ -1273,6 +1274,7 @@ export async function getMuroPost(postId: string): Promise<MuroPostFeed | null> 
   return {
     id: fila.id,
     user_id: fila.user_id,
+    userGooalId: fila.user_gooal_id ?? null,
     created_at: fila.created_at,
     foto_url: fila.foto_url,
     video_url: fila.video_url,

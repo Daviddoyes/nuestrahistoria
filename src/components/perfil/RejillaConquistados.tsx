@@ -5,13 +5,23 @@ import { Play } from 'lucide-react'
 import { CATEGORIA_GRADIENTE } from '@/lib/gooals'
 import type { Conquistado } from '@/types/gooals'
 import BotonVerMas, { POR_TANDA } from './BotonVerMas'
+import { FotoPrivada } from '@/components/FotosPrivadas'
 
 type Props = {
   conquistados: Conquistado[]
   onAbrir: (conquistado: Conquistado) => void
 }
 
-/** Rejilla de 3 columnas con la prueba de cada gooal conquistado. */
+/**
+ * Rejilla de 3 columnas con la foto de cada gooal conseguido.
+ *
+ * Las fotos NO se pintan con su dirección: viven en un cubo privado y hay que
+ * pedir una dirección firmada por cada una. <FotoPrivada> lo hace, junta las
+ * peticiones de toda la rejilla en una sola y vuelve a pedirla si caduca.
+ *
+ * Si no se puede ver —o si el gooal se consiguió sin foto— queda el degradado
+ * de su categoría, que es lo que la app lleva usando desde siempre.
+ */
 export default function RejillaConquistados({ conquistados, onAbrir }: Props) {
   // Se pinta de 60 en 60: con cientos de fotos a la vez el móvil se atasca.
   const [visibles, setVisibles] = useState(POR_TANDA)
@@ -33,12 +43,10 @@ export default function RejillaConquistados({ conquistados, onAbrir }: Props) {
             }}
           >
             {c.foto_url && (
-              // eslint-disable-next-line @next/next/no-img-element -- fotos de Storage de tamaño variable
-              <img
-                src={c.foto_url}
+              <FotoPrivada
+                userGooalId={c.userGooalId}
                 alt=""
-                loading="lazy"
-                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
               />
             )}
 

@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect, useRef } from 'react'
 import { Heart } from 'lucide-react'
 import { toggleLike } from '@/lib/actions'
 import { CATEGORIA_COLOR, CATEGORIA_LABEL, DIFICULTAD_META, hace } from '@/lib/gooals'
 import CompartirGooalStory from './CompartirGooalStory'
 import Avatar from './Avatar'
+import { useFotoPrivada } from '@/components/FotosPrivadas'
 import type { MuroPostFeed } from '@/types/gooals'
 
 type Props = {
@@ -14,6 +15,10 @@ type Props = {
 }
 
 export default function MuroPostCard({ post, onAutorClick }: Props) {
+  // La dirección firmada de la foto, para la imagen que se comparte en Stories.
+  // Es la misma petición que hace <Recuerdo>: el proveedor las junta.
+  const { foto: fotoFirmada } = useFotoPrivada(post.userGooalId)
+
   const [liked, setLiked] = useState(post.liked)
   const [likes, setLikes] = useState(post.likes)
   const [, startTransition] = useTransition()
@@ -64,24 +69,12 @@ export default function MuroPostCard({ post, onAutorClick }: Props) {
         )}
       </div>
 
-      {/* Prueba: foto o vídeo a 4:5 con degradado inferior */}
+      {/* El recuerdo: foto o vídeo a 4:5 con degradado inferior.
+          Viven en un cubo privado, así que la dirección se pide firmada y puede
+          no llegar: si quien mira no tiene permiso, queda el hueco liso. */}
       <div style={{ position: 'relative', width: '100%', aspectRatio: '4/5', background: '#0B0B0B' }}>
-        {post.video_url ? (
-          <video
-            src={post.video_url}
-            playsInline
-            muted
-            loop
-            controls
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-          />
-        ) : post.foto_url ? (
-          <img
-            src={post.foto_url}
-            alt={gooal?.titulo ?? ''}
-            loading="lazy"
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-          />
+        {post.userGooalId && (post.video_url || post.foto_url) ? (
+          <Recuerdo userGooalId={post.userGooalId} esVideo={Boolean(post.video_url)} titulo={gooal?.titulo ?? ''} />
         ) : (
           <div style={{ position: 'absolute', inset: 0, background: '#1E2120' }} />
         )}
@@ -149,11 +142,44 @@ export default function MuroPostCard({ post, onAutorClick }: Props) {
             categoria={gooal.categoria}
             dificultad={gooal.dificultad}
             puntos={post.puntos}
-            fotoUrl={post.foto_url}
+            fotoUrl={fotoFirmada}
             autor={post.autor.username ? `@${post.autor.username}` : post.autor.nombre}
           />
         )}
       </div>
     </article>
   )
+}
+
+/**
+ * La foto o el vídeo de un post, pedidos firmados.
+ *
+ * Si quien mira no puede verlo, no llega dirección y queda el hueco liso. No se
+ * explica en pantalla a propósito: decir "esta foto es solo para sus amigos" ya
+ * cuenta algo de esa persona a quien no debería saberlo.
+ */
+function Recuerdo({ userGooalId, esVideo, titulo }: { userGooalId: string; esVideo: boolean; titulo: string }) {
+  const { foto, video, refrescar } = useFotoPrivada(userGooalId)
+  const reintentado = useRef(false)
+  const fuente = esVideo ? video : foto
+
+  useEffect(() => { reintentado.current = false }, [fuente])
+
+  // Una dirección firmada caduca. Si falla, se pide otra vez; una sola, porque
+  // si la segunda también falla es que el fichero no está.
+  const alFallar = () => {
+    if (reintentado.current) return
+    reintentado.current = true
+    refrescar()
+  }
+
+  if (!fuente) return <div style={{ position: 'absolute', inset: 0, background: '#1E2120' }} />
+
+  const estilo: React.CSSProperties = {
+    position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover',
+  }
+  return esVideo
+    ? <video src={fuente} playsInline muted loop controls onError={alFallar} style={estilo} />
+    // eslint-disable-next-line @next/next/no-img-element -- direcciones firmadas que caducan
+    : <img src={fuente} alt={titulo} loading="lazy" onError={alFallar} style={estilo} />
 }

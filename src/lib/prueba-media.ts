@@ -4,7 +4,15 @@
 // para avisar ANTES de subir, y el servidor porque lo que diga el navegador se
 // puede saltar llamando a la Server Action a mano.
 
-export const BUCKET_PRUEBAS = 'gooals-media'
+/**
+ * El cubo donde viven las fotos y los vídeos de la gente. PRIVADO.
+ *
+ * No se sirve por dirección: la única forma de ver uno es una dirección FIRMADA
+ * que da el servidor tras comprobar quién mira. Ver src/lib/fotos-privadas.ts.
+ *
+ * Fue 'gooals-media', que era público, y ahí está el agujero que esto cierra.
+ */
+export const BUCKET_PRUEBAS = 'logros-privados'
 
 export const MAX_BYTES_FOTO = 10 * 1024 * 1024
 export const MAX_BYTES_VIDEO = 50 * 1024 * 1024
@@ -87,36 +95,21 @@ export function errorDeArchivo(archivo: { type: string; size: number }): string 
 }
 
 /**
- * Ruta dentro del bucket a la que apunta la URL de una prueba, o null si la URL
- * no es una prueba legítima de este usuario para este gooal.
+ * Comprueba que la ruta que manda el navegador es la que debe ser, y la
+ * devuelve; null si no vale.
  *
- * Solo se acepta la URL pública de NUESTRO proyecto de Supabase, en el bucket de
- * pruebas y en la carpeta `<userId>/<gooalId>/`. Sin esto la Server Action se
- * tragaba cualquier enlace de internet como prueba, y una misma subida servía
- * para completar todos los gooals del catálogo.
+ * ANTES recibía una dirección pública entera y le quitaba el principio. Con el
+ * cubo privado ya no hay direcciones públicas: lo que se guarda y lo que viaja
+ * es la RUTA, `<usuario>/<gooal>/<fichero>`.
+ *
+ * Lo que de verdad hace falta comprobar sigue igual, y es esto: que la carpeta
+ * sea la de QUIEN completa y la del GOOAL que completa. Sin eso, alguien podría
+ * llamar a la Server Action a mano apuntando a la foto de otra persona y
+ * colgársela de un gooal suyo.
  */
-export function rutaDePrueba(url: string, userId: string, gooalId: string): string | null {
-  const proyecto = process.env.NEXT_PUBLIC_SUPABASE_URL
-  if (!proyecto) return null
-
-  let recibida: URL
-  try {
-    recibida = new URL(url)
-  } catch {
-    return null
-  }
-  if (recibida.origin !== new URL(proyecto).origin) return null
-  if (recibida.search || recibida.hash) return null
-
-  const prefijo = `/storage/v1/object/public/${BUCKET_PRUEBAS}/`
-  if (!recibida.pathname.startsWith(prefijo)) return null
-
-  let ruta: string
-  try {
-    ruta = decodeURIComponent(recibida.pathname.slice(prefijo.length))
-  } catch {
-    return null
-  }
+export function rutaDePrueba(ruta: string, userId: string, gooalId: string): string | null {
+  if (!ruta || ruta.startsWith('http')) return null
+  if (ruta.includes('?') || ruta.includes('#')) return null
 
   const partes = ruta.split('/')
   if (partes.length !== 3) return null
@@ -125,3 +118,4 @@ export function rutaDePrueba(url: string, userId: string, gooalId: string): stri
 
   return ruta
 }
+

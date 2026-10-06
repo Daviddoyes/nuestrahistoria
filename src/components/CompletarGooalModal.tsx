@@ -199,10 +199,11 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
       if (!user) throw new Error('Tu sesión ha caducado. Vuelve a entrar para subir la prueba.')
 
       // La subida va directa a Storage desde el navegador: un server action
-      // tiene límite de tamaño de body y un vídeo de 9s se lo come.
-      // La carpeta <userId>/<gooalId>/ no es estética: la política del bucket
-      // solo deja subir a tu propia carpeta, y el servidor rechaza cualquier
-      // prueba que no esté en la del gooal que se completa.
+      // tiene límite de tamaño de body y un vídeo de 9s se lo come. Por eso el
+      // cubo privado conserva UNA política de escritura.
+      // La carpeta <userId>/<gooalId>/ no es estética: la política del cubo solo
+      // deja subir a tu propia carpeta, y el servidor rechaza cualquier prueba
+      // que no esté en la del gooal que se completa.
       const extension = !prueba.esVideo ? 'jpg' : prueba.mime === 'video/quicktime' ? 'mov' : 'mp4'
       const ruta = `${user.id}/${gooal.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${extension}`
 
@@ -212,13 +213,14 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
 
       if (upError) throw new Error('No se pudo subir la prueba. Revisa tu conexión e inténtalo de nuevo.')
 
-      const { data: { publicUrl } } = supabase.storage.from(BUCKET_PRUEBAS).getPublicUrl(ruta)
-
+      // Lo que se guarda es la RUTA, no una dirección. El cubo es privado: una
+      // dirección pública no serviría para nada y encima mentiría. Para ver la
+      // foto hay que pedirle al servidor una dirección firmada, que caduca.
       const completar = modo === 'directo' ? anadirYCompletarGooal : completarGooal
       const res = await completar(
         gooal.id,
-        prueba.esVideo ? null : publicUrl,
-        prueba.esVideo ? publicUrl : null,
+        prueba.esVideo ? null : ruta,
+        prueba.esVideo ? ruta : null,
         descripcion.trim() || null
       )
 
