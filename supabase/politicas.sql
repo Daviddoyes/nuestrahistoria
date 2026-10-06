@@ -217,11 +217,30 @@ drop policy if exists "update used" on invitaciones_email;
 -- objetos por URL a cualquiera, sin pasar por la RLS. Público es solo de
 -- lectura; para escribir sigue haciendo falta una política o la clave secreta.
 --
---   catalogo       público · fotos de los gooals (Wikimedia). SOLO del catálogo.
---   gooals-media   privado · las pruebas que sube la gente al conquistar
---   avatars        público · fotos de perfil
---   fotos          público · restos de la v1, ya no los lee nadie
---   momentos       público · restos de la v1, ya no los lee nadie
+--   catalogo         público · fotos de los gooals (Wikimedia). SOLO del catálogo.
+--   logros-privados  PRIVADO · las fotos y vídeos que sube la gente
+--   avatars          público · fotos de perfil
+--   fotos            público · restos de la v1, ya no los lee nadie
+--   momentos         público · restos de la v1, ya no los lee nadie
+--
+-- 'gooals-media' ya no existe: era público y ahí vivían las fotos de la gente.
+-- Se vació y se borró el 6-10-2026; sus políticas, en supabase/fase3v.sql.
+--
+-- ── logros-privados ────────────────────────────────────────
+--
+-- PRIVADO, y eso no es una política: es el interruptor que hace que Supabase
+-- deje de servir sus ficheros por dirección. La única forma de ver una foto es
+-- una dirección FIRMADA que da el servidor tras comprobar quién mira, y que
+-- caduca. Quien decide es puedeVerLaFoto(), en src/lib/permisos.ts.
+--
+-- LECTURA: ninguna política, a propósito. Ni siquiera para lo tuyo. Así solo hay
+-- UN camino para ver una foto —el servidor— y no dos.
+--
+-- ESCRITURA: UNA, "subir solo a tu carpeta". Hace falta porque la foto se sube
+-- desde el navegador: una Server Action tiene límite de tamaño y un vídeo de
+-- nueve segundos se lo come. La condición compara el primer tramo de la ruta
+-- con auth.uid(), así que nadie puede dejar una foto en la carpeta de otro.
+-- Medido: a su carpeta ACEPTADO, a la de otro RECHAZADO, a la raíz RECHAZADO.
 --
 -- ── catalogo ───────────────────────────────────────────────
 --
@@ -237,10 +256,10 @@ drop policy if exists "update used" on invitaciones_email;
 --
 -- ── Y LO QUE NUNCA VA EN 'catalogo' ────────────────────────
 --
--- LAS FOTOS QUE SUBE LA GENTE NO VAN AQUÍ JAMÁS. Van a 'gooals-media', que es
--- privado. No es una manía de orden: 'catalogo' es público de lectura, así que
--- meter ahí la prueba de alguien la publica para todo internet, para siempre y
--- sin que esa persona se entere.
+-- LAS FOTOS QUE SUBE LA GENTE NO VAN AQUÍ JAMÁS. Van a 'logros-privados', que
+-- es privado. No es una manía de orden: 'catalogo' es público de lectura, así
+-- que meter ahí la foto de alguien la publica para todo internet, para siempre
+-- y sin que esa persona se entere.
 --
 -- Es el fallo que se cometería "por comodidad" el día que haya que subir una
 -- foto desde el panel y el cubo del catálogo sea el que está a mano. No se hace.
