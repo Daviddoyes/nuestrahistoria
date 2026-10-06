@@ -31,6 +31,15 @@ export type GooalV2 = {
   ciudad: string | null
   pais: string | null
   imagen_url: string | null
+  /**
+   * De quién es la foto del catálogo y bajo qué licencia, tal cual vienen de
+   * Wikimedia Commons, y la página del archivo. 203 de las 223 licencias exigen
+   * citar al autor, así que esto NO es información de adorno: donde se vea la
+   * foto grande hay que pintarlo. Ver CreditoFoto.tsx.
+   */
+  foto_autor: string | null
+  foto_licencia: string | null
+  foto_origen: string | null
   activo: boolean
   /** Solo los 'verificado' se enseñan en el catálogo. */
   estado: EstadoGooal

@@ -10,6 +10,7 @@ import {
 import Avatar from './Avatar'
 import Confirmacion from './Confirmacion'
 import PostDetailModal from './PostDetailModal'
+import CreditoFoto from './CreditoFoto'
 import AnadirFotoModal, { type ResultadoCompletado } from './AnadirFotoModal'
 import { ProveedorFotosPrivadas, useFotoPrivada } from './FotosPrivadas'
 import type { GooalV2, UsuarioMini, EstadoUserGooal } from '@/types/gooals'
@@ -254,7 +255,7 @@ export default function GooalV2DetailModal({
             <h2
               className="fuente-titular"
               style={{
-                position: 'absolute', left: 24, right: 24, bottom: 18,
+                position: 'absolute', left: 24, right: 24, bottom: 34,
                 fontSize: 22, fontWeight: 700, color: '#FFFFFF', lineHeight: 1.22,
                 textShadow: '0 1px 8px rgba(0,0,0,0.45)',
                 display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden',
@@ -262,6 +263,15 @@ export default function GooalV2DetailModal({
             >
               {gooal.titulo}
             </h2>
+
+            {/* Solo con la foto del CATÁLOGO. Si arriba se está viendo la foto
+                de una persona, acreditar a un fotógrafo de Commons sería
+                atribuirle algo que no ha hecho. */}
+            {!fotoPropia && !videoPropio && gooal.imagen_url && (
+              <div style={{ position: 'absolute', left: 24, right: 24, bottom: 2, display: 'flex', justifyContent: 'flex-end' }}>
+                <CreditoFoto autor={gooal.foto_autor} licencia={gooal.foto_licencia} origen={gooal.foto_origen} />
+              </div>
+            )}
           </div>
 
         <div
