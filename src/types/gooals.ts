@@ -54,6 +54,19 @@ export type GooalV2 = {
  */
 export type EstadoUserGooal = 'pendiente' | 'completado'
 
+/**
+ * Quién puede ver la foto de un gooal conseguido.
+ *
+ *   privada   solo su dueño
+ *   amigos    quienes se siguen mutuamente. ES EL VALOR POR DEFECTO
+ *   publica   cualquiera
+ *
+ * Quien decide con esto es puedeVerLaFoto(), en src/lib/permisos.ts, y es el
+ * único sitio donde se decide. Lo de "amigo = os seguís los dos" también vive
+ * allí: el día que haya solicitudes de amistad se cambia esa función y ya.
+ */
+export type VisibilidadFoto = 'privada' | 'amigos' | 'publica'
+
 /** El gooal de un usuario concreto: en su lista o ya conseguido. */
 export type UserGooal = {
   id: string
