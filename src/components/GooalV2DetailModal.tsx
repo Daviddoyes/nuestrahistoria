@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { X, Plus, Check, Camera, MapPin, Trash2 } from 'lucide-react'
 import { anadirGooal, conseguirSinFoto, quitarGooal, getDetalleGooal } from '@/lib/actions'
 import {
@@ -8,13 +8,23 @@ import {
 } from '@/lib/gooals'
 import Avatar from './Avatar'
 import Confirmacion from './Confirmacion'
-import CompletarGooalModal, { type ResultadoCompletado } from './CompletarGooalModal'
+import AnadirFotoModal, { type ResultadoCompletado } from './AnadirFotoModal'
+import { useFotoPrivada } from './FotosPrivadas'
 import type { GooalV2, UsuarioMini, EstadoUserGooal } from '@/types/gooals'
 
 type Props = {
   gooal: GooalV2
   /** Estado del gooal para el usuario actual; undefined si no lo tiene. */
   estado?: EstadoUserGooal
+  /**
+   * La fila de una persona concreta, cuando la ficha se abre desde un perfil Y
+   * esa persona guardó su propia foto Y quien mira puede verla. Entonces la
+   * cabecera enseña ESA foto; si no, la del catálogo.
+   *
+   * Es el único sitio de todo el perfil donde se firma una dirección: la lista
+   * son títulos y no firma ninguna. Aquí se firma UNA, la que se va a ver.
+   */
+  logro?: string | null
   onClose: () => void
   /** Se llama tras añadir o completar, para refrescar el catálogo. */
   onCambio: () => void
@@ -22,7 +32,7 @@ type Props = {
 }
 
 export default function GooalV2DetailModal({
-  gooal, estado, onClose, onCambio, onCompletado,
+  gooal, estado, logro, onClose, onCambio, onCompletado,
 }: Props) {
   const [cerrando, setCerrando] = useState(false)
   const [anadiendo, setAnadiendo] = useState(false)
@@ -30,14 +40,35 @@ export default function GooalV2DetailModal({
   const [error, setError] = useState('')
   const [vecesConseguido, setVecesConseguido] = useState(gooal.veces_completado)
   const [ultimos, setUltimos] = useState<UsuarioMini[]>([])
-  const [completando, setCompletando] = useState<'lista' | 'directo' | null>(null)
+  const [anadiendoFoto, setAnadiendoFoto] = useState(false)
   // El texto de la barra verde de confirmación, o null si no hay nada que
   // confirmar. Sirve para añadir y para quitar: el aviso es el mismo.
   const [confirmacion, setConfirmacion] = useState<string | null>(null)
   const [quitando, setQuitando] = useState(false)
   const [preguntandoQuitar, setPreguntandoQuitar] = useState(false)
-  const [tengoPrueba, setTengoPrueba] = useState(false)
+  const [tieneFoto, setTieneFoto] = useState(false)
   const [marcando, setMarcando] = useState(false)
+  // Tras marcarlo se ofrece la foto. Es una invitación, no un paso: mientras
+  // está puesta, la ficha NO se cierra sola, porque ofrecer algo y quitarlo de
+  // en medio es peor que no ofrecerlo.
+  const [invitandoFoto, setInvitandoFoto] = useState(false)
+
+  // Fuera de <ProveedorFotosPrivadas> (Explorar, el mapa) esto no pide nada y
+  // devuelve null, así que la cabecera se queda con la foto del catálogo.
+  const { foto, video, refrescar } = useFotoPrivada(logro)
+  const reintentado = useRef(false)
+  // Un solo reintento (la dirección firmada pudo caducar). Si la segunda
+  // tampoco carga, el fichero no está: se cae a la foto del catálogo en vez de
+  // dejar el icono de imagen rota, que no le dice nada a nadie.
+  const [fotoRota, setFotoRota] = useState(false)
+  useEffect(() => { reintentado.current = false; setFotoRota(false) }, [foto, video])
+  const alFallarLaFoto = () => {
+    if (reintentado.current) { setFotoRota(true); return }
+    reintentado.current = true
+    refrescar()
+  }
+  const fotoPropia = fotoRota ? null : foto
+  const videoPropio = fotoRota ? null : video
 
   const color = CATEGORIA_COLOR[gooal.categoria]
   const dificultad = DIFICULTAD_META[gooal.dificultad]
@@ -54,7 +85,7 @@ export default function GooalV2DetailModal({
       .then(d => {
         if (!vivo) return
         setVecesConseguido(d.vecesConseguido)
-        setTengoPrueba(d.tengoPrueba)
+        setTieneFoto(d.tieneFoto)
         setUltimos(d.ultimos)
       })
       .catch(e => console.error('[GooalV2DetailModal]', e))
@@ -65,13 +96,13 @@ export default function GooalV2DetailModal({
   // igual y parecía que no había pasado nada. Ahora se ve la confirmación y la
   // ficha se cierra sola, que es la señal de que la acción terminó.
   useEffect(() => {
-    if (!confirmacion) return
+    if (!confirmacion || invitandoFoto) return
     const t = setTimeout(cerrar, 1500)
     return () => clearTimeout(t)
     // cerrar no va en la lista a propósito: se rehace en cada pintada y
     // reiniciaría el temporizador sin parar.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [confirmacion])
+  }, [confirmacion, invitandoFoto])
 
   const handleAnadir = async () => {
     setAnadiendo(true)
@@ -87,17 +118,27 @@ export default function GooalV2DetailModal({
     setAnadiendo(false)
   }
 
-  // "Ya lo hice, sin foto": cuenta como conseguido y DA PUNTOS, igual que con
-  // foto. La foto nunca fue una prueba de nada; es el recuerdo.
-  const handleSinFoto = async () => {
+  // "Ya lo hice": el único camino para marcar algo. Da los puntos del gooal y
+  // la foto se ofrece después, cuando ya están dados. La foto nunca probó nada;
+  // es el recuerdo, y un recuerdo no se pide por adelantado.
+  const handleYaLoHice = async () => {
     setMarcando(true)
     setError('')
     const res = await conseguirSinFoto(gooal.id)
     if (res.success) {
       setEstadoLocal('completado')
-      setTengoPrueba(false)
+      setTieneFoto(false)
+      setInvitandoFoto(true)
       setConfirmacion(`¡Conseguido! +${res.puntosGanados ?? gooal.puntos} pts`)
       onCambio()
+      // La celebración se pone encima (z-80) y la ficha se queda debajo con la
+      // invitación a la foto puesta: al cerrarla, está ahí esperando.
+      onCompletado({
+        puntosGanados: res.puntosGanados ?? gooal.puntos,
+        puntosTotales: res.puntosTotales ?? 0,
+        nivel: res.nivel ?? 'Principiante',
+        subioDeNivel: Boolean(res.subioDeNivel),
+      })
     } else {
       setError(res.error ?? 'No se pudo guardar el gooal.')
     }
@@ -120,12 +161,18 @@ export default function GooalV2DetailModal({
     setQuitando(false)
   }
 
-  const handleCompletado = (resultado: ResultadoCompletado) => {
-    setCompletando(null)
+  /**
+   * Vuelve de añadir la foto. NO se celebra: los puntos ya estaban dados al
+   * marcarlo, y `completarGooal` devuelve los del gooal, no los que acabas de
+   * ganar. Celebrar aquí diría "+6 puntos ganados" cuando has ganado cero.
+   */
+  const handleFotoGuardada = () => {
+    setAnadiendoFoto(false)
     setEstadoLocal('completado')
+    setTieneFoto(true)
+    setInvitandoFoto(false)
+    setConfirmacion('Foto guardada')
     onCambio()
-    onCompletado(resultado)
-    cerrar()
   }
 
   const lugar = [gooal.ciudad, gooal.pais].filter(Boolean).join(', ')
@@ -154,17 +201,35 @@ export default function GooalV2DetailModal({
               position: 'relative', width: '100%', flex: '1 0 auto',
               // El alto de la antigua proporción 4/3, como mínimo, sin pasar de 360 px.
               minHeight: 'min(75vw, 360px)',
-              background: gooal.imagen_url ? '#161817' : CATEGORIA_GRADIENTE[gooal.categoria],
+              background: fotoPropia || videoPropio || gooal.imagen_url ? '#161817' : CATEGORIA_GRADIENTE[gooal.categoria],
             }}
           >
-            {gooal.imagen_url && (
+            {/* Primero la foto de esa persona, si la hay y se puede ver; si no,
+                la del catálogo; si tampoco, el degradado de su categoría. */}
+            {videoPropio ? (
+              <video
+                src={videoPropio}
+                controls
+                playsInline
+                onError={alFallarLaFoto}
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', background: '#000' }}
+              />
+            ) : fotoPropia ? (
+              // eslint-disable-next-line @next/next/no-img-element -- dirección firmada que caduca
+              <img
+                src={fotoPropia}
+                alt=""
+                onError={alFallarLaFoto}
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ) : gooal.imagen_url ? (
               // eslint-disable-next-line @next/next/no-img-element -- imágenes del catálogo de tamaño variable
               <img
                 src={gooal.imagen_url}
                 alt=""
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
               />
-            )}
+            ) : null}
             {/* Oscuro arriba para el botón de cerrar, y velo negro abajo para que el título se lea sobre cualquier foto o color. */}
             <div
               style={{
@@ -247,13 +312,38 @@ export default function GooalV2DetailModal({
           {/* Acciones */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 28 }}>
             {confirmacion ? (
-              <div
-                role="status"
-                className="w-full py-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
-                style={{ background: '#00D1A7', color: '#0B0B0B' }}
-              >
-                <Check className="w-4 h-4" /> {confirmacion}
-              </div>
+              <>
+                <div
+                  role="status"
+                  className="w-full py-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
+                  style={{ background: '#00D1A7', color: '#0B0B0B' }}
+                >
+                  <Check className="w-4 h-4" /> {confirmacion}
+                </div>
+
+                {/* La foto se ofrece DESPUÉS de dar los puntos, y como una
+                    pregunta. Antes iba delante, dentro del botón, y entonces no
+                    era una invitación: era el precio de marcar algo. */}
+                {invitandoFoto && (
+                  <>
+                    <p style={{ fontSize: 14, color: '#A3B1AC', textAlign: 'center', margin: '6px 0 2px' }}>
+                      ¿Tienes una foto de aquel día?
+                    </p>
+                    <button
+                      onClick={() => setAnadiendoFoto(true)}
+                      className="w-full py-3.5 rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 border border-[#00D1A7] text-[#00D1A7] active:bg-[rgba(0,209,167,0.14)] transition-colors"
+                    >
+                      <Camera className="w-4 h-4" /> Añadir una foto
+                    </button>
+                    <button
+                      onClick={cerrar}
+                      className="w-full py-3 rounded-xl text-sm font-semibold min-h-[44px] text-[#7A8A85] active:bg-[#1E2120] transition-colors"
+                    >
+                      Ahora no
+                    </button>
+                  </>
+                )}
+              </>
             ) : estadoLocal === 'completado' ? (
               <>
                 <div
@@ -266,13 +356,13 @@ export default function GooalV2DetailModal({
                 {/* Sin foto, se puede deshacer: un toque equivocado no puede
                     dejarte unos puntos para siempre. Con foto no se ofrece,
                     porque borrarlo se llevaría el recuerdo. */}
-                {!tengoPrueba && (
+                {!tieneFoto && (
                   <>
                     <button
-                      onClick={() => setCompletando('lista')}
+                      onClick={() => setAnadiendoFoto(true)}
                       className="w-full py-3 rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 border border-[#2A2E2C] text-[#FFFFFF] active:bg-[#1E2120] transition-colors"
                     >
-                      <Camera className="w-4 h-4" /> Añadirle una foto
+                      <Camera className="w-4 h-4" /> Añadir una foto
                     </button>
 
                     <button
@@ -286,14 +376,10 @@ export default function GooalV2DetailModal({
               </>
             ) : estadoLocal === 'pendiente' ? (
               <>
-                <button
-                  onClick={() => setCompletando('lista')}
-                  className="w-full py-4 bg-[#00D1A7] active:bg-[#00B893] text-[#0B0B0B] rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors"
-                >
-                  <Camera className="w-4 h-4" /> Completar ahora
-                </button>
-
-                <BotonSinFoto onClick={handleSinFoto} ocupado={marcando} puntos={gooal.puntos} />
+                {/* Un solo camino para marcarlo. Antes había dos botones, y el
+                    de arriba ("Completar ahora") era en realidad "sube una
+                    foto": dos formas de conseguir lo mismo, una con peaje. */}
+                <BotonYaLoHice onClick={handleYaLoHice} ocupado={marcando} primario />
 
                 {/* Hasta ahora un pendiente no se podía quitar de ninguna manera:
                     quien añadía algo sin querer se lo quedaba para siempre. */}
@@ -318,14 +404,7 @@ export default function GooalV2DetailModal({
                   {anadiendo ? 'Añadiendo...' : 'Añadir a mi lista'}
                 </button>
 
-                <BotonSinFoto onClick={handleSinFoto} ocupado={marcando} puntos={gooal.puntos} />
-
-                <button
-                  onClick={() => setCompletando('directo')}
-                  className="w-full py-4 rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 border border-[#2A2E2C] text-[#FFFFFF] active:bg-[#1E2120] transition-colors"
-                >
-                  <Camera className="w-4 h-4" /> Ya lo hice — subir prueba
-                </button>
+                <BotonYaLoHice onClick={handleYaLoHice} ocupado={marcando} />
               </>
             )}
           </div>
@@ -347,12 +426,11 @@ export default function GooalV2DetailModal({
         />
       )}
 
-      {completando && (
-        <CompletarGooalModal
+      {anadiendoFoto && (
+        <AnadirFotoModal
           gooal={gooal}
-          modo={completando}
-          onClose={() => setCompletando(null)}
-          onCompletado={handleCompletado}
+          onClose={() => setAnadiendoFoto(false)}
+          onCompletado={handleFotoGuardada}
         />
       )}
     </>
@@ -360,24 +438,30 @@ export default function GooalV2DetailModal({
 }
 
 /**
- * "Ya lo hice, sin foto". Da los mismos puntos que con foto.
+ * "Ya lo hice". Y nada más: ni "sin foto", ni los puntos en el texto.
  *
- * Sigue en gris y no en verde aunque ya no haya diferencia de puntos: el camino
- * que la app quiere es el de la foto, porque es el que deja recuerdo y el que
- * puede acabar en el muro. Este es la salida para lo que pasó hace diez años.
+ * Los puntos no van en el botón a propósito. Un botón que promete una cifra
+ * convierte marcar un recuerdo en cobrar, y además obliga a leerlo antes de
+ * decidir. Los puntos salen justo después, cuando ya los tienes.
+ *
+ * `primario` cuando es la acción principal de la ficha (un pendiente que ya
+ * estaba en la lista); en gris cuando convive con "Añadir a mi lista", que es lo
+ * que la app prefiere para algo que todavía no has hecho.
  */
-function BotonSinFoto({ onClick, ocupado, puntos }: { onClick: () => void; ocupado: boolean; puntos: number }) {
+function BotonYaLoHice({ onClick, ocupado, primario = false }: { onClick: () => void; ocupado: boolean; primario?: boolean }) {
   return (
     <button
       onClick={onClick}
       disabled={ocupado}
-      className="w-full py-4 rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 border border-[#2A2E2C] text-[#A3B1AC] active:bg-[#1E2120] disabled:opacity-60 transition-colors"
+      className={primario
+        ? 'w-full py-4 rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 bg-[#00D1A7] active:bg-[#00B893] text-[#0B0B0B] disabled:opacity-60 transition-colors'
+        : 'w-full py-4 rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 border border-[#2A2E2C] text-[#A3B1AC] active:bg-[#1E2120] disabled:opacity-60 transition-colors'}
     >
       {ocupado
-        ? <span className="w-4 h-4 border-2 border-[#A3B1AC] border-t-transparent rounded-full animate-spin" />
+        ? <span className={`w-4 h-4 border-2 ${primario ? 'border-[#0B0B0B]' : 'border-[#A3B1AC]'} border-t-transparent rounded-full animate-spin`} />
         : <Check className="w-4 h-4" />
       }
-      Ya lo hice, sin foto · +{puntos} pts
+      Ya lo hice
     </button>
   )
 }

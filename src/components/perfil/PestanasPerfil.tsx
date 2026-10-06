@@ -1,36 +1,33 @@
 'use client'
 
-export type PestanaPerfil = 'conquistados' | 'pendientes'
+export type PestanaPerfil = 'conseguidos' | 'pendientes'
 
 type Props = {
   activa: PestanaPerfil
-  conquistados: number
-  pendientes: number
   onCambiar: (pestana: PestanaPerfil) => void
 }
 
 /**
  * Las dos pestañas del perfil, mitad y mitad.
  *
- * El número va debajo y no al lado: "Conseguidos · 128" en una línea se corta en
- * pantallas estrechas.
+ * Sin números: los dos están justo encima, en las tres cifras. Cuando los
+ * llevaban, la misma pantalla decía "34" dos veces a cuatro dedos de distancia.
  */
-export default function PestanasPerfil({ activa, conquistados, pendientes, onCambiar }: Props) {
-  const pestanas: { id: PestanaPerfil; texto: string; cuantos: number }[] = [
-    { id: 'conquistados', texto: 'Conseguidos', cuantos: conquistados },
-    { id: 'pendientes', texto: 'Pendientes', cuantos: pendientes },
+export default function PestanasPerfil({ activa, onCambiar }: Props) {
+  const pestanas: { id: PestanaPerfil; texto: string }[] = [
+    { id: 'conseguidos', texto: 'Conseguidos' },
+    { id: 'pendientes', texto: 'Pendientes' },
   ]
 
   return (
     <div role="tablist" style={{ display: 'flex', borderBottom: '1px solid #2A2E2C' }}>
-      {pestanas.map(({ id, texto, cuantos }) => {
+      {pestanas.map(({ id, texto }) => {
         const esActiva = id === activa
         return (
           <button
             key={id}
             role="tab"
             aria-selected={esActiva}
-            aria-label={`${texto}: ${cuantos}`}
             onClick={() => onCambiar(id)}
             className="transition-colors"
             style={{
@@ -42,11 +39,8 @@ export default function PestanasPerfil({ activa, conquistados, pendientes, onCam
               marginBottom: -1,
             }}
           >
-            <span aria-hidden style={{ fontSize: 13, fontWeight: esActiva ? 600 : 500, whiteSpace: 'nowrap' }}>
+            <span style={{ fontSize: 14, fontWeight: esActiva ? 600 : 500, whiteSpace: 'nowrap' }}>
               {texto}
-            </span>
-            <span aria-hidden style={{ fontSize: 12, fontWeight: 700, color: esActiva ? '#00D1A7' : '#7A8A85' }}>
-              {cuantos}
             </span>
           </button>
         )

@@ -3,13 +3,13 @@
 import { useState, useMemo, useRef, useEffect, useId } from 'react'
 import { X, ImagePlus } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
-import { completarGooal, anadirYCompletarGooal } from '@/lib/actions'
+import { completarGooal } from '@/lib/actions'
 import { DIFICULTAD_META, CATEGORIA_LABEL } from '@/lib/gooals'
 import type { GooalV2 } from '@/types/gooals'
 import {
-  ACCEPT_SELECTOR, BUCKET_PRUEBAS, MAX_BYTES_VIDEO, MAX_SEGUNDOS_VIDEO,
+  ACCEPT_SELECTOR, BUCKET_LOGROS, MAX_BYTES_VIDEO, MAX_SEGUNDOS_VIDEO,
   errorDeArchivo, errorDeVideo, esHeic, mimeDeArchivo,
-} from '@/lib/prueba-media'
+} from '@/lib/recuerdo-media'
 
 const MEGA = 1024 * 1024
 
@@ -31,14 +31,12 @@ export type ResultadoCompletado = {
 type Props = {
   /** Solo lo que el modal pinta y envía: así vale tanto un gooal del catálogo como uno de la lista del perfil. */
   gooal: Pick<GooalV2, 'id' | 'titulo' | 'categoria' | 'dificultad' | 'puntos'>
-  /** 'lista' completa un gooal ya añadido; 'directo' lo añade y lo completa. */
-  modo?: 'lista' | 'directo'
   onClose: () => void
   onCompletado: (resultado: ResultadoCompletado) => void
 }
 
-/** La prueba ya lista para subir: la foto convertida a JPG, o el vídeo tal cual. */
-type PruebaLista = {
+/** El recuerdo ya listo para subir: la foto convertida a JPG, o el vídeo tal cual. */
+type RecuerdoListo = {
   blob: Blob
   mime: string
   esVideo: boolean
@@ -104,11 +102,11 @@ function duracionVideo(file: Blob): Promise<number> {
   })
 }
 
-export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, onCompletado }: Props) {
+export default function AnadirFotoModal({ gooal, onClose, onCompletado }: Props) {
   const supabase = useMemo(() => createClient(), [])
   const inputId = useId()
 
-  const [prueba, setPrueba] = useState<PruebaLista | null>(null)
+  const [recuerdo, setRecuerdo] = useState<RecuerdoListo | null>(null)
   const [descripcion, setDescripcion] = useState('')
   const [preparando, setPreparando] = useState(false)
   const [subiendo, setSubiendo] = useState(false)
@@ -120,14 +118,14 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
   // La URL de la vista previa ocupa memoria hasta que se libera.
   const previewActual = useRef<string | null>(null)
   useEffect(() => {
-    previewActual.current = prueba?.preview ?? null
-  }, [prueba])
+    previewActual.current = recuerdo?.preview ?? null
+  }, [recuerdo])
   useEffect(() => () => {
     if (previewActual.current) URL.revokeObjectURL(previewActual.current)
   }, [])
 
-  const cambiarPrueba = (nueva: PruebaLista | null) => {
-    setPrueba(anterior => {
+  const cambiarRecuerdo = (nueva: RecuerdoListo | null) => {
+    setRecuerdo(anterior => {
       if (anterior) URL.revokeObjectURL(anterior.preview)
       return nueva
     })
@@ -155,7 +153,7 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
         }
         const errorFoto = errorDeArchivo({ type: 'image/jpeg', size: jpeg.size })
         if (errorFoto) { setError(errorFoto); return }
-        cambiarPrueba({ blob: jpeg, mime: 'image/jpeg', esVideo: false, preview: URL.createObjectURL(jpeg) })
+        cambiarRecuerdo({ blob: jpeg, mime: 'image/jpeg', esVideo: false, preview: URL.createObjectURL(jpeg) })
         return
       }
 
@@ -174,7 +172,7 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
           setError(`El vídeo dura ${Math.round(segundos)}s. El máximo son ${MAX_SEGUNDOS_VIDEO}s.`)
           return
         }
-        cambiarPrueba({ blob: file, mime, esVideo: true, preview: URL.createObjectURL(file) })
+        cambiarRecuerdo({ blob: file, mime, esVideo: true, preview: URL.createObjectURL(file) })
         return
       }
 
@@ -187,8 +185,8 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (ocupado) return
-    if (!prueba) {
-      setError('Primero añade una foto o un vídeo de tu prueba.')
+    if (!recuerdo) {
+      setError('Elige una foto o un vídeo para guardarlo.')
       return
     }
     setSubiendo(true)
@@ -196,31 +194,30 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
 
     try {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error('Tu sesión ha caducado. Vuelve a entrar para subir la prueba.')
+      if (!user) throw new Error('Tu sesión ha caducado. Vuelve a entrar para subir la foto.')
 
       // La subida va directa a Storage desde el navegador: un server action
       // tiene límite de tamaño de body y un vídeo de 9s se lo come. Por eso el
       // cubo privado conserva UNA política de escritura.
       // La carpeta <userId>/<gooalId>/ no es estética: la política del cubo solo
-      // deja subir a tu propia carpeta, y el servidor rechaza cualquier prueba
-      // que no esté en la del gooal que se completa.
-      const extension = !prueba.esVideo ? 'jpg' : prueba.mime === 'video/quicktime' ? 'mov' : 'mp4'
+      // deja subir a tu propia carpeta, y el servidor rechaza cualquier fichero
+      // que no esté en la del gooal al que se le añade.
+      const extension = !recuerdo.esVideo ? 'jpg' : recuerdo.mime === 'video/quicktime' ? 'mov' : 'mp4'
       const ruta = `${user.id}/${gooal.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${extension}`
 
       const { error: upError } = await supabase.storage
-        .from(BUCKET_PRUEBAS)
-        .upload(ruta, prueba.blob, { contentType: prueba.mime, upsert: false })
+        .from(BUCKET_LOGROS)
+        .upload(ruta, recuerdo.blob, { contentType: recuerdo.mime, upsert: false })
 
-      if (upError) throw new Error('No se pudo subir la prueba. Revisa tu conexión e inténtalo de nuevo.')
+      if (upError) throw new Error('No se pudo subir la foto. Revisa tu conexión e inténtalo de nuevo.')
 
       // Lo que se guarda es la RUTA, no una dirección. El cubo es privado: una
       // dirección pública no serviría para nada y encima mentiría. Para ver la
       // foto hay que pedirle al servidor una dirección firmada, que caduca.
-      const completar = modo === 'directo' ? anadirYCompletarGooal : completarGooal
-      const res = await completar(
+      const res = await completarGooal(
         gooal.id,
-        prueba.esVideo ? null : ruta,
-        prueba.esVideo ? ruta : null,
+        recuerdo.esVideo ? null : ruta,
+        recuerdo.esVideo ? ruta : null,
         descripcion.trim() || null
       )
 
@@ -233,7 +230,7 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
         subioDeNivel: Boolean(res.subioDeNivel),
       })
     } catch (err) {
-      console.error('[CompletarGooalModal]', err)
+      console.error('[AnadirFotoModal]', err)
       setError(err instanceof Error ? err.message : 'No se pudo completar el gooal.')
       setSubiendo(false)
     }
@@ -254,7 +251,7 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
         </div>
 
         <div className="px-5 py-3 flex items-center justify-between sticky top-0 bg-[#1E2120] border-b border-[#2A2E2C] z-10">
-          <h2 className="fuente-titular font-semibold text-[#FFFFFF] text-base">¡Lo conseguiste!</h2>
+          <h2 className="fuente-titular font-semibold text-[#FFFFFF] text-base">Añadir una foto</h2>
           <button
             onClick={onClose}
             disabled={subiendo}
@@ -275,7 +272,7 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
 
           <div>
             <p className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#7A8A85] mb-1.5">
-              Tu prueba
+              Tu foto o tu vídeo
             </p>
 
             {/*
@@ -292,13 +289,13 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
               className="sr-only"
             />
 
-            {prueba ? (
+            {recuerdo ? (
               <div className="w-full rounded-xl overflow-hidden border border-[#2A2E2C]" style={{ background: '#000' }}>
-                {prueba.esVideo ? (
-                  <video src={prueba.preview} controls playsInline style={{ width: '100%', display: 'block' }} />
+                {recuerdo.esVideo ? (
+                  <video src={recuerdo.preview} controls playsInline style={{ width: '100%', display: 'block' }} />
                 ) : (
                   // eslint-disable-next-line @next/next/no-img-element -- vista previa de un blob local, next/image no aplica
-                  <img src={prueba.preview} alt="Vista previa de tu prueba" style={{ width: '100%', display: 'block' }} />
+                  <img src={recuerdo.preview} alt="Vista previa de tu recuerdo" style={{ width: '100%', display: 'block' }} />
                 )}
               </div>
             ) : (
@@ -310,14 +307,14 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
                 {preparando ? (
                   <>
                     <span className="w-7 h-7 mb-2 border-2 border-[#2A2E2C] border-t-[#00D1A7] rounded-full animate-spin" />
-                    <p className="text-sm text-[#A3B1AC]">Preparando tu prueba...</p>
+                    <p className="text-sm text-[#A3B1AC]">Preparando tu foto...</p>
                   </>
                 ) : (
                   <>
                     <ImagePlus className="w-8 h-8 mb-1.5" />
                     <p className="text-sm">Subir foto o vídeo</p>
                     <p className="text-xs text-[#00D1A7]/70 mt-0.5 text-center">
-                      Obligatorio · vídeo hasta {MAX_SEGUNDOS_VIDEO}s y {MAX_BYTES_VIDEO / MEGA} MB
+                      Vídeo hasta {MAX_SEGUNDOS_VIDEO}s y {MAX_BYTES_VIDEO / MEGA} MB
                     </p>
                   </>
                 )}
@@ -330,7 +327,7 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
               <p role="alert" className="mt-2 text-sm text-[#FF5252] bg-[rgba(255,82,82,0.14)] px-3 py-2 rounded-lg">{error}</p>
             )}
 
-            {prueba && (
+            {recuerdo && (
               <div className="mt-1 flex gap-4">
                 <label
                   htmlFor={inputId}
@@ -340,7 +337,7 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
                 </label>
                 <button
                   type="button"
-                  onClick={() => { cambiarPrueba(null); setError('') }}
+                  onClick={() => { cambiarRecuerdo(null); setError('') }}
                   disabled={ocupado}
                   className="text-xs text-[#7A8A85] active:text-[#7A8A85] transition-colors min-h-[44px] flex items-center disabled:opacity-40"
                 >
@@ -378,12 +375,12 @@ export default function CompletarGooalModal({ gooal, modo = 'lista', onClose, on
             <button
               type="submit"
               disabled={ocupado}
-              className={`flex-[2] bg-[#00D1A7] active:bg-[#00B893] disabled:opacity-60 text-[#0B0B0B] py-3.5 rounded-xl transition-colors text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 ${prueba ? '' : 'opacity-50'}`}
+              className={`flex-[2] bg-[#00D1A7] active:bg-[#00B893] disabled:opacity-60 text-[#0B0B0B] py-3.5 rounded-xl transition-colors text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 ${recuerdo ? '' : 'opacity-50'}`}
             >
               {ocupado && (
                 <span className="w-4 h-4 border-2 border-[#0B0B0B] border-t-transparent rounded-full animate-spin" />
               )}
-              {subiendo ? 'Subiendo...' : preparando ? 'Preparando...' : `Completar y ganar ${gooal.puntos} puntos`}
+              {subiendo ? 'Subiendo...' : preparando ? 'Preparando...' : 'Guardar la foto'}
             </button>
           </div>
         </form>

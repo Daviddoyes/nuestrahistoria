@@ -10,7 +10,7 @@ import {
 import GooalV2DetailModal from './GooalV2DetailModal'
 import ChipCategoria from './ChipCategoria'
 import SugerirGooalSheet from './SugerirGooalSheet'
-import type { ResultadoCompletado } from './CompletarGooalModal'
+import type { ResultadoCompletado } from './AnadirFotoModal'
 import type { GooalV2, EstadoUserGooal } from '@/types/gooals'
 import { MARCA_ESTADO } from '@/lib/estado-gooal'
 import MarcaEstadoGooal from './MarcaEstadoGooal'

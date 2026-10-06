@@ -80,9 +80,9 @@ export default function CompartirPerfilStory({ perfil }: Props) {
         ctx.fillText(`@${perfil.usuario.username}`, STORY_W / 2, ny + 6)
       }
 
-      // Mandan los gooals conquistados, como en el perfil; los puntos van debajo
+      // Mandan los gooals conseguidos, como en el perfil; los puntos van debajo
       // y más pequeños. La app va de cuántas cosas distintas has vivido.
-      const conquistados = perfil.conquistados.length
+      const conquistados = perfil.conseguidos.length
       // next/font registra Poppins con un nombre interno generado, no "Poppins":
       // se lee de la variable CSS y se espera a que cargue, o el canvas pintaría
       // con la fuente de reserva sin avisar.

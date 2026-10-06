@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { calcularNivel } from '@/lib/niveles'
-import type { ResultadoCompletado } from './CompletarGooalModal'
+import type { ResultadoCompletado } from './AnadirFotoModal'
 
 type Props = {
   resultado: ResultadoCompletado

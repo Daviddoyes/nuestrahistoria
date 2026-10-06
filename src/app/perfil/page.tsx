@@ -1,29 +1,30 @@
 'use client'
 
-import { Suspense, useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import { Suspense, useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ArrowLeft, Search } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
-import { getPerfil, seguirUsuario, dejarDeSeguir, quitarGooal } from '@/lib/actions'
+import {
+  getPerfil, seguirUsuario, dejarDeSeguir, getGooalDeLista, getMisEstadosGooals,
+} from '@/lib/actions'
+import { progresoNivel } from '@/lib/niveles'
 import AppShell, { PantallaCargando, EstadoVacio } from '@/components/AppShell'
 import ListaUsuariosModal from '@/components/ListaUsuariosModal'
 import EditarPerfilModal from '@/components/EditarPerfilModal'
-import PostDetailModal from '@/components/PostDetailModal'
 import BuscarUsuariosSheet from '@/components/BuscarUsuariosSheet'
 import InvitarAmigoSheet from '@/components/InvitarAmigoSheet'
-import CompletarGooalModal, { type ResultadoCompletado } from '@/components/CompletarGooalModal'
+import GooalV2DetailModal from '@/components/GooalV2DetailModal'
 import CelebracionPuntos from '@/components/CelebracionPuntos'
+import type { ResultadoCompletado } from '@/components/AnadirFotoModal'
 import CabeceraPerfil from '@/components/perfil/CabeceraPerfil'
-import TarjetaEnComun from '@/components/perfil/TarjetaEnComun'
 import TarjetaCifras from '@/components/perfil/TarjetaCifras'
 import PastillasCategorias from '@/components/perfil/PastillasCategorias'
 import PestanasPerfil, { type PestanaPerfil } from '@/components/perfil/PestanasPerfil'
-import RejillaConquistados from '@/components/perfil/RejillaConquistados'
-import ListaSinFoto from '@/components/perfil/ListaSinFoto'
-import VisorLogro from '@/components/perfil/VisorLogro'
+import ListaPerfil from '@/components/perfil/ListaPerfil'
+import FiltroEnComun from '@/components/perfil/FiltroEnComun'
 import { ProveedorFotosPrivadas } from '@/components/FotosPrivadas'
 import AjustesSheet from '@/components/perfil/AjustesSheet'
-import type { Conquistado, GooalResumen, PerfilCompleto } from '@/types/gooals'
+import type { EstadoUserGooal, GooalV2, LineaPerfil, PerfilCompleto } from '@/types/gooals'
 
 export default function PerfilPage() {
   // useSearchParams obliga a un límite de Suspense para poder prerenderizar.
@@ -32,6 +33,13 @@ export default function PerfilPage() {
       <PerfilContenido />
     </Suspense>
   )
+}
+
+/** Lo que hace falta para abrir la ficha de una línea de la lista. */
+type FichaAbierta = {
+  gooal: GooalV2
+  /** La fila de esa persona, solo si su foto se puede ver. null si no. */
+  logro: string | null
 }
 
 function PerfilContenido() {
@@ -46,39 +54,47 @@ function PerfilContenido() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [siguiendoAccion, setSiguiendoAccion] = useState(false)
-  const [pestana, setPestana] = useState<PestanaPerfil>('conquistados')
+  const [pestana, setPestana] = useState<PestanaPerfil>('conseguidos')
+  const [soloEnComun, setSoloEnComun] = useState(false)
 
   const [lista, setLista] = useState<'seguidores' | 'siguiendo' | null>(null)
   const [ajustes, setAjustes] = useState(false)
   const [editando, setEditando] = useState(false)
-  const [postAbierto, setPostAbierto] = useState<string | null>(null)
-  const [visor, setVisor] = useState<Conquistado | null>(null)
   const [buscando, setBuscando] = useState(false)
   const [invitando, setInvitando] = useState(false)
-  const [completando, setCompletando] = useState<GooalResumen | null>(null)
+  const [ficha, setFicha] = useState<FichaAbierta | null>(null)
+  const [abriendo, setAbriendo] = useState(false)
   const [celebracion, setCelebracion] = useState<ResultadoCompletado | null>(null)
 
-  const pestanasRef = useRef<HTMLDivElement>(null)
+  /**
+   * MIS estados, que no son los de la persona del perfil. La ficha ofrece
+   * acciones ("Añadir a mi lista", "Ya lo hice") y tienen que hablar de MI
+   * relación con ese gooal: abrir el conseguido de otra persona y leer "Ya lo
+   * conseguiste" sería mentira.
+   */
+  const [misEstados, setMisEstados] = useState<Record<string, EstadoUserGooal>>({})
 
   /**
    * `silencioso` recarga sin pantalla de carga ni cambiar de pestaña: tras
-   * completar un gooal o fallar un "Seguir", la página no debe parpadear. Al
+   * conseguir un gooal o fallar un "Seguir", la página no debe parpadear. Al
    * entrar en un perfil (o saltar a otro) sí: si no, se verían un instante los
    * datos del anterior.
    */
   const cargar = useCallback(async (silencioso = false) => {
     if (!silencioso) {
       setLoading(true)
-      setPestana('conquistados')
+      setPestana('conseguidos')
+      setSoloEnComun(false)
     }
     try {
-      const p = await getPerfil(username ?? undefined)
+      const [p, estados] = await Promise.all([getPerfil(username ?? undefined), getMisEstadosGooals()])
       if (!p) {
         if (username) setError('No existe ningún perfil con ese usuario.')
         else router.push('/')
         return
       }
       setPerfil(p)
+      setMisEstados(estados)
       setError('')
     } catch (e) {
       console.error('[perfil]', e)
@@ -105,50 +121,49 @@ function PerfilContenido() {
       ? await dejarDeSeguir(perfil.usuario.id)
       : await seguirUsuario(perfil.usuario.id)
 
-    if (!res.success) {
-      setError(res.error ?? 'No se pudo completar la acción.')
-      await cargar(true)
-    }
+    if (!res.success) setError(res.error ?? 'No se pudo completar la acción.')
+
+    // Se recarga también cuando va bien: seguir a alguien puede convertiros en
+    // amigos (amigo = os seguís los dos) y entonces sus fotos pasan a verse. Sin
+    // esto, la lista se quedaría sin sus iconitos de cámara hasta volver a entrar.
+    await cargar(true)
     setSiguiendoAccion(false)
   }
 
   const irAPerfil = (u: string | null) => {
     setLista(null)
     setBuscando(false)
-    setPostAbierto(null)
     if (!u) return
     if (perfil?.esPropio && u === perfil.usuario.username) return
     router.push(`/perfil?u=${encodeURIComponent(u)}`)
   }
 
-  // Sin post en el muro (falló al publicarse) se abre la prueba en un visor
-  // simple: el recuerdo está en user_gooals igualmente.
-  const abrirConquistado = (c: Conquistado) => {
-    if (c.postId) setPostAbierto(c.postId)
-    else setVisor(c)
-  }
-
-  const verPendientes = () => {
-    setPestana('pendientes')
-    pestanasRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
-
-  const handleQuitarPendiente = async (gooal: GooalResumen) => {
-    const res = await quitarGooal(gooal.id)
-    if (!res.success) {
-      setError('No hemos podido quitar el gooal. Inténtalo de nuevo.')
-      return
+  /**
+   * Al tocar una línea se abre el gooal. La lista solo lleva lo justo para
+   * pintarse, así que la fila entera del catálogo se pide ahora.
+   */
+  const abrirLinea = async (linea: LineaPerfil) => {
+    if (abriendo) return
+    setAbriendo(true)
+    setError('')
+    try {
+      const g = await getGooalDeLista(linea.userGooalId)
+      if (g) setFicha({ gooal: g, logro: linea.fotoVisible ? linea.userGooalId : null })
+      else setError('Este gooal ya no está disponible.')
+    } catch (e) {
+      console.error('[perfil:ficha]', e)
+      setError('No hemos podido abrir este gooal. Inténtalo de nuevo.')
+    } finally {
+      setAbriendo(false)
     }
-    // Silencioso y sin cambiar de pestaña: quien acaba de quitar uno quiere
-    // seguir viendo su lista de pendientes, no volver a conquistados.
-    await cargar(true)
   }
 
-  const handleCompletado = async (resultado: ResultadoCompletado) => {
-    setCompletando(null)
-    setCelebracion(resultado)
-    setPestana('conquistados')
-    await cargar(true)
+  const cambiarPestana = (nueva: PestanaPerfil) => {
+    setPestana(nueva)
+    // El filtro vuelve a "Todos" al cambiar de pestaña: lo que compartís en una
+    // no dice nada de la otra, y si en la nueva no hay nada en común la pastilla
+    // desaparece y el filtro se quedaría puesto, enseñando una lista vacía.
+    setSoloEnComun(false)
   }
 
   const handleLogout = async () => {
@@ -185,10 +200,13 @@ function PerfilContenido() {
     </button>
   )
 
+  const lineas = pestana === 'conseguidos' ? perfil.conseguidos : perfil.pendientes
+  const cuantasEnComun = lineas.filter(l => l.enComun).length
+  const visibles = soloEnComun ? lineas.filter(l => l.enComun) : lineas
+  const nivel = progresoNivel(perfil.puntos).actual
+
   return (
-    // El proveedor envuelve la pantalla entera, modales incluidos: la rejilla y
-    // el visor piden la misma foto y así sale en una sola llamada.
-    <ProveedorFotosPrivadas>
+    <>
       <AppShell tab="perfil" fotoPerfil={perfil.esPropio ? perfil.usuario.foto_perfil_url : null}>
         <div style={{ padding: '0 20px 32px' }}>
 
@@ -220,6 +238,7 @@ function PerfilContenido() {
             seguidores={perfil.seguidores}
             siguiendo={perfil.siguiendo}
             siguiendoAccion={siguiendoAccion}
+            nivel={perfil.esPropio ? null : nivel}
             onSeguir={handleSeguir}
             onAjustes={() => setAjustes(true)}
             onLista={setLista}
@@ -229,61 +248,53 @@ function PerfilContenido() {
             <p role="alert" className="text-sm text-[#FF5252] bg-[rgba(255,82,82,0.14)] px-3 py-2 rounded-lg mt-4">{error}</p>
           )}
 
-          {/* Lo que os une va lo primero tras la cabecera: es lo primero que se ve de alguien. */}
-          {perfil.enComun && (
-            <div style={{ marginTop: 14 }}>
-              <TarjetaEnComun enComun={perfil.enComun} onVerPendientes={verPendientes} />
-            </div>
-          )}
-
           <div style={{ marginTop: 14 }}>
-            <TarjetaCifras conquistados={perfil.conquistados.length} puntos={perfil.puntos} />
+            <TarjetaCifras
+              conseguidos={perfil.conseguidos.length}
+              pendientes={perfil.pendientes.length}
+              puntos={perfil.puntos}
+              conProgreso={perfil.esPropio}
+            />
           </div>
 
+          {/* Las categorías van entre las cifras y las pestañas, y comparten el
+              color con las barritas de la lista: "mucho viajes y poco deporte"
+              dice qué clase de persona es alguien mejor que el número total. */}
           <div style={{ marginTop: 14 }}>
             <PastillasCategorias conteos={perfil.porCategoria} />
           </div>
 
-          <div ref={pestanasRef} style={{ marginTop: 20, scrollMarginTop: 8 }}>
-            <PestanasPerfil
-              activa={pestana}
-              conquistados={perfil.conquistados.length}
-              pendientes={perfil.pendientes.length}
-              onCambiar={setPestana}
-            />
+          <div style={{ marginTop: 20 }}>
+            <PestanasPerfil activa={pestana} onCambiar={cambiarPestana} />
           </div>
 
-          {/* Una rama por pestaña y no un "si... si no": con dos estados da igual,
-              pero el atajo binario es justo lo que escondió un estado entero el día
-              que hubo un tercero. Si vuelve a haberlo, esto no miente. */}
-          <div role="tabpanel" style={{ paddingTop: pestana === 'conquistados' ? 2 : 0 }}>
-            {pestana === 'conquistados' && (
-              perfil.conquistados.length === 0 ? (
+          {/* La misma pantalla en el perfil propio y en el ajeno. La única
+              diferencia es esta pastilla, y se quita ella sola cuando no hay nada
+              en común, que con pocos usuarios es casi siempre. */}
+          <FiltroEnComun
+            activo={soloEnComun}
+            total={lineas.length}
+            enComun={cuantasEnComun}
+            onCambiar={setSoloEnComun}
+          />
+
+          <div role="tabpanel" style={{ paddingTop: 12 }}>
+            {lineas.length === 0 ? (
+              pestana === 'conseguidos' ? (
                 <EstadoVacio
                   titulo={perfil.esPropio ? 'Aún no has conseguido ningún gooal.' : 'Todavía no ha conseguido ningún gooal.'}
                   texto={perfil.esPropio ? 'Elige uno y ve a por él.' : undefined}
                   accion={perfil.esPropio ? botonExplorar : undefined}
                 />
               ) : (
-                <RejillaConquistados conquistados={perfil.conquistados} onAbrir={abrirConquistado} />
-              )
-            )}
-
-            {pestana === 'pendientes' && (
-              perfil.pendientes.length === 0 ? (
                 <EstadoVacio
                   titulo={perfil.esPropio ? 'Tu lista de pendientes está vacía.' : 'No tiene gooals pendientes.'}
                   texto={perfil.esPropio ? 'Añade los que quieras vivir desde Explorar.' : undefined}
                   accion={perfil.esPropio ? botonExplorar : undefined}
                 />
-              ) : (
-                <ListaSinFoto
-                  filas={perfil.pendientes}
-                  textoAccion="Ya lo hice"
-                  onAccion={perfil.esPropio ? setCompletando : undefined}
-                  onQuitar={perfil.esPropio ? handleQuitarPendiente : undefined}
-                />
               )
+            ) : (
+              <ListaPerfil lineas={visibles} onAbrir={abrirLinea} />
             )}
           </div>
         </div>
@@ -322,16 +333,6 @@ function PerfilContenido() {
         />
       )}
 
-      {postAbierto && (
-        <PostDetailModal
-          postId={postAbierto}
-          onClose={() => setPostAbierto(null)}
-          onAutorClick={irAPerfil}
-        />
-      )}
-
-      {visor && <VisorLogro conquistado={visor} onClose={() => setVisor(null)} />}
-
       {buscando && (
         <BuscarUsuariosSheet
           onClose={() => setBuscando(false)}
@@ -341,18 +342,25 @@ function PerfilContenido() {
 
       {invitando && <InvitarAmigoSheet onClose={() => setInvitando(false)} />}
 
-      {completando && (
-        <CompletarGooalModal
-          gooal={completando}
-          modo="lista"
-          onClose={() => setCompletando(null)}
-          onCompletado={handleCompletado}
-        />
+      {/* El proveedor envuelve SOLO la ficha, que es lo único de esta pantalla
+          que puede enseñar la foto de alguien. La lista son títulos y no firma
+          ninguna dirección: ese es medio motivo de que sea una lista. */}
+      {ficha && (
+        <ProveedorFotosPrivadas>
+          <GooalV2DetailModal
+            gooal={ficha.gooal}
+            estado={misEstados[ficha.gooal.id]}
+            logro={ficha.logro}
+            onClose={() => setFicha(null)}
+            onCambio={() => cargar(true)}
+            onCompletado={setCelebracion}
+          />
+        </ProveedorFotosPrivadas>
       )}
 
       {celebracion && (
         <CelebracionPuntos resultado={celebracion} onClose={() => setCelebracion(null)} />
       )}
-    </ProveedorFotosPrivadas>
+    </>
   )
 }

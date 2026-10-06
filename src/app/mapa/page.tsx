@@ -9,7 +9,7 @@ import AppShell, { PantallaCargando } from '@/components/AppShell'
 import ChipCategoria from '@/components/ChipCategoria'
 import GooalV2DetailModal from '@/components/GooalV2DetailModal'
 import CelebracionPuntos from '@/components/CelebracionPuntos'
-import type { ResultadoCompletado } from '@/components/CompletarGooalModal'
+import type { ResultadoCompletado } from '@/components/AnadirFotoModal'
 import type { EstadoUserGooal, GooalV2, Profile } from '@/types/gooals'
 
 /**

@@ -11,6 +11,12 @@ type Props = {
   seguidores: number
   siguiendo: number
   siguiendoAccion: boolean
+  /**
+   * El nivel, solo en el perfil de otra persona. En el propio ya está en la
+   * tarjeta de cifras con cuánto te falta para subir, que es lo que allí
+   * importa; aquí basta la palabra.
+   */
+  nivel: { nombre: string; color: string } | null
   onSeguir: () => void
   onAjustes: () => void
   onLista: (tipo: 'seguidores' | 'siguiendo') => void
@@ -18,7 +24,7 @@ type Props = {
 
 /** Avatar, nombre, @usuario y contadores; a la derecha, ajustes o "Seguir". */
 export default function CabeceraPerfil({
-  usuario, esPropio, siguiendolo, seguidores, siguiendo, siguiendoAccion, onSeguir, onAjustes, onLista,
+  usuario, esPropio, siguiendolo, seguidores, siguiendo, siguiendoAccion, nivel, onSeguir, onAjustes, onLista,
 }: Props) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 14, paddingTop: 4 }}>
@@ -35,9 +41,22 @@ export default function CabeceraPerfil({
         }}>
           {usuario.nombre}
         </p>
-        <p style={{ fontSize: 13, color: '#7A8A85', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          @{usuario.username ?? usuario.nombre}
-        </p>
+        {/* El nivel va en su propio hueco y no dentro del texto del usuario: ahí
+            dentro, un nombre largo lo empujaba fuera con los puntos suspensivos
+            y el nivel no se veía nunca. Lo que se recorta es el nombre. */}
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 5, marginTop: 2, minWidth: 0 }}>
+          <span style={{
+            fontSize: 13, color: '#7A8A85', minWidth: 0,
+            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+          }}>
+            @{usuario.username ?? usuario.nombre}
+          </span>
+          {nivel && (
+            <span style={{ fontSize: 13, color: nivel.color, fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0 }}>
+              · {nivel.nombre}
+            </span>
+          )}
+        </div>
         {/* 44 px de alto aunque el texto sea pequeño: es la zona mínima para
             acertar con el dedo. El margen negativo evita que engorde la cabecera. */}
         <div style={{ display: 'flex', gap: 12, margin: '-6px 0 -10px' }}>
@@ -46,7 +65,7 @@ export default function CabeceraPerfil({
               key={tipo}
               onClick={() => onLista(tipo)}
               className="active:opacity-60 transition-opacity"
-              style={{ fontSize: 13, color: '#A3B1AC', minHeight: 44, padding: 0 }}
+              style={{ fontSize: 13, color: '#A3B1AC', minHeight: 44, padding: 0, whiteSpace: 'nowrap' }}
             >
               <span style={{ color: '#FFFFFF', fontWeight: 700 }}>{tipo === 'seguidores' ? seguidores : siguiendo}</span> {tipo}
             </button>

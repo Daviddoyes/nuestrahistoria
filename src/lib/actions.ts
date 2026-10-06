@@ -6,13 +6,14 @@ import { createServiceRoleClient } from '@/lib/supabase/service'
 import { calcularNivel } from '@/lib/niveles'
 import { contarPorCategoria, normalizarCategoriaGooal } from '@/lib/gooals'
 import { limpiarBusqueda } from '@/lib/busqueda'
+import { amigosDe, puedeVerLaFoto } from '@/lib/permisos'
 import {
-  BUCKET_PRUEBAS, errorDeArchivo, rutaDePrueba, tipoDePrueba, type TipoPrueba,
-} from '@/lib/prueba-media'
+  BUCKET_LOGROS, errorDeArchivo, rutaDeRecuerdo, tipoDeRecuerdo, type TipoRecuerdo,
+} from '@/lib/recuerdo-media'
 import type {
   GooalV2, MuroPostFeed, UsuarioMini,
   EstadoUserGooal, FiltrosCatalogo, FiltrosMapa, GooalMapa, FiltrosPines, PinMapa, Profile,
-  PerfilCompleto, Conquistado, Pendiente, EnComun, GooalResumen,
+  PerfilCompleto, LineaPerfil, GooalResumen, VisibilidadFoto,
 } from '@/types/gooals'
 
 /** Tamaño de página de Explorar. */
@@ -505,6 +506,26 @@ export async function getGooalV2(id: string): Promise<GooalV2 | null> {
 }
 
 /**
+ * El gooal de UNA FILA concreta de la lista de alguien, para abrir su ficha
+ * desde un perfil.
+ *
+ * Se pide por el id de la fila y SIN filtrar por estado, a propósito, porque el
+ * perfil tampoco filtra: lo que alguien ya tiene es suyo aunque su gooal haya
+ * pasado a borrador, y la ficha tiene que poder abrirse igual. getGooalV2() no
+ * sirve aquí porque exige 'verificado', y esos gooals se verían en la lista sin
+ * poder abrirlos, que es la clase de fallo que no da ningún error.
+ */
+export async function getGooalDeLista(userGooalId: string): Promise<GooalV2 | null> {
+  const service = createServiceRoleClient()
+  const { data } = await service
+    .from('user_gooals')
+    .select('gooal:gooals_v2(*)')
+    .eq('id', userGooalId)
+    .maybeSingle()
+  return (data as { gooal: GooalV2 | null } | null)?.gooal ?? null
+}
+
+/**
  * Qué gooals tiene ya el usuario, para pintar los checks del grid.
  *
  * Va aparte del catálogo porque no depende de los filtros ni de la página: se
@@ -594,12 +615,12 @@ export async function getDetalleGooal(gooalId: string): Promise<{
   vecesConseguido: number
   ultimos: UsuarioMini[]
   /**
-   * Si quien mira ya tiene prueba de este gooal. Lo necesita la ficha para
+   * Si quien mira ya tiene una foto de este gooal. Lo necesita la ficha para
    * saber si puede ofrecer quitarlo: un conseguido sin foto se puede deshacer,
    * uno con foto no. Sin esto la ficha enseñaría un botón que no hace nada, o
    * escondería uno que sí hace falta — que es lo que pasaba.
    */
-  tengoPrueba: boolean
+  tieneFoto: boolean
 }> {
   const service = createServiceRoleClient()
   const viewerId = await getUserId()
@@ -612,7 +633,7 @@ export async function getDetalleGooal(gooalId: string): Promise<{
     .order('completado_at', { ascending: false, nullsFirst: false })
     .limit(8)
 
-  let tengoPrueba = false
+  let tieneFoto = false
   if (viewerId) {
     const { data: mia } = await service
       .from('user_gooals')
@@ -620,11 +641,11 @@ export async function getDetalleGooal(gooalId: string): Promise<{
       .eq('user_id', viewerId).eq('gooal_id', gooalId)
       .maybeSingle()
     const fila = mia as { foto_url: string | null; video_url: string | null } | null
-    tengoPrueba = Boolean(fila?.foto_url || fila?.video_url)
+    tieneFoto = Boolean(fila?.foto_url || fila?.video_url)
   }
 
   const userIds = [...new Set(((conseguidos ?? []) as { user_id: string }[]).map(c => c.user_id))]
-  if (userIds.length === 0) return { vecesConseguido: count ?? 0, ultimos: [], tengoPrueba }
+  if (userIds.length === 0) return { vecesConseguido: count ?? 0, ultimos: [], tieneFoto }
 
   const { data: perfiles } = await service.from('profiles').select(PERFIL_CAMPOS).in('id', userIds)
   const porId = new Map(((perfiles ?? []) as PerfilRow[]).map(p => [p.id, aUsuarioMini(p)]))
@@ -632,7 +653,7 @@ export async function getDetalleGooal(gooalId: string): Promise<{
   return {
     vecesConseguido: count ?? 0,
     ultimos: userIds.map(id => porId.get(id)).filter((u): u is UsuarioMini => Boolean(u)),
-    tengoPrueba,
+    tieneFoto,
   }
 }
 
@@ -807,17 +828,17 @@ export async function quitarGooal(gooalId: string): Promise<{ success: boolean }
   return { success: true }
 }
 
-const PRUEBA_NO_VALIDA = 'No hemos podido verificar tu prueba. Vuelve a subir la foto o el vídeo.'
+const SUBIDA_NO_VALIDA = 'No hemos podido guardar esa foto. Vuelve a elegirla e inténtalo otra vez.'
 
 /**
- * Comprueba que la prueba es de verdad una subida de este usuario para este
+ * Comprueba que el fichero es de verdad una subida de este usuario para este
  * gooal. Devuelve el mensaje de error, o null si vale.
  *
  * Además de la URL se mira el fichero en Storage: que exista y que su peso y su
  * tipo cumplan los límites. Los límites del navegador los puede saltar
  * cualquiera que llame a la Server Action a mano.
  */
-async function validarPrueba(
+async function validarRecuerdo(
   service: ReturnType<typeof createServiceRoleClient>,
   userId: string,
   gooalId: string,
@@ -826,19 +847,19 @@ async function validarPrueba(
 ): Promise<string | null> {
   if (Boolean(fotoUrl) === Boolean(videoUrl)) return 'Necesitas subir una foto o un vídeo.'
 
-  const tipoEsperado: TipoPrueba = fotoUrl ? 'foto' : 'video'
-  const ruta = rutaDePrueba((fotoUrl ?? videoUrl) as string, userId, gooalId)
-  if (!ruta) return PRUEBA_NO_VALIDA
+  const tipoEsperado: TipoRecuerdo = fotoUrl ? 'foto' : 'video'
+  const ruta = rutaDeRecuerdo((fotoUrl ?? videoUrl) as string, userId, gooalId)
+  if (!ruta) return SUBIDA_NO_VALIDA
 
-  const { data: fichero, error } = await service.storage.from(BUCKET_PRUEBAS).info(ruta)
-  if (error || !fichero) return PRUEBA_NO_VALIDA
+  const { data: fichero, error } = await service.storage.from(BUCKET_LOGROS).info(ruta)
+  if (error || !fichero) return SUBIDA_NO_VALIDA
 
-  if (tipoDePrueba(fichero.contentType ?? '') !== tipoEsperado) return PRUEBA_NO_VALIDA
+  if (tipoDeRecuerdo(fichero.contentType ?? '') !== tipoEsperado) return SUBIDA_NO_VALIDA
   return errorDeArchivo({ type: fichero.contentType ?? '', size: fichero.size ?? 0 })
 }
 
 /**
- * Completa un gooal: guarda la prueba, recalcula puntos y nivel, publica en el
+ * Completa un gooal: guarda la foto, recalcula puntos y nivel, publica en el
  * muro y actualiza el contador del catálogo. La foto/vídeo ya viene subida a
  * 'gooals-media' desde el cliente (el server action tiene límite de body).
  */
@@ -861,8 +882,8 @@ export async function completarGooal(
 
     const service = createServiceRoleClient()
 
-    const errorPrueba = await validarPrueba(service, userId, gooalId, fotoUrl, videoUrl)
-    if (errorPrueba) return { success: false, error: errorPrueba }
+    const errorRecuerdo = await validarRecuerdo(service, userId, gooalId, fotoUrl, videoUrl)
+    if (errorRecuerdo) return { success: false, error: errorRecuerdo }
 
     // SIN filtro de estado, a propósito. Completar un pendiente propio tiene que
     // funcionar aunque ese gooal haya pasado a borrador después de añadirlo: lo
@@ -925,7 +946,7 @@ export async function completarGooal(
     const { puntos, nivel } = await sincronizarPuntos(service, userId)
 
     // El post del muro es la cara pública del completado: una fila por gooal,
-    // así que se reemplaza si el usuario vuelve a subir prueba del mismo.
+    // así que se reemplaza si el usuario vuelve a subir una foto del mismo.
     const userGooalId = (userGooal as { id: string }).id
     await service.from('muro_posts').delete().eq('user_gooal_id', userGooalId)
     const { error: postError } = await service.from('muro_posts').insert({
@@ -959,18 +980,6 @@ export async function completarGooal(
     console.error('[completarGooal]', e)
     return { success: false, error: 'No se pudo completar el gooal.' }
   }
-}
-
-/** "Ya lo hice": añade el gooal a la lista y lo completa en un solo paso. */
-export async function anadirYCompletarGooal(
-  gooalId: string,
-  fotoUrl: string | null,
-  videoUrl: string | null,
-  descripcion: string | null
-) {
-  const anadido = await anadirGooal(gooalId)
-  if (!anadido.success) return { success: false as const, error: anadido.error }
-  return completarGooal(gooalId, fotoUrl, videoUrl, descripcion)
 }
 
 // ── Seguidores ───────────────────────────────────────────────
@@ -1060,9 +1069,6 @@ export async function getListaSeguidores(
 const FILAS_POR_VUELTA = 1000
 
 /** Lo que enseña la tarjeta "en común": 4 miniaturas y 5 títulos. El resto es un número. */
-const EN_COMUN_MINIATURAS = 4
-const EN_COMUN_TITULOS = 5
-
 /**
  * Lee una consulta entera, de 1.000 en 1.000. Quien llama debe ordenar por algo
  * que acabe en `id`: sin un orden estable, dos vueltas pueden repetir una fila o
@@ -1093,17 +1099,19 @@ type FilaUserGooal = {
   id: string
   foto_url: string | null
   video_url: string | null
+  visibilidad: VisibilidadFoto | null
   puntos_ganados: number | null
-  completado_at: string | null
   gooal: GooalResumen | null
-  posts: { id: string }[] | null
 }
 
 /**
- * Los gooals de un usuario en un estado, con su gooal del catálogo y su post del
- * muro traídos en la misma consulta. Así no hace falta mandar a la base listas de
- * miles de ids con `.in()`, que además de lentas acaban rompiendo por la
- * longitud de la URL.
+ * Los gooals de un usuario en un estado, con su gooal del catálogo traído en la
+ * misma consulta. Así no hace falta mandar a la base listas de miles de ids con
+ * `.in()`, que además de lentas acaban rompiendo por la longitud de la URL.
+ *
+ * NO se trae el post del muro. El perfil es una lista de títulos y al tocar uno
+ * se abre su ficha, no el post: traer el post era una tabla más por cada perfil
+ * para un dato que ya no se usa.
  */
 function listarUserGooals(
   service: ReturnType<typeof createServiceRoleClient>,
@@ -1119,8 +1127,8 @@ function listarUserGooals(
       // borrador. Filtrar por estado (o convertir este join en !inner con
       // gooals_v2.estado=eq.verificado) vaciaría el perfil de la gente.
       .select(
-        'id, foto_url, video_url, puntos_ganados, completado_at, ' +
-        'gooal:gooals_v2(id, titulo, categoria, dificultad, puntos, ciudad), posts:muro_posts(id)'
+        'id, foto_url, video_url, visibilidad, puntos_ganados, ' +
+        'gooal:gooals_v2(id, titulo, categoria, dificultad, puntos, ciudad, imagen_url)'
       )
       .eq('user_id', userId)
       .eq('estado', estado)
@@ -1148,31 +1156,22 @@ function listarEstados(
 }
 
 /**
- * Lo que comparten quien mira y la persona del perfil: gooals que habéis
- * conseguido los dos, y gooals que tenéis pendientes los dos. Se conserva el
- * orden de la otra persona, lo más reciente suyo primero.
+ * Los gooals que quien mira tiene en ese mismo estado. Es con lo que se marca
+ * cada línea como "en común".
  *
- * SIN filtro del estado del gooal, a propósito: cruza listas de lo que cada uno
- * ya tiene. Si un gooal compartido pasa a borrador, los dos lo siguen teniendo
- * en común.
+ * Antes esto devolvía una MUESTRA (cuatro miniaturas y cinco títulos) para una
+ * tarjeta aparte. Ya no: la pastilla de "En común" filtra la lista entera, y
+ * para filtrar hay que saberlo de TODAS las líneas, no de las cuatro primeras.
+ *
+ * SIN filtro del estado del gooal, a propósito: cruza lo que cada uno ya tiene.
+ * Si un gooal compartido pasa a borrador, los dos lo siguen teniendo en común.
  */
-function calcularEnComun(
-  mios: { gooal_id: string; estado: EstadoUserGooal }[],
-  suyosConseguidos: Conquistado[],
-  suyosPendientes: Pendiente[]
-): EnComun {
-  const misConseguidos = new Set(mios.filter(m => m.estado === 'completado').map(m => m.gooal_id))
-  const misPendientes = new Set(mios.filter(m => m.estado === 'pendiente').map(m => m.gooal_id))
-
-  const conseguidos = suyosConseguidos.filter(c => misConseguidos.has(c.gooal.id))
-  const pendientes = suyosPendientes.filter(p => misPendientes.has(p.gooal.id)).map(p => p.gooal)
-
-  return {
-    totalConseguidos: conseguidos.length,
-    conseguidos: conseguidos.slice(0, EN_COMUN_MINIATURAS),
-    totalPendientes: pendientes.length,
-    pendientes: pendientes.slice(0, EN_COMUN_TITULOS),
-  }
+function losMiosEnEstado(
+  mios: { gooal_id: string; estado: EstadoUserGooal }[] | null,
+  estado: EstadoUserGooal
+): Set<string> {
+  if (!mios) return new Set()
+  return new Set(mios.filter(m => m.estado === estado).map(m => m.gooal_id))
 }
 
 /**
@@ -1198,7 +1197,7 @@ export async function getPerfil(username?: string): Promise<PerfilCompleto | nul
   const esPropio = usuario.id === viewerId
   const idVisitante = !esPropio ? viewerId : null
 
-  const [filasConquistados, filasPendientes, seguidoresRes, siguiendoRes, siguiendoloRes, misEstados] = await Promise.all([
+  const [filasConseguidos, filasPendientes, seguidoresRes, siguiendoRes, siguiendoloRes, misEstados, amigos] = await Promise.all([
     listarUserGooals(service, usuario.id, 'completado'),
     listarUserGooals(service, usuario.id, 'pendiente'),
     service.from('follows').select('id', { count: 'exact', head: true }).eq('following_id', usuario.id),
@@ -1207,26 +1206,40 @@ export async function getPerfil(username?: string): Promise<PerfilCompleto | nul
       ? service.from('follows').select('id').eq('follower_id', idVisitante).eq('following_id', usuario.id).maybeSingle()
       : Promise.resolve({ data: null }),
     idVisitante ? listarEstados(service, idVisitante) : Promise.resolve(null),
+    // UNA consulta para todo el perfil. Decide si el iconito de cámara sale o
+    // no, y eso no se puede resolver fila a fila sin una consulta por fila.
+    idVisitante ? amigosDe(idVisitante) : Promise.resolve(new Set<string>()),
   ])
 
   // La clave foránea borra la fila si se borra su gooal del catálogo; aun así se
   // descarta cualquiera que llegue sin él: mejor una casilla menos que una rota.
   const conGooal = (f: FilaUserGooal): f is FilaUserGooal & { gooal: GooalResumen } => Boolean(f.gooal)
 
-  const aConquistado = (filas: FilaUserGooal[]): Conquistado[] =>
+  /**
+   * Una fila de la base en una línea de la lista.
+   *
+   * `conseguido` decide de dónde salen los puntos: los que ganó de verdad si ya
+   * lo consiguió, los que da el gooal hoy si solo lo tiene pendiente. No es lo
+   * mismo: un cambio de baremo no reescribe el histórico (ver gooals_v2.puntos).
+   */
+  const aLineas = (filas: FilaUserGooal[], mios: Set<string>, conseguido: boolean): LineaPerfil[] =>
     filas.filter(conGooal).map(f => ({
       userGooalId: f.id,
-      postId: f.posts?.[0]?.id ?? null,
-      foto_url: f.foto_url,
-      video_url: f.video_url,
-      puntos: f.puntos_ganados ?? 0,
-      completado_at: f.completado_at,
       gooal: f.gooal,
+      puntos: conseguido ? (f.puntos_ganados ?? 0) : (f.gooal.puntos ?? 0),
+      enComun: mios.has(f.gooal.id),
+      // Hay algo guardado Y quien mira puede verlo. La decisión la toma
+      // permisos.ts y aquí no se repite: es la misma que usa el muro.
+      fotoVisible: Boolean(f.foto_url || f.video_url) && puedeVerLaFoto({
+        quienMira: viewerId,
+        duenio: usuario.id,
+        visibilidad: f.visibilidad ?? 'amigos',
+        amigos,
+      }),
     }))
 
-  const conquistados = aConquistado(filasConquistados)
-  const pendientes: Pendiente[] = filasPendientes.filter(conGooal)
-    .map(f => ({ userGooalId: f.id, gooal: f.gooal }))
+  const conseguidos = aLineas(filasConseguidos, losMiosEnEstado(misEstados, 'completado'), true)
+  const pendientes = aLineas(filasPendientes, losMiosEnEstado(misEstados, 'pendiente'), false)
 
   return {
     usuario,
@@ -1236,12 +1249,11 @@ export async function getPerfil(username?: string): Promise<PerfilCompleto | nul
     siguiendo: siguiendoRes.count ?? 0,
     // Se suma desde la lista y no se lee profiles.puntos_totales: esa columna es
     // una caché, y así los puntos cuadran siempre con los gooals que se ven.
-    puntos: conquistados.reduce((suma, c) => suma + c.puntos, 0),
-    conquistados,
+    puntos: conseguidos.reduce((suma, c) => suma + c.puntos, 0),
+    conseguidos,
     pendientes,
     // Cuenta sobre lo del usuario, sin filtro de estado: sus borradores también suman.
-    porCategoria: contarPorCategoria(conquistados),
-    enComun: misEstados ? calcularEnComun(misEstados, conquistados, pendientes) : null,
+    porCategoria: contarPorCategoria(conseguidos),
   }
 }
 

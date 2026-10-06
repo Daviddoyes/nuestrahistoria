@@ -432,7 +432,7 @@ export default function OnboardingPage() {
               <h2 className="text-2xl font-bold text-[#FFFFFF] leading-tight mb-1">
                 ¿Ya has hecho alguno de estos?
               </h2>
-              <p className="text-sm text-[#7A8A85]">Marca lo que ya hiciste —sin foto— y elige lo que viene.</p>
+              <p className="text-sm text-[#7A8A85]">Marca lo que ya hayas hecho y elige lo que viene.</p>
             </div>
 
             {sugeridos === null ? (
@@ -544,7 +544,7 @@ export default function OnboardingPage() {
           }}>
             {puntosIniciales > 0
               ? `¡Empiezas con ${puntosIniciales} puntos!`
-              : 'Marca lo que ya hayas hecho: no hace falta foto, y suma puntos igual.'}
+              : 'Marca lo que ya hayas hecho: cada uno suma sus puntos.'}
           </p>
 
           {finishError && (

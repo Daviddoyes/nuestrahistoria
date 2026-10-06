@@ -6,7 +6,7 @@ import { getMyProfile } from '@/lib/actions'
 import AppShell, { PantallaCargando } from '@/components/AppShell'
 import ExplorarFeed from '@/components/ExplorarFeed'
 import CelebracionPuntos from '@/components/CelebracionPuntos'
-import type { ResultadoCompletado } from '@/components/CompletarGooalModal'
+import type { ResultadoCompletado } from '@/components/AnadirFotoModal'
 import type { Profile } from '@/types/gooals'
 
 export default function ExplorarPage() {

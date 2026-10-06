@@ -3,13 +3,13 @@
 import { createServiceRoleClient } from '@/lib/supabase/service'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { amigosDe, puedeVerLaFoto } from '@/lib/permisos'
-import { BUCKET_PRUEBAS } from '@/lib/prueba-media'
+import { BUCKET_LOGROS } from '@/lib/recuerdo-media'
 import type { VisibilidadFoto } from '@/types/gooals'
 
 /**
  * La ÚNICA puerta por la que se ve una foto de alguien.
  *
- * El cubo 'pruebas' es privado: Supabase no sirve sus ficheros por dirección a
+ * El cubo 'logros-privados' es privado: Supabase no sirve sus ficheros por dirección a
  * secas. La única forma de ver uno es una dirección FIRMADA, y esas se piden
  * aquí, después de comprobar quién mira.
  *
@@ -73,7 +73,7 @@ type Fila = {
  */
 function rutaDe(valor: string | null): string | null {
   if (!valor) return null
-  const marca = `/storage/v1/object/public/${BUCKET_PRUEBAS}/`
+  const marca = `/storage/v1/object/public/${BUCKET_LOGROS}/`
   const i = valor.indexOf(marca)
   if (i >= 0) return decodeURIComponent(valor.slice(i + marca.length))
   if (valor.startsWith('http')) return null
@@ -137,7 +137,7 @@ async function firmarUna(
   ruta: string | null,
 ): Promise<string | null> {
   if (!ruta) return null
-  const { data, error } = await service.storage.from(BUCKET_PRUEBAS).createSignedUrl(ruta, SEGUNDOS)
+  const { data, error } = await service.storage.from(BUCKET_LOGROS).createSignedUrl(ruta, SEGUNDOS)
   if (error) {
     // Un fichero que no está es un dato roto, no un permiso denegado. Se deja
     // rastro porque si no, la pantalla enseñaría un hueco y nadie sabría por qué.

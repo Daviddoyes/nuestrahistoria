@@ -111,49 +111,49 @@ export type MuroPostFeed = {
   gooal: GooalV2 | null
 }
 
-/** Lo mínimo de un gooal del catálogo para pintarlo en una lista del perfil. */
-export type GooalResumen = Pick<GooalV2, 'id' | 'titulo' | 'categoria' | 'dificultad' | 'puntos' | 'ciudad'>
+/**
+ * Lo mínimo de un gooal del catálogo para pintarlo en una lista del perfil.
+ *
+ * `imagen_url` es la foto del CATÁLOGO: pública, la misma para todos, y la que
+ * se ve en la ficha cuando esa persona no tiene una suya o no puedes verla.
+ */
+export type GooalResumen = Pick<GooalV2, 'id' | 'titulo' | 'categoria' | 'dificultad' | 'puntos' | 'ciudad' | 'imagen_url'>
 
 /**
- * Un gooal conseguido.
+ * Una línea de las listas del perfil: un gooal de esa persona, conseguido o
+ * pendiente. Las dos pestañas pintan lo mismo, así que es un solo tipo.
  *
- * OJO: `foto_url` y `video_url` guardan la RUTA dentro del cubo privado, NO una
- * dirección que se pueda pintar. Sirven para saber SI hay foto; para verla, la
- * pantalla pide la dirección firmada con el userGooalId (ver FotosPrivadas.tsx).
+ * NO LLEVA NINGUNA FOTO, y eso es el motivo de que exista. Las fotos de la gente
+ * viven en un cubo privado y cada una necesita una dirección FIRMADA, que se
+ * pide al servidor y caduca. Una lista de títulos no firma ninguna: por eso un
+ * perfil de 300 gooals cuesta lo mismo que uno de 3. Si alguna vez hay que
+ * firmar algo para pintar esta lista, es que se ha colado una foto donde no va.
  */
-export type Conquistado = {
+export type LineaPerfil = {
   userGooalId: string
-  /** null si al completarlo no llegó a crearse el post del muro. */
-  postId: string | null
-  foto_url: string | null
-  video_url: string | null
+  gooal: GooalResumen
+  /** Los que ganó si está conseguido; los que da el gooal si está pendiente. */
   puntos: number
-  completado_at: string | null
-  gooal: GooalResumen
-}
-
-export type Pendiente = {
-  userGooalId: string
-  gooal: GooalResumen
+  /**
+   * Si quien mira tiene el MISMO gooal en el MISMO estado. Siempre false en el
+   * perfil propio: "en común contigo mismo" no quiere decir nada.
+   *
+   * Viene marcado línea a línea y no como una lista aparte para que la pastilla
+   * de "En común" no pueda enseñar un número que no cuadre con lo que filtra.
+   */
+  enComun: boolean
+  /**
+   * Si esa persona guardó una foto o un vídeo Y quien mira PUEDE verlo. Las dos
+   * cosas juntas, a propósito: una cámara que al tocarla no lleva a ninguna foto
+   * es prometer algo y no cumplirlo.
+   */
+  fotoVisible: boolean
 }
 
 /** Cuántos gooals ha conseguido alguien en una categoría. */
 export type ConteoCategoria = {
   categoria: CategoriaGooal
   conseguidos: number
-}
-
-/**
- * Lo que comparten quien mira y la persona del perfil. Viaja solo una muestra:
- * la tarjeta pinta 4 miniaturas y 5 títulos, y el resto es un número.
- */
-export type EnComun = {
-  /** Gooals que habéis conseguido los dos. */
-  totalConseguidos: number
-  /** La versión de la OTRA persona, las más recientes primero. */
-  conseguidos: Conquistado[]
-  totalPendientes: number
-  pendientes: GooalResumen[]
 }
 
 /** Todo lo que pinta el perfil, propio o de otra persona. */
@@ -165,12 +165,10 @@ export type PerfilCompleto = {
   seguidores: number
   siguiendo: number
   puntos: number
-  conquistados: Conquistado[]
-  pendientes: Pendiente[]
+  conseguidos: LineaPerfil[]
+  pendientes: LineaPerfil[]
   /** Las seis categorías: primero las que tienen algo, de más a menos; luego las de 0. */
   porCategoria: ConteoCategoria[]
-  /** null en el perfil propio. */
-  enComun: EnComun | null
 }
 
 /**

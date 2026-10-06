@@ -1,4 +1,4 @@
-// Reglas de la prueba de un gooal completado (una foto o un vídeo).
+// Reglas del recuerdo de un gooal conseguido (una foto o un vídeo).
 //
 // Viven aquí y no en el modal porque las aplican los dos lados: el navegador
 // para avisar ANTES de subir, y el servidor porque lo que diga el navegador se
@@ -12,7 +12,7 @@
  *
  * Fue 'gooals-media', que era público, y ahí está el agujero que esto cierra.
  */
-export const BUCKET_PRUEBAS = 'logros-privados'
+export const BUCKET_LOGROS = 'logros-privados'
 
 export const MAX_BYTES_FOTO = 10 * 1024 * 1024
 export const MAX_BYTES_VIDEO = 50 * 1024 * 1024
@@ -30,7 +30,7 @@ export const TIPOS_VIDEO: readonly string[] = ['video/mp4', 'video/quicktime']
  */
 export const ACCEPT_SELECTOR = 'image/*,video/*'
 
-export type TipoPrueba = 'foto' | 'video'
+export type TipoRecuerdo = 'foto' | 'video'
 
 const MIME_POR_EXTENSION: Record<string, string> = {
   jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp',
@@ -64,7 +64,7 @@ export function errorDeVideo(mime: string, bytes: number): string | null {
   return null
 }
 
-export function tipoDePrueba(mime: string): TipoPrueba | null {
+export function tipoDeRecuerdo(mime: string): TipoRecuerdo | null {
   if (TIPOS_FOTO.includes(mime)) return 'foto'
   if (TIPOS_VIDEO.includes(mime)) return 'video'
   return null
@@ -82,7 +82,7 @@ function megas(bytes: number): string {
  * móvil acaba pesando unos cientos de KB y no tiene sentido rechazarla.
  */
 export function errorDeArchivo(archivo: { type: string; size: number }): string | null {
-  const tipo = tipoDePrueba(archivo.type)
+  const tipo = tipoDeRecuerdo(archivo.type)
   if (!tipo) {
     return 'Ese formato no vale. Sube una foto JPG, PNG o WEBP, o un vídeo MP4 o MOV.'
   }
@@ -107,7 +107,7 @@ export function errorDeArchivo(archivo: { type: string; size: number }): string 
  * llamar a la Server Action a mano apuntando a la foto de otra persona y
  * colgársela de un gooal suyo.
  */
-export function rutaDePrueba(ruta: string, userId: string, gooalId: string): string | null {
+export function rutaDeRecuerdo(ruta: string, userId: string, gooalId: string): string | null {
   if (!ruta || ruta.startsWith('http')) return null
   if (ruta.includes('?') || ruta.includes('#')) return null
 
