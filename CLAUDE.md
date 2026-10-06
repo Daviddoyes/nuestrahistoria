@@ -390,6 +390,31 @@ De ahí tres reglas:
    inserta deja una prueba que pasa sin comprobar nada: pasó dos veces con
    `invitaciones_email`, y la tabla parecía cerrada estando abierta.
 
+## Un insert de varias filas no respeta los valores por defecto
+
+Se descubrió montando una prueba, y el día que alguien escriba un guion de
+siembra se va a comer una tanda entera sin entender por qué.
+
+Cuando le pasas a Supabase **un array de filas**, por debajo se convierte en un
+solo `INSERT` con las columnas de TODAS las filas juntas. Las filas que no
+nombran una columna no reciben su valor por defecto: **reciben `null`
+explícito**. Si esa columna no admite nulos, falla **el lote entero**, y el
+mensaje habla de la columna, no de que el problema sea mezclar filas distintas.
+
+Pasó con `user_gooals.visibilidad`, que no admite nulos y tiene `'amigos'` por
+defecto: tres filas lo traían y una no, y no se guardó ninguna.
+
+Las dos salidas:
+
+1. **Nombrar la columna en todas las filas**, aunque sea para repetir el valor
+   por defecto.
+2. O insertar **de una en una**, que es lo que hace la app hoy (`anadirGooal`,
+   `conseguirSinFoto`, `completarGooal`): por eso esto nunca le ha pasado a un
+   usuario. Si alguna vez se agrupan para ir más rápido, hay que acordarse.
+
+Y lo de siempre: **el error del `insert` se mira**. Un `.insert()` sin
+comprobar `error` deja la tabla vacía y todo lo de después mintiendo.
+
 ## Convenciones
 
 - **El código y los comentarios, en español.** Es lo que hay en todo el repo.

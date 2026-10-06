@@ -1,15 +1,17 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { X, Plus, Check, Camera, MapPin, Trash2 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { X, Plus, Check, Camera, MapPin, Trash2, MessageCircle } from 'lucide-react'
 import { anadirGooal, conseguirSinFoto, quitarGooal, getDetalleGooal } from '@/lib/actions'
 import {
   CATEGORIA_COLOR, CATEGORIA_LABEL, CATEGORIA_GRADIENTE, DIFICULTAD_META,
 } from '@/lib/gooals'
 import Avatar from './Avatar'
 import Confirmacion from './Confirmacion'
+import PostDetailModal from './PostDetailModal'
 import AnadirFotoModal, { type ResultadoCompletado } from './AnadirFotoModal'
-import { useFotoPrivada } from './FotosPrivadas'
+import { ProveedorFotosPrivadas, useFotoPrivada } from './FotosPrivadas'
 import type { GooalV2, UsuarioMini, EstadoUserGooal } from '@/types/gooals'
 
 type Props = {
@@ -47,6 +49,9 @@ export default function GooalV2DetailModal({
   const [quitando, setQuitando] = useState(false)
   const [preguntandoQuitar, setPreguntandoQuitar] = useState(false)
   const [tieneFoto, setTieneFoto] = useState(false)
+  // El post del muro de quien mira, para poder volver a sus comentarios.
+  const [miPostId, setMiPostId] = useState<string | null>(null)
+  const [postAbierto, setPostAbierto] = useState(false)
   const [marcando, setMarcando] = useState(false)
   // Tras marcarlo se ofrece la foto. Es una invitación, no un paso: mientras
   // está puesta, la ficha NO se cierra sola, porque ofrecer algo y quitarlo de
@@ -73,6 +78,8 @@ export default function GooalV2DetailModal({
   const color = CATEGORIA_COLOR[gooal.categoria]
   const dificultad = DIFICULTAD_META[gooal.dificultad]
 
+  const router = useRouter()
+
   const cerrar = () => {
     if (cerrando) return
     setCerrando(true)
@@ -86,6 +93,7 @@ export default function GooalV2DetailModal({
         if (!vivo) return
         setVecesConseguido(d.vecesConseguido)
         setTieneFoto(d.tieneFoto)
+        setMiPostId(d.miPostId)
         setUltimos(d.ultimos)
       })
       .catch(e => console.error('[GooalV2DetailModal]', e))
@@ -353,6 +361,15 @@ export default function GooalV2DetailModal({
                   <Check className="w-4 h-4" /> Ya lo conseguiste
                 </div>
 
+                {miPostId && (
+                  <button
+                    onClick={() => setPostAbierto(true)}
+                    className="w-full py-3 rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 border border-[#2A2E2C] text-[#FFFFFF] active:bg-[#1E2120] transition-colors"
+                  >
+                    <MessageCircle className="w-4 h-4" /> Ver en el muro
+                  </button>
+                )}
+
                 {/* Sin foto, se puede deshacer: un toque equivocado no puede
                     dejarte unos puntos para siempre. Con foto no se ofrece,
                     porque borrarlo se llevaría el recuerdo. */}
@@ -424,6 +441,20 @@ export default function GooalV2DetailModal({
           onConfirmar={handleQuitar}
           onCancelar={() => setPreguntandoQuitar(false)}
         />
+      )}
+
+      {/* Con su propio proveedor: el post enseña una foto privada y hay que
+          firmarla. Desde el perfil ya hay uno fuera, pero esta ficha también se
+          abre desde Explorar y desde el mapa, donde no lo hay, y allí el post
+          saldría sin su foto sin dar ningún error. */}
+      {postAbierto && miPostId && (
+        <ProveedorFotosPrivadas>
+          <PostDetailModal
+            postId={miPostId}
+            onClose={() => setPostAbierto(false)}
+            onAutorClick={u => { if (u) router.push(`/perfil?u=${encodeURIComponent(u)}`) }}
+          />
+        </ProveedorFotosPrivadas>
       )}
 
       {anadiendoFoto && (

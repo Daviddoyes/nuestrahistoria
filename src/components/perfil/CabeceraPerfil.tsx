@@ -44,7 +44,12 @@ export default function CabeceraPerfil({
         {/* El nivel va en su propio hueco y no dentro del texto del usuario: ahí
             dentro, un nombre largo lo empujaba fuera con los puntos suspensivos
             y el nivel no se veía nunca. Lo que se recorta es el nombre. */}
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 5, marginTop: 2, minWidth: 0 }}>
+        {/* Se parte en dos líneas antes que cortar el nombre: con un usuario
+            largo, el nivel baja y el nombre se lee entero. Cortarlo para que
+            quepan los dos en una línea era perder lo que más identifica.
+            Sin "·" de separación justo por eso: al bajar de línea, el punto se
+            quedaba solo delante de la palabra. Separan el hueco y el color. */}
+        <div style={{ display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', columnGap: 8, rowGap: 1, marginTop: 2, minWidth: 0 }}>
           <span style={{
             fontSize: 13, color: '#7A8A85', minWidth: 0,
             overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
@@ -52,8 +57,11 @@ export default function CabeceraPerfil({
             @{usuario.username ?? usuario.nombre}
           </span>
           {nivel && (
-            <span style={{ fontSize: 13, color: nivel.color, fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0 }}>
-              · {nivel.nombre}
+            // El verde de la marca, NO el color del nivel: esos colores (azul,
+            // lima, ámbar...) son los mismos que los de las categorías, y ahí
+            // arriba, pegado a las pastillas, el nivel se leía como si fuera una.
+            <span style={{ fontSize: 13, color: '#00D1A7', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0 }}>
+              {nivel.nombre}
             </span>
           )}
         </div>

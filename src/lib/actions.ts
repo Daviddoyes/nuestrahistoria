@@ -621,6 +621,13 @@ export async function getDetalleGooal(gooalId: string): Promise<{
    * escondería uno que sí hace falta — que es lo que pasaba.
    */
   tieneFoto: boolean
+  /**
+   * El post del muro de QUIEN MIRA para este gooal, si lo hay. Con él, la ficha
+   * puede llevarte a tus propios comentarios: antes al perfil se llegaba por el
+   * post y ahora se llega por la ficha, y sin esto los comentarios de lo tuyo
+   * se quedaban sin ninguna puerta desde el perfil.
+   */
+  miPostId: string | null
 }> {
   const service = createServiceRoleClient()
   const viewerId = await getUserId()
@@ -634,6 +641,7 @@ export async function getDetalleGooal(gooalId: string): Promise<{
     .limit(8)
 
   let tieneFoto = false
+  let miPostId: string | null = null
   if (viewerId) {
     const { data: mia } = await service
       .from('user_gooals')
@@ -642,10 +650,17 @@ export async function getDetalleGooal(gooalId: string): Promise<{
       .maybeSingle()
     const fila = mia as { foto_url: string | null; video_url: string | null } | null
     tieneFoto = Boolean(fila?.foto_url || fila?.video_url)
+
+    const { data: post } = await service
+      .from('muro_posts')
+      .select('id')
+      .eq('user_id', viewerId).eq('gooal_id', gooalId)
+      .maybeSingle()
+    miPostId = (post as { id: string } | null)?.id ?? null
   }
 
   const userIds = [...new Set(((conseguidos ?? []) as { user_id: string }[]).map(c => c.user_id))]
-  if (userIds.length === 0) return { vecesConseguido: count ?? 0, ultimos: [], tieneFoto }
+  if (userIds.length === 0) return { vecesConseguido: count ?? 0, ultimos: [], tieneFoto, miPostId }
 
   const { data: perfiles } = await service.from('profiles').select(PERFIL_CAMPOS).in('id', userIds)
   const porId = new Map(((perfiles ?? []) as PerfilRow[]).map(p => [p.id, aUsuarioMini(p)]))
@@ -654,6 +669,7 @@ export async function getDetalleGooal(gooalId: string): Promise<{
     vecesConseguido: count ?? 0,
     ultimos: userIds.map(id => porId.get(id)).filter((u): u is UsuarioMini => Boolean(u)),
     tieneFoto,
+    miPostId,
   }
 }
 

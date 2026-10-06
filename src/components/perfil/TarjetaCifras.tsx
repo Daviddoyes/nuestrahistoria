@@ -46,7 +46,9 @@ export default function TarjetaCifras({ conseguidos, pendientes, puntos, conProg
       {conProgreso && (
         <>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12, marginTop: 12 }}>
-            <p style={{ fontSize: 13, fontWeight: 600, color: progreso.actual.color }}>{progreso.actual.nombre}</p>
+            {/* En verde de marca, como en la cabecera: los colores propios de
+                cada nivel se confunden con los de las categorías. */}
+            <p style={{ fontSize: 13, fontWeight: 600, color: '#00D1A7' }}>{progreso.actual.nombre}</p>
             <p style={{ fontSize: 12, color: '#7A8A85', textAlign: 'right' }}>
               {progreso.siguiente ? `${progreso.faltan} para ${progreso.siguiente.nombre}` : 'Nivel máximo'}
             </p>
@@ -60,7 +62,13 @@ export default function TarjetaCifras({ conseguidos, pendientes, puntos, conProg
             aria-label={progreso.siguiente ? `Progreso hacia ${progreso.siguiente.nombre}` : 'Nivel máximo alcanzado'}
             style={{ height: 4, background: '#2A2E2C', borderRadius: 999, overflow: 'hidden', marginTop: 5 }}
           >
-            <div className="barra-nivel" style={{ height: '100%', width: `${progreso.porcentaje}%`, background: '#00D1A7', borderRadius: 999 }} />
+            {/* minWidth: recién estrenado un nivel el progreso es 0 y la barra
+                se quedaba completamente vacía, que no se distingue de una rota.
+                Un hilo mínimo dice "esto está vivo y empieza aquí". */}
+            <div
+              className="barra-nivel"
+              style={{ height: '100%', width: `${progreso.porcentaje}%`, minWidth: 5, background: '#00D1A7', borderRadius: 999 }}
+            />
           </div>
         </>
       )}

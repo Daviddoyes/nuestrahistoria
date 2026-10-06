@@ -6,11 +6,18 @@ import type { ConteoCategoria } from '@/types/gooals'
 type Props = { conteos: ConteoCategoria[] }
 
 /**
- * Cuántos gooals conseguidos hay en cada categoría, en una fila deslizable. Las
- * de 0 se quedan al final y apagadas, no se quitan: "Vida 0" invita a probar
- * algo nuevo.
+ * Cuántos gooals conseguidos hay en cada categoría, en una fila deslizable.
+ *
+ * SOLO las que tienen al menos uno. Antes salían las seis, y las de cero
+ * apagadas al final "para invitar a probar"; pero esta fila está aquí para que
+ * se vea de un vistazo QUÉ CLASE DE PERSONA es alguien, y "Viajes 0 ·
+ * Naturaleza 0 · Eventos 0" dice justo lo contrario. Si no hay ninguna, la fila
+ * entera no se pinta.
  */
 export default function PastillasCategorias({ conteos }: Props) {
+  const conAlgo = conteos.filter(c => c.conseguidos > 0)
+  if (conAlgo.length === 0) return null
+
   return (
     // Sangra hasta los bordes de la pantalla para que se note que desliza.
     <div style={{ position: 'relative', margin: '0 -20px' }}>
@@ -24,8 +31,7 @@ export default function PastillasCategorias({ conteos }: Props) {
           padding: '0 32px 2px 20px',
         }}
       >
-        {conteos.map(({ categoria, conseguidos }) => {
-          const vacia = conseguidos === 0
+        {conAlgo.map(({ categoria, conseguidos }) => {
           return (
             <span
               key={categoria}
@@ -37,10 +43,10 @@ export default function PastillasCategorias({ conteos }: Props) {
             >
               <span
                 aria-hidden
-                style={{ width: 7, height: 7, borderRadius: '50%', background: CATEGORIA_COLOR[categoria], opacity: vacia ? 0.45 : 1 }}
+                style={{ width: 7, height: 7, borderRadius: '50%', background: CATEGORIA_COLOR[categoria] }}
               />
               {CATEGORIA_LABEL[categoria]}
-              <span style={{ fontWeight: 700, color: vacia ? '#7A8A85' : '#FFFFFF' }}>{conseguidos}</span>
+              <span style={{ fontWeight: 700, color: '#FFFFFF' }}>{conseguidos}</span>
             </span>
           )
         })}
