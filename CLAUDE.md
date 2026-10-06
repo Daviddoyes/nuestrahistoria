@@ -266,6 +266,37 @@ node insertar.mjs
 categoría hay que vaciarla antes en Supabase, comprobando primero que nadie la
 tenga en su lista (`user_gooals` tiene `on delete cascade`).
 
+## No se borra nada del proyecto sin avisar
+
+Y tampoco se matan procesos en el ordenador de David sin avisar. Las dos salen
+del mismo día.
+
+**Dentro de la carpeta del proyecto no se borra nada.** Ni ficheros suyos, ni
+los tuyos de prueba, ni capturas, ni scripts sueltos. Si algo sobra: se mueve a
+una carpeta aparte, se dice cuál es, y lo borra él. Da igual que estés
+segurísimo de que ese fichero es tuyo.
+
+**Fuera del proyecto, borra con rutas absolutas. Siempre.** Y nunca encadenado
+detrás de algo que puede fallar a medias.
+
+El día que se escribió esto, una línea así se llevó por delante el arnés de
+pruebas:
+
+```bash
+cd /una/carpeta && node algo.mjs && cd /otra && cp ... ; rm -f navegador.mjs
+```
+
+El `node` falló, así que el `&&` cortó la cadena y el segundo `cd` nunca llegó a
+ejecutarse — pero el `rm`, detrás de un `;`, se ejecutó igual **desde la primera
+carpeta**. Borró los ficheros equivocados. Esa vez solo era un arnés de pruebas
+de media hora; en la carpeta del catálogo habrían sido tres semanas.
+
+**Y los procesos: se avisa antes de matar ninguno.** Aunque los hayas lanzado
+tú. Quedaron 308 procesos de Edge de las pruebas comiendo memoria y estuvo bien
+verlo, pero quien decide qué se cierra en su ordenador es él: desde fuera no se
+distingue un navegador de pruebas de uno con doce pestañas abiertas y trabajo
+sin guardar.
+
 ## Una señal hecha por personas vale más que una regla tuya
 
 Sale de buscar fotos para el catálogo en Wikipedia, y es general.
