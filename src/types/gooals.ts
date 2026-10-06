@@ -41,15 +41,18 @@ export type GooalV2 = {
 }
 
 /**
- * Los tres estados de un gooal de alguien. 'completado' es lo que el usuario
- * lee como "Conquistado": en la base NO se renombra, ver src/lib/estado-gooal.ts.
+ * Los dos estados de un gooal de alguien. 'completado' es lo que el usuario lee
+ * como "Conseguido": en la base NO se renombra, ver src/lib/estado-gooal.ts.
  *
- * OJO al ampliar esto: el ordenador NO avisa de los sitios que dan por hecho
- * "si no es completado, entonces es pendiente". Al pasar de dos estados a tres,
- * se midió: cero errores de compilación y ocho sitios que mentían. Se buscan a
- * mano.
+ * Hubo un tercero, 'vivido', para marcar algo hecho sin foto. Duró dos días:
+ * desde que conseguir un gooal da puntos lleve foto o no, la única diferencia
+ * entre los dos era si hay foto, y eso ya lo dice la foto. Ver supabase/fase3s.sql.
+ *
+ * OJO si alguna vez se amplía: el ordenador NO avisa de los sitios que dan por
+ * hecho "si no es completado, entonces es pendiente". Se midió al pasar de dos
+ * a tres: cero errores de compilación y ocho sitios que mentían.
  */
-export type EstadoUserGooal = 'pendiente' | 'vivido' | 'completado'
+export type EstadoUserGooal = 'pendiente' | 'completado'
 
 /** El gooal de un usuario concreto: en su lista o ya conseguido. */
 export type UserGooal = {
@@ -112,16 +115,10 @@ export type Pendiente = {
   gooal: GooalResumen
 }
 
-/**
- * Cuántos gooals ha HECHO alguien en una categoría: vividos y conquistados
- * juntos. Antes contaba solo los conquistados, y con el estado nuevo eso
- * dejaba el perfil de alguien con veinte vividos lleno de ceros.
- *
- * El número grande del perfil es otra cosa y sigue contando solo conquistados.
- */
+/** Cuántos gooals ha conseguido alguien en una categoría. */
 export type ConteoCategoria = {
   categoria: CategoriaGooal
-  hechos: number
+  conseguidos: number
 }
 
 /**
@@ -129,14 +126,10 @@ export type ConteoCategoria = {
  * la tarjeta pinta 4 miniaturas y 5 títulos, y el resto es un número.
  */
 export type EnComun = {
-  /**
-   * Gooals que habéis HECHO los dos: vividos y conquistados en un solo montón,
-   * sin distinguir. Es el recuerdo compartido lo que conecta, no quién tiene la
-   * foto. Que uno lo tenga vivido y el otro conquistado cuenta igual.
-   */
-  totalHechos: number
-  /** Versión de la OTRA persona (su foto si la tiene), las más recientes primero. */
-  hechos: Conquistado[]
+  /** Gooals que habéis conseguido los dos. */
+  totalConseguidos: number
+  /** La versión de la OTRA persona, las más recientes primero. */
+  conseguidos: Conquistado[]
   totalPendientes: number
   pendientes: GooalResumen[]
 }
@@ -151,8 +144,6 @@ export type PerfilCompleto = {
   siguiendo: number
   puntos: number
   conquistados: Conquistado[]
-  /** Lo hizo pero no hay foto. No da puntos; sí cuenta en el perfil y en común. */
-  vividos: Pendiente[]
   pendientes: Pendiente[]
   /** Las seis categorías: primero las que tienen algo, de más a menos; luego las de 0. */
   porCategoria: ConteoCategoria[]

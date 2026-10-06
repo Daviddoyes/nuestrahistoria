@@ -6,16 +6,14 @@
 // escalón cuesta entre dos y tres veces el anterior. Donde se pierde a la gente
 // es en los primeros minutos, no en el año dos.
 //
-// AQUÍ DECÍA que un onboarding típico, con quince experiencias ya marcadas, deja
-// a alguien recién llegado en Explorador. Nunca fue verdad: en el onboarding,
-// para marcar algo como ya hecho había que subir una foto en ese momento, y
-// eso no lo hace casi nadie. Se entraba en Principiante con 0 puntos.
+// Un onboarding típico, con quince cosas ya marcadas, deja a alguien recién
+// llegado en Explorador. Eso es deliberado: entrar y verte con un nivel puesto
+// es otra cosa que entrar y ver ceros.
 //
-// Con el estado 'vivido' por fin se puede decir "esto ya lo hice" sin foto,
-// pero NO da puntos: los puntos los da la prueba, siempre. Así que se sigue
-// entrando en Principiante con 0, y es a propósito. Lo que se llena desde el
-// primer día es el perfil y los gooals en común, que es lo que conecta a dos
-// personas; el nivel se gana aparte.
+// DURANTE MUCHO TIEMPO ESTO FUE MENTIRA, y conviene recordar por qué: para
+// marcar algo como hecho había que subir una foto en ese momento, y eso no lo
+// hace nadie mientras se da de alta. Todo el mundo entraba con 0 puntos. Desde
+// que conseguir un gooal da puntos lleve foto o no, vuelve a ser cierto.
 
 export type Nivel = {
   nombre: string

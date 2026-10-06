@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { getGooalsOnboarding, anadirGooal, marcarVivido } from '@/lib/actions'
+import { getGooalsOnboarding, anadirGooal, conseguirSinFoto } from '@/lib/actions'
 import { CATEGORIA_GRADIENTE, DIFICULTAD_META, type CategoriaGooal } from '@/lib/gooals'
 import MarcaEstadoGooal from '@/components/MarcaEstadoGooal'
 import { MARCA_ESTADO } from '@/lib/estado-gooal'
@@ -80,7 +80,8 @@ export default function OnboardingPage() {
   // propio: aquí había 'hecho' y 'quiero', que querían decir lo mismo pero no se
   // podían cruzar con nada.
   const [sugeridos, setSugeridos] = useState<GooalV2[] | null>(null)
-  const [estados, setEstados] = useState<Record<string, Extract<EstadoUserGooal, 'pendiente' | 'vivido'>>>({})
+  const [estados, setEstados] = useState<Record<string, EstadoUserGooal>>({})
+  const [puntosIniciales, setPuntosIniciales] = useState(0)
   const [anadiendo, setAnadiendo] = useState<string | null>(null)
   const [finishing, setFinishing] = useState(false)
   const [finishError, setFinishError] = useState<string | null>(null)
@@ -149,9 +150,6 @@ export default function OnboardingPage() {
     setScreen(next)
   }
 
-  // Cuántos ha marcado como vividos en esta pantalla, para el pie.
-  const vividos = Object.values(estados).filter(e => e === 'vivido').length
-
   const toggleConQuien = (id: CompaniaId) => {
     setConQuien(prev => prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id])
   }
@@ -164,17 +162,22 @@ export default function OnboardingPage() {
     setAnadiendo(null)
   }
 
-  // "Lo hice" YA NO PIDE FOTO. Antes abría la cámara aquí mismo, y nadie sube una
+  // "Lo hice" NO PIDE FOTO. Antes abría la cámara aquí mismo, y nadie sube una
   // foto de algo que hizo hace diez años mientras se está dando de alta: la
   // pantalla preguntaba qué habías vivido y casi todo el mundo contestaba que
-  // nada. Ahora lo marca como vivido, que es justo para lo que está el estado.
+  // nada, y entraba con el perfil vacío y cero puntos.
   //
-  // No da puntos y no debe darlos: eso llega cuando se sube la prueba.
+  // Y SÍ DA PUNTOS, los mismos que con foto. La foto nunca fue una prueba de
+  // nada: era una barrera. Así que quien llega habiendo vivido cosas entra con
+  // sus puntos puestos, que es lo que esta pantalla llevaba prometiendo desde el
+  // principio sin poder cumplirlo.
   const handleHecho = async (gooal: GooalV2) => {
     setAnadiendo(gooal.id)
-    const res = await marcarVivido(gooal.id)
-    if (res.success) setEstados(prev => ({ ...prev, [gooal.id]: 'vivido' }))
-    else setFinishError(res.error ?? 'No se pudo marcar el gooal.')
+    const res = await conseguirSinFoto(gooal.id)
+    if (res.success) {
+      setEstados(prev => ({ ...prev, [gooal.id]: 'completado' }))
+      setPuntosIniciales(res.puntosTotales ?? 0)
+    } else setFinishError(res.error ?? 'No se pudo guardar el gooal.')
     setAnadiendo(null)
   }
 
@@ -487,7 +490,7 @@ export default function OnboardingPage() {
                           color: MARCA_ESTADO[estado].color, padding: '8px 6px',
                         }}>
                           <MarcaEstadoGooal estado={estado} tamano={22} />
-                          {estado === 'vivido' ? 'Vivido' : 'En tu lista'}
+                          {estado === 'completado' ? 'Conseguido' : 'En tu lista'}
                         </span>
                       ) : (
                         // Los dos botones, apilados y estrechos: en una pantalla de
@@ -532,17 +535,16 @@ export default function OnboardingPage() {
             )}
           </div>
 
-          {/* Aquí ponía "¡Empiezas con N puntos!", y con el estado vivido eso ya no
-              puede pasar: marcar algo sin foto no da puntos. Lo que sí se llena
-              desde el primer día es el perfil y lo que compartes con otra gente,
-              que es lo que de verdad conecta. Se cuenta eso. */}
+          {/* Esta frase prometía puntos desde el principio y durante mucho tiempo
+              no se podía cumplir, porque marcar algo exigía subir una foto allí
+              mismo. Ahora sí. */}
           <p style={{
             fontSize: 15, fontWeight: 600, textAlign: 'center', marginTop: 12,
-            color: vividos > 0 ? '#00D1A7' : '#7A8A85', flexShrink: 0,
+            color: puntosIniciales > 0 ? '#00D1A7' : '#7A8A85', flexShrink: 0,
           }}>
-            {vividos > 0
-              ? `Empiezas con ${vividos} ${vividos === 1 ? 'gooal vivido' : 'gooals vividos'}`
-              : 'Marca lo que ya hayas hecho: no hace falta foto.'}
+            {puntosIniciales > 0
+              ? `¡Empiezas con ${puntosIniciales} puntos!`
+              : 'Marca lo que ya hayas hecho: no hace falta foto, y suma puntos igual.'}
           </p>
 
           {finishError && (

@@ -345,9 +345,9 @@ function CardGooal({
         {gooal.titulo}
       </p>
 
-      {/* Una sola rama para los tres estados. Antes eran dos `&&` sueltos, y un
-          vivido no casaba con ninguno: la tarjeta salía sin marca, como si no lo
-          tuvieras. El velo y la marca vienen de MARCA_ESTADO, igual que el pin. */}
+      {/* Una sola rama para todos los estados, y no un `&&` por cada uno: así, si
+          algún día hay un estado más, la tarjeta no se queda sin marca en
+          silencio. El velo y la marca vienen de MARCA_ESTADO, igual que el pin. */}
       {estado && (
         <div style={overlayEstado(MARCA_ESTADO[estado].tinte)}>
           <MarcaEstadoGooal estado={estado} tamano={46} />

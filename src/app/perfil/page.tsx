@@ -245,42 +245,24 @@ function PerfilContenido() {
             <PestanasPerfil
               activa={pestana}
               conquistados={perfil.conquistados.length}
-              vividos={perfil.vividos.length}
               pendientes={perfil.pendientes.length}
               onCambiar={setPestana}
             />
           </div>
 
-          {/* Una rama por pestaña, y no "si es conquistados... si no, pendientes".
-              Ese atajo binario es justo lo que hacía desaparecer a los vividos. */}
+          {/* Una rama por pestaña y no un "si... si no": con dos estados da igual,
+              pero el atajo binario es justo lo que escondió un estado entero el día
+              que hubo un tercero. Si vuelve a haberlo, esto no miente. */}
           <div role="tabpanel" style={{ paddingTop: pestana === 'conquistados' ? 2 : 0 }}>
             {pestana === 'conquistados' && (
               perfil.conquistados.length === 0 ? (
                 <EstadoVacio
-                  titulo={perfil.esPropio ? 'Aún no has conquistado ningún gooal.' : 'Todavía no ha conquistado ningún gooal.'}
-                  texto={perfil.esPropio ? 'Elige uno, vívelo y sube la prueba.' : undefined}
+                  titulo={perfil.esPropio ? 'Aún no has conseguido ningún gooal.' : 'Todavía no ha conseguido ningún gooal.'}
+                  texto={perfil.esPropio ? 'Elige uno y ve a por él.' : undefined}
                   accion={perfil.esPropio ? botonExplorar : undefined}
                 />
               ) : (
                 <RejillaConquistados conquistados={perfil.conquistados} onAbrir={abrirConquistado} />
-              )
-            )}
-
-            {pestana === 'vividos' && (
-              perfil.vividos.length === 0 ? (
-                <EstadoVacio
-                  titulo={perfil.esPropio ? 'Todavía no has marcado nada como vivido.' : 'No tiene gooals vividos.'}
-                  texto={perfil.esPropio ? 'Aquí va lo que ya hiciste y no tienes cómo demostrar. Suma en tu perfil y cuenta en lo que compartes con otra gente, pero no da puntos: esos los da la foto.' : undefined}
-                  accion={perfil.esPropio ? botonExplorar : undefined}
-                />
-              ) : (
-                <ListaSinFoto
-                  filas={perfil.vividos}
-                  estado="vivido"
-                  textoAccion="Subir prueba"
-                  onAccion={perfil.esPropio ? setCompletando : undefined}
-                  onQuitar={perfil.esPropio ? handleQuitarPendiente : undefined}
-                />
               )
             )}
 
@@ -294,7 +276,6 @@ function PerfilContenido() {
               ) : (
                 <ListaSinFoto
                   filas={perfil.pendientes}
-                  estado="pendiente"
                   textoAccion="Ya lo hice"
                   onAccion={perfil.esPropio ? setCompletando : undefined}
                   onQuitar={perfil.esPropio ? handleQuitarPendiente : undefined}

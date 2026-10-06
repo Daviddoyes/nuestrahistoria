@@ -141,14 +141,8 @@ export type MetricasAdmin = {
   usuarios: { total: number; onboarding: number }
   /** 12 semanas, de la más antigua a la actual (que va a medias). Lunes en hora de Madrid. */
   altasPorSemana: { lunes: string; altas: number }[]
-  /** Con foto: los que dan puntos. */
+  /** Gooals conseguidos, con foto o sin ella. */
   completados: { total: number; ultimos30Dias: number }
-  /**
-   * Sin foto. Va aparte y no sumado a los de arriba a propósito: si no
-   * estuviera, en cuanto la gente empiece a marcar lo que ya vivió parecería
-   * que la actividad baja, cuando lo que pasa es que sube por otro lado.
-   */
-  vividos: { total: number; ultimos30Dias: number }
   porCategoria: { categoria: CategoriaGooal; completados: number }[]
   masConquistados: { id: string; titulo: string; categoria: CategoriaGooal; conquistados: number }[]
   catalogo: { total: number; verificados: number; borradores: number; dudosos: number }
@@ -181,7 +175,7 @@ export async function leerMetricas(): Promise<MetricasAdmin> {
 
   const [
     totalUsuarios, onboarding, altas,
-    totalCompletados, completados30, totalVividos, vividos30, conquistas,
+    totalCompletados, completados30, conquistas,
     totalCatalogo, verificados, borradores, dudosos,
   ] = await Promise.all([
     contar(service.from('profiles').select('id', { count: 'exact', head: true })),
@@ -192,11 +186,6 @@ export async function leerMetricas(): Promise<MetricasAdmin> {
     contar(service.from('user_gooals').select('id', { count: 'exact', head: true }).eq('estado', 'completado')),
     contar(service.from('user_gooals').select('id', { count: 'exact', head: true }).eq('estado', 'completado')
       .gte('completado_at', hace30Dias)),
-    contar(service.from('user_gooals').select('id', { count: 'exact', head: true }).eq('estado', 'vivido')),
-    // Un vivido no tiene completado_at —no se conquistó—, así que los últimos 30
-    // días se miden por cuándo entró la fila en la lista.
-    contar(service.from('user_gooals').select('id', { count: 'exact', head: true }).eq('estado', 'vivido')
-      .gte('created_at', hace30Dias)),
     // Se cuenta desde user_gooals y no con gooals_v2.veces_completado, que es una copia.
     leerTodo<{ gooal_id: string; gooal: { titulo: string; categoria: CategoriaGooal } | null }>(
       (desde, hasta) => service.from('user_gooals').select('id, gooal_id, gooal:gooals_v2(titulo, categoria)')
@@ -233,7 +222,6 @@ export async function leerMetricas(): Promise<MetricasAdmin> {
     usuarios: { total: totalUsuarios, onboarding },
     altasPorSemana: [...altasPorLunes].map(([lunes, n]) => ({ lunes, altas: n })),
     completados: { total: totalCompletados, ultimos30Dias: completados30 },
-    vividos: { total: totalVividos, ultimos30Dias: vividos30 },
     porCategoria: CATEGORIAS
       .map(categoria => ({ categoria, completados: porCategoria.get(categoria) ?? 0 }))
       .sort((a, b) => b.completados - a.completados || CATEGORIAS.indexOf(a.categoria) - CATEGORIAS.indexOf(b.categoria)),

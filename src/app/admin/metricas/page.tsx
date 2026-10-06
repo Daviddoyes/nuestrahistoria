@@ -67,10 +67,8 @@ export default async function AdminMetricasPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 10 }}>
           <Cifra valor={m.usuarios.total} etiqueta="Usuarios" />
           <Cifra valor={m.usuarios.onboarding} etiqueta="Terminaron el onboarding" detalle={`${porcentaje(m.usuarios.onboarding, m.usuarios.total)}% del total`} />
-          <Cifra valor={m.completados.total} etiqueta="Conquistados" detalle="Con foto: dan puntos" />
-          <Cifra valor={m.completados.ultimos30Dias} etiqueta="Conquistados en 30 días" />
-          <Cifra valor={m.vividos.total} etiqueta="Vividos" detalle="Sin foto: no dan puntos" />
-          <Cifra valor={m.vividos.ultimos30Dias} etiqueta="Vividos en 30 días" />
+          <Cifra valor={m.completados.total} etiqueta="Gooals conseguidos" />
+          <Cifra valor={m.completados.ultimos30Dias} etiqueta="Conseguidos en 30 días" />
         </div>
       </section>
 

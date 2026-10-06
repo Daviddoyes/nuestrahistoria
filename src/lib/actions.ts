@@ -5,7 +5,6 @@ import { createClient as createServerClient } from '@/lib/supabase/server'
 import { createServiceRoleClient } from '@/lib/supabase/service'
 import { calcularNivel } from '@/lib/niveles'
 import { contarPorCategoria, normalizarCategoriaGooal } from '@/lib/gooals'
-import { ESTADOS_HECHOS, yaLoHizo } from '@/lib/estado-gooal'
 import { limpiarBusqueda } from '@/lib/busqueda'
 import {
   BUCKET_PRUEBAS, errorDeArchivo, rutaDePrueba, tipoDePrueba, type TipoPrueba,
@@ -143,19 +142,16 @@ async function sincronizarPuntos(
 }
 
 /**
- * Recuenta gooals_v2.veces_completado: cuánta gente lo ha HECHO, vividos y
- * conquistados juntos.
+ * Recuenta gooals_v2.veces_completado: cuánta gente lo ha conseguido.
  *
- * La columna conserva su nombre viejo a propósito —renombrarla es una migración
- * y no cambia nada de lo que se ve—, pero lo que cuenta ya no es solo lo que
- * tiene foto. Es el número que sale en la ficha ("N personas lo han hecho") y el
- * que ordena Explorar, así que tiene que cuadrar con lo que dice el detalle.
+ * Es el número que sale en la ficha y el que ordena Explorar, así que tiene que
+ * cuadrar con lo que dice el detalle.
  *
- * Se llama desde los TRES sitios que pueden moverlo: completar, marcar como
- * vivido y quitar de la lista. Si se olvida uno, el número se queda alto para
- * siempre y nadie se entera.
+ * Se llama desde los TRES sitios que pueden moverlo: conseguir con foto,
+ * conseguir sin foto y quitar de la lista. Si se olvida uno, el número se queda
+ * alto para siempre y nadie se entera.
  */
-async function sincronizarVecesHecho(
+async function sincronizarVecesConseguido(
   service: ReturnType<typeof createServiceRoleClient>,
   gooalId: string
 ): Promise<void> {
@@ -163,7 +159,7 @@ async function sincronizarVecesHecho(
     .from('user_gooals')
     .select('id', { count: 'exact', head: true })
     .eq('gooal_id', gooalId)
-    .in('estado', ESTADOS_HECHOS)
+    .eq('estado', 'completado')
   await service.from('gooals_v2').update({ veces_completado: count ?? 0 }).eq('id', gooalId)
 }
 
@@ -590,40 +586,52 @@ export async function sugerirGooal(
 }
 
 /**
- * Detalle social de un gooal: cuánta gente lo ha HECHO y quiénes fueron los
- * últimos.
- *
- * Cuenta vividos y conquistados juntos, igual que los gooals en común: que
- * cincuenta personas hayan subido el Teide es lo mismo tengan foto o no. Si
- * contara solo las que tienen prueba, el número iría a la baja justo cuando la
- * gente empieza a marcar lo que ya vivió.
- *
- * Las caras salen con las conquistas primero, porque un vivido no tiene fecha
- * de cuándo se logró y se va al final del orden.
+ * Detalle social de un gooal: cuánta gente lo ha conseguido y quiénes fueron
+ * los últimos.
  */
 export async function getDetalleGooal(gooalId: string): Promise<{
-  vecesHecho: number
+  vecesConseguido: number
   ultimos: UsuarioMini[]
+  /**
+   * Si quien mira ya tiene prueba de este gooal. Lo necesita la ficha para
+   * saber si puede ofrecer quitarlo: un conseguido sin foto se puede deshacer,
+   * uno con foto no. Sin esto la ficha enseñaría un botón que no hace nada, o
+   * escondería uno que sí hace falta — que es lo que pasaba.
+   */
+  tengoPrueba: boolean
 }> {
   const service = createServiceRoleClient()
+  const viewerId = await getUserId()
 
-  const { data: hechos, count } = await service
+  const { data: conseguidos, count } = await service
     .from('user_gooals')
     .select('user_id, completado_at', { count: 'exact' })
     .eq('gooal_id', gooalId)
-    .in('estado', ESTADOS_HECHOS)
+    .eq('estado', 'completado')
     .order('completado_at', { ascending: false, nullsFirst: false })
     .limit(8)
 
-  const userIds = [...new Set(((hechos ?? []) as { user_id: string }[]).map(c => c.user_id))]
-  if (userIds.length === 0) return { vecesHecho: count ?? 0, ultimos: [] }
+  let tengoPrueba = false
+  if (viewerId) {
+    const { data: mia } = await service
+      .from('user_gooals')
+      .select('foto_url, video_url')
+      .eq('user_id', viewerId).eq('gooal_id', gooalId)
+      .maybeSingle()
+    const fila = mia as { foto_url: string | null; video_url: string | null } | null
+    tengoPrueba = Boolean(fila?.foto_url || fila?.video_url)
+  }
+
+  const userIds = [...new Set(((conseguidos ?? []) as { user_id: string }[]).map(c => c.user_id))]
+  if (userIds.length === 0) return { vecesConseguido: count ?? 0, ultimos: [], tengoPrueba }
 
   const { data: perfiles } = await service.from('profiles').select(PERFIL_CAMPOS).in('id', userIds)
   const porId = new Map(((perfiles ?? []) as PerfilRow[]).map(p => [p.id, aUsuarioMini(p)]))
 
   return {
-    vecesHecho: count ?? 0,
+    vecesConseguido: count ?? 0,
     ultimos: userIds.map(id => porId.get(id)).filter((u): u is UsuarioMini => Boolean(u)),
+    tengoPrueba,
   }
 }
 
@@ -671,98 +679,128 @@ export async function anadirGooal(gooalId: string): Promise<{ success: boolean; 
 }
 
 /**
- * "Ya lo hice, pero no tengo foto": deja el gooal en vivido.
+ * "Ya lo hice, pero no tengo foto": deja el gooal CONSEGUIDO, con sus puntos.
  *
- * Un vivido suma en el perfil y cuenta en los gooals en común, pero NO da
- * puntos ni sube de nivel. Los puntos los da la prueba, siempre, y por eso aquí
- * no se toca puntos_ganados ni se llama a sincronizarPuntos: esta acción no
- * puede mover el nivel de nadie ni aunque se la llame mil veces.
+ * ── POR QUÉ DA PUNTOS SIN FOTO ────────────────────────────
  *
- * Tampoco publica en el muro: sin foto no hay nada que enseñar.
+ * Porque la foto nunca fue una prueba. Nadie comprueba que ese Taj Mahal sea
+ * tuyo: era una barrera, no una verificación. Los puntos los da el gooal
+ * conseguido; la foto es el recuerdo.
  *
- * SUBIR SÍ, BAJAR NO. Un pendiente asciende a vivido; un conquistado no baja a
- * vivido nunca, porque se perdería su prueba. Eso lo impide el filtro de estado
- * del update, no un `if` de la pantalla: una pantalla se puede saltar.
+ * Esto sustituye al estado 'vivido', que duró dos días y daba cero puntos.
+ *
+ * ── LO QUE NO HACE ────────────────────────────────────────
+ *
+ * NO publica en el muro. Sin foto no hay nada que enseñar, y además: si marcar
+ * sin foto publicara, cualquiera que deslice doscientas veces en Descubrir
+ * entierra el muro de todos los demás.
+ *
+ * NO BAJA UN CONSEGUIDO. Si ya lo tiene conseguido con foto, esta acción no
+ * puede borrarle la prueba: lo impide el filtro de estado del update, no un
+ * `if` de la pantalla — una pantalla se puede saltar.
  */
-export async function marcarVivido(gooalId: string): Promise<{ success: boolean; error?: string }> {
+export async function conseguirSinFoto(gooalId: string): Promise<{
+  success: boolean
+  error?: string
+  puntosGanados?: number
+  puntosTotales?: number
+  nivel?: string
+  subioDeNivel?: boolean
+}> {
   try {
     const userId = await getUserId()
     if (!userId) return { success: false, error: 'No autenticado' }
 
     const service = createServiceRoleClient()
 
-    // El mismo portero que anadirGooal: no se marca lo que el catálogo no enseña.
+    // El mismo portero que anadirGooal: no se consigue lo que el catálogo no enseña.
     const { data: fila } = await service
       .from('gooals_v2')
-      .select('id, estado, activo')
+      .select('id, puntos, estado, activo')
       .eq('id', gooalId)
       .maybeSingle()
 
-    const gooal = fila as { estado: string; activo: boolean } | null
+    const gooal = fila as { puntos: number | null; estado: string; activo: boolean } | null
     if (!gooal || !gooal.activo || gooal.estado !== 'verificado') {
       return { success: false, error: 'Este gooal ya no está disponible.' }
     }
+    const puntosGanados = gooal.puntos ?? 1
 
-    // 1 · Si ya lo tenía pendiente (o vivido, y vuelve a darle), sube a vivido.
+    // El nivel de antes, para saber si sube. Se mira ANTES de tocar nada.
+    const { data: perfilAntes } = await service
+      .from('profiles').select('puntos_totales').eq('id', userId).maybeSingle()
+    const nivelAntes = calcularNivel(
+      (perfilAntes as { puntos_totales: number | null } | null)?.puntos_totales ?? 0
+    ).nombre
+
+    // 1 · Si lo tenía pendiente, pasa a conseguido. El filtro de estado impide
+    //     que esto toque uno que ya está conseguido y le borre la foto.
     const { data: tocadas, error: errorUpdate } = await service
       .from('user_gooals')
-      .update({ estado: 'vivido' })
+      .update({ estado: 'completado', puntos_ganados: puntosGanados, completado_at: new Date().toISOString() })
       .eq('user_id', userId)
       .eq('gooal_id', gooalId)
-      .in('estado', ['pendiente', 'vivido'])
+      .eq('estado', 'pendiente')
       .select('id')
 
     if (errorUpdate) {
-      console.error('[marcarVivido] update:', errorUpdate)
-      return { success: false, error: 'No se pudo marcar el gooal.' }
-    }
-    if ((tocadas ?? []).length > 0) {
-      await sincronizarVecesHecho(service, gooalId)
-      revalidatePath('/perfil')
-      return { success: true }
+      console.error('[conseguirSinFoto] update:', errorUpdate)
+      return { success: false, error: 'No se pudo guardar el gooal.' }
     }
 
-    // 2 · No lo tenía en ningún estado que se pueda subir: o no lo tenía, o lo
-    //     tiene conquistado. Se intenta crear; si ya hay fila, el índice único
-    //     (user_id, gooal_id) lo rechaza, y entonces es que está conquistado.
-    const { error: errorInsert } = await service
-      .from('user_gooals')
-      .insert({ user_id: userId, gooal_id: gooalId, estado: 'vivido' })
-
-    if (errorInsert) {
-      return { success: false, error: 'Ya lo tienes conquistado, con su prueba.' }
+    // 2 · Si no lo tenía, se crea ya conseguido. Si el índice único lo rechaza
+    //     es que ya lo tiene conseguido, y entonces no hay nada que hacer.
+    if ((tocadas ?? []).length === 0) {
+      const { error: errorInsert } = await service.from('user_gooals').insert({
+        user_id: userId, gooal_id: gooalId, estado: 'completado',
+        puntos_ganados: puntosGanados, completado_at: new Date().toISOString(),
+      })
+      if (errorInsert) return { success: false, error: 'Ya lo tienes conseguido.' }
     }
 
-    await sincronizarVecesHecho(service, gooalId)
+    const { puntos, nivel } = await sincronizarPuntos(service, userId)
+    await sincronizarVecesConseguido(service, gooalId)
     revalidatePath('/perfil')
-    return { success: true }
+
+    return { success: true, puntosGanados, puntosTotales: puntos, nivel, subioDeNivel: nivel !== nivelAntes }
   } catch (e) {
-    console.error('[marcarVivido]', e)
-    return { success: false, error: 'No se pudo marcar el gooal.' }
+    console.error('[conseguirSinFoto]', e)
+    return { success: false, error: 'No se pudo guardar el gooal.' }
   }
 }
 
 /**
- * Quita de la lista un gooal pendiente o vivido.
+ * Quita de la lista un gooal pendiente, o uno conseguido que NO tenga foto.
  *
- * Un conquistado NO se quita nunca: se perdería la prueba. Lo impide el filtro
- * de estado de la consulta, y por eso va ahí y no en un `if` de la pantalla.
+ * El motivo de que un conseguido no se pudiera quitar siempre fue que se
+ * perdería la prueba. Desde que se puede conseguir sin foto, hay conseguidos sin
+ * nada que perder, y un toque equivocado no puede dejarte unos puntos para
+ * siempre. Los que SÍ tienen foto o vídeo siguen sin poder quitarse.
+ *
+ * Al quitar un conseguido se recalculan los puntos: no se puede quedar con los
+ * de algo que ya no tiene.
  */
 export async function quitarGooal(gooalId: string): Promise<{ success: boolean }> {
   const userId = await getUserId()
   if (!userId) return { success: false }
 
   const service = createServiceRoleClient()
+  // La condición de "sin foto" va en la consulta, no en un `if`: así no hay
+  // forma de borrar una prueba llamando a esto a mano.
   await service
     .from('user_gooals')
     .delete()
     .eq('user_id', userId)
     .eq('gooal_id', gooalId)
-    .in('estado', ['pendiente', 'vivido'])
+    .in('estado', ['pendiente', 'completado'])
+    .is('foto_url', null)
+    .is('video_url', null)
 
-  // Quitar un vivido baja el "N lo han hecho" del gooal. Quitar un pendiente no
-  // lo mueve, pero recontar siempre sale más barato que acordarse de cuándo sí.
-  await sincronizarVecesHecho(service, gooalId)
+  // Quitar un conseguido baja sus puntos y el contador del gooal. Quitar un
+  // pendiente no mueve ninguno de los dos, pero recontar siempre sale más
+  // barato que acordarse de cuándo sí y cuándo no.
+  await sincronizarPuntos(service, userId)
+  await sincronizarVecesConseguido(service, gooalId)
 
   revalidatePath('/perfil')
   return { success: true }
@@ -904,7 +942,7 @@ export async function completarGooal(
     // falla sin avisar es justo lo que tuvo el muro roto sin que nadie lo viera.
     if (postError) console.error('[completarGooal] muro_posts:', postError)
 
-    await sincronizarVecesHecho(service, gooalId)
+    await sincronizarVecesConseguido(service, gooalId)
 
     revalidatePath('/muro')
     revalidatePath('/perfil')
@@ -1085,9 +1123,8 @@ function listarUserGooals(
       )
       .eq('user_id', userId)
       .eq('estado', estado)
-      // Solo lo conquistado tiene fecha propia; vivido y pendiente se ordenan
-      // por cuándo entraron en la lista. Esto era un "si no es completado, es
-      // pendiente", de los que el ordenador no señala.
+      // Solo lo conseguido tiene fecha propia; lo pendiente se ordena por cuándo
+      // entró en la lista.
       .order(estado === 'completado' ? 'completado_at' : 'created_at', { ascending: false, nullsFirst: false })
       .order('id', { ascending: true })
       .range(desde, hasta)
@@ -1110,16 +1147,9 @@ function listarEstados(
 }
 
 /**
- * Lo que comparten quien mira y la persona del perfil: dos montones.
- *
- * EL PRIMERO JUNTA VIVIDOS Y CONQUISTADOS, a propósito y sin distinguir. Si los
- * dos habéis hecho el Camino, da igual quién tenga la foto: es el mismo recuerdo
- * y es lo que os conecta. Por eso también cuenta cuando uno lo tiene vivido y el
- * otro conquistado — antes caían en montones distintos y no se cruzaban. El
- * segundo montón sigue siendo lo que los dos tenéis pendiente.
- *
- * Se conserva el orden de la otra persona (lo más reciente suyo primero) y su
- * foto, si la tiene.
+ * Lo que comparten quien mira y la persona del perfil: gooals que habéis
+ * conseguido los dos, y gooals que tenéis pendientes los dos. Se conserva el
+ * orden de la otra persona, lo más reciente suyo primero.
  *
  * SIN filtro del estado del gooal, a propósito: cruza listas de lo que cada uno
  * ya tiene. Si un gooal compartido pasa a borrador, los dos lo siguen teniendo
@@ -1127,18 +1157,18 @@ function listarEstados(
  */
 function calcularEnComun(
   mios: { gooal_id: string; estado: EstadoUserGooal }[],
-  suyosHechos: Conquistado[],
+  suyosConseguidos: Conquistado[],
   suyosPendientes: Pendiente[]
 ): EnComun {
-  const misHechos = new Set(mios.filter(m => yaLoHizo(m.estado)).map(m => m.gooal_id))
+  const misConseguidos = new Set(mios.filter(m => m.estado === 'completado').map(m => m.gooal_id))
   const misPendientes = new Set(mios.filter(m => m.estado === 'pendiente').map(m => m.gooal_id))
 
-  const hechos = suyosHechos.filter(c => misHechos.has(c.gooal.id))
+  const conseguidos = suyosConseguidos.filter(c => misConseguidos.has(c.gooal.id))
   const pendientes = suyosPendientes.filter(p => misPendientes.has(p.gooal.id)).map(p => p.gooal)
 
   return {
-    totalHechos: hechos.length,
-    hechos: hechos.slice(0, EN_COMUN_MINIATURAS),
+    totalConseguidos: conseguidos.length,
+    conseguidos: conseguidos.slice(0, EN_COMUN_MINIATURAS),
     totalPendientes: pendientes.length,
     pendientes: pendientes.slice(0, EN_COMUN_TITULOS),
   }
@@ -1167,11 +1197,8 @@ export async function getPerfil(username?: string): Promise<PerfilCompleto | nul
   const esPropio = usuario.id === viewerId
   const idVisitante = !esPropio ? viewerId : null
 
-  const [filasConquistados, filasVividos, filasPendientes, seguidoresRes, siguiendoRes, siguiendoloRes, misEstados] = await Promise.all([
+  const [filasConquistados, filasPendientes, seguidoresRes, siguiendoRes, siguiendoloRes, misEstados] = await Promise.all([
     listarUserGooals(service, usuario.id, 'completado'),
-    // La tercera lista. Sin ella un vivido no caía en ninguna de las dos y
-    // desaparecía del perfil entero sin dar ningún error.
-    listarUserGooals(service, usuario.id, 'vivido'),
     listarUserGooals(service, usuario.id, 'pendiente'),
     service.from('follows').select('id', { count: 'exact', head: true }).eq('following_id', usuario.id),
     service.from('follows').select('id', { count: 'exact', head: true }).eq('follower_id', usuario.id),
@@ -1196,19 +1223,9 @@ export async function getPerfil(username?: string): Promise<PerfilCompleto | nul
       gooal: f.gooal,
     }))
 
-  // Vividos y pendientes se pintan igual en su pestaña: ninguno tiene foto.
-  const sinFoto = (filas: FilaUserGooal[]): Pendiente[] =>
-    filas.filter(conGooal).map(f => ({ userGooalId: f.id, gooal: f.gooal }))
-
   const conquistados = aConquistado(filasConquistados)
-  const vividos = sinFoto(filasVividos)
-  const pendientes = sinFoto(filasPendientes)
-
-  // Para el "en común" los vividos viajan con la misma forma que los
-  // conquistados, con la foto a null. La tarjeta ya sabe pintar el degradado de
-  // la categoría cuando no hay foto, así que un vivido compartido se ve igual
-  // que uno conquistado del que la otra persona no subió nada.
-  const hechos = [...conquistados, ...aConquistado(filasVividos)]
+  const pendientes: Pendiente[] = filasPendientes.filter(conGooal)
+    .map(f => ({ userGooalId: f.id, gooal: f.gooal }))
 
   return {
     usuario,
@@ -1220,13 +1237,10 @@ export async function getPerfil(username?: string): Promise<PerfilCompleto | nul
     // una caché, y así los puntos cuadran siempre con los gooals que se ven.
     puntos: conquistados.reduce((suma, c) => suma + c.puntos, 0),
     conquistados,
-    vividos,
     pendientes,
-    // Cuenta sobre lo del usuario, sin filtro de estado: sus borradores también
-    // suman. Y cuenta lo HECHO, vividos incluidos: contando solo lo conquistado,
-    // alguien con veinte vividos vería seis ceros.
-    porCategoria: contarPorCategoria(hechos),
-    enComun: misEstados ? calcularEnComun(misEstados, hechos, pendientes) : null,
+    // Cuenta sobre lo del usuario, sin filtro de estado: sus borradores también suman.
+    porCategoria: contarPorCategoria(conquistados),
+    enComun: misEstados ? calcularEnComun(misEstados, conquistados, pendientes) : null,
   }
 }
 

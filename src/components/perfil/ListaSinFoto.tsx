@@ -3,16 +3,13 @@
 import { useState } from 'react'
 import { MapPin, Trash2 } from 'lucide-react'
 import { CATEGORIA_GRADIENTE, DIFICULTAD_META } from '@/lib/gooals'
-import type { EstadoUserGooal, GooalResumen, Pendiente } from '@/types/gooals'
+import type { GooalResumen, Pendiente } from '@/types/gooals'
 import BotonVerMas, { POR_TANDA } from './BotonVerMas'
 import Confirmacion from '@/components/Confirmacion'
 import MarcaEstadoGooal from '@/components/MarcaEstadoGooal'
 
 type Props = {
-  /** Los de esa pestaña: pendientes o vividos. */
   filas: Pendiente[]
-  /** Cuál de las dos, para la marca y para los textos. */
-  estado: Extract<EstadoUserGooal, 'pendiente' | 'vivido'>
   /** Texto del botón de la derecha. Sin `onAccion` no se pinta. */
   textoAccion?: string
   /** Solo en el perfil propio. Sin él, la lista es de solo lectura. */
@@ -27,15 +24,10 @@ const pastilla: React.CSSProperties = {
 }
 
 /**
- * Las filas de una pestaña del perfil que todavía no tiene fotos: pendientes y
- * vividos. Filas y no rejilla justamente por eso — una rejilla de cuadrados sin
- * imagen no dice nada.
- *
- * Es el mismo componente para los dos porque se ven igual; lo único que cambia
- * es la marca de la izquierda y lo que hace el botón: un pendiente se marca como
- * hecho, un vivido sube su prueba y asciende a conquistado.
+ * Los pendientes del perfil. Filas y no rejilla: un pendiente no tiene foto, y
+ * una rejilla de cuadrados vacíos no dice nada.
  */
-export default function ListaSinFoto({ filas, estado, textoAccion, onAccion, onQuitar }: Props) {
+export default function ListaSinFoto({ filas, textoAccion, onAccion, onQuitar }: Props) {
   const [visibles, setVisibles] = useState(POR_TANDA)
   // El gooal que se está preguntando si quitar, no un simple true: el diálogo
   // dice el título, y con la lista entera delante hace falta saber cuál es.
@@ -72,7 +64,7 @@ export default function ListaSinFoto({ filas, estado, textoAccion, onAccion, onQ
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}
               >
-                <MarcaEstadoGooal estado={estado} tamano={28} />
+                <MarcaEstadoGooal estado="pendiente" tamano={28} />
               </span>
 
               <div style={{ flex: 1, minWidth: 0 }}>

@@ -113,10 +113,10 @@ type Props = {
  * dificultad no es uno de ellos. El hueco lo ocupa ahora la marca del estado,
  * que en un mapa dice bastante más.
  *
- * La escalera se lee igual que en el resto de la app: ⏳ gris, ✓ con el aro
- * verde, ✓ sobre el verde relleno. Al conquistarlo el pin se pone verde entero y
- * pierde el color de su categoría: es a propósito, un conquistado se mira como
- * tuyo antes que como "de naturaleza".
+ * La marca se lee igual que en el resto de la app: ⏳ gris para lo pendiente, ✓
+ * sobre verde relleno para lo conseguido. Al conseguirlo el pin se pone verde
+ * entero y pierde el color de su categoría: es a propósito, un conseguido se
+ * mira como tuyo antes que como "de naturaleza".
  *
  * Aquí no se puede usar <MarcaEstadoGooal>: Leaflet pinta HTML en texto, fuera
  * de React. Por eso los colores salen de MARCA_ESTADO y no se escriben otra vez.

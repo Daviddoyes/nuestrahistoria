@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { X, Plus, Check, Camera, MapPin, Trash2 } from 'lucide-react'
-import { anadirGooal, marcarVivido, quitarGooal, getDetalleGooal } from '@/lib/actions'
+import { anadirGooal, conseguirSinFoto, quitarGooal, getDetalleGooal } from '@/lib/actions'
 import {
   CATEGORIA_COLOR, CATEGORIA_LABEL, CATEGORIA_GRADIENTE, DIFICULTAD_META,
 } from '@/lib/gooals'
@@ -28,7 +28,7 @@ export default function GooalV2DetailModal({
   const [anadiendo, setAnadiendo] = useState(false)
   const [estadoLocal, setEstadoLocal] = useState<EstadoUserGooal | undefined>(estado)
   const [error, setError] = useState('')
-  const [vecesHecho, setVecesHecho] = useState(gooal.veces_completado)
+  const [vecesConseguido, setVecesConseguido] = useState(gooal.veces_completado)
   const [ultimos, setUltimos] = useState<UsuarioMini[]>([])
   const [completando, setCompletando] = useState<'lista' | 'directo' | null>(null)
   // El texto de la barra verde de confirmación, o null si no hay nada que
@@ -36,6 +36,7 @@ export default function GooalV2DetailModal({
   const [confirmacion, setConfirmacion] = useState<string | null>(null)
   const [quitando, setQuitando] = useState(false)
   const [preguntandoQuitar, setPreguntandoQuitar] = useState(false)
+  const [tengoPrueba, setTengoPrueba] = useState(false)
   const [marcando, setMarcando] = useState(false)
 
   const color = CATEGORIA_COLOR[gooal.categoria]
@@ -52,7 +53,8 @@ export default function GooalV2DetailModal({
     getDetalleGooal(gooal.id)
       .then(d => {
         if (!vivo) return
-        setVecesHecho(d.vecesHecho)
+        setVecesConseguido(d.vecesConseguido)
+        setTengoPrueba(d.tengoPrueba)
         setUltimos(d.ultimos)
       })
       .catch(e => console.error('[GooalV2DetailModal]', e))
@@ -85,18 +87,19 @@ export default function GooalV2DetailModal({
     setAnadiendo(false)
   }
 
-  // "Ya lo hice, sin foto". No da puntos: eso lo decide el servidor, que para
-  // un vivido no toca ni puntos ni nivel.
-  const handleVivido = async () => {
+  // "Ya lo hice, sin foto": cuenta como conseguido y DA PUNTOS, igual que con
+  // foto. La foto nunca fue una prueba de nada; es el recuerdo.
+  const handleSinFoto = async () => {
     setMarcando(true)
     setError('')
-    const res = await marcarVivido(gooal.id)
+    const res = await conseguirSinFoto(gooal.id)
     if (res.success) {
-      setEstadoLocal('vivido')
-      setConfirmacion('Marcado como vivido')
+      setEstadoLocal('completado')
+      setTengoPrueba(false)
+      setConfirmacion(`¡Conseguido! +${res.puntosGanados ?? gooal.puntos} pts`)
       onCambio()
     } else {
-      setError(res.error ?? 'No se pudo marcar el gooal.')
+      setError(res.error ?? 'No se pudo guardar el gooal.')
     }
     setMarcando(false)
   }
@@ -227,10 +230,8 @@ export default function GooalV2DetailModal({
           )}
 
           <p style={{ fontSize: 13, color: '#7A8A85', marginTop: 20 }}>
-            {/* "Lo han hecho" y no "lo lograron": aquí dentro hay vividos, que
-                son el mismo recuerdo sin la foto. */}
-            <span style={{ color: '#00D1A7', fontWeight: 700 }}>{vecesHecho}</span>{' '}
-            {vecesHecho === 1 ? 'persona lo ha hecho' : 'personas lo han hecho'}
+            <span style={{ color: '#00D1A7', fontWeight: 700 }}>{vecesConseguido}</span>{' '}
+            {vecesConseguido === 1 ? 'persona lo ha conseguido' : 'personas lo han conseguido'}
           </p>
 
           {ultimos.length > 0 && (
@@ -254,29 +255,34 @@ export default function GooalV2DetailModal({
                 <Check className="w-4 h-4" /> {confirmacion}
               </div>
             ) : estadoLocal === 'completado' ? (
-              <div
-                className="w-full py-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
-                style={{ background: 'rgba(0,209,167,0.14)', color: '#00D1A7' }}
-              >
-                <Check className="w-4 h-4" /> Ya lo conseguiste
-              </div>
-            ) : estadoLocal === 'vivido' ? (
               <>
-                {/* Un vivido sube a conquistado subiendo la prueba. Hacia atrás
-                    no se va: eso borraría la foto de un conquistado. */}
-                <button
-                  onClick={() => setCompletando('lista')}
-                  className="w-full py-4 bg-[#00D1A7] active:bg-[#00B893] text-[#0B0B0B] rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 transition-colors"
+                <div
+                  className="w-full py-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
+                  style={{ background: 'rgba(0,209,167,0.14)', color: '#00D1A7' }}
                 >
-                  <Camera className="w-4 h-4" /> Subir la prueba y ganar {gooal.puntos} pts
-                </button>
+                  <Check className="w-4 h-4" /> Ya lo conseguiste
+                </div>
 
-                <button
-                  onClick={() => setPreguntandoQuitar(true)}
-                  className="w-full py-3 rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 text-[#7A8A85] active:bg-[#1E2120] transition-colors"
-                >
-                  <Trash2 className="w-4 h-4" /> Quitar de mi lista
-                </button>
+                {/* Sin foto, se puede deshacer: un toque equivocado no puede
+                    dejarte unos puntos para siempre. Con foto no se ofrece,
+                    porque borrarlo se llevaría el recuerdo. */}
+                {!tengoPrueba && (
+                  <>
+                    <button
+                      onClick={() => setCompletando('lista')}
+                      className="w-full py-3 rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 border border-[#2A2E2C] text-[#FFFFFF] active:bg-[#1E2120] transition-colors"
+                    >
+                      <Camera className="w-4 h-4" /> Añadirle una foto
+                    </button>
+
+                    <button
+                      onClick={() => setPreguntandoQuitar(true)}
+                      className="w-full py-3 rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 text-[#7A8A85] active:bg-[#1E2120] transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" /> Quitar de mi lista
+                    </button>
+                  </>
+                )}
               </>
             ) : estadoLocal === 'pendiente' ? (
               <>
@@ -287,7 +293,7 @@ export default function GooalV2DetailModal({
                   <Camera className="w-4 h-4" /> Completar ahora
                 </button>
 
-                <BotonSinFoto onClick={handleVivido} ocupado={marcando} />
+                <BotonSinFoto onClick={handleSinFoto} ocupado={marcando} puntos={gooal.puntos} />
 
                 {/* Hasta ahora un pendiente no se podía quitar de ninguna manera:
                     quien añadía algo sin querer se lo quedaba para siempre. */}
@@ -312,7 +318,7 @@ export default function GooalV2DetailModal({
                   {anadiendo ? 'Añadiendo...' : 'Añadir a mi lista'}
                 </button>
 
-                <BotonSinFoto onClick={handleVivido} ocupado={marcando} />
+                <BotonSinFoto onClick={handleSinFoto} ocupado={marcando} puntos={gooal.puntos} />
 
                 <button
                   onClick={() => setCompletando('directo')}
@@ -331,7 +337,7 @@ export default function GooalV2DetailModal({
 
       {preguntandoQuitar && (
         <Confirmacion
-          titulo="Quitar de tus pendientes"
+          titulo="Quitar de tu lista"
           texto={`«${gooal.titulo}» saldrá de tu lista. Puedes volver a añadirlo cuando quieras.`}
           confirmar="Quitar"
           peligro
@@ -354,13 +360,13 @@ export default function GooalV2DetailModal({
 }
 
 /**
- * "Ya lo hice, pero no tengo foto".
+ * "Ya lo hice, sin foto". Da los mismos puntos que con foto.
  *
- * Va en gris y no en verde a propósito: el camino que la app quiere es el de la
- * prueba, que es el que da puntos. Este es la salida para lo que pasó hace diez
- * años y no tiene foto — que es casi todo lo que le ha pasado a cualquiera.
+ * Sigue en gris y no en verde aunque ya no haya diferencia de puntos: el camino
+ * que la app quiere es el de la foto, porque es el que deja recuerdo y el que
+ * puede acabar en el muro. Este es la salida para lo que pasó hace diez años.
  */
-function BotonSinFoto({ onClick, ocupado }: { onClick: () => void; ocupado: boolean }) {
+function BotonSinFoto({ onClick, ocupado, puntos }: { onClick: () => void; ocupado: boolean; puntos: number }) {
   return (
     <button
       onClick={onClick}
@@ -371,7 +377,7 @@ function BotonSinFoto({ onClick, ocupado }: { onClick: () => void; ocupado: bool
         ? <span className="w-4 h-4 border-2 border-[#A3B1AC] border-t-transparent rounded-full animate-spin" />
         : <Check className="w-4 h-4" />
       }
-      Ya lo hice, sin foto
+      Ya lo hice, sin foto · +{puntos} pts
     </button>
   )
 }

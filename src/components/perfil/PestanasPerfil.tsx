@@ -1,28 +1,23 @@
 'use client'
 
-export type PestanaPerfil = 'conquistados' | 'vividos' | 'pendientes'
+export type PestanaPerfil = 'conquistados' | 'pendientes'
 
 type Props = {
   activa: PestanaPerfil
   conquistados: number
-  vividos: number
   pendientes: number
   onCambiar: (pestana: PestanaPerfil) => void
 }
 
 /**
- * Las tres pestañas del perfil, a tercios.
+ * Las dos pestañas del perfil, mitad y mitad.
  *
- * Van en el orden de la escalera —lo conseguido, lo hecho sin prueba, lo que
- * falta— y no por tamaño: así se lee igual en todos los perfiles.
- *
- * El número va debajo y no al lado: con tres pestañas, "Conquistados · 128" no
- * cabe en un tercio de pantalla de móvil sin cortarse.
+ * El número va debajo y no al lado: "Conseguidos · 128" en una línea se corta en
+ * pantallas estrechas.
  */
-export default function PestanasPerfil({ activa, conquistados, vividos, pendientes, onCambiar }: Props) {
+export default function PestanasPerfil({ activa, conquistados, pendientes, onCambiar }: Props) {
   const pestanas: { id: PestanaPerfil; texto: string; cuantos: number }[] = [
-    { id: 'conquistados', texto: 'Conquistados', cuantos: conquistados },
-    { id: 'vividos', texto: 'Vividos', cuantos: vividos },
+    { id: 'conquistados', texto: 'Conseguidos', cuantos: conquistados },
     { id: 'pendientes', texto: 'Pendientes', cuantos: pendientes },
   ]
 
