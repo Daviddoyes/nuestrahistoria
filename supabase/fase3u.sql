@@ -1,8 +1,17 @@
 -- ═══════════════════════════════════════════════════════════
--- GooALS — Fase 3u: el cubo privado de las pruebas
+-- GooALS — Fase 3u: el cubo privado de los logros
 --
--- Crea el cubo 'pruebas', PRIVADO, y le pone UNA sola política: cada persona
--- puede subir a su propia carpeta. Ninguna de leer.
+-- Crea el cubo 'logros-privados', PRIVADO, y le pone UNA sola política: cada
+-- persona puede subir a su propia carpeta. Ninguna de leer.
+--
+-- ── EL NOMBRE NO ES CASUAL ─────────────────────────────────
+--
+-- Se iba a llamar 'pruebas', y no vale: dentro de seis meses alguien mira la
+-- lista de cubos, lee "pruebas", lo toma por cosas de probar y lo borra. Ahí
+-- viven las fotos de toda la gente. El nombre tiene que decir las dos cosas:
+-- qué guarda (logros de personas reales) y cuál es la regla (privado).
+--
+-- Renombrarlo hoy son dos ficheros. Con cuatro mil sería otra mudanza.
 --
 -- ── POR QUÉ UN CUBO NUEVO Y NO CAMBIAR EL DE AHORA ─────────
 --
@@ -47,16 +56,16 @@ declare
 begin
   -- ── 1. El cubo ──────────────────────────────────────────
   insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-  values ('pruebas', 'pruebas', false, 52428800,
+  values ('logros-privados', 'logros-privados', false, 52428800,
           array['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/quicktime'])
   on conflict (id) do update
     set public = false,
         file_size_limit = 52428800,
         allowed_mime_types = array['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/quicktime'];
 
-  select public into antes_privado from storage.buckets where id = 'pruebas';
+  select public into antes_privado from storage.buckets where id = 'logros-privados';
   if antes_privado is distinct from false then
-    raise exception 'El cubo pruebas no ha quedado privado. No se sigue.';
+    raise exception 'El cubo logros-privados no ha quedado privado. No se sigue.';
   end if;
 
   -- ── 2. La única política: subir a tu propia carpeta ─────
@@ -66,18 +75,18 @@ begin
   drop policy if exists "subir solo a tu carpeta" on storage.objects;
   create policy "subir solo a tu carpeta" on storage.objects
     for insert to authenticated
-    with check (bucket_id = 'pruebas' and (storage.foldername(name))[1] = auth.uid()::text);
+    with check (bucket_id = 'logros-privados' and (storage.foldername(name))[1] = auth.uid()::text);
 
   -- Y NINGUNA de select, update ni delete, a propósito. Para leer está la
   -- dirección firmada que da el servidor; para borrar, el servidor.
-  drop policy if exists "leer pruebas" on storage.objects;
+  drop policy if exists "leer logros-privados" on storage.objects;
 
   select count(*) into politicas
   from pg_policies
   where schemaname = 'storage' and tablename = 'objects'
-    and qual like '%pruebas%' or with_check like '%pruebas%';
+    and qual like '%logros-privados%' or with_check like '%logros-privados%';
 
-  raise notice 'Cubo pruebas creado y privado. Politicas que lo nombran: % (debe ser 1, la de subir).', politicas;
+  raise notice 'Cubo logros-privados creado y privado. Politicas que lo nombran: % (debe ser 1, la de subir).', politicas;
 end $$;
 
 
@@ -88,14 +97,14 @@ end $$;
 -- 1 · Los cubos y cuáles son públicos.
 select id, public as publico, file_size_limit as tope_bytes
 from storage.buckets order by id;
---   pruebas tiene que salir con publico = false.
+--   logros-privados tiene que salir con publico = false.
 --   catalogo y avatars, true. gooals-media seguirá ahí hasta que lo vacíe el guion.
 
 -- 2 · Las políticas que tocan el cubo nuevo.
 select policyname, cmd, roles::text, coalesce(qual, with_check) as condicion
 from pg_policies
 where schemaname = 'storage' and tablename = 'objects'
-  and coalesce(qual, '') || coalesce(with_check, '') like '%pruebas%';
+  and coalesce(qual, '') || coalesce(with_check, '') like '%logros-privados%';
 --   UNA fila: "subir solo a tu carpeta" | INSERT | {authenticated}
 --   Si sale alguna de SELECT, el cubo estaría abierto por otro lado.
 

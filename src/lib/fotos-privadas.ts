@@ -17,12 +17,31 @@ import type { VisibilidadFoto } from '@/types/gooals'
  * direcciones solo para lo que pueden ver. Si una pantalla se equivoca y pide de
  * más, aquí se le dice que no.
  *
- * ── POR QUÉ SE PIDE POR ID Y NO POR RUTA ──────────────────
+ * ══ LAS DOS REGLAS QUE SOSTIENEN ESTO ═════════════════════
  *
- * Porque si el navegador mandara la ruta del fichero, esto tendría que fiarse de
- * ella: bastaría con inventarse la de otra persona. Mandando el id de la fila,
- * el servidor busca el dueño y la visibilidad en la base, y la ruta la saca él.
- * Lo que manda el navegador no decide nada.
+ * Si alguien va a tocar este fichero, que lea estas dos antes. Las dos se
+ * rompen "por comodidad" y las dos duelen después.
+ *
+ * ── 1. SE PIDE POR EL ID DE LA FILA, NUNCA POR LA RUTA ────
+ *
+ * Si el navegador mandara la ruta del fichero, esto tendría que fiarse de ella,
+ * y bastaría con inventarse la de otra persona para verle la foto. Mandando el
+ * id de la fila, el servidor busca en la base quién es el dueño y qué
+ * visibilidad tiene, y la ruta la saca él. **Lo que manda el navegador no
+ * decide nada.**
+ *
+ * Es tentador añadir un atajo que acepte una ruta "porque aquí ya la tengo".
+ * Ese atajo es el agujero.
+ *
+ * ── 2. LAS PETICIONES SE JUNTAN ───────────────────────────
+ *
+ * Una llamada con la lista entera, no una por foto. El muro enseña cuarenta
+ * posts y el perfil una rejilla completa: separarlas serían cuarenta viajes al
+ * servidor y cuarenta consultas de amistades, y la pantalla se arrastraría.
+ *
+ * Por eso puedeVerLaFoto() es pura y recibe los amigos ya resueltos: se
+ * preguntan UNA vez para toda la lista. Si alguien mete la consulta de amigos
+ * dentro del bucle, esto deja de escalar sin que ningún error lo avise.
  */
 
 /** Cuánto vale una dirección firmada. */

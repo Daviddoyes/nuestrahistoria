@@ -27,7 +27,7 @@
 import { createClient } from '@supabase/supabase-js'
 
 const VIEJO = 'gooals-media'
-const NUEVO = 'pruebas'
+const NUEVO = 'logros-privados'
 
 const seco = process.argv.includes('--seco')
 const copiar = process.argv.includes('--copiar')
