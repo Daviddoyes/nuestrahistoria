@@ -390,6 +390,33 @@ De ahí tres reglas:
    inserta deja una prueba que pasa sin comprobar nada: pasó dos veces con
    `invitaciones_email`, y la tabla parecía cerrada estando abierta.
 
+## Un contador guardado se actualiza al sumar y nunca al restar
+
+`gooals_v2.veces_completado` es una caché: el número de personas que han
+conseguido ese gooal. Se recalcula cada vez que alguien lo consigue
+(`sincronizarVecesConseguido`), y **no se recalcula cuando una fila desaparece**,
+porque borrar no pasa por ahí.
+
+Pasó con las cuentas de prueba: se crean, consiguen un gooal, el contador sube;
+se borran al terminar y el contador se queda. El 7-10-2026 decía que **7 gooals
+los había conseguido alguien** cuando de verdad eran **3**. Nadie lo habría visto
+hasta que una pantalla enseñara ese número — y la pantalla de Descubrir iba a
+enseñarlo.
+
+Es la misma familia que el cuadre del catálogo: **un número guardado y un número
+calculable que no se comparan nunca acaban separándose**. La diferencia es que
+aquí el guardado parece sano, porque sube bien.
+
+Las tres cosas que hay que hacer con un contador así:
+
+1. **Que haya una forma de recalcularlo entero**, no solo de incrementarlo:
+   `node --env-file=.env.local scripts/recontar-conseguidos.mjs` (en seco), y con
+   `--escribir` lo arregla. Compara contra `user_gooals`, que es la verdad.
+2. **Pasarlo después de cualquier limpieza de datos**, en especial después de
+   borrar cuentas de prueba.
+3. **Y antes de enseñarlo en una pantalla nueva.** Un contador que nadie mira
+   puede estar mal años; el día que se pinta, miente a todo el mundo a la vez.
+
 ## Una razón escrita caduca
 
 Y cuando caduca no avisa, porque sigue ahí, impecable, describiendo un mundo
