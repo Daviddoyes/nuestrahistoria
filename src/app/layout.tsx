@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Poppins } from "next/font/google";
+import { Inter, Poppins, Bebas_Neue } from "next/font/google";
 import "./globals.css";
 import SplashScreen from "@/components/SplashScreen";
 import InstallBanner from "@/components/InstallBanner";
@@ -18,6 +18,20 @@ const poppins = Poppins({
   subsets: ['latin'],
   variable: '--font-poppins',
   weight: ['600', '700', '800'],
+});
+
+// Solo para el sello que se comparte en historias: mayúsculas estrechas, de
+// dorsal de carrera. No se usa en ninguna pantalla.
+//
+// Va por next/font y no por el CDN de Google: así se sirve desde nuestro propio
+// dominio. OJO al dibujarla en un canvas: next/font le pone un nombre interno
+// generado, NO "Bebas Neue", así que hay que leerlo de la variable CSS y
+// esperar a document.fonts.load. Si no, el canvas dibuja con la letra del
+// sistema y no da ningún error.
+const bebas = Bebas_Neue({
+  subsets: ['latin'],
+  variable: '--font-bebas',
+  weight: ['400'],
 });
 
 export const viewport: Viewport = {
@@ -51,7 +65,7 @@ export default function RootLayout({
       <head>
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
-      <body className={`${inter.variable} ${poppins.variable} min-h-full antialiased`}>
+      <body className={`${inter.variable} ${poppins.variable} ${bebas.variable} min-h-full antialiased`}>
         <SplashScreen />
         {children}
         <InstallBanner />

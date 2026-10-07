@@ -11,6 +11,7 @@ import Avatar from './Avatar'
 import Confirmacion from './Confirmacion'
 import PostDetailModal from './PostDetailModal'
 import CreditoFoto from './CreditoFoto'
+import BotonSello from './BotonSello'
 import { HojaQuienLaVe, iconoQuienLaVe, palabraQuienLaVe } from './QuienLaVe'
 import { cambiarVisibilidad } from '@/lib/fotos-privadas'
 import AnadirFotoModal, { type ResultadoCompletado } from './AnadirFotoModal'
@@ -415,6 +416,11 @@ export default function GooalV2DetailModal({
                 >
                   <Check className="w-4 h-4" /> Ya lo conseguiste
                 </div>
+
+                {/* El sello para historias. Solo aquí, en el gooal ya
+                    conseguido: es lo que se enseña, y el del perfil es otra
+                    cosa con su propia forma. */}
+                <BotonSello titulo={gooal.titulo} puntos={gooal.puntos} />
 
                 {miPostId && (
                   <button
