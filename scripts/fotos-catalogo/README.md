@@ -13,6 +13,28 @@ La idea de fondo, que es lo que hay que entender antes de tocar nada:
 > contado en `CLAUDE.md`, en «Una señal hecha por personas vale más que una regla
 > tuya».
 
+## Después, para los casos sueltos
+
+Una vez puestas las fotos, dos herramientas para las que están mal:
+
+```bash
+# Qué fotos suenan a otro país (cruza el nombre del fichero con el país del gooal)
+node --env-file=.env.local scripts/fotos-catalogo/sospechosas.mjs
+#    -> escribe "Claude outputs/fotos-sospechosas.md", una lista PARA MIRAR
+
+# Cambiarle la foto a un gooal
+node --env-file=.env.local scripts/fotos-catalogo/reemplazar.mjs <id> "File:Algo.jpg"
+node --env-file=.env.local scripts/fotos-catalogo/reemplazar.mjs <id> "File:Algo.jpg" --escribir
+```
+
+`sospechosas.mjs` **no dice que una foto esté mal, ni que las demás estén bien**:
+la mayoría de los nombres de Commons no mencionan ningún país, así que no salir
+en la lista no significa nada. Decide una persona, como con los pines.
+
+`reemplazar.mjs` sube la foto nueva con un nombre nuevo y NO pisa la anterior:
+el cubo sirve con cache de un año, y reusar el nombre dejaría la foto vieja a la
+vista durante meses. Se niega a poner una foto que no traiga autor y licencia.
+
 ## Los cuatro pasos
 
 ```bash
