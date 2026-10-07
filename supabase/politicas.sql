@@ -151,6 +151,17 @@ create policy "users manage likes" on muro_likes
 
 
 -- ═══════════════════════════════════════════════════════════
+-- gooals_pasados · SIN POLÍTICAS, a propósito
+-- ═══════════════════════════════════════════════════════════
+-- Lo que alguien ha pasado en Descubrir para no volver a verlo. La escribe el
+-- servidor y nadie más la necesita, así que no lleva ninguna política: cerrada
+-- salvo para el service role. Creada el 7-10-2026 con supabase/fase3x.sql.
+--
+-- Si algún día algo "no puede leerla" desde el navegador, la respuesta es una
+-- Server Action, no una política nueva.
+
+
+-- ═══════════════════════════════════════════════════════════
 -- follows · 1 política
 -- ═══════════════════════════════════════════════════════════
 drop policy if exists "users manage follows" on follows;
