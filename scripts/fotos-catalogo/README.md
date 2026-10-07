@@ -13,27 +13,53 @@ La idea de fondo, que es lo que hay que entender antes de tocar nada:
 > contado en `CLAUDE.md`, en «Una señal hecha por personas vale más que una regla
 > tuya».
 
+## UNA FOTO CORREGIDA VA SIEMPRE CON NOMBRE NUEVO
+
+Antes que nada, porque es lo que más fácil se hace mal:
+
+> Al cambiar la foto de un gooal, **el fichero nuevo lleva un nombre nuevo**
+> (`<id>-r2.webp`) y la fila apunta ahí. **Nunca se pisa el anterior.**
+
+El cubo `catalogo` sirve sus fotos con `cache-control` de **un año**, porque una
+dirección es una foto y no cambia nunca. Si la corregida se subiera con el mismo
+nombre, los navegadores de quien ya hubiera abierto esa ficha y el CDN de
+Supabase seguirían dando la equivocada **durante meses**: parecería que el cambio
+no se ha aplicado, se repetiría el arreglo y seguiría sin verse.
+
+Con nombre nuevo, la dirección cambia y no hay caché que valga. La vieja se
+queda huérfana en el cubo y se borra aparte, cuando se decida — y aun entonces
+su dirección puede devolver 200 un rato más, que es la caché del CDN y no un
+borrado fallido.
+
 ## Después, para los casos sueltos
 
-Una vez puestas las fotos, dos herramientas para las que están mal:
+Una vez puestas las fotos, tres herramientas para las que están mal:
 
 ```bash
-# Qué fotos suenan a otro país (cruza el nombre del fichero con el país del gooal)
+# ¿El NOMBRE del fichero suena a otro país? (una pista, instantáneo)
 node --env-file=.env.local scripts/fotos-catalogo/sospechosas.mjs
-#    -> escribe "Claude outputs/fotos-sospechosas.md", una lista PARA MIRAR
+#    -> "Claude outputs/fotos-sospechosas.md"
+
+# ¿Dónde se hizo la foto DE VERDAD? (un hecho; pide las coordenadas, ~3 min)
+node --env-file=.env.local scripts/fotos-catalogo/coordenadas.mjs
+#    -> "Claude outputs/fotos-por-coordenadas.md"
 
 # Cambiarle la foto a un gooal
 node --env-file=.env.local scripts/fotos-catalogo/reemplazar.mjs <id> "File:Algo.jpg"
 node --env-file=.env.local scripts/fotos-catalogo/reemplazar.mjs <id> "File:Algo.jpg" --escribir
 ```
 
-`sospechosas.mjs` **no dice que una foto esté mal, ni que las demás estén bien**:
-la mayoría de los nombres de Commons no mencionan ningún país, así que no salir
-en la lista no significa nada. Decide una persona, como con los pines.
+Las dos listas son **para mirar, no diagnósticos**, y se complementan: el nombre
+del fichero es una pista que vale para cualquier foto; las coordenadas son un
+hecho, pero solo las traen unas 90 de las 223. Ninguna de las dos dice que una
+foto esté bien: dicen dónde mirar.
 
-`reemplazar.mjs` sube la foto nueva con un nombre nuevo y NO pisa la anterior:
-el cubo sirve con cache de un año, y reusar el nombre dejaría la foto vieja a la
-vista durante meses. Se niega a poner una foto que no traiga autor y licencia.
+`coordenadas.mjs` cuenta en voz alta **cuántas no ha podido mirar**, y el cuadre
+del final tiene que sumar el total. Esa suma ya ha servido: la primera vez daban
+220 de 223 y faltaban tres gooals que compartían fichero con otro.
+
+`reemplazar.mjs` se niega a poner una foto que no traiga autor y licencia: sin
+crédito no se puede usar (203 de las 223 licencias lo exigen).
 
 ## Los cuatro pasos
 
