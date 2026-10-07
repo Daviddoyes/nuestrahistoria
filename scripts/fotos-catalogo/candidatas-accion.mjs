@@ -27,6 +27,12 @@
 //   C · búsqueda en Commons con el nombre EN INGLÉS, que sale del enlace de
 //       idioma del artículo. No lo traduzco yo: lo tradujo Wikipedia.
 //   D · búsqueda en Commons en español, por si la actividad es de aquí.
+//   E · si el título lleva un NOMBRE PROPIO (Nürburgring, Mont-rebei), la
+//       carpeta de Commons de ese nombre, SIN pasar por la Wikipedia en
+//       español. En la prueba de veinte esos dos salieron a cero candidatas, y
+//       no era por falta de fotos: del Nürburgring hay cientos de coches en el
+//       circuito. Era el buscador, que no encontraba artículo en español y se
+//       quedaba sin por dónde tirar.
 //
 // Cuatro resultados de la misma búsqueda serían cuatro fotos del mismo álbum.
 //
@@ -66,6 +72,51 @@ const limpio = t => (t?.value ?? '').replace(/<[^>]*>/g, '').trim()
  * pasada: salían banderas, mapas y escudos como "la foto" de una fiesta.
  */
 const BASURA = /(flag|bandera|map|mapa|logo|escudo|coat[_ ]of[_ ]arms|seal|diagram|chart|icon|symbol|poster|cartel|plano|svg|location|locator)/i
+
+/**
+ * ¿El artículo que ha encontrado Wikipedia habla de lo que buscamos?
+ *
+ * Se compara palabra a palabra. Si no comparten NI UNA, el artículo se tira
+ * entero: su portada, su carpeta de Commons y su enlace al inglés. Un artículo
+ * equivocado no da una foto mediocre, da una foto de otra cosa.
+ *
+ * Lo que cazó en la prueba de veinte:
+ *
+ *   "Bucear en las islas Medes"   -> artículo "Chipre"
+ *                                    (barcas en un puerto y una iglesia)
+ *
+ * Y lo que NO caza, que conviene saberlo porque es la mitad del problema:
+ *
+ *   "Correr un 10K"               -> "10K Projects", un sello discográfico.
+ *                                    Comparten "10K", así que pasa la regla.
+ *   "Actuar en un escenario"      -> "Kaleido Star: ... Mismo Escenario", un
+ *                                    anime. Comparten "escenario".
+ *
+ * Se podría afinar —pedir que coincida la mitad de las palabras del artículo,
+ * por ejemplo— y entonces caería también "Maratón de Barcelona" buscando "Marató
+ * de Barcelona", porque en catalán no lleva tilde. Cada vuelta de tuerca arregla
+ * unos casos y rompe otros: esto se queda en lo simple, y lo demás lo cazan los
+ * ojos de alguien mirando las candidatas.
+ */
+function elArticuloCasa(tituloArticulo, busca) {
+  const palabras = t => new Set(
+    (t ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9ñ ]/g, ' ').split(/\s+/)
+      .filter(p => p.length >= 3 && !VACIAS.has(p)))
+  const delArticulo = palabras(tituloArticulo)
+  const deLaBusqueda = palabras(busca)
+  if (delArticulo.size === 0 || deLaBusqueda.size === 0) return false
+  for (const p of delArticulo) if (deLaBusqueda.has(p)) return true
+  return false
+}
+
+/** Los nombres propios del título: palabras con mayúscula que no son la primera. */
+function nombresPropios(nucleoTitulo) {
+  return nucleoTitulo.split(/\s+/)
+    .filter((p, i) => i > 0 || /^[A-ZÀ-Ü]/.test(p))
+    .filter(p => p.length >= 4 && /^[A-ZÀ-Ü]/.test(p))
+    .map(p => p.replace(/[.,;:]$/, ''))
+}
 
 function sirve(info) {
   if (!info) return false
@@ -124,7 +175,11 @@ async function candidatasDe(gooal) {
     prop: 'pageimages|pageprops|langlinks', piprop: 'original|name',
     ppprop: 'wikibase_item', lllang: 'en',
   })
-  const pagina = art?.query?.pages?.[0] ?? null
+  const encontrado = art?.query?.pages?.[0] ?? null
+  // Si el artículo no habla de esto, no vale NADA de él: ni su portada, ni su
+  // carpeta, ni su nombre en inglés. Se anota para que figure en el informe.
+  const casa = encontrado ? elArticuloCasa(encontrado.title, busca) : false
+  const pagina = casa ? encontrado : null
 
   // A · la portada del artículo
   if (pagina?.pageimage && !BASURA.test(pagina.pageimage)) {
@@ -176,7 +231,33 @@ async function candidatasDe(gooal) {
     meter(aCandidata(p, 'Commons en español'))
   }
 
-  return { ...gooal, busca, articulo: pagina?.title ?? null, enIngles, categoria, candidatas: candidatas.slice(0, 4) }
+  // E · el nombre propio, directo a las carpetas de Commons
+  const propios = nombresPropios(busca)
+  if (propios.length && candidatas.length < 4) {
+    const nombre = propios.join(' ')
+    const cats = await pedir('commons.wikimedia.org', {
+      action: 'query', list: 'search', srsearch: nombre, srnamespace: 14, srlimit: 3,
+    })
+    for (const c of cats?.query?.search ?? []) {
+      if (candidatas.length >= 4) break
+      const miembros = await pedir('commons.wikimedia.org', {
+        action: 'query', list: 'categorymembers', cmtitle: c.title, cmtype: 'file', cmlimit: 12,
+      })
+      const titulos = (miembros?.query?.categorymembers ?? []).map(m => m.title).filter(t => !BASURA.test(t))
+      const info = await infoDe(titulos)
+      const buena = info.filter(sirve)[0]
+      if (buena) meter(aCandidata(buena, 'carpeta del nombre propio'))
+    }
+  }
+
+  return {
+    ...gooal, busca,
+    articulo: pagina?.title ?? null,
+    articuloDescartado: !casa && encontrado ? encontrado.title : null,
+    nombresPropios: propios,
+    enIngles, categoria_commons: categoria,
+    candidatas: candidatas.slice(0, 4),
+  }
 }
 
 // ── Los gooals ────────────────────────────────────────────
@@ -209,8 +290,11 @@ writeFileSync(SALIDA + '/fotos-accion.json', JSON.stringify(filas, null, 1), 'ut
 
 const conCuatro = filas.filter(f => f.candidatas.length === 4).length
 const sinNinguna = filas.filter(f => f.candidatas.length === 0).length
+const descartados = filas.filter(f => f.articuloDescartado).length
+const conNombre = filas.filter(f => f.nombresPropios.length > 0).length
 console.log(`\npeticiones: ${peticiones}`)
-console.log(`con las cuatro: ${conCuatro} · sin ninguna: ${sinNinguna}`)
+console.log(`con las cuatro: ${conCuatro} · sin ninguna candidata: ${sinNinguna}`)
+console.log(`artículos descartados por no casar: ${descartados} · gooals con nombre propio: ${conNombre}`)
 console.log('escrito: Claude outputs/fotos-accion.json')
 console.log('\nLa hoja para mirarlas:')
 console.log('  node scripts/fotos-catalogo/hoja-accion.mjs')
