@@ -121,8 +121,8 @@ function ExplorarContenido() {
   }, [])
 
   const filtrosMapa = useMemo(
-    () => ({ categoria: filtros.categoria, dificultad: filtros.dificultad, busqueda: aplicada }),
-    [filtros.categoria, filtros.dificultad, aplicada],
+    () => ({ categoria: filtros.categoria, busqueda: aplicada }),
+    [filtros.categoria, aplicada],
   )
 
   if (loading) return <PantallaCargando />

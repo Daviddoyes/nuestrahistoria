@@ -439,7 +439,6 @@ export default function OnboardingPage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {sugeridos.map(g => {
                   const estado = estados[g.id]
-                  const dificultad = DIFICULTAD_META[g.dificultad]
                   return (
                     <div
                       key={g.id}
@@ -469,7 +468,7 @@ export default function OnboardingPage() {
                           {g.titulo}
                         </p>
                         <p style={{ fontSize: 11, color: '#7A8A85', marginTop: 3 }}>
-                          {dificultad.emoji} <span style={{ color: '#00D1A7', fontWeight: 600 }}>+{g.puntos} pts</span>
+                          <span style={{ color: '#00D1A7', fontWeight: 600 }}>+{g.puntos} pts</span>
                         </p>
                       </div>
 

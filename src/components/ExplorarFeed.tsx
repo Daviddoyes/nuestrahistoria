@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { Plus } from 'lucide-react'
 import { getCatalogoGooals } from '@/lib/actions'
-import { CATEGORIA_GRADIENTE, DIFICULTAD_META } from '@/lib/gooals'
+import { CATEGORIA_GRADIENTE } from '@/lib/gooals'
 import type { Filtros } from './explorar/FiltrosCatalogo'
 import { hayFiltros as tieneFiltros } from './explorar/FiltrosCatalogo'
 import type { GooalV2, EstadoUserGooal } from '@/types/gooals'
@@ -33,7 +33,7 @@ export default function ExplorarFeed({ filtros, estados, onAbrir, onSugerir, onL
   const [cargandoMas, setCargandoMas] = useState(false)
   const [error, setError] = useState('')
 
-  const { busqueda, categoria, dificultad } = filtros
+  const { busqueda, categoria } = filtros
 
   // Cada búsqueda o filtro dispara una consulta; si el usuario cambia de
   // opinión mientras vuela, la respuesta vieja no debe pisar a la nueva.
@@ -44,7 +44,7 @@ export default function ExplorarFeed({ filtros, estados, onAbrir, onSugerir, onL
     const mia = ++peticion.current
     setCargando(true)
     setError('')
-    getCatalogoGooals({ categoria, dificultad, busqueda, pagina: 0 })
+    getCatalogoGooals({ categoria, busqueda, pagina: 0 })
       .then(res => {
         if (mia !== peticion.current) return
         setGooals(res.gooals)
@@ -57,13 +57,13 @@ export default function ExplorarFeed({ filtros, estados, onAbrir, onSugerir, onL
         setError('No hemos podido cargar los gooals. Inténtalo de nuevo.')
       })
       .finally(() => { if (mia === peticion.current) setCargando(false) })
-  }, [categoria, dificultad, busqueda])
+  }, [categoria, busqueda])
 
   const cargarMas = useCallback(() => {
     if (cargandoMas || !hayMas) return
     setCargandoMas(true)
     const siguiente = pagina + 1
-    getCatalogoGooals({ categoria, dificultad, busqueda, pagina: siguiente })
+    getCatalogoGooals({ categoria, busqueda, pagina: siguiente })
       .then(res => {
         setGooals(prev => [...prev, ...res.gooals])
         setHayMas(res.hayMas)
@@ -71,7 +71,7 @@ export default function ExplorarFeed({ filtros, estados, onAbrir, onSugerir, onL
       })
       .catch(e => console.error('[explorar:mas]', e))
       .finally(() => setCargandoMas(false))
-  }, [cargandoMas, hayMas, pagina, categoria, dificultad, busqueda])
+  }, [cargandoMas, hayMas, pagina, categoria, busqueda])
 
   // Centinela al final del grid: cuando entra en pantalla, pide más.
   const centinela = useRef<HTMLDivElement | null>(null)
@@ -104,7 +104,7 @@ export default function ExplorarFeed({ filtros, estados, onAbrir, onSugerir, onL
     return (
       <div className="flex flex-col items-center justify-center gap-2 px-8 py-16 text-center">
         <p style={{ fontSize: 15, color: '#7A8A85' }}>Ningún gooal coincide.</p>
-        <p style={{ fontSize: 13, color: '#7A8A85' }}>Prueba con otra categoría o dificultad.</p>
+        <p style={{ fontSize: 13, color: '#7A8A85' }}>Prueba con otra categoría o con otras palabras.</p>
         <button
           onClick={onSugerir}
           className="mt-4 flex items-center gap-2 rounded-xl active:opacity-80 transition-opacity"
@@ -166,12 +166,10 @@ const gridEstiloSuelto: React.CSSProperties = {
   display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8,
 }
 
-/** Una card del catálogo: foto o degradado, dificultad, y el velo de tu estado. */
+/** Una card del catálogo: foto o degradado, puntos, y el velo de tu estado. */
 function CardGooal({
   gooal, estado, onClick,
 }: { gooal: GooalV2; estado?: EstadoUserGooal; onClick: () => void }) {
-  const dificultad = DIFICULTAD_META[gooal.dificultad]
-
   return (
     <button
       onClick={onClick}
@@ -199,14 +197,17 @@ function CardGooal({
         }}
       />
 
+      {/* Los puntos, y no la dificultad: la dificultad SE DEDUCE de los puntos,
+          así que ponerlas juntas era decir lo mismo dos veces. */}
       <span
         style={{
           position: 'absolute', top: 8, right: 8,
-          fontSize: 10, fontWeight: 600, color: dificultad.color,
-          background: 'rgba(0,0,0,0.55)', borderRadius: 999, padding: '3px 8px',
+          fontSize: 11, fontWeight: 700, color: '#00D1A7',
+          background: 'rgba(0,0,0,0.55)', border: '1px solid rgba(255,255,255,0.13)',
+          borderRadius: 999, padding: '3px 8px',
         }}
       >
-        {dificultad.emoji} {dificultad.label}
+        {gooal.puntos} {gooal.puntos === 1 ? 'pt' : 'pts'}
       </span>
 
       <p

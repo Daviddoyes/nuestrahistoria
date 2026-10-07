@@ -1,22 +1,18 @@
 'use client'
 
 import { Search, X } from 'lucide-react'
-import {
-  CATEGORIAS, CATEGORIA_LABEL, DIFICULTADES, DIFICULTAD_META,
-  type CategoriaGooal, type DificultadGooal,
-} from '@/lib/gooals'
+import { CATEGORIAS, CATEGORIA_LABEL, type CategoriaGooal } from '@/lib/gooals'
 import ChipCategoria from '@/components/ChipCategoria'
 
 export type Filtros = {
   busqueda: string
   categoria: CategoriaGooal | 'todos'
-  dificultad: DificultadGooal | null
 }
 
-export const SIN_FILTROS: Filtros = { busqueda: '', categoria: 'todos', dificultad: null }
+export const SIN_FILTROS: Filtros = { busqueda: '', categoria: 'todos' }
 
 export function hayFiltros(f: Filtros): boolean {
-  return Boolean(f.busqueda || f.categoria !== 'todos' || f.dificultad)
+  return Boolean(f.busqueda || f.categoria !== 'todos')
 }
 
 type Props = {
@@ -25,7 +21,7 @@ type Props = {
 }
 
 /**
- * Buscador, categorías y dificultad. UNA SOLA BARRA PARA LAS DOS VISTAS.
+ * Buscador y categorías. UNA SOLA BARRA PARA LAS DOS VISTAS.
  *
  * Antes esto vivía dentro de la lista, y el mapa tenía sus propias pastillas de
  * categoría y ni buscador ni dificultad —aunque la consulta del mapa sí los
@@ -35,9 +31,18 @@ type Props = {
  *
  * Así que los filtros son de la pantalla, no de la vista, y las dos miran los
  * mismos.
+ *
+ * ── Y NO HAY FILTRO DE DIFICULTAD ─────────────────────────
+ *
+ * Lo hubo hasta el 7-10-2026. La dificultad SE DEDUCE de los puntos (1-3 fácil,
+ * 4-7 difícil, 8-10 épico), así que enseñarla al lado de los puntos era tener
+ * dos palabras para una sola cosa, y de eso vienen la mitad de los líos de este
+ * repo. La columna sigue en la base y el disparador que la calcula también: lo
+ * que desaparece es de la pantalla. El día que haga falta "enséñame solo lo
+ * gordo", será un filtro por PUNTOS, no una palabra nueva.
  */
 export default function FiltrosCatalogo({ filtros, onCambiar }: Props) {
-  const { busqueda, categoria, dificultad } = filtros
+  const { busqueda, categoria } = filtros
 
   return (
     <div style={{ padding: '4px 12px 10px', background: '#0B0B0B' }}>
@@ -80,30 +85,6 @@ export default function FiltrosCatalogo({ filtros, onCambiar }: Props) {
         ))}
       </div>
 
-      <div className="flex gap-2" style={{ marginTop: 8 }}>
-        {DIFICULTADES.map(d => {
-          const meta = DIFICULTAD_META[d]
-          const activo = dificultad === d
-          return (
-            <button
-              key={d}
-              onClick={() => onCambiar({ ...filtros, dificultad: activo ? null : d })}
-              aria-pressed={activo}
-              aria-label={meta.label}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 5,
-                padding: '6px 12px', borderRadius: 999, fontSize: 12, fontWeight: 500,
-                border: `1px solid ${activo ? meta.color : '#2A2E2C'}`,
-                background: activo ? `${meta.color}1F` : 'transparent',
-                color: activo ? meta.color : '#7A8A85',
-                transition: 'all 0.2s', whiteSpace: 'nowrap',
-              }}
-            >
-              <span>{meta.emoji}</span> {meta.label}
-            </button>
-          )
-        })}
-      </div>
     </div>
   )
 }

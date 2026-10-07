@@ -94,7 +94,6 @@ const BORDE_NEUTRO = '#0B0B0B'
 
 type Filtros = {
   categoria: CategoriaGooal | 'todos'
-  dificultad: DificultadGooal | null
   busqueda: string
 }
 

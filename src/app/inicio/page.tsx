@@ -7,7 +7,7 @@ import { Search, MapPin } from 'lucide-react'
 import {
   getInicio, getMyProfile, getSugerencias, getCercaDeMi, getGooalV2, getMisEstadosGooals,
 } from '@/lib/actions'
-import { CATEGORIA_GRADIENTE, CATEGORIA_LABEL } from '@/lib/gooals'
+import { CATEGORIA_GRADIENTE } from '@/lib/gooals'
 import AppShell, { PantallaCargando } from '@/components/AppShell'
 import GooalV2DetailModal from '@/components/GooalV2DetailModal'
 import CelebracionPuntos from '@/components/CelebracionPuntos'
@@ -167,20 +167,11 @@ export default function InicioPage() {
               />
             </label>
           </form>
-          <p style={{ fontSize: 12, color: '#55605C', padding: '8px 2px 0', lineHeight: 1.5 }}>
-            O busca algo que ya hayas hecho, para marcarlo. Si no está, puedes proponerlo.
-          </p>
-
-          {/* ── Tus tres cifras ────────────────────────────── */}
-          {resumen && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', fontSize: 13, color: '#7A8A85', padding: '16px 2px 4px' }}>
-              <span><b style={{ color: '#FFFFFF', fontWeight: 700 }}>{resumen.conseguidos}</b> conseguidos</span>
-              <Punto />
-              <span><b style={{ color: '#00D1A7', fontWeight: 700 }}>{resumen.puntos}</b> puntos</span>
-              <Punto />
-              <span><b style={{ color: '#FFFFFF', fontWeight: 700 }}>{resumen.pendientes}</b> pendientes</span>
-            </div>
-          )}
+          {/* Aquí había una línea explicando que el buscador también vale para
+              marcar lo ya hecho, y las tres cifras (conseguidos · puntos ·
+              pendientes). Fuera las dos: el campo ya pregunta, y las cifras
+              viven en el perfil, que es donde se buscan. Una pantalla de entrada
+              con cuatro explicaciones no se lee, se salta. */}
 
           {error && (
             <p role="alert" className="text-sm text-[#FF5252] bg-[rgba(255,82,82,0.14)] px-3 py-2 rounded-lg mt-4">{error}</p>
@@ -217,12 +208,10 @@ export default function InicioPage() {
           {/* ── De lo que te interesa ──────────────────────── */}
           {sugerencias && sugerencias.gooals.length > 0 && (
             <section style={{ marginTop: 22 }}>
+              {/* El criterio NO va impreso. Que se pueda explicar en una línea
+                  era para que no fuera inventado, no para escribirlo en la
+                  pantalla: vive en getSugerencias(), que es donde sirve. */}
               <Cabecera titulo="De lo que te interesa" enlace="/explorar" texto="Explorar" />
-              {sugerencias.categorias.length > 0 && (
-                <p style={{ fontSize: 11.5, color: '#55605C', margin: '-4px 2px 10px', lineHeight: 1.45 }}>
-                  Porque en el alta elegiste {listar(sugerencias.categorias.map(c => CATEGORIA_LABEL[c].toLowerCase()))}.
-                </p>
-              )}
               <Tira gooals={sugerencias.gooals} onAbrir={abrir} />
             </section>
           )}
@@ -248,9 +237,6 @@ export default function InicioPage() {
                     : <MapPin aria-hidden style={{ width: 16, height: 16 }} />}
                   {buscandoCerca ? 'Mirando dónde estás...' : 'Ver lo que tengo cerca'}
                 </button>
-                <p style={{ fontSize: 11.5, color: '#55605C', padding: '8px 2px 0', lineHeight: 1.45 }}>
-                  Te pedirá permiso para saber dónde estás. No se guarda.
-                </p>
               </>
             ) : cerca.length === 0 ? (
               <p style={{ fontSize: 13, color: '#7A8A85', lineHeight: 1.5 }}>
@@ -283,16 +269,6 @@ export default function InicioPage() {
       )}
     </>
   )
-}
-
-/** "viajes, deporte y gastronomía", con la coma y la y donde toca. */
-function listar(palabras: string[]): string {
-  if (palabras.length <= 1) return palabras[0] ?? ''
-  return palabras.slice(0, -1).join(', ') + ' y ' + palabras[palabras.length - 1]
-}
-
-function Punto() {
-  return <span aria-hidden style={{ width: 3, height: 3, borderRadius: '50%', background: '#3A423F' }} />
 }
 
 function Cabecera({ titulo, enlace, texto }: { titulo: string; enlace: string; texto: string }) {
@@ -330,7 +306,7 @@ function Tira({
             aria-label={g.titulo}
             className="active:opacity-80 transition-opacity"
             style={{
-              flex: '0 0 148px', height: 112, borderRadius: 14, position: 'relative',
+              flex: '0 0 152px', height: 132, borderRadius: 14, position: 'relative',
               overflow: 'hidden', border: '1px solid #2A2E2C', textAlign: 'left',
               background: g.imagen_url ? '#161817' : CATEGORIA_GRADIENTE[g.categoria],
             }}
@@ -346,7 +322,7 @@ function Tira({
             )}
             <span
               aria-hidden
-              style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(5,6,6,0.94), rgba(5,6,6,0) 62%)' }}
+              style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(5,6,6,0.96) 42%, rgba(5,6,6,0) 88%)' }}
             />
             <span
               style={{
@@ -371,8 +347,8 @@ function Tira({
             <span
               style={{
                 position: 'absolute', left: 9, right: 9, bottom: 8,
-                fontSize: 11.5, lineHeight: 1.3, color: '#FFFFFF', fontWeight: 500,
-                display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                fontSize: 11.5, lineHeight: 1.28, color: '#FFFFFF', fontWeight: 500,
+                display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden',
               } as React.CSSProperties}
             >
               {g.titulo}

@@ -4,7 +4,7 @@ import { useState, useMemo, useRef, useEffect, useId } from 'react'
 import { X, ImagePlus } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { completarGooal } from '@/lib/actions'
-import { DIFICULTAD_META, CATEGORIA_LABEL } from '@/lib/gooals'
+import { CATEGORIA_LABEL } from '@/lib/gooals'
 import { SelectorQuienLaVe } from './QuienLaVe'
 import type { GooalV2, VisibilidadFoto } from '@/types/gooals'
 import {
@@ -117,7 +117,6 @@ export default function AnadirFotoModal({ gooal, onClose, onCompletado }: Props)
   const [error, setError] = useState('')
 
   const ocupado = preparando || subiendo
-  const dificultad = DIFICULTAD_META[gooal.dificultad]
 
   // La URL de la vista previa ocupa memoria hasta que se libera.
   const previewActual = useRef<string | null>(null)
@@ -270,7 +269,7 @@ export default function AnadirFotoModal({ gooal, onClose, onCompletado }: Props)
         <form onSubmit={handleSubmit} className="px-5 pt-4 pb-5 space-y-4">
           <div className="rounded-xl bg-[#2A2E2C] border border-[#2A2E2C] px-4 py-3">
             <p className="text-[10px] uppercase tracking-[0.12em] text-[#7A8A85] mb-1">
-              {CATEGORIA_LABEL[gooal.categoria]} · {dificultad.emoji} {dificultad.label}
+              {CATEGORIA_LABEL[gooal.categoria]}
             </p>
             <p className="font-medium text-[#FFFFFF] text-sm">{gooal.titulo}</p>
           </div>

@@ -73,8 +73,9 @@ export default function CompartirGooalStory({
 
       ctx.fillStyle = '#A3B1AC'
       ctx.font = '500 34px Inter, system-ui, sans-serif'
-      const meta = DIFICULTAD_META[dificultad]
-      ctx.fillText(`${CATEGORIA_LABEL[categoria]} · ${meta.emoji} ${meta.label}`, STORY_W / 2, 362)
+      // Solo la categoría: los puntos ya están justo encima, en grande, y la
+      // dificultad no es más que una forma de decir los puntos con palabras.
+      ctx.fillText(CATEGORIA_LABEL[categoria], STORY_W / 2, 362)
 
       // Título sobre la parte baja de la foto.
       const size = titulo.length > 45 ? 46 : titulo.length > 25 ? 56 : 66

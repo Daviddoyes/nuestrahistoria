@@ -90,7 +90,6 @@ export default function GooalV2DetailModal({
   const videoPropio = fotoRota ? null : video
 
   const color = CATEGORIA_COLOR[gooal.categoria]
-  const dificultad = DIFICULTAD_META[gooal.dificultad]
 
   const router = useRouter()
 
@@ -336,12 +335,6 @@ export default function GooalV2DetailModal({
               color, background: `${color}22`, borderRadius: 999, padding: '5px 11px',
             }}>
               {CATEGORIA_LABEL[gooal.categoria]}
-            </span>
-            <span style={{
-              fontSize: 11, fontWeight: 600, color: dificultad.color,
-              background: `${dificultad.color}1F`, borderRadius: 999, padding: '5px 11px',
-            }}>
-              {dificultad.emoji} {dificultad.label}
             </span>
             <span style={{
               fontSize: 11, fontWeight: 700, color: '#00D1A7',
