@@ -390,6 +390,38 @@ De ahí tres reglas:
    inserta deja una prueba que pasa sin comprobar nada: pasó dos veces con
    `invitaciones_email`, y la tabla parecía cerrada estando abierta.
 
+## Antes de medir parecido entre nombres, pruébalo en catalán
+
+La zona donde esto se usa es catalana. **«Marató» y «Maratón» son la misma
+palabra con una tilde de diferencia**, y cualquier regla que mida parecido entre
+textos en castellano se rompe ahí sin avisar.
+
+Sale de la regla que descarta el artículo de Wikipedia cuando no habla de lo que
+buscas. La versión simple —que compartan al menos una palabra— deja pasar dos
+casos conocidos («Correr un 10K» casó con «10K Projects», un sello discográfico;
+«Actuar en un escenario» con un anime llamado «… Mismo Escenario»). La tentación
+era afinarla: pedir que coincida **la mitad** de las palabras del artículo. Con
+eso caen los dos... y cae también **«Marató de Barcelona» contra «Maratón de
+Barcelona»**, que es un acierto de verdad.
+
+> **Antes de dar por buena una regla que compara nombres, pruébala con un par
+> catalán/castellano.** Si el par no sobrevive, la regla no vale, por bien que
+> funcione con todos los demás ejemplos.
+
+Dónde va a volver a aparecer: el buscador de la app (quien escriba «marato» tiene
+que encontrar «Marató»), la detección de títulos duplicados del catálogo, el
+cruce de nombres del geocodificador, y cualquier cosa que normalice acentos. Y
+ojo, que quitar los acentos **no** lo arregla: sin tildes quedan «marato» y
+«maraton», que siguen siendo distintas.
+
+Y la lección hermana, que es de carácter:
+
+> **Una regla que no lo caza todo y lo dice por escrito es mejor que una ajustada
+> hasta que arregla unos casos y rompe otros.** Lo que no se puede hacer es
+> contar que caza algo sin haberlo comprobado: la regla de aquí arriba se
+> presentó diciendo que cazaría tres casos y cazaba uno, y se supo al
+> implementarla, no al describirla.
+
 ## Un contador guardado se actualiza al sumar y nunca al restar
 
 `gooals_v2.veces_completado` es una caché: el número de personas que han
