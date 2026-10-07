@@ -9,6 +9,7 @@ import {
 import AppShell, { PantallaCargando } from '@/components/AppShell'
 import ExplorarFeed from '@/components/ExplorarFeed'
 import FiltrosCatalogo, { SIN_FILTROS, type Filtros } from '@/components/explorar/FiltrosCatalogo'
+import Descubrir from '@/components/explorar/Descubrir'
 import GooalV2DetailModal from '@/components/GooalV2DetailModal'
 import SugerirGooalSheet from '@/components/SugerirGooalSheet'
 import CelebracionPuntos from '@/components/CelebracionPuntos'
@@ -28,7 +29,7 @@ const MapaGooals = dynamic(() => import('@/components/MapaGooals'), {
   ),
 })
 
-type Pestana = 'lista' | 'mapa'
+type Pestana = 'lista' | 'mapa' | 'descubrir'
 
 /** Espera antes de mandar la búsqueda al servidor, para no lanzar una consulta por tecla. */
 const ESPERA_BUSQUEDA = 300
@@ -52,7 +53,10 @@ function ExplorarContenido() {
   const [cuantos, setCuantos] = useState<{ conSitio: number; total: number } | null>(null)
 
   // ?q= llega del buscador de Inicio; ?tab= de /mapa y de los enlaces guardados.
-  const [pestana, setPestana] = useState<Pestana>(searchParams.get('tab') === 'mapa' ? 'mapa' : 'lista')
+  const tabPedida = searchParams.get('tab')
+  const [pestana, setPestana] = useState<Pestana>(
+    tabPedida === 'mapa' ? 'mapa' : tabPedida === 'descubrir' ? 'descubrir' : 'lista',
+  )
   const [filtros, setFiltros] = useState<Filtros>({ ...SIN_FILTROS, busqueda: searchParams.get('q') ?? '' })
   // Lo escrito y lo aplicado van por separado: la consulta espera a que dejes de
   // teclear, pero el campo tiene que responder a cada tecla.
@@ -102,8 +106,8 @@ function ExplorarContenido() {
     // /mapa pueda redirigir aquí. replace y no push: moverse entre pestañas no
     // debería llenar el botón de atrás.
     const url = new URL(window.location.href)
-    if (nueva === 'mapa') url.searchParams.set('tab', 'mapa')
-    else url.searchParams.delete('tab')
+    if (nueva === 'lista') url.searchParams.delete('tab')
+    else url.searchParams.set('tab', nueva)
     router.replace(url.pathname + url.search, { scroll: false })
   }
 
@@ -131,7 +135,7 @@ function ExplorarContenido() {
   const cabecera = (
     <>
       <div role="tablist" style={{ display: 'flex', gap: 6, padding: '2px 12px 0' }}>
-        {([['lista', 'Lista'], ['mapa', 'Mapa']] as const).map(([id, texto]) => {
+        {([['lista', 'Lista'], ['mapa', 'Mapa'], ['descubrir', 'Descubrir']] as const).map(([id, texto]) => {
           const activa = pestana === id
           return (
             <button
@@ -154,7 +158,10 @@ function ExplorarContenido() {
         })}
       </div>
 
-      <FiltrosCatalogo filtros={filtros} onCambiar={setFiltros} />
+      {/* Los filtros son de la lista y del mapa. En Descubrir no pintan nada:
+          ahí no se busca, se decide una carta cada vez, y una barra de filtros
+          encima robaría el sitio que necesita la foto. */}
+      {pestana !== 'descubrir' && <FiltrosCatalogo filtros={filtros} onCambiar={setFiltros} />}
 
       {pestana === 'mapa' && cuantos && (
         <p style={{ fontSize: 11, color: '#55605C', padding: '0 14px 8px', lineHeight: 1.45, marginTop: -4 }}>
@@ -179,6 +186,14 @@ function ExplorarContenido() {
             onLimpiar={() => { setFiltros(SIN_FILTROS); setAplicada('') }}
           />
         </div>
+
+        {/* height 100%, como el mapa: el área de AppShell tiene altura fija y
+            las cartas tienen que ocuparla entera, no la de su contenido. */}
+        {pestana === 'descubrir' && (
+          <div style={{ height: '100%' }}>
+            <Descubrir onCompletado={setCelebracion} onCambio={cargarEstados} />
+          </div>
+        )}
 
         {mapaVisitado && (
           <div

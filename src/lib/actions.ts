@@ -4,7 +4,9 @@ import { revalidatePath } from 'next/cache'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { createServiceRoleClient } from '@/lib/supabase/service'
 import { calcularNivel } from '@/lib/niveles'
-import { CATEGORIAS, contarPorCategoria, normalizarCategoriaGooal } from '@/lib/gooals'
+import {
+  CATEGORIAS, contarPorCategoria, normalizarCategoriaGooal, type CategoriaGooal,
+} from '@/lib/gooals'
 import { limpiarBusqueda } from '@/lib/busqueda'
 import { amigosDe, puedeVerLaFoto, VISIBILIDADES } from '@/lib/permisos'
 import {
@@ -14,7 +16,7 @@ import type {
   GooalV2, MuroPostFeed, UsuarioMini,
   EstadoUserGooal, FiltrosCatalogo, FiltrosMapa, GooalMapa, FiltrosPines, PinMapa, Profile,
   PerfilCompleto, LineaPerfil, GooalResumen, VisibilidadFoto, ResumenInicio,
-  SugerenciasInicio, GooalCerca,
+  SugerenciasInicio, GooalCerca, CartaDescubrir,
 } from '@/types/gooals'
 
 /** Tamaño de página de Explorar. */
@@ -1577,6 +1579,155 @@ export async function getCuantosEnMapa(): Promise<{ conSitio: number; total: num
     publicados(),
   ])
   return { conSitio: conSitio.count ?? 0, total: total.count ?? 0 }
+}
+
+/** Cuántas cartas se traen de golpe. */
+const CARTAS_POR_TANDA = 20
+
+/**
+ * Las cartas de Descubrir.
+ *
+ * ── SOLO LAS QUE TIENEN FOTO ──────────────────────────────
+ *
+ * Deslizar un degradado de color no tiene ninguna gracia: la pantalla ES la
+ * foto. Hoy eso son 221 de los 536 publicados.
+ *
+ * ── NI LO TUYO NI LO QUE YA PASASTE ───────────────────────
+ *
+ * Se quitan los que ya tienes (en cualquier estado) y los que pasaste, que
+ * viven en `gooals_pasados`. Se traen los 221 ids de una vez y se restan aquí:
+ * son 221 uuids, cabe de sobra, y así el "quedan" es exacto en vez de una
+ * estimación.
+ *
+ * ── EL ORDEN ──────────────────────────────────────────────
+ *
+ * Repartido por categoría, uno de cada por turno. Sirve de poco —160 de 221 son
+ * de viajes, así que después de la cuarta vuelta ya solo quedan viajes—, pero
+ * las primeras cartas sí salen variadas, que es cuando alguien decide si esto
+ * le interesa. Dentro de cada categoría, barajado estable por persona: el mismo
+ * orden al recargar, distinto para cada uno.
+ */
+export async function getParaDescubrir(): Promise<{
+  cartas: CartaDescubrir[]
+  /** Cuántas quedan por ver en total, contando las que no caben en esta tanda. */
+  quedan: number
+  /** Cuántas hay con foto, hayas hecho lo que hayas hecho. */
+  total: number
+}> {
+  const userId = await getUserId()
+  if (!userId) return { cartas: [], quedan: 0, total: 0 }
+  const service = createServiceRoleClient()
+
+  const [candidatos, mios, pasados] = await Promise.all([
+    leerTodo<{ id: string; categoria: CategoriaGooal }>('candidatos de Descubrir', (desde, hasta) =>
+      service.from('gooals_v2').select('id, categoria')
+        .eq('activo', true).eq('estado', 'verificado').not('imagen_url', 'is', null)
+        .order('id', { ascending: true }).range(desde, hasta)),
+    listarEstados(service, userId),
+    leerTodo<{ gooal_id: string }>('gooals pasados', (desde, hasta) =>
+      service.from('gooals_pasados').select('gooal_id')
+        .eq('user_id', userId).order('gooal_id', { ascending: true }).range(desde, hasta)),
+  ])
+
+  const fuera = new Set([...mios.map(m => m.gooal_id), ...pasados.map(p => p.gooal_id)])
+  const quedanTodos = candidatos.filter(c => !fuera.has(c.id))
+
+  // Barajado estable por persona y repartido por categoría.
+  const porCategoria = new Map<CategoriaGooal, string[]>()
+  for (const c of quedanTodos) {
+    if (!porCategoria.has(c.categoria)) porCategoria.set(c.categoria, [])
+    porCategoria.get(c.categoria)!.push(c.id)
+  }
+  for (const lista of porCategoria.values()) {
+    lista.sort((a, b) => azarEstable(userId + a) - azarEstable(userId + b))
+  }
+  const listas = [...porCategoria.values()]
+  const elegidos: string[] = []
+  for (let vuelta = 0; elegidos.length < CARTAS_POR_TANDA; vuelta++) {
+    let quedaba = false
+    for (const lista of listas) {
+      if (vuelta >= lista.length) continue
+      quedaba = true
+      elegidos.push(lista[vuelta])
+      if (elegidos.length >= CARTAS_POR_TANDA) break
+    }
+    if (!quedaba) break
+  }
+
+  if (elegidos.length === 0) {
+    return { cartas: [], quedan: 0, total: candidatos.length }
+  }
+
+  const [filasRes, socialRes] = await Promise.all([
+    service.from('gooals_v2')
+      .select('id, titulo, categoria, dificultad, puntos, ciudad, pais, imagen_url, foto_autor, foto_licencia, foto_origen')
+      .in('id', elegidos),
+    // Se cuenta de user_gooals y no de gooals_v2.veces_completado: esa columna
+    // es una caché que sube al conseguir y no baja al borrar. Ya mintió una vez.
+    service.from('user_gooals').select('gooal_id, estado').in('gooal_id', elegidos),
+  ])
+
+  const porId = new Map(
+    ((filasRes.data ?? []) as CartaDescubrir['gooal'][]).map(g => [g.id, g])
+  )
+  const cuenta = new Map<string, { pendientes: number; conseguidos: number }>()
+  for (const f of (socialRes.data ?? []) as { gooal_id: string; estado: EstadoUserGooal }[]) {
+    const c = cuenta.get(f.gooal_id) ?? { pendientes: 0, conseguidos: 0 }
+    if (f.estado === 'completado') c.conseguidos++
+    else c.pendientes++
+    cuenta.set(f.gooal_id, c)
+  }
+
+  // El orden de .in() no se respeta, así que se rehace con el que decidimos.
+  const cartas = elegidos
+    .map(id => porId.get(id))
+    .filter((g): g is CartaDescubrir['gooal'] => Boolean(g))
+    .map(gooal => ({
+      gooal,
+      pendientes: cuenta.get(gooal.id)?.pendientes ?? 0,
+      conseguidos: cuenta.get(gooal.id)?.conseguidos ?? 0,
+    }))
+
+  return { cartas, quedan: quedanTodos.length, total: candidatos.length }
+}
+
+/**
+ * "Paso": que no me lo vuelvas a enseñar.
+ *
+ * Idempotente: pasar dos veces el mismo gooal es pasarlo una vez, y eso lo
+ * garantiza el índice único de la tabla, no un `if` de aquí.
+ */
+export async function pasarGooal(gooalId: string): Promise<{ success: boolean }> {
+  const userId = await getUserId()
+  if (!userId) return { success: false }
+  const service = createServiceRoleClient()
+  const { error } = await service.from('gooals_pasados')
+    .upsert({ user_id: userId, gooal_id: gooalId }, { onConflict: 'user_id,gooal_id', ignoreDuplicates: true })
+  if (error) {
+    console.error('[pasarGooal]', error)
+    return { success: false }
+  }
+  return { success: true }
+}
+
+/**
+ * "Volver a empezar": olvida todo lo que pasaste.
+ *
+ * Solo borra TUS filas, y el dueño va en la consulta y no en un `if`. No toca
+ * nada de lo que tienes añadido o conseguido: eso es otra cosa y no se pierde
+ * por volver a mirar.
+ */
+export async function olvidarPasados(): Promise<{ success: boolean; olvidados: number }> {
+  const userId = await getUserId()
+  if (!userId) return { success: false, olvidados: 0 }
+  const service = createServiceRoleClient()
+  const { data, error } = await service.from('gooals_pasados')
+    .delete().eq('user_id', userId).select('id')
+  if (error) {
+    console.error('[olvidarPasados]', error)
+    return { success: false, olvidados: 0 }
+  }
+  return { success: true, olvidados: (data ?? []).length }
 }
 
 /** Un post concreto del muro, para abrirlo desde el perfil. */

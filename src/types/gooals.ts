@@ -199,6 +199,24 @@ export type GooalCerca = {
   km: number
 }
 
+/**
+ * Una carta de Descubrir.
+ *
+ * Lleva el crédito de la foto porque ahí se ve a pantalla completa, y 203 de las
+ * 223 licencias de Commons exigen citar al autor.
+ */
+export type CartaDescubrir = {
+  gooal: GooalResumen & {
+    pais: string | null
+    foto_autor: string | null
+    foto_licencia: string | null
+    foto_origen: string | null
+  }
+  /** Cuánta gente lo tiene pendiente y cuánta lo ha conseguido. */
+  pendientes: number
+  conseguidos: number
+}
+
 /** Todo lo que pinta el perfil, propio o de otra persona. */
 export type PerfilCompleto = {
   usuario: UsuarioMini
