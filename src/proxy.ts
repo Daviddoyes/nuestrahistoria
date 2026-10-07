@@ -48,6 +48,7 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   const isProtected =
+    pathname.startsWith('/inicio') ||
     pathname.startsWith('/onboarding') ||
     pathname.startsWith('/perfil') ||
     pathname.startsWith('/muro') ||

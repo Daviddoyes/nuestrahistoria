@@ -17,12 +17,18 @@ import MarcaEstadoGooal from './MarcaEstadoGooal'
 
 type Props = {
   onCompletado: (resultado: ResultadoCompletado) => void
+  /**
+   * Lo que se escribió en el buscador de Inicio. El buscador de allí no busca:
+   * trae aquí lo escrito, porque la búsqueda de verdad —con sus filtros, su
+   * scroll y su "proponlo"— ya vive en esta pantalla y no se duplica.
+   */
+  busquedaInicial?: string
 }
 
 /** Espera antes de mandar la búsqueda al servidor, para no lanzar una consulta por tecla. */
 const ESPERA_BUSQUEDA = 300
 
-export default function ExplorarFeed({ onCompletado }: Props) {
+export default function ExplorarFeed({ onCompletado, busquedaInicial = '' }: Props) {
   const [gooals, setGooals] = useState<GooalV2[]>([])
   const [misEstados, setMisEstados] = useState<Record<string, EstadoUserGooal>>({})
   const [pagina, setPagina] = useState(0)
@@ -31,8 +37,11 @@ export default function ExplorarFeed({ onCompletado }: Props) {
   const [cargandoMas, setCargandoMas] = useState(false)
   const [error, setError] = useState('')
 
-  const [busqueda, setBusqueda] = useState('')
-  const [busquedaAplicada, setBusquedaAplicada] = useState('')
+  // Arranca ya aplicada, no solo escrita: si esperara al debounce, la pantalla
+  // pintaría el catálogo entero un instante antes de filtrar, y con una
+  // búsqueda que viene de fuera eso es un parpadeo que no pinta nada.
+  const [busqueda, setBusqueda] = useState(busquedaInicial)
+  const [busquedaAplicada, setBusquedaAplicada] = useState(busquedaInicial)
   const [categoria, setCategoria] = useState<CategoriaGooal | 'todos'>('todos')
   const [dificultad, setDificultad] = useState<DificultadGooal | null>(null)
   const [seleccionado, setSeleccionado] = useState<GooalV2 | null>(null)

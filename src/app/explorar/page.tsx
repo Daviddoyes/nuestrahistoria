@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { Suspense, useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { getMyProfile } from '@/lib/actions'
 import AppShell, { PantallaCargando } from '@/components/AppShell'
 import ExplorarFeed from '@/components/ExplorarFeed'
@@ -10,10 +10,23 @@ import type { ResultadoCompletado } from '@/components/AnadirFotoModal'
 import type { Profile } from '@/types/gooals'
 
 export default function ExplorarPage() {
+  // useSearchParams obliga a un límite de Suspense para poder prerenderizar.
+  return (
+    <Suspense fallback={<PantallaCargando />}>
+      <ExplorarContenido />
+    </Suspense>
+  )
+}
+
+function ExplorarContenido() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
   const [celebracion, setCelebracion] = useState<ResultadoCompletado | null>(null)
+
+  // ?q=<texto> llega del buscador de Inicio, que no busca: trae aquí lo escrito.
+  const busquedaInicial = searchParams.get('q') ?? ''
 
   useEffect(() => {
     getMyProfile()
@@ -31,7 +44,7 @@ export default function ExplorarPage() {
   return (
     <>
       <AppShell tab="explorar" fotoPerfil={profile.foto_perfil_url}>
-        <ExplorarFeed onCompletado={setCelebracion} />
+        <ExplorarFeed onCompletado={setCelebracion} busquedaInicial={busquedaInicial} />
       </AppShell>
 
       {celebracion && (

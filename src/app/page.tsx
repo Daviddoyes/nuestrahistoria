@@ -24,7 +24,7 @@ export default function AuthPage() {
    *   3. con sesión y ?invite=…: se queda aquí sin redirigir. Ese código aún no
    *      lo lee nadie, pero la puerta queda abierta para cuando se use
    *   4. con sesión y un destino pendiente válido: ahí, manda más que el mapa
-   *   5. si no: /onboarding o /mapa según onboarding_completado
+   *   5. si no: /onboarding o /inicio según onboarding_completado
    */
   useEffect(() => {
     let vivo = true
@@ -48,7 +48,7 @@ export default function AuthPage() {
 
         // replace y no push: si no, "atrás" desde el mapa volvería aquí y
         // rebotaría otra vez hacia delante.
-        router.replace(perfil?.onboarding_completado ? '/mapa' : '/onboarding')
+        router.replace(perfil?.onboarding_completado ? '/inicio' : '/onboarding')
       } catch (e) {
         // Si no se puede comprobar, el formulario: peor es quedarse en la pantalla de marca.
         console.error('[inicio] comprobando sesión:', e)
@@ -105,7 +105,7 @@ export default function AuthPage() {
       .single()
 
     if (profile?.onboarding_completado) {
-      router.push('/mapa')
+      router.push('/inicio')
     } else {
       router.push('/onboarding')
     }

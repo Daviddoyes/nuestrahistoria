@@ -13,7 +13,7 @@ import {
 import type {
   GooalV2, MuroPostFeed, UsuarioMini,
   EstadoUserGooal, FiltrosCatalogo, FiltrosMapa, GooalMapa, FiltrosPines, PinMapa, Profile,
-  PerfilCompleto, LineaPerfil, GooalResumen, VisibilidadFoto,
+  PerfilCompleto, LineaPerfil, GooalResumen, VisibilidadFoto, ResumenInicio,
 } from '@/types/gooals'
 
 /** Tamaño de página de Explorar. */
@@ -1358,6 +1358,56 @@ export async function getPerfil(username?: string): Promise<PerfilCompleto | nul
     pendientes,
     // Cuenta sobre lo del usuario, sin filtro de estado: sus borradores también suman.
     porCategoria: contarPorCategoria(conseguidos),
+  }
+}
+
+/** Cuántos pendientes se enseñan en Inicio. El resto, en el perfil. */
+const SIGUIENTES_EN_INICIO = 10
+
+/**
+ * Lo que pinta Inicio: tus tres cifras y los pendientes más recientes.
+ *
+ * Va aparte de getPerfil y no lo reusa: el perfil se trae TODAS tus filas con
+ * su gooal para pintar dos listas enteras, y aquí hacen falta tres números y
+ * diez títulos. En la pantalla de entrada, que es la que más se abre, eso
+ * importa.
+ */
+export async function getInicio(): Promise<ResumenInicio | null> {
+  const userId = await getUserId()
+  if (!userId) return null
+  const service = createServiceRoleClient()
+
+  const [conseguidosRes, pendientesRes, siguientesRes, puntosFilas] = await Promise.all([
+    service.from('user_gooals').select('id', { count: 'exact', head: true })
+      .eq('user_id', userId).eq('estado', 'completado'),
+    service.from('user_gooals').select('id', { count: 'exact', head: true })
+      .eq('user_id', userId).eq('estado', 'pendiente'),
+    // SIN filtro del estado del gooal, como el perfil: lo que alguien ya tiene
+    // es suyo aunque su gooal haya pasado a borrador.
+    service.from('user_gooals')
+      .select('id, gooal:gooals_v2(id, titulo, categoria, dificultad, puntos, ciudad, imagen_url)')
+      .eq('user_id', userId).eq('estado', 'pendiente')
+      .order('created_at', { ascending: false, nullsFirst: false })
+      .order('id', { ascending: true })
+      .limit(SIGUIENTES_EN_INICIO),
+    leerTodo<{ puntos_ganados: number | null }>('puntos de Inicio', (desde, hasta) =>
+      service.from('user_gooals').select('puntos_ganados')
+        .eq('user_id', userId).eq('estado', 'completado')
+        .order('id', { ascending: true }).range(desde, hasta)),
+  ])
+
+  // El doble cast no es pereza: PostgREST tipa el join como un array aunque la
+  // relación sea de uno a uno, y aquí llega un objeto. Es lo mismo que hace
+  // listarUserGooals, solo que allí el tipo entra por el genérico de leerTodo.
+  const filas = (siguientesRes.data ?? []) as unknown as { id: string; gooal: GooalResumen | null }[]
+
+  return {
+    conseguidos: conseguidosRes.count ?? 0,
+    pendientes: pendientesRes.count ?? 0,
+    puntos: puntosFilas.reduce((suma, f) => suma + (f.puntos_ganados ?? 0), 0),
+    siguientes: filas
+      .filter((f): f is { id: string; gooal: GooalResumen } => Boolean(f.gooal))
+      .map(f => ({ userGooalId: f.id, gooal: f.gooal })),
   }
 }
 

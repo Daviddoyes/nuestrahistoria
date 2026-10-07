@@ -30,7 +30,7 @@ export default function FormularioContrasena() {
       if (!r.ok) { setError(r.error); return }
       setHecho(true)
       // La sesión ya está abierta con la contraseña nueva: se entra directo.
-      setTimeout(() => router.replace('/mapa'), 1500)
+      setTimeout(() => router.replace('/inicio'), 1500)
     } catch {
       setError('No se ha podido guardar. Revisa la conexión e inténtalo de nuevo.')
     } finally {

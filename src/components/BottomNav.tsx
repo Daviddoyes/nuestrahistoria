@@ -2,9 +2,9 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Map as MapIcon, Newspaper, Compass, User } from 'lucide-react'
+import { Home, Newspaper, Compass, User } from 'lucide-react'
 
-export type Tab = 'mapa' | 'explorar' | 'muro' | 'perfil'
+export type Tab = 'inicio' | 'explorar' | 'muro' | 'perfil'
 
 /**
  * Alto de la barra, sin el hueco de seguridad del móvil.
@@ -22,10 +22,12 @@ export const ALTO_NAV = 56
  */
 export const ALTO_NAV_TOTAL = ALTO_NAV + 1
 
-// El mapa va primero: es la pantalla principal. "Mis gooals" ya no existe como
-// pestaña; conquistados y pendientes viven en el perfil.
+// Inicio va primero y es la pantalla de entrada. El mapa dejó de serlo: no es
+// por dónde se empieza, es una forma de ver el catálogo, y se va dentro de
+// Explorar. "Mis gooals" tampoco existe como pestaña; conquistados y pendientes
+// viven en el perfil.
 const TABS: { id: Tab; href: string; label: string; Icon: typeof Newspaper }[] = [
-  { id: 'mapa', href: '/mapa', label: 'Mapa', Icon: MapIcon },
+  { id: 'inicio', href: '/inicio', label: 'Inicio', Icon: Home },
   { id: 'explorar', href: '/explorar', label: 'Explorar', Icon: Compass },
   { id: 'muro', href: '/muro', label: 'Muro', Icon: Newspaper },
   { id: 'perfil', href: '/perfil', label: 'Perfil', Icon: User },
@@ -44,7 +46,7 @@ export function conBarraInferior(ruta: string | null | undefined): boolean {
 
 export default function BottomNav({ activeTab, fotoPerfil }: Props) {
   const pathname = usePathname()
-  const actual = activeTab ?? TABS.find(t => pathname.startsWith(t.href))?.id ?? 'mapa'
+  const actual = activeTab ?? TABS.find(t => pathname.startsWith(t.href))?.id ?? 'inicio'
 
   return (
     <nav

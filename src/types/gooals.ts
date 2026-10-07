@@ -171,6 +171,21 @@ export type ConteoCategoria = {
   conseguidos: number
 }
 
+/**
+ * Lo que pinta la pantalla de Inicio en una sola llamada.
+ *
+ * Los puntos se SUMAN de los gooals conseguidos y no se leen de
+ * `profiles.puntos_totales`, que es una caché: el perfil hace lo mismo, y dos
+ * pantallas enseñando totales distintos sería de las cosas que nadie entiende.
+ */
+export type ResumenInicio = {
+  conseguidos: number
+  pendientes: number
+  puntos: number
+  /** Los pendientes más recientes, para "Sigue con lo tuyo". */
+  siguientes: { userGooalId: string; gooal: GooalResumen }[]
+}
+
 /** Todo lo que pinta el perfil, propio o de otra persona. */
 export type PerfilCompleto = {
   usuario: UsuarioMini

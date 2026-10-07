@@ -91,7 +91,7 @@ export default function MapaPage() {
 
   return (
     <>
-      <AppShell tab="mapa" fotoPerfil={profile.foto_perfil_url} header={filtrosCategoria}>
+      <AppShell tab="explorar" fotoPerfil={profile.foto_perfil_url} header={filtrosCategoria}>
         {/*
           height 100%: el área de contenido de AppShell tiene altura fija, y Leaflet
           necesita una altura concreta o se queda a cero píxeles.
