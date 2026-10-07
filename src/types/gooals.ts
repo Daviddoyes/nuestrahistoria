@@ -186,6 +186,19 @@ export type ResumenInicio = {
   siguientes: { userGooalId: string; gooal: GooalResumen }[]
 }
 
+/** Lo que sale en "De lo que te interesa". */
+export type SugerenciasInicio = {
+  gooals: GooalResumen[]
+  /** Las categorías con las que se eligieron. Vacío = no eligió ninguna en el alta. */
+  categorias: CategoriaGooal[]
+}
+
+/** Un gooal con sitio, y a cuántos kilómetros está de donde estás. */
+export type GooalCerca = {
+  gooal: GooalResumen
+  km: number
+}
+
 /** Todo lo que pinta el perfil, propio o de otra persona. */
 export type PerfilCompleto = {
   usuario: UsuarioMini

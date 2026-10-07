@@ -4,22 +4,17 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { getGooalsOnboarding, anadirGooal, conseguirSinFoto } from '@/lib/actions'
-import { CATEGORIA_GRADIENTE, DIFICULTAD_META, type CategoriaGooal } from '@/lib/gooals'
+import {
+  CATEGORIAS, CATEGORIA_COLOR, CATEGORIA_GRADIENTE, CATEGORIA_LABEL, DIFICULTAD_META,
+  type CategoriaGooal,
+} from '@/lib/gooals'
+import IconoCategoria from '@/components/IconoCategoria'
 import MarcaEstadoGooal from '@/components/MarcaEstadoGooal'
 import { MARCA_ESTADO } from '@/lib/estado-gooal'
 import type { EstadoUserGooal, GooalV2 } from '@/types/gooals'
 import Diana from '@/components/Diana'
 
-type InterId = 'viajes' | 'gastronomia' | 'musica' | 'deporte' | 'cultura'
 type CompaniaId = 'pareja' | 'amigos' | 'familia' | 'solo'
-
-const INTERESES: { id: InterId; icon: string; label: string }[] = [
-  { id: 'viajes', icon: '✈️', label: 'Viajes y aventura' },
-  { id: 'gastronomia', icon: '🍜', label: 'Gastronomía' },
-  { id: 'musica', icon: '🎵', label: 'Música y eventos' },
-  { id: 'deporte', icon: '🏃', label: 'Deporte y retos' },
-  { id: 'cultura', icon: '🎨', label: 'Cultura y arte' },
-]
 
 const CON_QUIEN_OPTIONS: { id: CompaniaId; icon: string; label: string }[] = [
   { id: 'pareja', icon: '👫', label: 'En pareja' },
@@ -28,22 +23,15 @@ const CON_QUIEN_OPTIONS: { id: CompaniaId; icon: string; label: string }[] = [
   { id: 'solo', icon: '🙋', label: 'Solo/a' },
 ]
 
-// Las categorías del catálogo v2 que cubre cada interés del onboarding.
-// Los intereses son otra lista y conservan sus ids viejos a propósito: es lo que
-// ya hay guardado en profiles.intereses, y se rehará al rehacer el onboarding.
-// Hasta entonces, aquí se traducen a las seis categorías para que las
-// sugerencias no caigan en el plan B de getGooalsOnboarding.
-const CATEGORIAS_POR_INTERES: Record<InterId, CategoriaGooal[]> = {
-  viajes: ['viajes', 'naturaleza'],
-  gastronomia: ['gastronomia'],
-  musica: ['eventos'],
-  deporte: ['deporte'],
-  cultura: ['viajes', 'eventos'],
-}
-
-function categoriasDe(intereses: InterId[]): CategoriaGooal[] {
-  return [...new Set(intereses.flatMap(i => CATEGORIAS_POR_INTERES[i]))]
-}
+// Los intereses SON las seis categorías del catálogo, desde el 7-10-2026.
+//
+// Hasta entonces eran otra lista (viajes, gastronomia, musica, deporte,
+// cultura) y había aquí una tabla puente que las traducía. Preguntar algo en el
+// alta que luego no sirve para nada es peor que no preguntarlo: "música" y
+// "cultura" no eran categorías de nada y no se podían usar para sugerir. Los 50
+// perfiles que ya habían respondido se migraron por esa misma tabla
+// (scripts/migrar-intereses.mjs) y la tabla se borró, para no dejar un tercer
+// vocabulario rondando.
 
 function genUsername(nombre: string) {
   const base = nombre.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '') || 'user'
@@ -69,7 +57,7 @@ export default function OnboardingPage() {
   const [checkingUsername, setCheckingUsername] = useState(false)
 
   // Screen 2 — intereses
-  const [intereses, setIntereses] = useState<InterId[]>([])
+  const [intereses, setIntereses] = useState<CategoriaGooal[]>([])
 
   // Screen 3 — con quién
   const [conQuien, setConQuien] = useState<CompaniaId[]>([])
@@ -143,7 +131,7 @@ export default function OnboardingPage() {
     // Los gooals sugeridos dependen de los intereses, así que se piden al
     // entrar en la pantalla, no antes.
     if (next === 4 && sugeridos === null) {
-      getGooalsOnboarding(categoriasDe(intereses))
+      getGooalsOnboarding(intereses)
         .then(setSugeridos)
         .catch(e => { console.error('[Onboarding] gooals:', e); setSugeridos([]) })
     }
@@ -351,12 +339,12 @@ export default function OnboardingPage() {
               <p className="text-sm text-[#7A8A85]">Elige lo que te mueve.</p>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-              {INTERESES.map(item => {
-                const sel = intereses.includes(item.id)
+              {CATEGORIAS.map(item => {
+                const sel = intereses.includes(item)
                 return (
                   <button
-                    key={item.id}
-                    onClick={() => setIntereses(prev => prev.includes(item.id) ? prev.filter(i => i !== item.id) : [...prev, item.id])}
+                    key={item}
+                    onClick={() => setIntereses(prev => prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item])}
                     style={{
                       padding: '16px 12px', borderRadius: 16,
                       border: `2px solid ${sel ? '#00D1A7' : '#2A2E2C'}`,
@@ -365,9 +353,11 @@ export default function OnboardingPage() {
                       transition: 'border-color 0.15s, background 0.15s', cursor: 'pointer',
                     }}
                   >
-                    <span style={{ fontSize: 28 }}>{item.icon}</span>
+                    {/* El icono de la categoría, no un emoji: un emoji cambia
+                        de dibujo según el móvil y no se puede teñir. */}
+                    <IconoCategoria categoria={item} tamano={26} color={sel ? '#00D1A7' : CATEGORIA_COLOR[item]} />
                     <span style={{ fontSize: 12, fontWeight: 500, color: sel ? '#00D1A7' : '#A3B1AC', textAlign: 'center', lineHeight: 1.2 }}>
-                      {item.label}
+                      {CATEGORIA_LABEL[item]}
                     </span>
                   </button>
                 )

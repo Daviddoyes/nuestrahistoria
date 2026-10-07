@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { createServiceRoleClient } from '@/lib/supabase/service'
 import { calcularNivel } from '@/lib/niveles'
-import { contarPorCategoria, normalizarCategoriaGooal } from '@/lib/gooals'
+import { CATEGORIAS, contarPorCategoria, normalizarCategoriaGooal } from '@/lib/gooals'
 import { limpiarBusqueda } from '@/lib/busqueda'
 import { amigosDe, puedeVerLaFoto, VISIBILIDADES } from '@/lib/permisos'
 import {
@@ -14,6 +14,7 @@ import type {
   GooalV2, MuroPostFeed, UsuarioMini,
   EstadoUserGooal, FiltrosCatalogo, FiltrosMapa, GooalMapa, FiltrosPines, PinMapa, Profile,
   PerfilCompleto, LineaPerfil, GooalResumen, VisibilidadFoto, ResumenInicio,
+  SugerenciasInicio, GooalCerca,
 } from '@/types/gooals'
 
 /** Tamaño de página de Explorar. */
@@ -1409,6 +1410,173 @@ export async function getInicio(): Promise<ResumenInicio | null> {
       .filter((f): f is { id: string; gooal: GooalResumen } => Boolean(f.gooal))
       .map(f => ({ userGooalId: f.id, gooal: f.gooal })),
   }
+}
+
+/** Cuántos se enseñan en cada tira de Inicio. */
+const EN_UNA_TIRA = 12
+
+/**
+ * Un número entre 0 y 1 a partir de un texto. Siempre el mismo para el mismo
+ * texto, así que sirve para barajar igual durante todo un día y distinto al
+ * siguiente, sin guardar nada en ninguna parte.
+ */
+function azarEstable(semilla: string): number {
+  let h = 2166136261
+  for (let i = 0; i < semilla.length; i++) {
+    h ^= semilla.charCodeAt(i)
+    h = Math.imul(h, 16777619)
+  }
+  return ((h >>> 0) % 100000) / 100000
+}
+
+/**
+ * "De lo que te interesa": gooals de las categorías que elegiste en el alta.
+ *
+ * ── ESTO NO ES UNA RECOMENDACIÓN, Y NO LO DISIMULA ────────
+ *
+ * No hay con qué recomendar: no hay datos de uso de los que aprender, así que
+ * cualquier "porque te puede gustar" sería inventado. Lo que hay es lo que
+ * dijiste en el alta, y con eso se hace lo honesto: coger de tus categorías,
+ * quitar lo que ya tienes, y barajar.
+ *
+ * Dos detalles que no son caprichos:
+ *
+ * 1. BARAJADO ESTABLE DURANTE EL DÍA. Con un orden fijo la pantalla parecería
+ *    muerta; cambiando en cada recarga, no podrías volver a lo que viste hace un
+ *    minuto. Se baraja con tu id y la fecha, y no se guarda nada.
+ * 2. REPARTIDO, UNO DE CADA CATEGORÍA POR TURNO. El catálogo está escorado: de
+ *    los 221 gooals con foto, 160 son de viajes. Al azar puro saldrían quince
+ *    viajes seguidos y parecería que la app solo sabe de viajar. Se coge de cada
+ *    categoría por separado y se intercala.
+ */
+export async function getSugerencias(): Promise<SugerenciasInicio> {
+  const userId = await getUserId()
+  if (!userId) return { gooals: [], categorias: [] }
+  const service = createServiceRoleClient()
+
+  const { data: perfil } = await service.from('profiles').select('intereses').eq('id', userId).maybeSingle()
+  const declarados = ((perfil as { intereses: unknown } | null)?.intereses ?? []) as unknown[]
+  // Desde el 7-10-2026 los intereses SON las categorías. Se filtra igualmente:
+  // si quedara alguno del vocabulario viejo, se descarta en vez de colarse como
+  // una categoría que no existe y dejar la consulta sin resultados.
+  const categorias = CATEGORIAS.filter(c => declarados.includes(c))
+  const aBuscar = categorias.length > 0 ? categorias : CATEGORIAS
+
+  const mios = new Set((await listarEstados(service, userId)).map(f => f.gooal_id))
+  const hoy = new Date().toISOString().slice(0, 10)
+
+  // De cada categoría por separado, empezando cada día por un sitio distinto.
+  const porCategoria = await Promise.all(aBuscar.map(async categoria => {
+    const { count } = await service.from('gooals_v2')
+      .select('id', { count: 'exact', head: true })
+      .eq('activo', true).eq('estado', 'verificado').eq('categoria', categoria)
+
+    const total = count ?? 0
+    if (total === 0) return [] as GooalResumen[]
+    const desde = total > EN_UNA_TIRA
+      ? Math.floor(azarEstable(userId + hoy + categoria) * (total - EN_UNA_TIRA))
+      : 0
+
+    const { data } = await service.from('gooals_v2')
+      .select('id, titulo, categoria, dificultad, puntos, ciudad, imagen_url')
+      .eq('activo', true).eq('estado', 'verificado').eq('categoria', categoria)
+      .order('id', { ascending: true })
+      .range(desde, desde + EN_UNA_TIRA - 1)
+
+    return ((data ?? []) as GooalResumen[]).filter(g => !mios.has(g.id))
+  }))
+
+  // Intercalado: uno de cada categoría por turno. Así nunca salen dos seguidos
+  // de la misma mientras queden de otras.
+  const gooals: GooalResumen[] = []
+  for (let vuelta = 0; gooals.length < EN_UNA_TIRA; vuelta++) {
+    let quedaba = false
+    for (const lista of porCategoria) {
+      if (vuelta >= lista.length) continue
+      quedaba = true
+      gooals.push(lista[vuelta])
+      if (gooals.length >= EN_UNA_TIRA) break
+    }
+    if (!quedaba) break
+  }
+
+  return { gooals, categorias }
+}
+
+/**
+ * "Cerca de ti": gooals con sitio, ordenados por lo lejos que están.
+ *
+ * La posición llega de la pantalla y SOLO cuando la persona toca el botón: el
+ * permiso de ubicación no se pide al abrir la app. Un cartel del sistema nada
+ * más entrar es de las cosas que hacen que alguien cierre y no vuelva.
+ *
+ * Se filtra por un recuadro en la base y se ordena por distancia aquí: ordenar
+ * por distancia en la consulta necesitaría PostGIS, y el recuadro ya deja la
+ * lista en unas pocas filas.
+ */
+export async function getCercaDeMi(lat: number, lng: number): Promise<GooalCerca[]> {
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return []
+  const userId = await getUserId()
+  const service = createServiceRoleClient()
+
+  // Un grado de latitud son unos 111 km. Dos grados a cada lado es un recuadro
+  // de unos 440 km de alto; en longitud hay que ensancharlo cuanto más al norte
+  // o al sur, porque allí los meridianos se juntan.
+  const GRADOS = 2
+  const ensanche = Math.min(GRADOS / Math.max(Math.cos((lat * Math.PI) / 180), 0.05), 180)
+
+  const { data, error } = await service.from('gooals_v2')
+    .select('id, titulo, categoria, dificultad, puntos, ciudad, imagen_url, lat, lng')
+    .eq('activo', true).eq('estado', 'verificado')
+    .gte('lat', lat - GRADOS).lte('lat', lat + GRADOS)
+    .gte('lng', lng - ensanche).lte('lng', lng + ensanche)
+    .order('id', { ascending: true })
+    .range(0, 499)
+
+  if (error) {
+    console.error('[getCercaDeMi]', error)
+    return []
+  }
+
+  const mios = userId ? new Set((await listarEstados(service, userId)).map(f => f.gooal_id)) : new Set<string>()
+  const filas = (data ?? []) as (GooalResumen & { lat: number; lng: number })[]
+
+  return filas
+    .filter(g => !mios.has(g.id))
+    .map(({ lat: gLat, lng: gLng, ...gooal }) => ({ gooal, km: distanciaKm(lat, lng, gLat, gLng) }))
+    .sort((a, b) => a.km - b.km)
+    .slice(0, EN_UNA_TIRA)
+}
+
+/** Distancia en kilómetros entre dos puntos de la Tierra. */
+function distanciaKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const RADIO = 6371
+  const aRad = (g: number) => (g * Math.PI) / 180
+  const dLat = aRad(lat2 - lat1)
+  const dLng = aRad(lng2 - lng1)
+  const a = Math.sin(dLat / 2) ** 2
+    + Math.cos(aRad(lat1)) * Math.cos(aRad(lat2)) * Math.sin(dLng / 2) ** 2
+  return Math.round(2 * RADIO * Math.asin(Math.sqrt(a)))
+}
+
+/**
+ * Cuántos gooals tienen sitio y cuántos hay en total.
+ *
+ * Para decirlo en la pestaña del mapa. El mapa enseña menos que la lista —108
+ * gooals son de ámbito personal y no van en ningún sitio— y sin explicarlo
+ * parece que falten.
+ */
+export async function getCuantosEnMapa(): Promise<{ conSitio: number; total: number }> {
+  const service = createServiceRoleClient()
+  const publicados = () => service.from('gooals_v2')
+    .select('id', { count: 'exact', head: true })
+    .eq('activo', true).eq('estado', 'verificado')
+
+  const [conSitio, total] = await Promise.all([
+    publicados().not('lat', 'is', null),
+    publicados(),
+  ])
+  return { conSitio: conSitio.count ?? 0, total: total.count ?? 0 }
 }
 
 /** Un post concreto del muro, para abrirlo desde el perfil. */
