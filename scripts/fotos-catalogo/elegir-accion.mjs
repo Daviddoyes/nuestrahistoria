@@ -10,18 +10,25 @@
 //
 // NO TOCA LA BASE. Propone; decide quien mira.
 //
-// ── EL ORDEN DE PREFERENCIA ───────────────────────────────
+// ── EL ORDEN DE PREFERENCIA, MEDIDO ───────────────────────
 //
-// Sale de la prueba de veinte, mirada una a una:
+// No sale de una intuición: sale de mirar las 123 propuestas de la primera
+// vuelta una a una y contar cuántas acertó cada estrategia.
 //
-//   1. la carpeta de Commons de la actividad — alguien ya clasificó esas fotos
-//      como "esto es eso", y es lo que mejor funcionó con las acciones
-//   2. la portada del artículo — la eligió una persona, pero representa el
-//      ARTÍCULO, y para una actividad eso a veces es un cartel o un esquema
-//   3. la carpeta del nombre propio
-//   4. la búsqueda en inglés
-//   5. la búsqueda en español — la más ruidosa: "10K" devolvió un retrato
-//      antiguo y una partitura
+//   portada del artículo        6 de 11  (55%)
+//   carpeta de Commons         31 de 73  (42%)
+//   Commons en español          5 de 14  (36%)
+//   Commons en inglés           1 de  3  (33%)
+//   carpeta del nombre propio   1 de 22  ( 5%)
+//
+// La última es la que yo añadí para los nombres propios, y es la peor con
+// diferencia: acierta una de cada veintidós y se llevaba veintidós huecos. La
+// idea tenía sentido —del Nürburgring hay cientos de coches en el circuito— pero
+// la carpeta que encuentra buscando "Boixadera dels Bancs" no es la de esa
+// ferrata: es cualquier carpeta que comparta una palabra. Pasa al final.
+//
+// Y la primera sube: la portada la eligió una persona para representar el
+// artículo, que es la señal que mejor ha funcionado en todo este repo.
 //
 // ── Y UNA REGLA QUE NO ES DE CALIDAD, ES DE HONESTIDAD ────
 //
@@ -40,11 +47,11 @@ const AGENTE = 'GooALS/1.0 (https://gooals.app) catalogo-de-fotos'
 const dormir = ms => new Promise(r => setTimeout(r, ms))
 
 const PREFERENCIA = [
-  'carpeta de Commons',
   'portada del artículo',
-  'carpeta del nombre propio',
-  'Commons en inglés',
+  'carpeta de Commons',
   'Commons en español',
+  'Commons en inglés',
+  'carpeta del nombre propio',
 ]
 
 const filas = JSON.parse(readFileSync(SALIDA + '/fotos-accion.json', 'utf8'))

@@ -203,6 +203,33 @@ La regla, para cuando haya que decidir sobre uno nuevo:
 Por eso `viajes` lleva lugar en todas sus filas y `deporte` no lo lleva en
 ninguna.
 
+### Un gooal sin foto no está incompleto si tiene sitio
+
+Esto va a volver a salir cada vez que se mire el catálogo buscando huecos, así
+que queda escrito: **un gooal sin foto no está incompleto si tiene sitio.**
+
+Hay dos clases de gooal y se encuentran por caminos distintos:
+
+- El **genérico** («Practicar pádel», «Correr un maratón») no tiene
+  coordenadas, así que al mapa no sale. Su manera de aparecer es **Descubrir**,
+  y Descubrir es una tarjeta: necesita foto.
+- El **concreto** («Hacer la ferrata de Boixadera dels Bancs») tiene
+  coordenadas. Se encuentra **por el mapa y por el buscador**, que no piden
+  foto ninguna.
+
+**Ninguna pantalla pide las dos cosas a la vez.** De ahí la regla, que ya aplica
+`scripts/fotos-catalogo/elegir-accion.mjs`: si un genérico y un concreto quieren
+la misma foto, **se la queda el genérico** y el concreto se queda sin ella. No
+es una pérdida: la foto de la Marató de Barcelona, con el Arc de Triomf detrás,
+no puede ilustrar la Mitja de Granollers, y los primeros usuarios son catalanes
+y lo verían al instante.
+
+Y el corolario, que es lo que evita el trabajo inútil: **cuando falta un
+genérico, lo que falta es el genérico, no la foto del concreto.** Por eso se
+crearon los cinco padres de deporte (vía ferrata, media maratón, maratón,
+dosmil, GR) en lugar de fundir los concretos entre sí. Fundirlos habría borrado
+sitios reales que el mapa sabe enseñar.
+
 ### Seis categorías, y la base no acepta otras
 
 `viajes · naturaleza · eventos · deporte · gastronomia · vida`. Hubo siete
@@ -328,6 +355,62 @@ arregla unos casos y rompe otros**, porque es un sustituto de un juicio que no
 sabe hacer. Si se van encadenando, el número automático sube y el real no: la
 primera ronda decía 19 de 20 y eran 10. Cuando eso pasa, la respuesta no es otra
 heurística — es traer candidatas y que decida una persona.
+
+## No hay un orden que acierte siempre
+
+Sale de elegir las fotos de los gooals de acción, y es hermana de la de arriba.
+
+El primer orden de preferencia entre estrategias era a ojo y dio **44 fotos
+buenas de 123 propuestas**. Se midió cuál acertaba más mirándolas una a una, se
+reordenó por ese dato y subieron a **54**. Mejor, y el orden medido se quedó.
+
+Pero al mirar las que habían cambiado, **dos de las que ya estaban bien se
+habían roto**: el orden nuevo acertaba con «Practicar pádel» (la vieja traía un
+organigrama) y fallaba con la Cursa dels Bombers, que la vieja acertaba con el
+arco de salida. Ningún orden acierta siempre, porque el orden es un sustituto
+del juicio que no sabe hacer.
+
+De ahí dos cosas:
+
+1. **El registro guarda la propuesta aprobada de la vuelta que sea**, no la de
+   la última vuelta. Es lo que hace `Claude outputs/fotos-accion-final.json`:
+   mezcla las dos revisiones y de cada gooal se queda la foto que pasó el ojo,
+   venga del orden viejo o del nuevo.
+2. **Una mejora en el total puede esconder un empeoramiento.** 44 → 54 es +10
+   limpio en el resumen, y dentro había dos retrocesos. Si solo se mira el
+   número de arriba, no se ven: hay que mirar **las que cambian**, que suelen
+   ser pocas, y no volver a juzgar las que no.
+
+## Commons tiene sitios y objetos, no gente haciendo cosas
+
+Y esto es lo que la segunda pasada demostró de verdad, con los números.
+
+De **146 gooals de acción** (deporte, gastronomía y vida) se aprobaron **54
+fotos**. Dónde cayeron los 92 que vuelven de vacío:
+
+| | con foto | sin foto |
+|---|---|---|
+| genéricos («Practicar vela») | 31 | **29** |
+| con nombre propio («Subir al Matagalls») | 23 | 63 |
+
+De los 92 sin foto, 70 tenían candidatas que **se miraron y no enseñaban lo que
+dice el título**, y 22 no tenían ninguna candidata.
+
+Lo importante es el 29. **Entre los genéricos que vuelven sin foto están padres
+que YA existían**: «Correr un 10K», «Hacer cumbre en un cuatromil», «Practicar
+esquí», «Saltar en paracaídas», «Bailar salsa», «Cantar en un karaoke», «Probar
+el fugu», «Montar tu propia empresa». No es que falten padres: es que de esos
+padres Commons no tiene foto, porque Commons documenta **sitios y objetos**, no
+gente haciendo cosas. Hay mil fotos del Matagalls y ninguna de alguien subiendo.
+
+> **Crear más padres genéricos no arregla Descubrir.** Eso es un problema de
+> **fuente**, y se decide aparte: otra fuente de imágenes, una foto encargada, o
+> que Descubrir sepa pintar una tarjeta sin foto (que ya lo sabe, más estrecha).
+
+Las estrategias que de verdad sostuvieron las 54, por si hay que volver a esto:
+**33 la portada del artículo**, 14 la carpeta de Commons, 6 Commons en español y
+1 la carpeta del nombre propio. La portada otra vez la primera — la eligió una
+persona, que es lo que dice la sección de arriba.
 
 ## Si cambia el SIGNIFICADO, cambia el NOMBRE
 
