@@ -70,13 +70,21 @@ await quitar('invitaciones_email', cebo.id)
 const { data: sinFollows } = await anon.from('follows').select('*')
 comprobar('no lee follows', (sinFollows ?? []).length === 0, sinFollows?.length)
 
-// El muro SÍ se lee: es público a propósito. Lo que hay que comprobar no es que
-// esté cerrado, sino que no lleva nada que su autor no haya publicado.
-const PRIVADO = ['email', 'nombre', 'username', 'lat', 'lng', 'ubicacion', 'codigo_invitacion', 'codigo_pareja', 'codigo_amigos', 'es_admin', 'acepta_emails']
+// EL MURO YA NO SE LEE DESDE FUERA. Hasta el 7-10-2026 era público a propósito,
+// y esta comprobación afirmaba lo contrario de lo que afirma ahora: que se leía.
+// Se le dio la vuelta el mismo día que cayó la política, y no un rato después,
+// porque una prueba que afirma lo contrario de lo que ya es cierto es peor que
+// no tenerla: pasa, da confianza, y describe un mundo que no existe.
+//
+// Cambió porque las fotos de la gente dejaron de ser públicas: ahora cada una
+// elige quién la ve, y un muro que cualquiera puede listar con la clave pública
+// del navegador deja esa elección en nada.
 const { data: muro } = await anon.from('muro_posts').select('*')
-comprobar('el muro se sigue leyendo (es público a propósito)', (muro ?? []).length > 0, muro?.length)
-const colado = Object.keys(muro?.[0] ?? {}).filter(c => PRIVADO.includes(c))
-comprobar('y no lleva ni un dato privado dentro', colado.length === 0, colado)
+comprobar('el muro NO se lee desde fuera', (muro ?? []).length === 0, muro?.length)
+
+// Misma historia: de aquí salían las rutas de las fotos y quién hizo qué.
+const { data: logros } = await anon.from('user_gooals').select('*')
+comprobar('ni los gooals conseguidos de la gente', (logros ?? []).length === 0, logros?.length)
 
 // Lo que SÍ tiene que seguir viéndose: el catálogo público.
 const { data: cat } = await anon.from('gooals_v2').select('id').limit(5)

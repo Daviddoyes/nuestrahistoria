@@ -390,6 +390,41 @@ De ahí tres reglas:
    inserta deja una prueba que pasa sin comprobar nada: pasó dos veces con
    `invitaciones_email`, y la tabla parecía cerrada estando abierta.
 
+## Una razón escrita caduca
+
+Y cuando caduca no avisa, porque sigue ahí, impecable, describiendo un mundo
+que ya no existe.
+
+La política que dejaba leer el muro a cualquiera con la clave pública llevaba
+su razón al lado, y era buena el día que se escribió:
+
+> ABIERTA A PROPÓSITO, y mirado columna por columna: un post lleva el texto, la
+> foto, el gooal, los puntos y los likes. Ni correo, ni ubicación, ni un dato
+> del perfil. **Y las fotos ya están en un bucket público.**
+
+Dos días después las fotos de la gente se mudaron a un cubo privado y cada una
+pasó a tener dueño y un "quién la ve". La última frase dejó de ser verdad **en
+ese momento**, y con ella se cayó media justificación. Nadie tocó el comentario:
+el código seguía compilando, las pruebas seguían pasando, y la razón seguía
+escrita en presente.
+
+La regla:
+
+> **Cuando cambies el mundo que justificaba una decisión, ve a buscar las
+> decisiones que se apoyaban en él.** No basta con que el código compile: una
+> razón no da errores al quedarse vieja. Si acabas de hacer privado algo que era
+> público, de cerrar algo que estaba abierto o de mover algo de sitio, busca por
+> el nombre de lo que has cambiado ("bucket público", "gooals-media") y lee lo
+> que salga.
+
+Y su hermana, del mismo día: **una prueba que afirma lo contrario de lo que ya
+es cierto es peor que no tenerla.** `scripts/comprobar-rls.mjs` comprobaba que
+el muro SÍ se leía desde fuera —era la decisión correcta cuando se escribió—, y
+el día que dejó de serlo había que darle la vuelta **en el mismo commit**, no un
+rato después. Si no, pasa en verde, da confianza y describe el mundo anterior;
+y un 14/15 tres semanas más tarde hace perder una tarde buscando una avería que
+no existe. Es la misma familia que lo de la comprobación a medias.
+
 ## Un fichero 'use server' solo exporta funciones async
 
 Y si le pones otra cosa, **no lo caza nada de lo que usamos antes de publicar**.

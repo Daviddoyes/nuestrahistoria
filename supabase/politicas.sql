@@ -86,26 +86,22 @@ create policy "public read gooals_v2 verificados" on gooals_v2
 
 
 -- ═══════════════════════════════════════════════════════════
--- user_gooals · 2 políticas
--- Lo conquistado es público (es lo que hace público el muro); lo pendiente, no.
+-- user_gooals · 1 política
+-- Cada uno sus filas. Nadie lee las de los demás desde el navegador.
 -- ═══════════════════════════════════════════════════════════
+-- QUITADA el 7-10-2026: "public read completed" (SELECT, estado = 'completado').
+--
+-- La pregunta abierta que quedó anotada aquí el 3-10 —¿para qué existe?— se
+-- midió y la respuesta fue: para nada. Ninguna pantalla lee user_gooals desde
+-- el navegador; se repasaron uno a uno los ficheros con 'use client' y lo
+-- único que el navegador toca directo es su propia fila de profiles y el cubo
+-- avatars. Lo que sí hacía era dejar listar, con la clave pública, quién había
+-- conseguido qué Y LA RUTA DE SU FOTO.
+--
+-- Y desde que cada foto tiene dueño y su dueño elige quién la ve, eso ya no era
+-- una regla inútil: era una promesa rota. "Solo yo" no puede significar nada si
+-- cualquiera con la clave del navegador puede listar que lo hiciste.
 drop policy if exists "public read completed" on user_gooals;
-create policy "public read completed" on user_gooals
-  for select using (estado = 'completado');
--- PREGUNTA ABIERTA, anotada el 3-10-2026 al añadir el tercer estado:
--- ¿para qué existe esta política? Hoy NADA de la app lee user_gooals desde el
--- navegador: el perfil, el muro, el mapa y Explorar pasan todos por el
--- servidor con el service role, que se salta la RLS. O sea que esta política
--- no da acceso a ninguna pantalla; solo abre la tabla a cualquiera que tenga
--- la clave pública y se ponga a preguntar por su cuenta.
---
--- Y ahora además lleva el estado escrito dentro, así que ha quedado a medias:
--- un 'vivido' NO se lee desde el navegador y un 'completado' sí, sin que eso
--- responda a ninguna decisión. No es un fallo — nada depende de ella — pero es
--- justo el tipo de regla a medias que luego se confunde con una protección.
---
--- NO SE TOCA sin medirlo antes: hay que comprobar pantalla por pantalla que de
--- verdad nadie la necesita. Decidido dejarla así hasta entonces.
 
 drop policy if exists "users manage own gooals" on user_gooals;
 create policy "users manage own gooals" on user_gooals
@@ -117,17 +113,26 @@ create policy "users manage own gooals" on user_gooals
 
 
 -- ═══════════════════════════════════════════════════════════
--- muro_posts · 1 política
+-- muro_posts · SIN POLÍTICAS, a propósito
 -- ═══════════════════════════════════════════════════════════
+-- QUITADA el 7-10-2026: "public read posts" (SELECT, using true).
+--
+-- Estuvo abierta a propósito, y la razón que se escribió entonces era buena:
+-- "un post no lleva ni correo, ni ubicación, ni un dato del perfil... y las
+-- fotos ya están en un bucket público". Lo último dejó de ser verdad el
+-- 5-10-2026, cuando las fotos de la gente se mudaron a un cubo privado y cada
+-- una pasó a tener su dueño y su "quién la ve". La razón caducó sin que nadie
+-- tocara el comentario: seguía ahí, impecable, describiendo un mundo anterior.
+--
+-- Hoy el muro lo filtra el servidor post a post según lo que su dueño eligió
+-- (ver filtrarPostsVisibles en src/lib/actions.ts). Una tabla que cualquiera
+-- puede listar entera con la clave pública del navegador deja ese filtro en un
+-- adorno: bastaría con preguntar directamente.
+--
+-- Sin políticas, la tabla queda cerrada salvo para el servidor. Eso es lo
+-- correcto para lo que solo toca el servidor, y NO es un olvido: no le añadas
+-- una "para que funcione", porque funciona.
 drop policy if exists "public read posts" on muro_posts;
-create policy "public read posts" on muro_posts
-  for select using (true);
--- ABIERTA A PROPÓSITO, y mirado columna por columna antes de decidirlo:
--- un post lleva el texto, la foto o el vídeo, el gooal, los puntos y los likes.
--- Ni correo, ni ubicación, ni un dato del perfil. El user_id es un
--- identificador en bruto que, con profiles cerrada, no se puede convertir en
--- una persona sin el servidor. Y las fotos ya están en un bucket público.
--- Lo único que permite es leer el muro de golpe, y eso es el muro.
 
 -- QUITADA el 2-10-2026: "users create posts" (INSERT, with_check auth.uid() =
 -- user_id). Comprobaba bien la autoría —se probó: con el user_id de otro falla—,
@@ -273,7 +278,7 @@ drop policy if exists "update used" on invitaciones_email;
 -- COMPROBACIÓN. Cada consulta por separado.
 -- ═══════════════════════════════════════════════════════════
 
--- 1 · Las 11 políticas que debe haber, y ni una más.
+-- 1 · Las 9 políticas que debe haber, y ni una más.
 select tablename, policyname, cmd, permissive, qual, with_check
 from pg_policies where schemaname = 'public'
 order by tablename, policyname;
@@ -281,14 +286,13 @@ order by tablename, policyname;
 --   gooals_v2            public read gooals_v2 verif.   SELECT
 --   invitaciones_email   users can create invitations   INSERT
 --   muro_likes           users manage likes             ALL
---   muro_posts           public read posts              SELECT
 --   profiles             users can insert own profile   INSERT
 --   profiles             users can read own profile      SELECT
 --   profiles             users can update own profile   UPDATE
 --   reportes             users create reportes          INSERT
---   user_gooals          public read completed          SELECT
 --   user_gooals          users manage own gooals        ALL
---   (y ninguna en gooal_sugerencias, gooals_revision, emails_enviados ni emails_campanas)
+--   (y ninguna en muro_posts, gooal_sugerencias, gooals_revision,
+--    emails_enviados ni emails_campanas)
 
 
 -- 2 · La RLS, encendida en las doce.
@@ -297,12 +301,12 @@ from pg_class where relnamespace = 'public'::regnamespace and relkind = 'r'
 order by relname;
 --   las doce con rls = true
 
--- 3 · La única política de lectura con qual 'true' que debe quedar es la del muro.
+-- 3 · NO debe quedar ninguna política de lectura con qual 'true'.
 select tablename, policyname from pg_policies
 where schemaname = 'public' and cmd in ('SELECT', 'ALL') and qual = 'true'
 order by tablename;
---   muro_posts  public read posts
---   Si sale cualquier otra, es una tabla abierta a todo internet.
+--   Ninguna fila. Hasta el 7-10-2026 salía "muro_posts · public read posts".
+--   Si sale cualquiera, es una tabla abierta a todo internet.
 
 -- Y para comprobarlo de verdad, desde fuera y no desde el esquema:
 --   node --env-file=.env.local scripts/comprobar-rls.mjs
