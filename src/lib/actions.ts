@@ -197,6 +197,69 @@ export async function sigoAAlguien(): Promise<boolean> {
   return (count ?? 0) > 0
 }
 
+/**
+ * Se queda con los posts que quien mira PUEDE VER.
+ *
+ * ── DÓNDE VIVE EL PERMISO ─────────────────────────────────
+ *
+ * En la fila de `user_gooals`, que es donde la persona lo eligió, y NO en el
+ * post. Se podría copiar a `muro_posts` y filtrar por ahí, que sería una
+ * consulta menos; pero entonces la misma decisión viviría en dos sitios, y el
+ * día que no coincidan gana la equivocada sin que nadie se entere. Así, cambiar
+ * quién ve la foto se nota en el muro al instante y no hay nada que sincronizar.
+ *
+ * ── LO QUE NO SE PUEDE COMPROBAR, NO SE ENSEÑA ────────────
+ *
+ * Un post sin `user_gooal_id`, o cuya fila ya no está, o cuya fila es de otra
+ * persona distinta a la que firma el post, se cae. No es un caso teórico que
+ * convenga resolver "mostrando por si acaso": si no se puede averiguar de quién
+ * es el permiso, enseñarlo es apostar con la foto de alguien. Se deja rastro en
+ * el log, porque un post que desaparece sin explicación es un misterio caro.
+ *
+ * Una sola consulta de amistades para toda la lista, como en el perfil.
+ */
+async function filtrarPostsVisibles<T extends { id: string; user_id: string; user_gooal_id: string | null }>(
+  service: ReturnType<typeof createServiceRoleClient>,
+  quienMira: string | null,
+  filas: T[]
+): Promise<T[]> {
+  if (filas.length === 0) return []
+
+  const ids = [...new Set(filas.map(p => p.user_gooal_id).filter((id): id is string => Boolean(id)))]
+  const { data, error } = ids.length
+    ? await service.from('user_gooals').select('id, user_id, visibilidad').in('id', ids)
+    : { data: [], error: null }
+
+  if (error) {
+    // Sin permisos no se puede decidir, y ante la duda no se enseña nada. Un
+    // muro vacío por un fallo de red es malo; enseñar fotos privadas es peor.
+    console.error('[muro] no se pudieron leer los permisos', error)
+    return []
+  }
+
+  const permisos = new Map(
+    ((data ?? []) as { id: string; user_id: string; visibilidad: VisibilidadFoto | null }[])
+      .map(f => [f.id, f])
+  )
+  const amigos = await amigosDe(quienMira)
+
+  return filas.filter(post => {
+    const permiso = post.user_gooal_id ? permisos.get(post.user_gooal_id) : null
+    if (!permiso || permiso.user_id !== post.user_id) {
+      console.error('[muro] post sin permiso averiguable, no se enseña:', post.id)
+      return false
+    }
+    return puedeVerLaFoto({
+      quienMira,
+      duenio: permiso.user_id,
+      // Una fila sin nada escrito se trata como 'amigos', el valor por defecto
+      // de la columna: ante la duda, lo prudente.
+      visibilidad: permiso.visibilidad ?? 'amigos',
+      amigos,
+    })
+  })
+}
+
 /** Feed del muro: posts de la gente que sigues + los tuyos, más recientes primero. */
 export async function getMuroFeed(limite = 40): Promise<MuroPostFeed[]> {
   const userId = await getUserId()
@@ -223,11 +286,16 @@ export async function getMuroFeed(limite = 40): Promise<MuroPostFeed[]> {
     .order('created_at', { ascending: false })
     .limit(limite)
 
-  const filas = (posts ?? []) as {
+  const todas = (posts ?? []) as {
     id: string; user_id: string; gooal_id: string | null; user_gooal_id: string | null; created_at: string
     foto_url: string | null; video_url: string | null; descripcion: string | null
     puntos: number | null; likes: number | null
   }[]
+
+  // Se filtra ANTES de ir a buscar perfiles, gooals y likes: lo que no se va a
+  // enseñar no se busca. Puede devolver menos de `limite` posts, y está bien:
+  // el muro no tiene paginación, así que no hay ninguna cuenta que descuadre.
+  const filas = await filtrarPostsVisibles(service, userId, todas)
   if (filas.length === 0) return []
 
   const gooalIds = [...new Set(filas.map(p => p.gooal_id).filter((id): id is string => Boolean(id)))]
@@ -273,6 +341,14 @@ export async function toggleLike(postId: string): Promise<{ liked: boolean; like
   if (!userId) return { liked: false, likes: 0 }
 
   const service = createServiceRoleClient()
+
+  // No se le da like a lo que no puedes ver. Sin esto, con el id de un post
+  // basta para tocar el contador de algo que no se te enseña nunca.
+  const { data: post } = await service
+    .from('muro_posts').select('id, user_id, user_gooal_id').eq('id', postId).maybeSingle()
+  if (!post) return { liked: false, likes: 0 }
+  const [puede] = await filtrarPostsVisibles(service, userId, [post as { id: string; user_id: string; user_gooal_id: string | null }])
+  if (!puede) return { liked: false, likes: 0 }
 
   const { data: existente } = await service
     .from('muro_likes')
@@ -1293,11 +1369,17 @@ export async function getMuroPost(postId: string): Promise<MuroPostFeed | null> 
   const { data: post } = await service.from('muro_posts').select('*').eq('id', postId).maybeSingle()
   if (!post) return null
 
-  const fila = post as {
+  const crudo = post as {
     id: string; user_id: string; gooal_id: string | null; user_gooal_id: string | null; created_at: string
     foto_url: string | null; video_url: string | null; descripcion: string | null
     puntos: number | null; likes: number | null
   }
+
+  // Un post se abre por su id, así que el permiso hay que mirarlo aquí también:
+  // si no, bastaría con tener el id para saltarse el filtro del feed.
+  const [visible] = await filtrarPostsVisibles(service, viewerId, [crudo])
+  if (!visible) return null
+  const fila = visible
 
   const [perfilRes, gooalRes, likeRes] = await Promise.all([
     service.from('profiles').select(PERFIL_CAMPOS).eq('id', fila.user_id).maybeSingle(),
