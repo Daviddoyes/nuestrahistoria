@@ -632,4 +632,12 @@ comprobar `error` deja la tabla vacía y todo lo de después mintiendo.
   tres catálogos. `gooals` y `experiencias` se fueron con la v1; hoy la base
   tiene doce tablas y la única de catálogo es `gooals_v2` (más `gooals_revision`,
   que es temporal). El SQL de aquello está en `supabase/historico/`.
+- **«Recorrer un GR» está a 4 puntos y el título no dice si es el GR entero o un
+  tramo.** Mi lectura: es el entero —«recorrer» con un camino con nombre es de
+  punta a punta, y es lo que significa «Recorrer el GR-11 por el Pirineo
+  catalán», que vale 10— y entonces 4 se queda corto y el título debería ser
+  **«Recorrer un GR entero», 8 puntos**, un escalón por debajo del GR-11 porque
+  un GR cualquiera es de media más corto que la travesía del Pirineo. La otra
+  lectura, un tramo, no debería existir: ya está «Hacer una travesía de varios
+  días en montaña» (5), que es seguida y duerme fuera. Decide David.
 - No hay tests.
