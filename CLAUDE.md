@@ -473,6 +473,44 @@ De ahí tres reglas:
    inserta deja una prueba que pasa sin comprobar nada: pasó dos veces con
    `invitaciones_email`, y la tabla parecía cerrada estando abierta.
 
+## Y la que da falsas alarmas se deja de mirar
+
+Es la otra cara de la de arriba, y acaban en el mismo sitio: con nadie mirando.
+Una comprobación a medias hace que te fíes de más; una que alarma sin motivo
+hace que dejes de leerla, y el día que avise de algo real tampoco la mirará
+nadie.
+
+El caso: `comprobar.mjs` pide cada foto del catálogo a Supabase sin ninguna
+clave, como la pediría el móvil de cualquiera. Al pedir 277 seguidas, Supabase
+responde **429** a unas cuantas —«ahora no», por ráfaga— y el guion las contaba
+como **ROTAS**. Dijo «7 rotas», y al repetirlo dijo otras siete **distintas**.
+Esa es la firma de una falsa alarma: si las que fallan cambian en cada vuelta,
+el problema no está en los datos. La respuesta de verdad era **277 de 277**.
+
+Lo que distingue una cosa de la otra:
+
+- **«Ahora no»**: 429 y cualquier 5xx, y un corte de red. No dicen nada de la
+  foto. Se espera y se reinsiste (1 s, 3 s, 8 s).
+- **«Está mal»**: un 400 o un 404 —un objeto que no existe en el cubo responde
+  **400**—, un `content-type` que no es `image/webp`, o un fichero de menos de
+  2 KB. Eso sí es la foto, y no se reintenta.
+
+Tres reglas, que son las que quedaron en el guion:
+
+1. **Reintentar antes de acusar.** Solo se declara rota la que sigue fallando
+   después de los reintentos.
+2. **Y bajar el ritmo.** El límite es por ventana de tiempo: después del primer
+   freno, seguir a toda velocidad garantiza el siguiente. El bucle se frena solo
+   y lo dice por pantalla.
+3. **Decir cuántas hubo que reintentar.** Si no se cuenta, no se sabe si el
+   «todo bien» costó cero o costó cuarenta, y ese número es el que avisa de que
+   algo va mal en el almacén antes de que empiece a fallar de verdad.
+
+Y la cuarta, que viene de la sección de arriba: **lo que ni con reintentos se
+puede comprobar no se declara roto, pero tampoco bueno.** Sale en una lista
+aparte —«no se han podido comprobar»— y el guion termina con error igualmente,
+para que no pase en verde algo que nadie ha podido mirar.
+
 ## Antes de medir parecido entre nombres, pruébalo en catalán
 
 La zona donde esto se usa es catalana. **«Marató» y «Maratón» son la misma
@@ -632,12 +670,4 @@ comprobar `error` deja la tabla vacía y todo lo de después mintiendo.
   tres catálogos. `gooals` y `experiencias` se fueron con la v1; hoy la base
   tiene doce tablas y la única de catálogo es `gooals_v2` (más `gooals_revision`,
   que es temporal). El SQL de aquello está en `supabase/historico/`.
-- **«Recorrer un GR» está a 4 puntos y el título no dice si es el GR entero o un
-  tramo.** Mi lectura: es el entero —«recorrer» con un camino con nombre es de
-  punta a punta, y es lo que significa «Recorrer el GR-11 por el Pirineo
-  catalán», que vale 10— y entonces 4 se queda corto y el título debería ser
-  **«Recorrer un GR entero», 8 puntos**, un escalón por debajo del GR-11 porque
-  un GR cualquiera es de media más corto que la travesía del Pirineo. La otra
-  lectura, un tramo, no debería existir: ya está «Hacer una travesía de varios
-  días en montaña» (5), que es seguida y duerme fuera. Decide David.
 - No hay tests.

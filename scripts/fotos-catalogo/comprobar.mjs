@@ -75,25 +75,59 @@ console.log('\nfilas que apuntan fuera de nuestro almacén:', aCommons.length)
 for (const f of aCommons.slice(0, 10)) console.log('  · ' + f.titulo + ' → ' + f.imagen_url.slice(0, 80))
 
 // ── Pedir cada foto, sin clave, como el navegador de cualquiera ──
-console.log('\nPidiendo las ' + conFoto.length + ' fotos a Supabase, sin ninguna clave...')
-const rotas = []
-const pesos = []
-let n = 0
-for (const f of conFoto) {
-  try {
-    const r = await fetch(f.imagen_url, { method: 'HEAD' })
-    if (!r.ok) rotas.push({ ...f, motivo: 'responde ' + r.status })
-    else {
+//
+// UN FRENO NO ES UNA FOTO ROTA. Supabase responde 429 cuando se le piden
+// muchas seguidas, y un 5xx es un mal rato suyo. Las dos cosas dicen "ahora
+// no", no "esa foto no está". Contarlas como rotas daba falsas alarmas —siete
+// una vez, otras siete distintas a la siguiente— y una comprobación que
+// alarma sin motivo se deja de mirar.
+//
+// Así que: ante un freno se espera y se reinsiste; solo se declara rota la que
+// sigue fallando DESPUÉS de los reintentos. Y lo que ni así se pueda
+// comprobar no se da por bueno: sale aparte, en voz alta, como no comprobada.
+const ESPERAS = [1000, 3000, 8000]        // lo que se espera antes de cada reintento
+const esFreno = e => e === 429 || e >= 500
+const dormir = ms => new Promise(r => setTimeout(r, ms))
+
+// Si ya nos han frenado una vez, el límite es por ventana de tiempo: seguir a
+// toda velocidad garantiza el siguiente. Se baja el ritmo del bucle entero.
+let ritmo = 0
+
+async function pedirFoto(direccion) {
+  let ultimo = null
+  for (let intento = 0; intento <= ESPERAS.length; intento++) {
+    if (intento) await dormir(ESPERAS[intento - 1])
+    try {
+      const r = await fetch(direccion, { method: 'HEAD' })
+      if (esFreno(r.status)) { ultimo = { freno: true, motivo: 'responde ' + r.status }; ritmo = Math.min(300, ritmo + 60); continue }
+      if (!r.ok) return { rota: true, motivo: 'responde ' + r.status, intentos: intento }
       const tipo = r.headers.get('content-type')
       const bytes = Number(r.headers.get('content-length') ?? 0)
-      if (tipo !== 'image/webp') rotas.push({ ...f, motivo: 'no es una foto webp, es ' + tipo })
-      else if (bytes < 2000) rotas.push({ ...f, motivo: 'pesa ' + bytes + ' bytes: está vacía o truncada' })
-      else pesos.push(bytes)
+      if (tipo !== 'image/webp') return { rota: true, motivo: 'no es una foto webp, es ' + tipo, intentos: intento }
+      if (bytes < 2000) return { rota: true, motivo: 'pesa ' + bytes + ' bytes: está vacía o truncada', intentos: intento }
+      return { bien: true, bytes, intentos: intento }
+    } catch (e) {
+      // Un corte de red tampoco dice nada de la foto: se reintenta igual.
+      ultimo = { freno: true, motivo: 'no se pudo pedir: ' + e.message }
+      ritmo = Math.min(300, ritmo + 60)
     }
-  } catch (e) {
-    rotas.push({ ...f, motivo: 'no se pudo pedir: ' + e.message })
   }
-  if (++n % 50 === 0) console.log('  ' + n + '/' + conFoto.length)
+  return { sinComprobar: true, motivo: ultimo.motivo + ' después de ' + (ESPERAS.length + 1) + ' intentos', intentos: ESPERAS.length }
+}
+
+console.log('\nPidiendo las ' + conFoto.length + ' fotos a Supabase, sin ninguna clave...')
+const rotas = []
+const sinComprobar = []
+const pesos = []
+let n = 0, conReintento = 0
+for (const f of conFoto) {
+  if (ritmo) await dormir(ritmo)
+  const r = await pedirFoto(f.imagen_url)
+  if (r.intentos > 0) conReintento++
+  if (r.bien) pesos.push(r.bytes)
+  else if (r.rota) rotas.push({ ...f, motivo: r.motivo })
+  else sinComprobar.push({ ...f, motivo: r.motivo })
+  if (++n % 50 === 0) console.log('  ' + n + '/' + conFoto.length + (ritmo ? '  (a ritmo lento: Supabase está frenando)' : ''))
 }
 
 console.log('\n── RESULTADO ──')
@@ -102,11 +136,19 @@ if (pesos.length) {
   const mb = pesos.reduce((a, b) => a + b, 0) / 1024 / 1024
   console.log('peso total:', mb.toFixed(1), 'MB · media', Math.round(pesos.reduce((a, b) => a + b, 0) / pesos.length / 1024), 'KB')
 }
+if (conReintento) console.log('hubo que reintentar ' + conReintento + ' (Supabase frenando: eso NO es una foto rota)')
 if (rotas.length) {
   console.log('\nROTAS (' + rotas.length + '):')
   for (const r of rotas) console.log('  · ' + r.titulo + ' → ' + r.motivo)
 } else {
   console.log('rotas: NINGUNA')
+}
+// Lo que no se ha podido comprobar no se da por bueno: se dice, y el guion sale
+// con error para que no pase en verde.
+if (sinComprobar.length) {
+  console.log('\nNO SE HAN PODIDO COMPROBAR (' + sinComprobar.length + ') — no es que estén rotas, es que no se sabe:')
+  for (const r of sinComprobar) console.log('  · ' + r.titulo + ' → ' + r.motivo)
+  console.log('  Vuelve a lanzarlo dentro de un rato; si persiste, mira el panel de Supabase.')
 }
 
 // ── La hoja de contacto, desde las direcciones de verdad ──
@@ -152,6 +194,7 @@ writeFileSync(`${SALIDA}/fotos-en-produccion.html`, `<!doctype html>
   <b class="si">${conFoto.length}</b> gooals con foto, según <b>gooals_v2</b>, no según ningún guion.
   Cada imagen se pide a Supabase con su dirección real: si una no estuviera donde la base dice,
   su recuadro saldría en rojo. Al pedirlas una a una desde fuera, rotas: <b class="${rotas.length ? 'no' : 'si'}">${rotas.length}</b>.
+  ${sinComprobar.length ? '<b class="no">' + sinComprobar.length + ' no se han podido comprobar</b>: Supabase frenaba, que no es lo mismo que estar rotas.' : ''}
   Generado el ${new Date().toLocaleString('es-ES')}.
 </p>
 <p id="aviso"></p>
@@ -171,4 +214,6 @@ window.addEventListener('load', () => {
 </body></html>`, 'utf8')
 
 console.log('\nHOJA: Claude outputs/fotos-en-produccion.html')
-process.exitCode = (rotas.length || aMedias.length || aCommons.length) ? 1 : 0
+// Lo no comprobado cuenta como fallo a propósito: un pase en verde sobre algo
+// que nadie ha podido mirar es justo lo que esta comprobación debe evitar.
+process.exitCode = (rotas.length || sinComprobar.length || aMedias.length || aCommons.length) ? 1 : 0
