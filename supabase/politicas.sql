@@ -397,6 +397,14 @@ grant update (nombre, username, intereses, con_quien_vive, onboarding_completado
 -- `acepta_emails`, los tres códigos, `pareja_id` y `created_at`: las escribe el
 -- servidor con el service role, que se salta todo esto.
 --
+-- `acepta_emails` merece su línea, porque es la que más fácil se añade aquí por
+-- error: es una preferencia del usuario, así que parece que debería escribirla
+-- él. No. La escribe `src/app/api/baja/route.ts`, el enlace de baja de los
+-- correos, y ese enlace **tiene que funcionar SIN SESIÓN** — se abre desde el
+-- correo, en el móvil, sin haber entrado. Un permiso para `authenticated` no le
+-- serviría de nada, y uno para `anon` abriría la columna a todo internet. Por
+-- eso va por el servidor con una firma, y por eso no está en este grant.
+--
 -- `email` sigue dentro porque el alta la manda. Es la deuda que queda: mientras
 -- el alta escriba desde el navegador, alguien puede registrarse poniendo en su
 -- perfil un correo que no es el suyo. Se cierra el día que el alta pase a un

@@ -161,6 +161,21 @@ order by tablename;
 --   salen aquí. Si apareciera cualquier fila, es una política que deja leer
 --   todo y hay que mirarla.
 
+--   NOTA AÑADIDA EL 8-10-2026 — esa razón caducó.
+--   Arriba pone "las dos políticas de lectura que se quedan (los gooals
+--   verificados y los conquistados)". Era verdad el día que se escribió. Desde
+--   el 7-10-2026 ya no: la de los conquistados ("public read completed", sobre
+--   user_gooals) se quitó, porque dejaba listar con la clave pública quién
+--   había conseguido qué y la ruta de su foto. Y el 8-10-2026 se quitó también
+--   "users manage own gooals", así que user_gooals no tiene ninguna política.
+--   La de lectura que se queda es UNA: la del catálogo.
+--
+--   La línea de arriba NO se corrige: este fichero es el acta de lo que se
+--   ejecutó aquel día y eso no se reescribe. Quien quiera saber cómo están las
+--   cosas HOY, que mire supabase/politicas.sql, que es el que se mantiene al
+--   día. Ver CLAUDE.md, «Un fichero de migración es un acta; politicas.sql es
+--   un estado».
+
 -- 3 · Que la función contesta.
 select username_libre('david') as deberia_decir_si_esta_libre;
 select username_libre('un-nombre-que-no-existe-12345') as deberia_ser_true;

@@ -683,6 +683,40 @@ Las tres cosas que hay que hacer con un contador así:
 3. **Y antes de enseñarlo en una pantalla nueva.** Un contador que nadie mira
    puede estar mal años; el día que se pinta, miente a todo el mundo a la vez.
 
+## Un fichero de migración es un acta; politicas.sql es un estado
+
+Dos clases de fichero en `supabase/`, y **no se mantienen igual**. Confundirlas
+lleva a reescribir la historia o a creerse un fichero que ya no describe nada.
+
+**`politicas.sql` declara CÓMO ESTÁN LAS COSAS HOY.** Tiene que estar al día, se
+lanza entero cuando haga falta y su promesa es que, lanzado entero, deja la base
+en el estado correcto. Si algo cambia, **se corrige el texto**: la frase vieja se
+va, y si merece recuerdo se queda como «QUITADA el <fecha>, y por qué». Si la
+base y este fichero no coinciden, uno de los dos está mal.
+
+**`fase3<x>.sql` cuenta LO QUE PASÓ UN DÍA.** Es un acta: se ejecutó una vez, con
+ese contenido, y eso no cambia nunca. Sus comprobaciones y sus explicaciones
+describen el mundo de aquel día, y van a caducar — es normal, no es un fallo.
+**No se corrigen: se les añade una nota debajo**, fechada, diciendo qué dejó de
+ser verdad y dónde está lo de ahora.
+
+El caso que lo fijó: `fase3m.sql` decía «las dos políticas de lectura que se
+quedan (los gooals verificados y los conquistados)». Era verdad el 15-9-2026. El
+7-10 cayó la de los conquistados y el 8-10 la última de `user_gooals`, así que
+hoy la de lectura que queda es una. **La línea sigue ahí, intacta, con una nota
+del 8-10 debajo.** Quien lea esa migración entiende qué se ejecutó y por qué, y
+sabe que para el estado de hoy tiene que mirar a otro sitio.
+
+La regla corta:
+
+> **Al que declara un estado se le corrige el texto. Al que cuenta un hecho se
+> le añade una nota debajo.** Y al segundo nunca se le quita nada, porque es la
+> única prueba de por qué la base es como es.
+
+Esto convive con «Una razón escrita caduca» y no la contradice: una razón
+caducada en `politicas.sql` se arregla cambiándola, y una en `fase3m.sql` se
+arregla anotándola. Lo que no vale en ninguno de los dos es dejarla sola.
+
 ## Una razón escrita caduca
 
 Y cuando caduca no avisa, porque sigue ahí, impecable, describiendo un mundo
