@@ -54,10 +54,13 @@ navegador podía leer los 53 correos. El repo no lo contaba porque no lo sabía.
 
 Tres cosas que hay que saber antes de tocar una política:
 
-1. **Una política NO concede permisos, solo los limita.** Y aquí `anon` y
-   `authenticated` tienen todos los permisos en todas las tablas (el reparto por
-   defecto de Supabase), así que **la RLS es la única cerradura**: cualquier
-   política permisiva que se añada abre la tabla al instante.
+1. **Una política NO concede permisos, solo los limita.** `anon` y
+   `authenticated` tienen todos los permisos en casi todas las tablas (el
+   reparto por defecto de Supabase), así que en casi todas **la RLS es la única
+   cerradura**: cualquier política permisiva que se añada abre la tabla al
+   instante. Las excepciones son `profiles` y `user_gooals`, que desde el
+   8-10-2026 tienen además permisos por columna — ver
+   «[La RLS decide filas; los permisos deciden columnas](#la-rls-decide-filas-los-permisos-deciden-columnas)».
 2. **Las políticas del mismo tipo se suman con O.** Basta UNA que diga `true`
    para que las demás no sirvan de nada. Así se abrió `profiles`: la ancha
    convivía con la correcta y la anulaba.
@@ -476,6 +479,47 @@ En la práctica:
    vividos y conquistados y conserva el nombre viejo a propósito. Cuando se
    decide eso, la razón va en un comentario donde se lee la columna, porque esa
    es la única señal que va a quedar.
+
+## La RLS decide filas; los permisos deciden columnas
+
+Son dos cerraduras distintas y hay que mirar las dos. Esto costó un agujero que
+estuvo abierto desde el primer día y que **ninguna revisión de políticas podía
+encontrar, porque las políticas estaban bien**.
+
+La RLS de `profiles` era correcta y sigue siéndolo: `using (auth.uid() = id)`,
+cada uno toca su fila y nada más. El problema es que **tu propia fila incluye tu
+propio `es_admin`**. Y como `anon` y `authenticated` tenían todos los permisos
+sobre todas las columnas, bastaba una petición desde el navegador —con la clave
+pública, que va en el bundle— para hacerse administrador de `/admin`, que lee el
+correo de los 53 usuarios. `puntos_totales` y `nivel` iban por el mismo camino.
+
+> **Una política de RLS no sabe nada de columnas.** No hay forma de escribir una
+> que diga «esta fila sí, pero esa columna no». Eso se hace con un `GRANT` por
+> columna, que es otra cosa y se mira en otro sitio.
+
+Cómo mirar las dos, que es lo único que hay que recordar:
+
+- **Las filas** se miran en `pg_policies`: el `USING` dice qué filas ves o
+  tocas, el `WITH CHECK` qué puedes dejar escrito. (Matiz que confunde siempre:
+  en `FOR ALL` y `FOR UPDATE`, si no hay `WITH CHECK`, Postgres reutiliza el
+  `USING`. En `FOR INSERT` no: sin `WITH CHECK` no se inserta nada.)
+- **Las columnas** se miran con `has_column_privilege('authenticated',
+  'public.tabla', 'columna', 'UPDATE')`. Hay una consulta que lo saca todo junto
+  en `supabase/consultas/cerradura-puntos.sql`.
+
+Y la pregunta que hay que hacerse ante cualquier tabla con una política de
+escritura propia: **¿qué columnas de MI fila no debería poder escribir yo?**
+Normalmente son las que lleva la cuenta de algo (`puntos_totales`, `seguidores`)
+y las que dan permisos (`es_admin`). Si alguna de esas está en una tabla que el
+navegador escribe, la política correcta no basta.
+
+Lo que quedó echado el 8-10-2026 está en `supabase/politicas.sql`, al final, y
+se aplicó con `supabase/fase3y.sql`. El criterio del reparto:
+
+> Al navegador se le devuelve permiso **solo sobre las columnas que escribe de
+> verdad**, leídas de los sitios del código que las escriben — nunca de memoria.
+> Una columna nueva nace cerrada, que es el lado bueno: si algún día hace falta
+> escribirla desde el navegador, falla en cuanto se prueba y se añade a la lista.
 
 ## Una comprobación a medias es peor que ninguna
 

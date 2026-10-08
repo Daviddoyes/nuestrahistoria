@@ -14,9 +14,21 @@
 --
 -- LO PRIMERO QUE HAY QUE ENTENDER DE ESTE PROYECTO
 --
--- `anon` y `authenticated` tienen TODOS los permisos sobre TODAS las tablas:
--- es el reparto por defecto de Supabase y no se ha tocado. Así que **la RLS es
--- lo único que protege cada tabla**. No hay una segunda cerradura.
+-- HAY DOS CERRADURAS Y NO HACEN LO MISMO:
+--
+--   · La RLS decide **QUÉ FILAS** tocas. Nunca qué columnas.
+--   · El permiso (GRANT) decide **QUÉ COLUMNAS** puedes tocar. Nunca qué filas.
+--
+-- Hasta el 8-10-2026 aquí solo estaba echada la primera: `anon` y
+-- `authenticated` tenían TODOS los permisos sobre TODAS las tablas, que es el
+-- reparto por defecto de Supabase. Y eso bastaba para un agujero gordo: la RLS
+-- de `profiles` era CORRECTA —cada uno solo toca su fila— pero tu propia fila
+-- incluye tu propio `es_admin`. Una petición desde el navegador y cualquiera
+-- era administrador de /admin, que lee los correos de todos.
+--
+-- Desde `fase3y.sql`, `profiles` y `user_gooals` tienen también la segunda (al
+-- final de este fichero). En las otras diez tablas sigue habiendo una sola, y
+-- basta: no tienen ninguna política, así que están cerradas enteras.
 --
 -- De ahí tres consecuencias que conviene tener delante:
 --
@@ -103,13 +115,26 @@ create policy "public read gooals_v2 verificados" on gooals_v2
 -- cualquiera con la clave del navegador puede listar que lo hiciste.
 drop policy if exists "public read completed" on user_gooals;
 
+-- QUITADA el 8-10-2026: "users manage own gooals" (ALL, auth.uid() = user_id).
+--
+-- Era la que quedó anotada el 2-10 con un "PENDIENTE DE MIRAR: ¿infla esto los
+-- puntos visibles?". Se midió, y la respuesta es SÍ. Todas las sumas de puntos
+-- acaban en `user_gooals.puntos_ganados` —el perfil, Inicio y la caché de
+-- `profiles.puntos_totales`—, así que una fila escrita a mano desde el
+-- navegador, con estado 'completado' y los puntos que uno quisiera, salía en
+-- todas. Y de paso se saltaba el portero que impide conseguir un gooal
+-- retirado, porque ese portero vive en las Server Actions.
+--
+-- No se sustituye por otra más estrecha: se quita y ya está. El navegador NO
+-- toca esta tabla, ni para leer. Se repasaron los ficheros con 'use client' uno
+-- a uno, y los dos sitios del servidor que usan el cliente de sesión
+-- (`fotos-privadas.ts`, `admin-auth.ts`) lo usan solo para `auth.getUser()`.
+-- La tabla se queda sin políticas, como las otras diez.
 drop policy if exists "users manage own gooals" on user_gooals;
-create policy "users manage own gooals" on user_gooals
-  for all using (auth.uid() = user_id);
--- OJO, PENDIENTE DE MIRAR: esta deja a alguien con sesión insertar una fila
--- suya directamente, con estado 'completado' y los puntos que quiera, sin pasar
--- por la app. Habría que comprobar si eso infla sus puntos visibles o no.
--- Anotado el 2-10-2026; no se toca sin medirlo primero.
+
+-- Lo que SÍ estaba bien y conviene que quede escrito: el índice único
+-- (user_id, gooal_id) impide que una misma persona marque el mismo gooal dos
+-- veces y cobre dos veces. Esa preocupación se cae sola.
 
 
 -- ═══════════════════════════════════════════════════════════
@@ -289,7 +314,7 @@ drop policy if exists "update used" on invitaciones_email;
 -- COMPROBACIÓN. Cada consulta por separado.
 -- ═══════════════════════════════════════════════════════════
 
--- 1 · Las 9 políticas que debe haber, y ni una más.
+-- 1 · Las 8 políticas que debe haber, y ni una más.
 select tablename, policyname, cmd, permissive, qual, with_check
 from pg_policies where schemaname = 'public'
 order by tablename, policyname;
@@ -301,9 +326,8 @@ order by tablename, policyname;
 --   profiles             users can read own profile      SELECT
 --   profiles             users can update own profile   UPDATE
 --   reportes             users create reportes          INSERT
---   user_gooals          users manage own gooals        ALL
---   (y ninguna en muro_posts, gooal_sugerencias, gooals_revision,
---    emails_enviados ni emails_campanas)
+--   (y ninguna en user_gooals, muro_posts, gooal_sugerencias,
+--    gooals_revision, emails_enviados ni emails_campanas)
 
 
 -- 2 · La RLS, encendida en las doce.
@@ -322,3 +346,61 @@ order by tablename;
 -- Y para comprobarlo de verdad, desde fuera y no desde el esquema:
 --   node --env-file=.env.local scripts/comprobar-rls.mjs
 --   → 15 de 15
+
+-- ═══════════════════════════════════════════════════════════
+-- LA SEGUNDA CERRADURA · los permisos de columna
+--
+-- Puesta el 8-10-2026 con `fase3y.sql`. Está aquí también porque este fichero
+-- promete que, lanzado entero, deja la base en el estado correcto — y desde
+-- hoy el estado correcto incluye esto.
+--
+-- Una política decide filas; un permiso decide columnas. Las dos hacen falta.
+-- ═══════════════════════════════════════════════════════════
+
+-- ── profiles ──────────────────────────────────────────────
+-- El SELECT no se toca: la RLS ya lo limita a la fila propia, el navegador
+-- necesita leerla, y un `update ... where id = ...` necesita poder leer `id`
+-- para resolver el where.
+revoke insert, update, delete, truncate, references, trigger on table profiles from anon;
+revoke insert, update, delete, truncate, references, trigger on table profiles from authenticated;
+
+-- Y se devuelve SOLO lo que el navegador escribe de verdad. La lista sale de
+-- leer los tres únicos sitios, no de la memoria de nadie:
+--   el alta        src/app/page.tsx                      insert
+--   el onboarding  src/app/onboarding/page.tsx           update
+--   editar perfil  src/components/EditarPerfilModal.tsx  update
+-- Ninguno usa upsert, que mandaría todas las columnas y se rompería aquí.
+grant insert (id, nombre, email) on table profiles to authenticated;
+grant update (nombre, username, intereses, con_quien_vive, onboarding_completado, foto_perfil_url)
+  on table profiles to authenticated;
+
+-- Fuera quedan `es_admin`, `puntos_totales`, `nivel`, `seguidores`, `siguiendo`,
+-- `acepta_emails`, los tres códigos, `pareja_id` y `created_at`: las escribe el
+-- servidor con el service role, que se salta todo esto.
+--
+-- `email` sigue dentro porque el alta la manda. Es la deuda que queda: mientras
+-- el alta escriba desde el navegador, alguien puede registrarse poniendo en su
+-- perfil un correo que no es el suyo. Se cierra el día que el alta pase a un
+-- disparador sobre `auth.users` o a una Server Action, y entonces el `grant
+-- insert` de arriba se va entero.
+
+-- ── user_gooals ───────────────────────────────────────────
+-- Entera. El navegador no la toca ni para leer.
+revoke all on table user_gooals from anon;
+revoke all on table user_gooals from authenticated;
+
+
+-- ═══════════════════════════════════════════════════════════
+-- 4 · Y que la segunda cerradura siga echada
+-- ═══════════════════════════════════════════════════════════
+select
+  x.tabla || '.' || x.col as columna,
+  has_column_privilege('authenticated', 'public.' || x.tabla, x.col, 'UPDATE') as authenticated_escribe
+from (values
+  ('profiles', 'es_admin'), ('profiles', 'puntos_totales'), ('profiles', 'nivel'),
+  ('profiles', 'nombre'), ('user_gooals', 'puntos_ganados')
+) as x(tabla, col)
+order by 1;
+--   todas false MENOS profiles.nombre, que tiene que ser true: es la única de
+--   la lista que el navegador escribe. Si nombre sale false, editar perfil está
+--   roto.
