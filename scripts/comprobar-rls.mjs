@@ -86,6 +86,19 @@ comprobar('el muro NO se lee desde fuera', (muro ?? []).length === 0, muro?.leng
 const { data: logros } = await anon.from('user_gooals').select('*')
 comprobar('ni los gooals conseguidos de la gente', (logros ?? []).length === 0, logros?.length)
 
+// Y sin sesión no se escribe NADA, ni una columna. Se mira el código del error:
+// un rechazo por permiso es 42501; si saliera "0 filas sin error", sería la RLS
+// parándolo, que también vale pero es la otra cerradura y aquí se mira esta.
+const { error: eAnonPerfil } = await anon.from('profiles').update({ nombre: 'intruso' }).neq('id', '00000000-0000-0000-0000-000000000000')
+comprobar('sin sesión no puede escribir en profiles',
+  Boolean(eAnonPerfil) && (eAnonPerfil.code === '42501' || /permission denied/i.test(eAnonPerfil.message)),
+  eAnonPerfil?.code ?? 'NINGUNO')
+
+const { error: eAnonGooals } = await anon.from('user_gooals').insert({ user_id: '00000000-0000-0000-0000-000000000000', gooal_id: '00000000-0000-0000-0000-000000000000' })
+comprobar('ni en user_gooals',
+  Boolean(eAnonGooals) && (eAnonGooals.code === '42501' || /permission denied/i.test(eAnonGooals.message)),
+  eAnonGooals?.code ?? 'NINGUNO')
+
 // Lo que SÍ tiene que seguir viéndose: el catálogo público.
 const { data: cat } = await anon.from('gooals_v2').select('id').limit(5)
 comprobar('el catálogo público sigue leyéndose', (cat ?? []).length > 0, cat?.length)
@@ -137,6 +150,57 @@ try {
   comprobar(`uno ya cogido («${cogido}») sale ocupado`, ocupado === false, ocupado)
   const { data: mayus } = await cli.rpc('username_libre', { nombre_pedido: (cogido ?? '').toUpperCase() })
   comprobar('y en mayúsculas, también ocupado', mayus === false, mayus)
+
+  // ── e) LA SEGUNDA CERRADURA: los permisos de columna ──────
+  //
+  // Hasta el 8-10-2026 este guion decía "15 de 15" mientras cualquiera con
+  // sesión podía ponerse `es_admin = true` desde el navegador. No mentía: es
+  // que solo miraba una de las dos cerraduras. La RLS decide QUÉ FILAS tocas;
+  // el permiso de columna decide QUÉ COLUMNAS. Las políticas de `profiles`
+  // estaban bien — cada uno su fila — y tu propia fila incluye tu `es_admin`.
+  //
+  // Se mira el error Y el valor. Un `update` que no toca nada por la RLS
+  // devuelve 0 filas SIN error, y un permiso denegado devuelve error 42501: no
+  // es lo mismo, y confundirlos daría por cerrada una tabla abierta. Por eso
+  // después de cada intento se relee con la clave secreta: el error dice que lo
+  // rechazó, el valor dice que de verdad no cambió.
+  console.log('\ne) La segunda cerradura, la de las columnas:')
+
+  const denegado = e => Boolean(e) && (e.code === '42501' || /permission denied/i.test(e.message ?? ''))
+  const valorDe = async col => {
+    const { data } = await sec.from('profiles').select(col).eq('id', idPrueba).maybeSingle()
+    return data?.[col]
+  }
+
+  for (const [col, valor] of [['es_admin', true], ['puntos_totales', 9999], ['nivel', 'Leyenda']]) {
+    const antes = await valorDe(col)
+    const { error } = await cli.from('profiles').update({ [col]: valor }).eq('id', idPrueba)
+    const despues = await valorDe(col)
+    comprobar(`no puede escribirse profiles.${col}`,
+      denegado(error) && despues === antes,
+      { rechazo: error?.code ?? 'NINGUNO', antes, despues })
+  }
+
+  // Y el otro lado, que es la mitad que de verdad hace falta: lo que el
+  // navegador SÍ escribe tiene que seguir funcionando. Si esto falla, editar
+  // perfil está roto y el arreglo se pasó de frenada.
+  const nuevoNombre = 'Prueba RLS ' + Date.now()
+  const { error: eNombre } = await cli.from('profiles').update({ nombre: nuevoNombre }).eq('id', idPrueba)
+  comprobar('pero SÍ puede cambiarse el nombre (editar perfil)',
+    !eNombre && (await valorDe('nombre')) === nuevoNombre, eNombre?.message)
+
+  // user_gooals: cerrada entera. Ni leer, ni escribirse un conseguido con los
+  // puntos que uno quiera, que es por lo que se cerró.
+  const { data: unGooal } = await sec.from('gooals_v2').select('id').eq('activo', true).eq('estado', 'verificado').limit(1).maybeSingle()
+  const { error: eIns } = await cli.from('user_gooals')
+    .insert({ user_id: idPrueba, gooal_id: unGooal.id, estado: 'completado', puntos_ganados: 999 })
+  const { count: filasSuyas } = await sec.from('user_gooals').select('id', { count: 'exact', head: true }).eq('user_id', idPrueba)
+  comprobar('no puede insertarse un gooal conseguido con los puntos que quiera',
+    denegado(eIns) && filasSuyas === 0,
+    { rechazo: eIns?.code ?? 'NINGUNO', filasQueLeHanQuedado: filasSuyas })
+
+  const { error: eLeer } = await cli.from('user_gooals').select('*').limit(1)
+  comprobar('ni leer user_gooals con sesión', denegado(eLeer), eLeer?.code ?? 'NINGUNO')
 } catch (e) {
   console.error('\nERROR en la parte con sesión:', e.message)
   console.error('(si fase3m.sql no está aplicado todavía, la función username_libre no existe: es normal)')

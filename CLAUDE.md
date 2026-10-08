@@ -521,6 +521,43 @@ se aplicó con `supabase/fase3y.sql`. El criterio del reparto:
 > Una columna nueva nace cerrada, que es el lado bueno: si algún día hace falta
 > escribirla desde el navegador, falla en cuanto se prueba y se añade a la lista.
 
+## A veces no hay que medir: basta con mirar qué sería imposible
+
+Al cerrar los permisos de `profiles` (8-10-2026) había una pregunta que daba
+miedo, porque romper el registro es peor que el agujero: **si a `anon` se le
+quita el permiso de insertar, ¿deja de funcionar el alta?**
+
+Lo que parecía tocaba era probarlo. No hizo falta, y el razonamiento es mejor
+que la prueba:
+
+> El alta inserta en `profiles`, y la política de insert de esa tabla exige
+> `auth.uid() = id`. **`anon` no tiene uid.** Así que si el alta estuviera
+> corriendo como `anon`, ya estaría fallando **desde antes de este cambio**. Y
+> no falla. Luego no corre como `anon`, y quitarle el permiso a `anon` no puede
+> romperla.
+
+Una prueba demuestra que funcionó una vez, en un sitio, con un camino. Esto
+demuestra que **no puede ser de otra manera**, y de paso explica por qué.
+
+La forma de buscarlo, que sirve para cualquier miedo parecido:
+
+> **Si lo que temo fuera verdad, ¿qué MÁS estaría pasando ahora mismo? ¿Lo estoy
+> viendo?** Si la consecuencia sería visible y no se ve, la premisa es falsa y
+> no hace falta montar nada.
+
+Y el límite, que es la otra mitad y hay que tenerlo delante: **el razonamiento
+vale lo que valga su premisa.** Aquí la premisa es doble —que la política es la
+que está escrita, y que el alta funciona hoy— y las dos son comprobables. Si
+alguna dejara de ser verdad, el argumento se cae **sin avisar**, igual que una
+razón escrita que caduca. Por eso la premisa se escribe al lado de la
+conclusión, no se deja en la cabeza de nadie.
+
+El mismo día dio el contraejemplo, por si hacía falta: se dio por aplicada una
+migración porque alguien dijo que la había pegado, y al medirlo desde fuera el
+agujero seguía abierto. **«Está hecho» no es una premisa comprobable; «el alta
+funciona» sí.** La diferencia entre las dos es exactamente la que separa este
+razonamiento de una suposición.
+
 ## Una comprobación a medias es peor que ninguna
 
 Es la lección más cara de este repo y conviene leerla antes de escribir
@@ -784,10 +821,12 @@ sigue; una nota pendiente espera a alguien.
   partir de esa restricción crear un gooal con foto desde el panel daría error.
   O se añaden los dos campos, o la restricción se queda sin poner. Anotado el
   5-10-2026; sigue abierto.
-- **El alta todavía escribe `profiles.email` desde el navegador**
-  (`src/app/page.tsx`), así que alguien puede registrarse poniendo en su perfil
-  un correo que no es el suyo, y las comunicaciones leen de ahí. Se cierra el
-  día que el alta pase a un disparador sobre `auth.users` o a una Server Action,
-  y entonces el `grant insert` de `politicas.sql` se va entero. Anotado el
-  8-10-2026.
+- **ANTES DEL PRIMER ENVÍO DE CORREOS: el alta todavía escribe `profiles.email`
+  desde el navegador** (`src/app/page.tsx`). Alguien puede registrarse poniendo
+  en su perfil un correo que no es el suyo, y **las comunicaciones leen de ahí**
+  (`src/lib/comunicaciones.ts`), así que le escribiríamos a esa dirección. No
+  tiene fecha: tiene una condición, y es que **no se manda la primera campaña
+  hasta que esto esté cerrado**. Se cierra pasando el alta a un disparador sobre
+  `auth.users` o a una Server Action; entonces el `grant insert` de
+  `politicas.sql` se va entero. Anotado el 8-10-2026.
 - No hay tests.
