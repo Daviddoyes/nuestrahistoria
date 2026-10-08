@@ -58,6 +58,12 @@ export const CALIDAD = 'medium'
 const ENCUADRES = {
   espaldas: 'La persona está DE ESPALDAS a la cámara, se le ve la nuca y los hombros, nunca la cara.',
   hombros: 'El encuadre está RECORTADO POR LOS HOMBROS: se ven las manos, los brazos y el torso, y la cabeza queda fuera del encuadre por arriba.',
+  // Comer necesita boca, y «la cabeza fuera del encuadre» lo hacía imposible.
+  // Una regla que choca con el sujeto no da error: se incumple en silencio, y
+  // el modelo resolvió el choque enseñando la cara entera. Así que a la comida
+  // se le da un encuadre que SÍ puede cumplir: el plato y las manos, visto
+  // desde arriba, sin persona.
+  plato: 'Encuadre cenital sobre la mesa: se ven el plato y las manos de quien va a comer, y NADIE MÁS — ni cabeza, ni cara, ni torso, ni boca. La cámara mira hacia abajo.',
   contraluz: 'La persona está A CONTRALUZ y sale como una SILUETA oscura y limpia contra la luz: no se le distingue ni un rasgo de la cara.',
   casco: 'La persona lleva CASCO Y GAFAS que le tapan la cara por completo, y además está en pleno movimiento.',
 }
@@ -87,7 +93,7 @@ const ENCUADRE_DE = {
 // categoría. Es un valor por defecto, no una regla: el mapa de arriba manda.
 const ENCUADRE_POR_CATEGORIA = {
   deporte: 'espaldas',
-  gastronomia: 'hombros',
+  gastronomia: 'plato',
   naturaleza: 'espaldas',
   viajes: 'espaldas',
   eventos: 'contraluz',
@@ -180,8 +186,16 @@ export const ESCENAS = {
     'Alguien de espaldas en el balcón de un piso extranjero al atardecer, con una maleta todavía abierta detrás.',
   'Sacarte el cinturón negro':
     'Unas manos atándose un cinturón negro sobre un kimono blanco, en un tatami vacío.',
+  // La escena vieja decía «delante de una pizarra llena de fórmulas» y salió
+  // con las fórmulas escritas y legibles. No se coló el texto: lo pedía la
+  // escena. Cuando la escena obvia NECESITA texto, no se endurece la
+  // prohibición — se cambia de escena.
   'Doctorarte':
-    'Alguien de espaldas delante de una pizarra llena de fórmulas borrosas, en un aula vacía.',
+    'Un birrete apoyado sobre unas manos, junto a un diploma enrollado y atado con una cinta. El diploma está enrollado y no se ve nada escrito en ninguna parte.',
+  // Igual: una carrera con la distancia en el nombre pide un dorsal, y un
+  // dorsal sin número no es nada. Se quitan los dorsales de la escena.
+  'Correr un 10K':
+    'Varios corredores DE ESPALDAS por una carretera al amanecer, con la carretera abriéndose delante. NINGUNO lleva peto ni dorsal: van con camiseta lisa.',
   'Terminar una carrera universitaria':
     'Un birrete lanzado al aire contra el cielo, visto desde abajo.',
   'Sacarte el carnet de moto':
@@ -205,6 +219,24 @@ export const ESCENAS = {
   'Ir a unos Juegos Olímpicos de invierno':
     'Una grada llena de gente abrigada viendo una prueba sobre NIEVE Y HIELO, al aire libre, con la pista blanca abajo y montañas nevadas al fondo. Es invierno y eso manda en toda la escena.',
 }
+
+/**
+ * Las escenas que YA dicen quién se ve y cómo. A éstas no se les añade encima
+ * un encuadre: la escena manda y el encuadre sobra, o peor, la contradice.
+ *
+ * La lista es explícita a propósito, no una regla que busque «manos» o «de
+ * espaldas» en el texto: eso acertaría casi siempre y fallaría en silencio el
+ * día que una escena diga «a contraluz» con otras palabras.
+ */
+const ESCENA_YA_RESUELVE_ENCUADRE = new Set([
+  'Montar tu propia empresa', 'Sacarte el C1 de inglés', 'Publicar un libro',
+  'Sacarte el cinturón negro', 'Doctorarte', 'Terminar una carrera universitaria',
+  'Sacarte el carnet de moto', 'Sacarte el título de buceo Open Water',
+  'Sacarte el título de patrón de embarcaciones', 'Sacarte la licencia de piloto',
+  'Hacer un voluntariado en el extranjero', 'Correr un 10K',
+  'Probar el pulpo vivo', 'Dormir en una cabaña sin electricidad',
+  'Ir a unos Juegos Olímpicos de invierno',
+])
 
 /**
  * Los gooals que no tienen nada que fotografiar. NO es `Object.keys(ESCENAS)`:
@@ -287,6 +319,8 @@ export function construirPrompt(gooal, clave, indice = 0) {
   partes.push('Quien aparece en la foto es ' + persona +
     (gooal.categoria === 'deporte' ? '.' : ', ' + CUERPO_CORRIENTE))
 
+  const encuadre = ENCUADRE_DE[gooal.titulo] ?? ENCUADRE_POR_CATEGORIA[gooal.categoria] ?? 'espaldas'
+
   // Si tiene escena escrita, manda ella. Si no, la acción del título.
   const escena = ESCENAS[gooal.titulo]
   if (escena) {
@@ -294,16 +328,26 @@ export function construirPrompt(gooal, clave, indice = 0) {
     partes.push('Esta escena es FIJA: siempre esta y no otra.')
   } else {
     partes.push(`La acción de «${gooal.titulo}», ocurriendo.`)
-    partes.push('EL SUJETO ES LA ACCIÓN, no el lugar ni el objeto: se tiene que ver a alguien haciéndolo.')
+    // Con el encuadre del plato NO se pide ver a nadie: pedir las dos cosas es
+    // el mismo choque que enseñaba caras comiendo. Una regla que contradice al
+    // sujeto no da error, se incumple en silencio.
+    partes.push(encuadre === 'plato'
+      ? 'EL SUJETO ES LA COMIDA en sí, en el plato, tal como se sirve.'
+      : 'EL SUJETO ES LA ACCIÓN, no el lugar ni el objeto: se tiene que ver a alguien haciéndolo.')
     if (gooal.ambito === 'lugar' && (gooal.ciudad || gooal.pais)) {
       const donde = [gooal.ciudad, gooal.pais].filter(Boolean).join(', ')
       partes.push(`Ocurre en ${donde}, y eso se nota en el entorno, pero el entorno es contexto y no el tema.`)
     }
-    partes.push(CONTEXTO_CATEGORIA[gooal.categoria] ?? '')
+    partes.push(encuadre === 'plato' ? '' : (CONTEXTO_CATEGORIA[gooal.categoria] ?? ''))
   }
 
-  const encuadre = ENCUADRE_DE[gooal.titulo] ?? ENCUADRE_POR_CATEGORIA[gooal.categoria] ?? 'espaldas'
-  partes.push(ENCUADRES[encuadre])
+  // El encuadre solo se añade si la escena no lo ha resuelto ya. Cuando la
+  // escena escrita dice exactamente qué se ve —unas manos, un birrete,
+  // corredores de espaldas—, añadirle encima «la persona está de espaldas»
+  // mete una persona que la escena no tenía.
+  if (!escena || !ESCENA_YA_RESUELVE_ENCUADRE.has(gooal.titulo)) {
+    partes.push(ENCUADRES[encuadre])
+  }
 
   partes.push(PROHIBIDO)
   partes.push(COMUNES)

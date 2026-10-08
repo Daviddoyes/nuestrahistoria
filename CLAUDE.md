@@ -587,6 +587,78 @@ agujero seguía abierto. **«Está hecho» no es una premisa comprobable; «el a
 funciona» sí.** La diferencia entre las dos es exactamente la que separa este
 razonamiento de una suposición.
 
+## Un título tiene sujeto y complemento, y se busca por el sujeto
+
+Nueve fallos de nueve, una sola causa. Sale de buscar fotos de lugares en
+Commons, y vale para cualquier cosa que se busque a partir del título de un
+gooal.
+
+**«Ver la Alhambra desde el Mirador de San Nicolás»** tiene un sujeto —la
+Alhambra— y un complemento —desde dónde se ve—. El buscador se quedó con el
+complemento y trajo cuatro fotos de la iglesia de San Nicolás y del muro del
+mirador. La Alhambra no salía en ninguna.
+
+Lo mismo, cuatro veces más:
+
+| el título dice | el buscador buscó | y trajo |
+|---|---|---|
+| el salar de **Uyuni** | el pueblo de Uyuni | su plaza y su torre del reloj |
+| un Gran Premio en **Montmeló** | el pueblo de Montmeló | la misma rotonda, tres veces |
+| una carrera en **Silverstone** | el pueblo de Silverstone | una calle y una autopista |
+| las estaciones del **metro de Moscú** | Moscú | la plaza Roja |
+
+> **Antes de buscar algo por el título de un gooal, separa qué NOMBRA y qué
+> SITÚA.** El topónimo de la fila sitúa; casi nunca es el sujeto. Y en el título,
+> lo que va detrás de «desde», «en» o «por» suele ser el complemento.
+
+Es pariente de lo de Nevada: **el buscador acertaba de sitio y erraba de cosa.**
+Y es la misma familia que «antes de medir parecido entre nombres, pruébalo en
+catalán»: el error no estaba en la mecánica de buscar, estaba en qué se le daba
+para buscar.
+
+## Una regla que choca con el sujeto no da error: se incumple en silencio
+
+Las fotos generadas llevaban una regla común, «la cabeza queda fuera del
+encuadre», y para `gastronomia` era imposible de cumplir: **no se puede enseñar a
+alguien comiéndose un escorpión sin boca.** El modelo no protestó —no hay forma
+de protestar— y resolvió el choque por su cuenta: enseñó la cara entera. Pasó en
+diez de las cuarenta y nueve, todas de comida.
+
+> **Una regla común se prueba contra CADA categoría, no se escribe una vez y se
+> da por puesta.** La pregunta es: ¿esta regla y el sujeto de esta categoría
+> pueden cumplirse a la vez? Si no pueden, no gana la regla: gana el sujeto, y
+> encima sin avisar.
+
+El arreglo no fue insistir, fue dar un encuadre que SÍ se puede cumplir: cenital
+sobre el plato y las manos, sin persona. Y de paso quitar la línea que pedía
+«que se vea a alguien haciéndolo», que era la otra mitad del choque.
+
+Es la misma forma que «una comprobación a medias es peor que ninguna», pero en
+las instrucciones en vez de en las comprobaciones: **lo que no se puede cumplir
+no se queda sin cumplir, se cumple de otra manera que nadie ha elegido.**
+
+## Si la escena NECESITA el texto, cambia la escena, no la prohibición
+
+«Ni una letra» estaba prohibido por su nombre —carteles, rótulos, dorsales con
+número, pizarras— y aun así salieron dos con texto: **«Correr un 10K» con «10K»
+escrito en el peto, y «Doctorarte» con una pizarra llena de fórmulas.**
+
+No se coló. **La escena obvia lo pedía.** Un dorsal sin número no es un dorsal, y
+una pizarra sin fórmulas no es nada. Y en el caso del doctorado fue peor: la
+escena la había escrito yo, y decía literalmente «delante de una pizarra llena
+de fórmulas».
+
+> **Cuando la escena obvia necesita el texto, prohibir más fuerte no arregla
+> nada: hay que cambiar de escena.** Un 10K son corredores de espaldas en una
+> carretera al amanecer, sin petos. Un doctorado es el birrete y un diploma
+> enrollado, sin nada escrito.
+
+Y la comprobación que esto obliga a hacer: al repasar los 49 buscando más casos,
+una regla mecánica —títulos, premios, carreras con número— marcó **13
+candidatos**, y al mirarlos uno a uno **solo 2 lo eran de verdad**. Los otros 11
+ya tenían una escena que no pedía texto. Otra vez: la regla trae candidatos,
+decide quien mira.
+
 ## Una comprobación a medias es peor que ninguna
 
 Es la lección más cara de este repo y conviene leerla antes de escribir
