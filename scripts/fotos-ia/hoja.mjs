@@ -46,6 +46,10 @@ const buscar = (gooal, estilo, vuelta) => {
   return h || null
 }
 
+// Solo las columnas de los estilos que se hayan generado en esta ronda. Va
+// aquí arriba y no junto a la cabecera porque las filas la usan antes.
+const COLUMNAS = resumen.estilos || ['A', 'B', 'C']
+
 const celda = (gooal, estilo) => {
   const dos = [1, 2].map(v => buscar(gooal.titulo, estilo, v))
   const promptDe = dos.map(h => h && existsSync(SALIDA + '/' + h.nombre + '.txt')
@@ -78,8 +82,6 @@ const filas = resumen.gooals.map(g =>
   COLUMNAS.map(e => celda(g, e)).join('') +
   '</tr>').join('')
 
-// Solo las columnas de los estilos que se hayan generado en esta ronda.
-const COLUMNAS = resumen.estilos || ['A', 'B', 'C']
 const cabecera = COLUMNAS.map(e =>
   '<th scope="col"><b>' + e + ' · ' + esc(ESTILOS[e].nombre) + '</b>' +
   '<span class="meta">' + esc(ESTILOS[e].resumen) + '</span></th>').join('')
@@ -148,6 +150,6 @@ writeFileSync(SALIDA + '/../' + CARPETA_NOMBRE + '.html', `<!doctype html>
 </p>
 </body></html>`, 'utf8')
 
-console.log('escrito: Claude outputs/estilos-ia.html')
-console.log('  ' + resumen.gooals.length + ' gooals x 3 estilos x 2 vueltas')
+console.log('escrito: Claude outputs/' + CARPETA_NOMBRE + '.html')
+console.log('  ' + resumen.gooals.length + ' gooals x ' + COLUMNAS.length + ' estilo(s) [' + COLUMNAS.join(',') + '] x 2 vueltas')
 if (fallos) console.log('  ' + fallos + ' imágenes fallaron y salen marcadas en rojo')
