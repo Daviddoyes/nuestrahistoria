@@ -92,6 +92,37 @@ function nombrePropio(titulo) {
     .filter(t => palabras(t).length).sort((a, b) => b.length - a.length)[0] ?? null
 }
 
+const ARTICULOS = /^(el|la|los|las|un|una|unos|unas|al|del)$/i
+const SITUAN = new Set(['desde', 'en', 'por', 'con', 'para', 'sobre', 'entre', 'hasta', 'a'])
+
+/** El título sin el verbo ni los artículos y preposiciones de delante. */
+function fraseEntera(titulo) {
+  let r = titulo.split(/\s+/).slice(1)
+  while (r.length && (ARTICULOS.test(r[0]) || SITUAN.has(r[0].toLowerCase()))) r = r.slice(1)
+  return r.join(' ').replace(/\s+(de|del|la|el|los|las|y)$/i, '').trim() || null
+}
+
+/**
+ * El SUJETO: la frase, cortada donde empieza lo que solo SITÚA.
+ *
+ * Solo corta si lo que queda delante lleva un nombre propio. Si no lo lleva
+ * —«una ópera en el Liceu», «una carrera en Silverstone»— el complemento es
+ * justo lo que hace encontrable la foto, y cortarlo dejaría «ópera» a secas.
+ */
+function sujeto(titulo) {
+  const frase = fraseEntera(titulo)
+  if (!frase) return null
+  const trozos = frase.split(/\s+/)
+  for (let i = 1; i < trozos.length; i++) {
+    if (!SITUAN.has(trozos[i].toLowerCase())) continue
+    const delante = trozos.slice(0, i)
+    const tieneNombrePropio = delante.some(p => /^[A-ZÁÉÍÓÚÑÜÀÈÌÒÙÇ]/.test(p))
+    if (!tieneNombrePropio) continue
+    return delante.join(' ').replace(/\s+(de|del|la|el|los|las|y)$/i, '').trim()
+  }
+  return frase
+}
+
 async function articulo(idioma, consulta) {
   const j = await pedir(`https://${idioma}.wikipedia.org/w/api.php?action=query&format=json&formatversion=2`
     + `&generator=search&gsrsearch=${encodeURIComponent(consulta)}&gsrlimit=1`
@@ -228,10 +259,25 @@ const guardar = () => writeFileSync(FICHERO, JSON.stringify(hechos, null, 1), 'u
 
 for (const [n, g] of pendientes.entries()) {
   const propio = nombrePropio(g.titulo)
-  const fila = { ...g, nombrePropio: propio, fama: 0, wiki: null, candidatas: [] }
+  // El SUJETO del título, que es por donde hay que buscar. Ver arriba: buscar
+  // por el nombre propio más largo traía el complemento («Mirador de San
+  // Nicolás» en vez de «la Alhambra») en nueve de veinte.
+  const suj = sujeto(g.titulo)
+  const frase = fraseEntera(g.titulo)
+  const fila = { ...g, nombrePropio: propio, sujeto: suj, fama: 0, wiki: null, candidatas: [] }
   try {
-    // A · artículo por el nombre propio
-    let artA = propio ? await articulo('es', propio) : null
+    // A · artículo por el SUJETO del título
+    let artA = suj ? await articulo('es', suj) : null
+    if (suj && !(artA && comparte(artA.titulo, palabras(suj)))) {
+      const en = await articulo('en', suj)
+      artA = (en && comparte(en.titulo, palabras(suj))) ? en : null
+    }
+    // A2 · y por la frase entera, si es distinta del sujeto. Para «Ver una
+    // carrera en Silverstone» el complemento ES lo que la hace encontrable.
+    if (!artA && frase && frase !== suj) artA = await articulo('es', frase)
+    // A3 · el nombre propio a secas, que es como se buscaba antes. Se queda de
+    // último recurso: acierta cuando el título es solo un nombre.
+    if (!artA && propio) artA = await articulo('es', propio)
     if (propio && !(artA && comparte(artA.titulo, palabras(propio)))) {
       const en = await articulo('en', propio)
       artA = (en && comparte(en.titulo, palabras(propio))) ? en : null
@@ -245,7 +291,7 @@ for (const [n, g] of pendientes.entries()) {
     const wd = await deWikidata(artA?.wikidata ?? artB?.wikidata ?? null)
     fila.fama = wd.fama
 
-    const catNombre = propio ? await categoriaPorNombre(propio) : null
+    const catNombre = suj ? await categoriaPorNombre(suj) : (propio ? await categoriaPorNombre(propio) : null)
     const listaC = catNombre ? await ficherosDe(catNombre) : []
     const listaD = (wd.categoria && wd.categoria !== catNombre) ? await ficherosDe(wd.categoria) : []
 

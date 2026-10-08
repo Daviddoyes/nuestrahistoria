@@ -81,6 +81,9 @@ const ENCUADRE_DE = {
   'Caminar sobre un glaciar en Islandia': 'espaldas',
   'Dormir en una cabaña sin electricidad': 'espaldas',
   'Correr la Marató de Barcelona': 'espaldas',
+  // Mirar un eclipse pide cara y gafas: con 'hombros' pasaba lo mismo que con
+  // comer. De espaldas, mirando al cielo, sí se puede cumplir.
+  'Ver un eclipse solar total': 'espaldas',
   'Sacarte el C1 de inglés': 'hombros',
   'Publicar un libro': 'hombros',
   'Terminar un máster': 'espaldas',
@@ -233,7 +236,7 @@ const ESCENA_YA_RESUELVE_ENCUADRE = new Set([
   'Sacarte el cinturón negro', 'Doctorarte', 'Terminar una carrera universitaria',
   'Sacarte el carnet de moto', 'Sacarte el título de buceo Open Water',
   'Sacarte el título de patrón de embarcaciones', 'Sacarte la licencia de piloto',
-  'Hacer un voluntariado en el extranjero', 'Correr un 10K',
+  'Correr un 10K',
   'Probar el pulpo vivo', 'Dormir en una cabaña sin electricidad',
   'Ir a unos Juegos Olímpicos de invierno',
 ])
