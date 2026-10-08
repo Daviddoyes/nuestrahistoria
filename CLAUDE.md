@@ -727,6 +727,36 @@ Las dos salidas:
 Y lo de siempre: **el error del `insert` se mira**. Un `.insert()` sin
 comprobar `error` deja la tabla vacía y todo lo de después mintiendo.
 
+## Una nota pendiente sin sitio donde releerla no es un plan
+
+Lo bueno del agujero de `es_admin` hay que decirlo: **la nota estaba puesta.** El
+2-10-2026, al lado de la política de `user_gooals`, alguien escribió que eso
+dejaba insertarse una fila con los puntos que uno quisiera y que habría que
+comprobar si inflaba el marcador. Con fecha. Y era verdad.
+
+Se contestó el **8-10-2026**. Seis días. No falló anotarlo: falló que la nota
+vivía en la línea 122 de un fichero de SQL y **nadie vuelve a la línea 122 de un
+fichero de SQL**.
+
+De ahí dos reglas, y la segunda es la que sirve:
+
+1. **Una nota pendiente lleva fecha** y dice qué habría que medir. Esa parte ya
+   se hacía bien.
+2. **Y además se apunta donde se relee**, que en este repo es la «Deuda
+   conocida» de aquí abajo. El comentario se queda donde está —es donde hace
+   falta leerlo al tocar esa línea—, pero la lista de lo que falta no puede
+   estar repartida en doce ficheros.
+
+Y cuando se contesta, **la respuesta va debajo de la pregunta**, con su fecha y
+marcada como contestada, no en otro sitio. Una pregunta cuya respuesta está en
+otro lado es una pregunta que alguien va a volver a hacer.
+
+El repaso del 8-10-2026 encontró **una sola** nota abierta de verdad en todo el
+repositorio (la restricción de la foto sin autor, abajo). Las demás «OJO» que
+salen al buscar son avisos —cosas ya resueltas que explican por qué algo es como
+es—, no trabajo pendiente. Conviene saber distinguirlas: un aviso se lee y se
+sigue; una nota pendiente espera a alguien.
+
 ## Convenciones
 
 - **El código y los comentarios, en español.** Es lo que hay en todo el repo.
@@ -746,4 +776,18 @@ comprobar `error` deja la tabla vacía y todo lo de después mintiendo.
   tres catálogos. `gooals` y `experiencias` se fueron con la v1; hoy la base
   tiene doce tablas y la única de catálogo es `gooals_v2` (más `gooals_revision`,
   que es temporal). El SQL de aquello está en `supabase/historico/`.
+- **La restricción `gooals_v2_foto_con_autor` sigue sin poner**, y está escrita
+  pero comentada al final de `supabase/fase3r.sql`. Impediría guardar una
+  `imagen_url` sin `foto_autor` ni `foto_licencia`. **No se pega sin arreglar
+  antes el panel**: el formulario de crear un gooal tiene campo para la
+  dirección de la imagen y ninguno para el autor ni la licencia, así que a
+  partir de esa restricción crear un gooal con foto desde el panel daría error.
+  O se añaden los dos campos, o la restricción se queda sin poner. Anotado el
+  5-10-2026; sigue abierto.
+- **El alta todavía escribe `profiles.email` desde el navegador**
+  (`src/app/page.tsx`), así que alguien puede registrarse poniendo en su perfil
+  un correo que no es el suyo, y las comunicaciones leen de ahí. Se cierra el
+  día que el alta pase a un disparador sobre `auth.users` o a una Server Action,
+  y entonces el `grant insert` de `politicas.sql` se va entero. Anotado el
+  8-10-2026.
 - No hay tests.

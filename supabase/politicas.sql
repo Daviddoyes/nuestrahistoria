@@ -117,19 +117,38 @@ drop policy if exists "public read completed" on user_gooals;
 
 -- QUITADA el 8-10-2026: "users manage own gooals" (ALL, auth.uid() = user_id).
 --
--- Era la que quedó anotada el 2-10 con un "PENDIENTE DE MIRAR: ¿infla esto los
--- puntos visibles?". Se midió, y la respuesta es SÍ. Todas las sumas de puntos
--- acaban en `user_gooals.puntos_ganados` —el perfil, Inicio y la caché de
--- `profiles.puntos_totales`—, así que una fila escrita a mano desde el
--- navegador, con estado 'completado' y los puntos que uno quisiera, salía en
--- todas. Y de paso se saltaba el portero que impide conseguir un gooal
--- retirado, porque ese portero vive en las Server Actions.
+-- ── LA PREGUNTA, tal como quedó escrita el 2-10-2026 ──────
+--
+--   OJO, PENDIENTE DE MIRAR: esta deja a alguien con sesión insertar una fila
+--   suya directamente, con estado 'completado' y los puntos que quiera, sin
+--   pasar por la app. Habría que comprobar si eso infla sus puntos visibles o
+--   no. Anotado el 2-10-2026; no se toca sin medirlo primero.
+--
+-- ── CONTESTADA el 8-10-2026: SÍ los infla ────────────────
+--
+-- Se siguió el dato hasta las consultas que suman, y TODAS acaban en
+-- `user_gooals.puntos_ganados`: el perfil lo suma a mano desde la lista
+-- (actions.ts, `getPerfil`), Inicio lo suma igual, y `sincronizarPuntos` lo
+-- suma para guardar la caché `profiles.puntos_totales`, que es lo que sale en
+-- las listas de seguidores. El catálogo no se vuelve a mirar en ninguna.
+--
+-- Así que una fila escrita a mano desde el navegador, con estado 'completado' y
+-- los puntos que uno quisiera, salía en las tres. Y de paso se saltaba el
+-- portero que impide conseguir un gooal retirado, porque ese portero vive en
+-- las Server Actions y esta puerta no pasa por ahí.
+--
+-- La pregunta estaba bien puesta y la respuesta tardó SEIS DÍAS en llegar. Lo
+-- que falló no fue anotarla: fue que nadie volvió a esta línea. Si vuelves a
+-- escribir un "PENDIENTE DE MIRAR" aquí, ponle fecha y que alguien lo relea.
+--
+-- ── Y EL ARREGLO ──────────────────────────────────────────
 --
 -- No se sustituye por otra más estrecha: se quita y ya está. El navegador NO
 -- toca esta tabla, ni para leer. Se repasaron los ficheros con 'use client' uno
 -- a uno, y los dos sitios del servidor que usan el cliente de sesión
 -- (`fotos-privadas.ts`, `admin-auth.ts`) lo usan solo para `auth.getUser()`.
--- La tabla se queda sin políticas, como las otras diez.
+-- La tabla se queda sin políticas, como las otras diez. Y además sin permisos,
+-- al final de este fichero: las dos cerraduras.
 drop policy if exists "users manage own gooals" on user_gooals;
 
 -- Lo que SÍ estaba bien y conviene que quede escrito: el índice único
