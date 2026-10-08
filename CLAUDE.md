@@ -725,6 +725,65 @@ puede comprobar no se declara roto, pero tampoco bueno.** Sale en una lista
 aparte —«no se han podido comprobar»— y el guion termina con error igualmente,
 para que no pase en verde algo que nadie ha podido mirar.
 
+## Una escena describe lo que hay; un encuadre dice qué entra en la foto
+
+Son dos cosas distintas y confundirlas costó tres fotos con cara.
+
+Para los gooals que no tienen nada que fotografiar, el prompt lleva una escena
+escrita a mano: «un birrete apoyado sobre unas manos, junto a un diploma
+enrollado». Parecía que esa escena ya decía quién se ve, así que se le quitó el
+encuadre para que no se contradijeran.
+
+Salió con la cara entera. Y «Probar el pulpo vivo» también. Y «Hacer un
+voluntariado en el extranjero», **cuya escena decía literalmente «sin que se vea
+ninguna cara»**.
+
+> **Describir un birrete no impide que el modelo meta a quien lo sostiene.** Una
+> escena enumera lo que hay en la foto; el encuadre dice qué entra y qué se
+> queda fuera. Lo segundo no se deduce de lo primero, y una escena que menciona
+> unas manos no está diciendo que no haya una cabeza encima.
+
+Así que el encuadre va SIEMPRE. Lo que sí hay que vigilar es que escena y
+encuadre no se contradigan —ése era el miedo original, y era razonable—, y eso
+se arregla eligiendo el encuadre que le pega a esa escena: a «unas manos
+sosteniendo un birrete» le toca «recortado por los hombros», no «de espaldas».
+
+Es la misma familia que lo de la regla que choca con el sujeto: **la respuesta a
+dos instrucciones que riñen no es quitar una, es escribir la que sí se puede
+cumplir.**
+
+## Una lección en un fichero no se aplica sola; un módulo compartido sí
+
+Esta es sobre dónde vive una lección, y es de las que más vale la pena.
+
+El 8-10-2026 se midió que un 429 no es un fallo sino un freno, que hay que
+esperar, reinsistir y bajar el ritmo del bucle entero. Se arregló
+`comprobar.mjs`, se escribió en CLAUDE.md con su sección propia... y **ese mismo
+día**, unas horas después, el guion que genera las imágenes perdió **cuatro de
+trece** y luego **cuatro de cinco** por tener sus propias esperas de 4s/12s/30s,
+escritas a mano, demasiado cortas.
+
+No se había olvidado la lección. El problema es dónde vivía cada cosa:
+
+> **La lección vivía en CLAUDE.md y la espera vivía dentro de cada guion,
+> copiada.** Un fichero de lecciones no se aplica solo al guion siguiente. Un
+> módulo compartido sí: en cuanto `scripts/lib/frenos.mjs` existe, el guion que
+> lo importa hereda la lección entera sin que nadie se acuerde de ella.
+
+La regla práctica:
+
+1. **Si una lección se puede convertir en código compartido, conviértela.** El
+   texto explica *por qué*; el módulo garantiza el *qué*.
+2. **La señal de que toca es la segunda copia.** La primera vez que escribes una
+   espera con reintentos es un guion; la segunda vez es un módulo. Aquí hubo
+   tres antes de que nadie lo viera.
+3. **Y el texto se queda igualmente**, apuntando al módulo: sin el porqué, el
+   siguiente que lea `frenos.mjs` no sabrá por qué las esperas son tan largas y
+   las acortará.
+
+Lo mismo valía ya para `scripts/lib/paises-iso.mjs`, que nació igual: de una
+tabla copiada que estaba incompleta en un sitio y completa en otro.
+
 ## Antes de medir parecido entre nombres, pruébalo en catalán
 
 La zona donde esto se usa es catalana. **«Marató» y «Maratón» son la misma

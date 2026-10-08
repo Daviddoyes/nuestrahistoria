@@ -24,6 +24,7 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { createClient } from '@supabase/supabase-js'
+import { crearFrenos, esFreno } from '../lib/frenos.mjs'
 import { construirPrompt, encuadreDe, ABSTRACTOS, TAMANO, MODELO, CALIDAD } from './estilos.mjs'
 
 const arg = (nombre, porDefecto) => {
@@ -136,33 +137,45 @@ mkdirSync(SALIDA, { recursive: true })
 // Un 429 es "ahora no" y un 5xx es un mal rato suyo: se espera y se reinsiste.
 // Un 400 es el prompt, y eso no se reintenta: sería pagar dos veces el mismo
 // error y además el segundo intento daría exactamente lo mismo.
-const ESPERAS = [4000, 12000, 30000]
+//
+// Las esperas son largas a propósito. Con 4s/12s/30s se perdían cuatro de cada
+// trece: el límite de OpenAI es por ventana de tiempo, y una espera corta cae
+// dentro de la misma ventana que ya te frenó. Es la misma lección que está en
+// CLAUDE.md para comprobar-rls.mjs, aprendida otra vez aquí.
+// La espera ante los frenos NO se escribe aquí: vive en scripts/lib/frenos.mjs
+// y la usan también comprobar-rls.mjs y el buscador de Commons. Se sacó ahí
+// después de que este guion perdiera cuatro de trece imágenes por tener sus
+// propias esperas copiadas a mano, más cortas que las que ya se habían
+// aprendido en otro sitio.
+const frenos = crearFrenos()
+
 async function pedirImagen(prompt) {
-  let ultimo = null
-  for (let intento = 0; intento <= ESPERAS.length; intento++) {
-    if (intento) await dormir(ESPERAS[intento - 1])
-    let r
+  const r = await frenos.intentar(async () => {
+    let resp
     try {
-      r = await fetch('https://api.openai.com/v1/images/generations', {
+      resp = await fetch('https://api.openai.com/v1/images/generations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + CLAVE },
         body: JSON.stringify({ model: MODELO, prompt, size: TAMANO, quality: CALIDAD, n: 1 }),
       })
-    } catch (e) { ultimo = 'no conecta: ' + e.message; continue }
-    if (r.status === 429 || r.status >= 500) { ultimo = 'responde ' + r.status; continue }
-    const j = await r.json().catch(() => null)
-    if (!r.ok) return { error: (j && j.error && j.error.message) || ('responde ' + r.status), definitivo: true }
+    } catch (e) { return { freno: 'no conecta: ' + e.message } }
+    if (esFreno(resp.status)) return { freno: 'responde ' + resp.status }
+    const j = await resp.json().catch(() => null)
+    // Un 400 es el prompt: reintentarlo da lo mismo y se paga dos veces.
+    if (!resp.ok) return { error: (j && j.error && j.error.message) || ('responde ' + resp.status) }
     const b64 = j && j.data && j.data[0] && j.data[0].b64_json
-    if (!b64) return { error: 'la respuesta no trae imagen', definitivo: true }
+    if (!b64) return { error: 'la respuesta no trae imagen' }
     return { b64, usage: j.usage || null }
-  }
-  return { error: ultimo + ' después de ' + (ESPERAS.length + 1) + ' intentos' }
+  })
+  return r.agotado ? { error: r.motivo } : r
 }
 
 // ── A por ellas, de tres en tres ──────────────────────────
 const hechos = []
 let saltadas = 0, fallos = 0, n = 0
-const EN_PARALELO = 3
+// Con --paralelo=1 va de una en una, que es lo que hay que hacer cuando la API
+// ya está frenando.
+const EN_PARALELO = Number(arg('paralelo', '3'))
 
 async function trabajar(t) {
   const nombre = nombreDe(t)
@@ -177,6 +190,7 @@ async function trabajar(t) {
     hechos.push({ ...t, nombre, usage: meta.usage || null })
     return
   }
+  await frenos.antesDePedir()
   const r = await pedirImagen(t.prompt)
   n++
   if (r.error) {

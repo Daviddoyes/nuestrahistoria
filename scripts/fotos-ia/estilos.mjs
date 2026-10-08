@@ -81,6 +81,13 @@ const ENCUADRE_DE = {
   'Caminar sobre un glaciar en Islandia': 'espaldas',
   'Dormir en una cabaña sin electricidad': 'espaldas',
   'Correr la Marató de Barcelona': 'espaldas',
+  // Las escenas de objeto: lo que se ve son unas manos sosteniendo algo, así
+  // que la cabeza va fuera del encuadre.
+  'Doctorarte': 'hombros',
+  'Probar el pulpo vivo': 'plato',
+  'Hacer un voluntariado en el extranjero': 'hombros',
+  'Terminar una carrera universitaria': 'hombros',
+  'Sacarte el título de buceo Open Water': 'contraluz',
   // Mirar un eclipse pide cara y gafas: con 'hombros' pasaba lo mismo que con
   // comer. De espaldas, mirando al cielo, sí se puede cumplir.
   'Ver un eclipse solar total': 'espaldas',
@@ -89,7 +96,6 @@ const ENCUADRE_DE = {
   'Terminar un máster': 'espaldas',
   'Vivir un año en otro país': 'espaldas',
   'Sacarte el cinturón negro': 'espaldas',
-  'Doctorarte': 'espaldas',
 }
 
 // Y para los 500 y pico que no tienen el suyo escrito, el que mejor le va a su
@@ -224,24 +230,6 @@ export const ESCENAS = {
 }
 
 /**
- * Las escenas que YA dicen quién se ve y cómo. A éstas no se les añade encima
- * un encuadre: la escena manda y el encuadre sobra, o peor, la contradice.
- *
- * La lista es explícita a propósito, no una regla que busque «manos» o «de
- * espaldas» en el texto: eso acertaría casi siempre y fallaría en silencio el
- * día que una escena diga «a contraluz» con otras palabras.
- */
-const ESCENA_YA_RESUELVE_ENCUADRE = new Set([
-  'Montar tu propia empresa', 'Sacarte el C1 de inglés', 'Publicar un libro',
-  'Sacarte el cinturón negro', 'Doctorarte', 'Terminar una carrera universitaria',
-  'Sacarte el carnet de moto', 'Sacarte el título de buceo Open Water',
-  'Sacarte el título de patrón de embarcaciones', 'Sacarte la licencia de piloto',
-  'Correr un 10K',
-  'Probar el pulpo vivo', 'Dormir en una cabaña sin electricidad',
-  'Ir a unos Juegos Olímpicos de invierno',
-])
-
-/**
  * Los gooals que no tienen nada que fotografiar. NO es `Object.keys(ESCENAS)`:
  * en ese mapa también están los tres que niegan algo, que sí son fotografiables
  * y solo necesitan que la escena diga lo que el título niega.
@@ -344,13 +332,20 @@ export function construirPrompt(gooal, clave, indice = 0) {
     partes.push(encuadre === 'plato' ? '' : (CONTEXTO_CATEGORIA[gooal.categoria] ?? ''))
   }
 
-  // El encuadre solo se añade si la escena no lo ha resuelto ya. Cuando la
-  // escena escrita dice exactamente qué se ve —unas manos, un birrete,
-  // corredores de espaldas—, añadirle encima «la persona está de espaldas»
-  // mete una persona que la escena no tenía.
-  if (!escena || !ESCENA_YA_RESUELVE_ENCUADRE.has(gooal.titulo)) {
-    partes.push(ENCUADRES[encuadre])
-  }
+  // EL ENCUADRE VA SIEMPRE.
+  //
+  // Hubo una versión que se lo saltaba cuando la escena escrita «ya decía qué
+  // se ve» —unas manos, un birrete, corredores de espaldas—. Era falso, y se
+  // midió: «Probar el pulpo vivo» y «Doctorarte» salieron con la cara entera, y
+  // «Hacer un voluntariado» también, pese a que su escena decía literalmente
+  // «sin que se vea ninguna cara».
+  //
+  // Una escena describe LO QUE HAY; el encuadre dice QUÉ ENTRA EN LA FOTO. No
+  // son lo mismo, y describir un birrete no impide que el modelo añada a quien
+  // lo sostiene. Lo que sí hay que vigilar es que no se contradigan: por eso
+  // las escenas de objeto llevan escrito 'hombros', que es compatible con unas
+  // manos sosteniendo algo.
+  partes.push(ENCUADRES[encuadre])
 
   partes.push(PROHIBIDO)
   partes.push(COMUNES)

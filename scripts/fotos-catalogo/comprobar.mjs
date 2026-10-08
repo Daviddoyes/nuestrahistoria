@@ -19,6 +19,7 @@
 // Se piden con HEAD y sin ninguna clave: es exactamente lo que hará el móvil de
 // quien abra la app.
 import { createClient } from '@supabase/supabase-js'
+import { crearFrenos, esFreno } from '../lib/frenos.mjs'
 import { writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
@@ -85,34 +86,27 @@ for (const f of aCommons.slice(0, 10)) console.log('  · ' + f.titulo + ' → ' 
 // Así que: ante un freno se espera y se reinsiste; solo se declara rota la que
 // sigue fallando DESPUÉS de los reintentos. Y lo que ni así se pueda
 // comprobar no se da por bueno: sale aparte, en voz alta, como no comprobada.
-const ESPERAS = [1000, 3000, 8000]        // lo que se espera antes de cada reintento
-const esFreno = e => e === 429 || e >= 500
-const dormir = ms => new Promise(r => setTimeout(r, ms))
-
-// Si ya nos han frenado una vez, el límite es por ventana de tiempo: seguir a
-// toda velocidad garantiza el siguiente. Se baja el ritmo del bucle entero.
-let ritmo = 0
+// La espera ante los frenos vive en scripts/lib/frenos.mjs, compartida con el
+// buscador de Commons y el generador de imágenes. Aquí se escribió primero, y
+// por tenerla copiada dentro el guion de las imágenes volvió a perder cuatro
+// de trece unas horas después.
+const frenos = crearFrenos()
 
 async function pedirFoto(direccion) {
-  let ultimo = null
-  for (let intento = 0; intento <= ESPERAS.length; intento++) {
-    if (intento) await dormir(ESPERAS[intento - 1])
-    try {
-      const r = await fetch(direccion, { method: 'HEAD' })
-      if (esFreno(r.status)) { ultimo = { freno: true, motivo: 'responde ' + r.status }; ritmo = Math.min(300, ritmo + 60); continue }
-      if (!r.ok) return { rota: true, motivo: 'responde ' + r.status, intentos: intento }
-      const tipo = r.headers.get('content-type')
-      const bytes = Number(r.headers.get('content-length') ?? 0)
-      if (tipo !== 'image/webp') return { rota: true, motivo: 'no es una foto webp, es ' + tipo, intentos: intento }
-      if (bytes < 2000) return { rota: true, motivo: 'pesa ' + bytes + ' bytes: está vacía o truncada', intentos: intento }
-      return { bien: true, bytes, intentos: intento }
-    } catch (e) {
-      // Un corte de red tampoco dice nada de la foto: se reintenta igual.
-      ultimo = { freno: true, motivo: 'no se pudo pedir: ' + e.message }
-      ritmo = Math.min(300, ritmo + 60)
-    }
-  }
-  return { sinComprobar: true, motivo: ultimo.motivo + ' después de ' + (ESPERAS.length + 1) + ' intentos', intentos: ESPERAS.length }
+  const r = await frenos.intentar(async intento => {
+    let resp
+    try { resp = await fetch(direccion, { method: 'HEAD' }) }
+    catch (e) { return { freno: 'no se pudo pedir: ' + e.message } }
+    if (esFreno(resp.status)) return { freno: 'responde ' + resp.status }
+    if (!resp.ok) return { rota: true, motivo: 'responde ' + resp.status, intentos: intento }
+    const tipo = resp.headers.get('content-type')
+    const bytes = Number(resp.headers.get('content-length') ?? 0)
+    if (tipo !== 'image/webp') return { rota: true, motivo: 'no es una foto webp, es ' + tipo, intentos: intento }
+    if (bytes < 2000) return { rota: true, motivo: 'pesa ' + bytes + ' bytes: está vacía o truncada', intentos: intento }
+    return { bien: true, bytes, intentos: intento }
+  })
+  // Lo que se agota NO se declara roto: se dice que no se pudo comprobar.
+  return r.agotado ? { sinComprobar: true, motivo: r.motivo, intentos: 4 } : r
 }
 
 console.log('\nPidiendo las ' + conFoto.length + ' fotos a Supabase, sin ninguna clave...')
@@ -121,13 +115,13 @@ const sinComprobar = []
 const pesos = []
 let n = 0, conReintento = 0
 for (const f of conFoto) {
-  if (ritmo) await dormir(ritmo)
+  await frenos.antesDePedir()
   const r = await pedirFoto(f.imagen_url)
   if (r.intentos > 0) conReintento++
   if (r.bien) pesos.push(r.bytes)
   else if (r.rota) rotas.push({ ...f, motivo: r.motivo })
   else sinComprobar.push({ ...f, motivo: r.motivo })
-  if (++n % 50 === 0) console.log('  ' + n + '/' + conFoto.length + (ritmo ? '  (a ritmo lento: Supabase está frenando)' : ''))
+  if (++n % 50 === 0) console.log('  ' + n + '/' + conFoto.length + (frenos.ritmo ? '  (a ritmo lento: Supabase está frenando)' : ''))
 }
 
 console.log('\n── RESULTADO ──')

@@ -20,6 +20,7 @@
 // relanzarlo se salta los que ya están. Son ~2.500 peticiones a Wikimedia a una
 // por segundo; perderlas por un corte sería absurdo.
 import { createClient } from '@supabase/supabase-js'
+import { crearFrenos, esFreno } from '../lib/frenos.mjs'
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
@@ -44,15 +45,28 @@ const ANCHO_MINIATURA = 400
 
 const dormir = ms => new Promise(r => setTimeout(r, ms))
 let peticiones = 0
+// La espera ante los frenos vive en scripts/lib/frenos.mjs, compartida. Antes
+// esta función devolvía null ante CUALQUIER error, así que un 429 de Wikimedia
+// se leía como «este gooal no tiene fotos» — y con 217 gooals eso sería un
+// desastre silencioso: candidatas que no faltan, sino que no se pidieron bien.
+const frenos = crearFrenos()
 async function pedir(url) {
   await dormir(ESPERA_MS)
+  await frenos.antesDePedir()
   peticiones++
-  try {
-    const r = await fetch(url, { headers: { 'User-Agent': AGENTE, Accept: 'application/json' } })
-    if (!r.ok) return null
-    return await r.json()
-  } catch { return null }
+  const r = await frenos.intentar(async () => {
+    let resp
+    try { resp = await fetch(url, { headers: { 'User-Agent': AGENTE, Accept: 'application/json' } }) }
+    catch (e) { return { freno: 'no conecta: ' + e.message } }
+    if (esFreno(resp.status)) return { freno: 'responde ' + resp.status }
+    if (!resp.ok) return { vacio: true }
+    return { datos: await resp.json().catch(() => null) }
+  })
+  if (r.agotado) { frenadas.push(url); return null }
+  return r.datos ?? null
 }
+const frenadas = []
+
 
 const sinTildes = t => (t ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 const limpiar = html => (html ?? '').replace(/<[^>]*>/g, '')
@@ -122,6 +136,32 @@ function sujeto(titulo) {
   }
   return frase
 }
+
+// ── EL INGLÉS, QUE NO ES UN DETALLE ───────────────────────
+//
+// Los nombres de fichero y las carpetas de Commons son casi todos ingleses, y
+// el catálogo tiene 85 ciudades del mundo. Buscar solo en español perdía el
+// metro de Moscú («Moscow Metro»), las tortugas de las Galápagos («Galápagos
+// tortoise») y la góndola («Gondola»): tres de veinte, y los veinte eran los
+// difíciles.
+//
+// NO se elige idioma por el país del gooal: la Alhambra sale bien en español y
+// el metro de Moscú en inglés, y eso no lo adivina ninguna regla. Se buscan los
+// dos y las candidatas compiten.
+//
+// El inglés se saca del enlace de idioma del artículo español, que es el enlace
+// que alguien hizo a mano entre las dos versiones. Otra vez: una señal hecha
+// por personas antes que una traducción inventada.
+async function enIngles(tituloEs) {
+  if (!tituloEs) return null
+  const j = await pedir('https://es.wikipedia.org/w/api.php?action=query&format=json&formatversion=2'
+    + `&titles=${encodeURIComponent(tituloEs)}&prop=langlinks&lllang=en&lllimit=1`)
+  return j?.query?.pages?.[0]?.langlinks?.[0]?.title ?? null
+}
+
+// Los alias a mano, para lo que ningún algoritmo saca del título. Se llena
+// según aparezcan: ver scripts/fotos-catalogo/alias.json.
+const ALIAS = JSON.parse(readFileSync(fileURLToPath(new URL('./alias.json', import.meta.url)), 'utf8'))
 
 async function articulo(idioma, consulta) {
   const j = await pedir(`https://${idioma}.wikipedia.org/w/api.php?action=query&format=json&formatversion=2`
@@ -291,7 +331,21 @@ for (const [n, g] of pendientes.entries()) {
     const wd = await deWikidata(artA?.wikidata ?? artB?.wikidata ?? null)
     fila.fama = wd.fama
 
+    // El alias a mano manda sobre todo lo demás, si lo hay.
+    const alias = ALIAS[g.titulo] ?? null
+    if (alias) fila.alias = alias
+    // Y el nombre en inglés, del enlace de idioma del artículo español.
+    const ingles = alias ?? await enIngles(artA?.idioma === 'es' ? artA.titulo : null)
+    if (ingles) fila.ingles = ingles
+
     const catNombre = suj ? await categoriaPorNombre(suj) : (propio ? await categoriaPorNombre(propio) : null)
+    // La carpeta de Commons por el nombre INGLÉS: las carpetas de Commons son
+    // casi todas inglesas, y ésta es la consulta que faltaba.
+    const catIngles = ingles ? await categoriaPorNombre(ingles) : null
+    const listaE = (catIngles && catIngles !== catNombre) ? await ficherosDe(catIngles) : []
+    // Y si hay alias, también su artículo: para Montmeló el artículo correcto es
+    // el del circuito, que no se llama como el pueblo.
+    const artAlias = alias ? (await articulo('en', alias)) ?? (await articulo('es', alias)) : null
     const listaC = catNombre ? await ficherosDe(catNombre) : []
     const listaD = (wd.categoria && wd.categoria !== catNombre) ? await ficherosDe(wd.categoria) : []
 
@@ -306,6 +360,9 @@ for (const [n, g] of pendientes.entries()) {
     await mete(`portada del artículo del lugar «${artB?.titulo ?? ''}»`, artB?.fichero ? await ficha(artB.fichero) : null)
     await mete(`carpeta ${catNombre ?? ''}`, listaC[0])
     await mete(`carpeta de Wikidata ${wd.categoria ?? ''}`, listaD[0])
+    await mete(`portada del artículo del alias «${artAlias?.titulo ?? ''}»`, artAlias?.fichero ? await ficha(artAlias.fichero) : null)
+    await mete(`carpeta en inglés ${catIngles ?? ''}`, listaE[0])
+    await mete(`carpeta en inglés ${catIngles ?? ''} (2.ª)`, listaE[1])
     // Los huecos que queden, con las siguientes mejores de las carpetas.
     for (const extra of [listaC[1], listaD[1], listaC[2], listaD[2], listaC[3], listaD[3]]) {
       await mete('otra de la misma carpeta', extra)
