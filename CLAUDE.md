@@ -238,6 +238,35 @@ La regla, para cuando haya que decidir sobre uno nuevo:
 Por eso `viajes` lleva lugar en todas sus filas y `deporte` no lo lleva en
 ninguna.
 
+#### Y el matiz, que costó casi 74 gooals
+
+Hay una regla hermana para las fotos —«la foto ilustra **la acción**, no el
+lugar»— y nació de un caso real: «Subir en bici al Angliru» es una bici
+subiendo, no la montaña. Ahí **subir no es estar**, y la foto del puerto vacío
+no cuenta el gooal.
+
+Pero esa regla, aplicada a ciegas, se lleva por delante media categoría. En
+«Visitar la Alhambra» **el verbo ES estar allí**: el lugar no es el decorado, es
+la acción entera. Un encuadre cerrado sobre «alguien visitando» no dice nada, y
+sin el sitio no queda gooal.
+
+> **Antes de aplicar «la acción, no el lugar», pregúntate si el verbo es ESTAR.**
+> Si lo es —visitar, ver, pasear, cruzar, bañarse en un sitio con nombre—, el
+> lugar **es** la acción y la foto tiene que enseñarlo. Si no lo es —subir,
+> correr, escalar, recorrer—, manda la acción.
+
+Esto pasó el 8-10-2026 y casi cuesta caro: al preparar las fotos generadas con
+IA se clasificaron los 266 gooals sin foto y **217 llevaban un sitio concreto**.
+Aplicando la regla sin el matiz, 74 se iban a quedar sin foto para siempre
+—«Visitar el Coliseo», «Ver la Alhambra», «Cruzar el cruce de Shibuya»— cuando
+de todos ellos hay fotos de sobra y buenas en Wikimedia Commons.
+
+Y el porqué de fondo, que es lo que hay que recordar: **Commons se quedó corto
+buscando ACCIONES, no buscando sitios.** Es un archivo de fotos de lugares.
+Cuando la lista que tienes delante son lugares con nombre, la fuente correcta
+sigue siendo Commons, y la IA es para lo que Commons no tiene: gente haciendo
+cosas.
+
 ### Un gooal sin foto no está incompleto si tiene sitio
 
 Esto va a volver a salir cada vez que se mire el catálogo buscando huecos, así
