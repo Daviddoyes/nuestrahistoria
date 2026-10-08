@@ -37,6 +37,7 @@ const soloUna = process.argv.includes('--una')
 const estilosPedidos = arg('estilos', 'A,B,C').split(',').map(x => x.trim()).filter(Boolean)
 const grupo = arg('grupo', 'ocho')
 const carpeta = arg('carpeta', 'fotos-ia')
+const vueltas = Number(arg('vueltas', '2'))
 
 const SALIDA = fileURLToPath(new URL('../../Claude outputs/' + carpeta, import.meta.url))
 const dormir = ms => new Promise(r => setTimeout(r, ms))
@@ -73,7 +74,13 @@ const SEIS_ABSTRACTOS = [
   'Terminar un máster', 'Vivir un año en otro país', 'Sacarte el cinturón negro',
 ].map(t => ({ caso: 'abstracto · ' + t, titulo: t }))
 
-const PEDIDOS = grupo === 'abstractos' ? SEIS_ABSTRACTOS : OCHO
+// Y con --titulos=<ruta> se le da una lista cualquiera: un JSON con un array de
+// títulos. Es lo que se usa para las tandas de verdad, donde los gooals salen
+// de una clasificación que se ha mirado antes y no de una lista escrita aquí.
+const rutaTitulos = arg('titulos', null)
+const PEDIDOS = rutaTitulos
+  ? JSON.parse(readFileSync(rutaTitulos, 'utf8')).map(t => ({ caso: 'de la lista', titulo: t }))
+  : (grupo === 'abstractos' ? SEIS_ABSTRACTOS : OCHO)
 
 const s = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } })
 const { data: filas, error } = await s.from('gooals_v2')
@@ -93,7 +100,9 @@ const trabajos = []
 for (const g of gooals) {
   const indice = porTitulo.findIndex(x => x.titulo === g.titulo)
   for (const estilo of estilosPedidos) {
-    for (const vuelta of [1, 2]) {
+    // Dos vueltas al probar un estilo (para ver si aguanta), una sola en la
+    // tanda de verdad: ahí ya no se compara, se produce.
+    for (const vuelta of (vueltas === 1 ? [1] : [1, 2])) {
       // El índice decide a quién le toca salir en la foto, por turno. Es la
       // posición del gooal en la lista ORDENADA POR TÍTULO, no en la lista tal
       // como venga: así dos lanzamientos de la misma tanda reparten igual.
@@ -107,7 +116,7 @@ const nombreDe = t => t.estilo + '-' + t.gooal.titulo
   .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 42) + '-' + t.vuelta
 
 console.log('grupo «' + grupo + '» · ' + gooals.length + ' gooals x ' + estilosPedidos.length +
-  ' estilo(s) [' + estilosPedidos.join(',') + '] x 2 vueltas = ' + trabajos.length + ' imágenes')
+  ' estilo(s) [' + estilosPedidos.join(',') + '] x ' + (vueltas === 1 ? 1 : 2) + ' vuelta(s) = ' + trabajos.length + ' imágenes')
 console.log('modelo ' + MODELO + ' · ' + TAMANO + ' · calidad ' + CALIDAD)
 console.log('salida: Claude outputs/' + carpeta + '/\n')
 for (const g of gooals) {

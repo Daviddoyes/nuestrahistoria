@@ -27,7 +27,15 @@ const s = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABAS
 // La carpeta de los ficheros intermedios, calculada desde este guion: así no
 // lleva escrita dentro la ruta del ordenador de nadie.
 const SALIDA = fileURLToPath(new URL('../../Claude outputs', import.meta.url))
-const FICHERO = SALIDA + '/fotos-candidatas.json'
+// --titulos=<ruta a un JSON con un array de títulos> busca SOLO esos, y
+// --salida=<nombre> escribe en su propio fichero. Las dos juntas permiten una
+// prueba pequeña sin tocar lo de la pasada anterior.
+const argumento = (n, d) => {
+  const a = process.argv.find(x => x.startsWith('--' + n + '='))
+  return a ? a.slice(n.length + 3) : d
+}
+const SOLO_ESTOS = argumento('titulos', null)
+const FICHERO = SALIDA + '/' + argumento('salida', 'fotos-candidatas') + '.json'
 const AGENTE = 'GooALS/1.0 (https://gooals.app) catalogo-de-fotos'
 const ESPERA_MS = 1050
 const ANCHO_MINIMO = 700
@@ -179,12 +187,36 @@ async function ficha(nombre) {
 const filas = []
 for (let d = 0; ; d += 1000) {
   const { data, error } = await s.from('gooals_v2')
-    .select('id, titulo, categoria, ciudad, pais, lat, lng, geo_consulta')
-    .eq('estado', 'verificado').eq('ambito', 'lugar')
+    .select('id, titulo, categoria, ambito, ciudad, pais, lat, lng, geo_consulta')
+    .eq('estado', 'verificado')
     .order('id').range(d, d + 999)
   if (error) throw new Error(error.message)
   filas.push(...data)
   if (data.length < 1000) break
+}
+
+// Con una lista, manda la lista: incluye gooals de ámbito personal que llevan
+// un nombre propio en el título («Terminar un Ironman», «Correr la Mitja de
+// Granollers»), que antes se quedaban fuera por no ser de ámbito «lugar» y
+// también tienen sitio que fotografiar.
+if (SOLO_ESTOS) {
+  const pedidos = new Set(JSON.parse(readFileSync(SOLO_ESTOS, 'utf8')))
+  const antes = filas.length
+  const dentro = filas.filter(f => pedidos.has(f.titulo))
+  const faltan = [...pedidos].filter(t => !dentro.some(f => f.titulo === t))
+  if (faltan.length) {
+    console.error('PARA: ' + faltan.length + ' de la lista no están en el catálogo publicado:')
+    for (const t of faltan.slice(0, 10)) console.error('  · ' + t)
+    process.exit(1)
+  }
+  console.log('de ' + antes + ' filas del catálogo, la lista pide ' + dentro.length)
+  filas.length = 0
+  filas.push(...dentro)
+} else {
+  // Sin lista, el comportamiento de siempre: solo los de ámbito lugar.
+  const soloLugar = filas.filter(f => f.ambito === 'lugar')
+  filas.length = 0
+  filas.push(...soloLugar)
 }
 
 const hechos = existsSync(FICHERO) ? JSON.parse(readFileSync(FICHERO, 'utf8')) : []
