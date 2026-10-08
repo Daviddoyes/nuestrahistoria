@@ -19,7 +19,14 @@ import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { ESTILOS } from './estilos.mjs'
 
-const SALIDA = fileURLToPath(new URL('../../Claude outputs/fotos-ia', import.meta.url))
+// Cada ronda vive en su carpeta: --carpeta=ronda2-A, --carpeta=abstractos-B...
+// Así una ronda nueva no tapa a la anterior y se pueden comparar.
+const arg = (n, d) => {
+  const a = process.argv.find(x => x.startsWith('--' + n + '='))
+  return a ? a.slice(n.length + 3) : d
+}
+const CARPETA_NOMBRE = arg('carpeta', 'fotos-ia')
+const SALIDA = fileURLToPath(new URL('../../Claude outputs/' + CARPETA_NOMBRE, import.meta.url))
 if (!existsSync(SALIDA + '/resumen.json')) {
   throw new Error('no hay nada que enseñar. Lanza antes: node --env-file=.env.local scripts/fotos-ia/probar-estilos.mjs')
 }
@@ -29,7 +36,7 @@ const resumen = JSON.parse(readFileSync(SALIDA + '/resumen.json', 'utf8'))
 // así que las direcciones llevan la subcarpeta delante. Se referencian por ruta
 // y no incrustadas en base64: son 48 imágenes de ~2,5 MB y el fichero pesaría
 // 120 MB, que no lo abre ningún navegador con gusto.
-const CARPETA = 'fotos-ia/'
+const CARPETA = CARPETA_NOMBRE + '/'
 const hay = new Set(readdirSync(SALIDA).filter(n => n.endsWith('.png')))
 
 const esc = t => String(t ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
@@ -64,20 +71,30 @@ const filas = resumen.gooals.map(g =>
   '<b>' + esc(g.titulo) + '</b>' +
   '<span class="meta">' + esc(g.categoria) + ' · ' + esc(g.ambito) +
   (g.ciudad ? ' · ' + esc(g.ciudad) : '') + '</span>' +
+  '<span class="meta">encuadre: ' + esc(g.encuadre || '—') +
+    (g.escenaFija ? ' · escena fija' : '') + '</span>' +
   (g.yaTeniaFoto ? '<span class="meta aviso">ya tiene foto de Commons</span>' : '') +
   '</th>' +
-  ['A', 'B', 'C'].map(e => celda(g, e)).join('') +
+  COLUMNAS.map(e => celda(g, e)).join('') +
   '</tr>').join('')
 
-const cabecera = ['A', 'B', 'C'].map(e =>
+// Solo las columnas de los estilos que se hayan generado en esta ronda.
+const COLUMNAS = resumen.estilos || ['A', 'B', 'C']
+const cabecera = COLUMNAS.map(e =>
   '<th scope="col"><b>' + e + ' · ' + esc(ESTILOS[e].nombre) + '</b>' +
   '<span class="meta">' + esc(ESTILOS[e].resumen) + '</span></th>').join('')
 
 const fallos = resumen.hechos.filter(h => h.error).length
 
-writeFileSync(SALIDA + '/../estilos-ia.html', `<!doctype html>
+// El título sale de la ronda y no está escrito a mano: una hoja de un solo
+// estilo que se titulara "tres estilos" sería una razón caducada el mismo día.
+const TITULO = COLUMNAS.length === 1
+  ? 'Estilo ' + COLUMNAS[0] + ' · ' + (resumen.grupo === 'abstractos' ? 'los gooals abstractos' : 'los ocho casos')
+  : COLUMNAS.length + ' estilos para las fotos del catálogo'
+
+writeFileSync(SALIDA + '/../' + CARPETA_NOMBRE + '.html', `<!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tres estilos para las fotos del catálogo</title>
+<title>${esc(TITULO)}</title>
 <style>
   :root { color-scheme: dark }
   body { margin:0; padding:24px; background:#0B0B0B; color:#F5F5F2;
@@ -85,7 +102,7 @@ writeFileSync(SALIDA + '/../estilos-ia.html', `<!doctype html>
   h1 { font-size:22px; margin:0 0 6px }
   p.intro { color:#A3B1AC; font-size:14px; max-width:80ch; margin:0 0 8px }
   table { border-collapse:separate; border-spacing:14px; width:100%; table-layout:fixed }
-  th[scope=col] { width:28%; text-align:left; vertical-align:bottom; padding:0 0 4px }
+  th[scope=col] { text-align:left; vertical-align:bottom; padding:0 0 4px }
   th[scope=row] { width:16%; text-align:left; vertical-align:top; padding-top:4px }
   th b { display:block; font-size:15px; color:#fff; margin-bottom:3px }
   .caso { display:block; font-size:11px; color:#00D1A7; margin-bottom:4px; font-weight:600 }
@@ -109,9 +126,9 @@ writeFileSync(SALIDA + '/../estilos-ia.html', `<!doctype html>
   .pie { color:#7A8A85; font-size:12px; margin-top:22px; max-width:80ch }
 </style></head>
 <body>
-<h1>Tres estilos para las fotos del catálogo</h1>
+<h1>${esc(TITULO)}</h1>
 <p class="intro">
-  Ocho gooals del catálogo real, uno por cada caso que rompe un estilo, en tres direcciones distintas.
+  ${resumen.gooals.length} gooals del catálogo real${resumen.grupo === 'abstractos' ? ', de los que no tienen nada que fotografiar' : ', uno por cada caso que rompe un estilo'}, en ${COLUMNAS.length === 1 ? 'un solo estilo' : COLUMNAS.length + ' direcciones distintas'}.
   <b>Las dos imágenes de cada celda son el MISMO prompt lanzado dos veces</b>: si no se parecen,
   ese estilo no vale para 260 fotos por bonita que sea una de las dos.
 </p>

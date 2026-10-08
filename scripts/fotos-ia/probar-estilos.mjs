@@ -1,10 +1,12 @@
-// La prueba de los tres estilos: 8 gooals x 3 estilos x 2 veces = 48 imágenes.
+// Genera las imágenes de prueba de un estilo sobre un grupo de gooals.
 //
 //   node --env-file=.env.local scripts/fotos-ia/probar-estilos.mjs --seco
-//   node --env-file=.env.local scripts/fotos-ia/probar-estilos.mjs
+//   node --env-file=.env.local scripts/fotos-ia/probar-estilos.mjs --una
+//   node --env-file=.env.local scripts/fotos-ia/probar-estilos.mjs --estilos=A --carpeta=ronda2
+//   node --env-file=.env.local scripts/fotos-ia/probar-estilos.mjs --estilos=B --grupo=abstractos --carpeta=abstractos-b
 //
-// NO TOCA LA BASE NI SUPABASE. Solo lee las filas de los 8 gooals y escribe
-// imágenes en "Claude outputs/fotos-ia/". Es para mirar y decidir el estilo.
+// NO TOCA LA BASE NI SUPABASE. Solo lee las filas de los gooals y escribe
+// imágenes en "Claude outputs/<carpeta>/". Es para mirar y decidir.
 //
 // ── POR QUÉ DOS VECES CADA UNA ────────────────────────────
 //
@@ -16,18 +18,27 @@
 // ── SE PUEDE PARAR Y SEGUIR ───────────────────────────────
 //
 // Antes de pedir una imagen mira si el fichero ya está. Cortar a mitad no
-// cuesta dinero dos veces.
+// cuesta dinero dos veces. Y por eso cada ronda va a SU carpeta: si se
+// reescribe la plantilla, las de antes no se mezclan con las nuevas ni las
+// tapan.
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { createClient } from '@supabase/supabase-js'
-import { construirPrompt, TAMANO, MODELO, CALIDAD } from './estilos.mjs'
+import { construirPrompt, encuadreDe, ABSTRACTOS, TAMANO, MODELO, CALIDAD } from './estilos.mjs'
 
-const SALIDA = fileURLToPath(new URL('../../Claude outputs/fotos-ia', import.meta.url))
+const arg = (nombre, porDefecto) => {
+  const a = process.argv.find(x => x.startsWith('--' + nombre + '='))
+  return a ? a.slice(nombre.length + 3) : porDefecto
+}
 const seco = process.argv.includes('--seco')
 // --una genera SOLO la primera, para comprobar que el modelo responde y ver el
-// coste real antes de soltar las 48. Una tanda que falla a la mitad por un
-// ajuste mal puesto se paga igual.
+// coste real antes de soltar la tanda entera.
 const soloUna = process.argv.includes('--una')
+const estilosPedidos = arg('estilos', 'A,B,C').split(',').map(x => x.trim()).filter(Boolean)
+const grupo = arg('grupo', 'ocho')
+const carpeta = arg('carpeta', 'fotos-ia')
+
+const SALIDA = fileURLToPath(new URL('../../Claude outputs/' + carpeta, import.meta.url))
 const dormir = ms => new Promise(r => setTimeout(r, ms))
 
 // Las tarifas publicadas de gpt-image-1, en dólares por token. El coste se
@@ -39,8 +50,12 @@ const TARIFA = { textoEntrada: 5 / 1e6, imagenEntrada: 10 / 1e6, imagenSalida: 4
 const CLAVE = process.env.OPENAI_API_KEY
 if (!CLAVE) throw new Error('falta OPENAI_API_KEY. Lánzalo con --env-file=.env.local')
 
-// ── Los ocho, uno por cada caso que rompe un estilo ───────
-const LOS_OCHO = [
+// ── Los grupos de gooals ──────────────────────────────────
+//
+// «ocho»: uno por cada caso que rompe un estilo. Son los mismos de la primera
+// prueba a propósito: cambiar los gooals Y el estilo a la vez haría imposible
+// saber a cuál de las dos cosas se debe la diferencia.
+const OCHO = [
   { caso: '1 · logro abstracto, nada que fotografiar', titulo: 'Montar tu propia empresa' },
   { caso: '2 · una persona haciendo deporte',          titulo: 'Practicar esquí' },
   { caso: '3 · comida',                                titulo: 'Probar el fugu' },
@@ -51,14 +66,23 @@ const LOS_OCHO = [
   { caso: '8 · con mucha gente',                       titulo: 'Correr la Marató de Barcelona' },
 ]
 
+// «abstractos»: seis de los catorce que no tienen nada que fotografiar. Seis y
+// no catorce porque es una prueba, y con seis ya se ve si la vía sirve.
+const SEIS_ABSTRACTOS = [
+  'Montar tu propia empresa', 'Sacarte el C1 de inglés', 'Publicar un libro',
+  'Terminar un máster', 'Vivir un año en otro país', 'Sacarte el cinturón negro',
+].map(t => ({ caso: 'abstracto · ' + t, titulo: t }))
+
+const PEDIDOS = grupo === 'abstractos' ? SEIS_ABSTRACTOS : OCHO
+
 const s = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } })
 const { data: filas, error } = await s.from('gooals_v2')
   .select('id, titulo, categoria, ambito, ciudad, pais, puntos, imagen_url')
-  .in('titulo', LOS_OCHO.map(x => x.titulo)).eq('activo', true).eq('estado', 'verificado')
+  .in('titulo', PEDIDOS.map(x => x.titulo)).eq('activo', true).eq('estado', 'verificado')
 if (error) throw new Error('no se pudo leer el catálogo: ' + error.message)
 
-// Si falta uno, se para: una rejilla de 7 no es la prueba que se encargó.
-const gooals = LOS_OCHO.map(x => {
+// Si falta uno, se para: una rejilla incompleta no es la prueba que se encargó.
+const gooals = PEDIDOS.map(x => {
   const g = filas.find(f => f.titulo === x.titulo)
   if (!g) throw new Error('no está en el catálogo: ' + x.titulo)
   return { ...g, caso: x.caso }
@@ -66,7 +90,7 @@ const gooals = LOS_OCHO.map(x => {
 
 const trabajos = []
 for (const g of gooals) {
-  for (const estilo of ['A', 'B', 'C']) {
+  for (const estilo of estilosPedidos) {
     for (const vuelta of [1, 2]) {
       trabajos.push({ gooal: g, estilo, vuelta, prompt: construirPrompt(g, estilo) })
     }
@@ -77,10 +101,13 @@ const nombreDe = t => t.estilo + '-' + t.gooal.titulo
   .toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
   .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 42) + '-' + t.vuelta
 
-console.log(gooals.length + ' gooals x 3 estilos x 2 vueltas = ' + trabajos.length + ' imágenes')
-console.log('modelo ' + MODELO + ' · ' + TAMANO + ' · calidad ' + CALIDAD + '\n')
+console.log('grupo «' + grupo + '» · ' + gooals.length + ' gooals x ' + estilosPedidos.length +
+  ' estilo(s) [' + estilosPedidos.join(',') + '] x 2 vueltas = ' + trabajos.length + ' imágenes')
+console.log('modelo ' + MODELO + ' · ' + TAMANO + ' · calidad ' + CALIDAD)
+console.log('salida: Claude outputs/' + carpeta + '/\n')
 for (const g of gooals) {
-  console.log('  ' + g.caso.padEnd(42) + g.titulo + '  [' + g.categoria + ' · ' + g.ambito + ']')
+  console.log('  ' + g.caso.padEnd(42) + g.titulo.padEnd(38) + '[encuadre: ' + encuadreDe(g) +
+    (ABSTRACTOS.includes(g.titulo) ? ' · escena fija' : '') + ']')
 }
 
 if (seco) {
@@ -182,10 +209,14 @@ console.log('\nEl número que manda es el del panel de OpenAI. Esto es una cuent
 console.log('con los tokens que devuelve la API y las tarifas publicadas hoy.')
 
 writeFileSync(SALIDA + '/resumen.json', JSON.stringify({
-  modelo: MODELO, tamano: TAMANO, calidad: CALIDAD, coste,
-  gooals: gooals.map(g => ({ titulo: g.titulo, caso: g.caso, categoria: g.categoria, ambito: g.ambito, ciudad: g.ciudad, pais: g.pais, yaTeniaFoto: Boolean(g.imagen_url) })),
+  modelo: MODELO, tamano: TAMANO, calidad: CALIDAD, coste, grupo, estilos: estilosPedidos,
+  gooals: gooals.map(g => ({
+    titulo: g.titulo, caso: g.caso, categoria: g.categoria, ambito: g.ambito,
+    ciudad: g.ciudad, pais: g.pais, yaTeniaFoto: Boolean(g.imagen_url),
+    encuadre: encuadreDe(g), escenaFija: ABSTRACTOS.includes(g.titulo),
+  })),
   hechos: hechos.map(h => ({ gooal: h.gooal.titulo, estilo: h.estilo, vuelta: h.vuelta, nombre: h.nombre, error: h.error || null })),
 }, null, 1), 'utf8')
 
-console.log('\nAhora la hoja:  node scripts/fotos-ia/hoja.mjs')
+console.log('\nAhora la hoja:  node scripts/fotos-ia/hoja.mjs --carpeta=' + carpeta)
 }

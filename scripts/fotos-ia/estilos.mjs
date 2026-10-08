@@ -1,87 +1,202 @@
 // Las plantillas de prompt. El prompt NO se escribe a mano para cada gooal: se
 // rellena con los campos de su fila (título, categoría, ámbito, lugar) más uno
-// de los tres bloques de estilo.
+// de los bloques de estilo.
 //
 // Esa es la ventaja entera sobre Wikimedia: una foto que no gusta se retoca
 // cambiando una línea de aquí y se regenera en segundos, para una o para las
 // 260. Con Commons había que volver a buscar candidatas y mirarlas a ojo.
 //
+// ── EL ESTILO ESTÁ DECIDIDO: EL A, ENDURECIDO ─────────────
+//
+// Decidido el 8-10-2026 mirando los tres mosaicos de la primera prueba, y el
+// criterio que mandó NO fue cumplir las reglas:
+//
+//   > El listón es que la foto dé ganas de clicar.
+//
+// La B cumplía todas las reglas y no servía: son pictogramas, y un icono de
+// alguien esquiando no hace querer esquiar. Además la mitad eran verde oscuro
+// sobre negro y a tamaño de tarjeta no se leían.
+//
+// La C era la más bonita y la más consistente, y se descartó por lo que hacía
+// SENTIR: vista entera de golpe parecía melancolía. El karaoke era un thriller,
+// la cabaña daba pena, el maratón era un corredor solo en una calle vacía. Esto
+// es una app de cosas que quieres hacer, no de cosas que echas de menos, y eso
+// no lo arregla media parada de luz.
+//
+// Y las dos pegas de la A resultaron no ser del estilo: dentro de la propia
+// prueba, el glaciar y el paracaídas ya resolvían la cara solos, y la segunda
+// vuelta del maratón también. Sabía hacerlo; no se lo estábamos pidiendo. De
+// ahí los cuatro cambios de abajo.
+//
 // ── POR QUÉ LOS PROMPTS VAN EN ESPAÑOL ────────────────────
 //
 // Porque quien decide si una foto vale es David, y los va a leer debajo de cada
 // imagen para pedir cambios. Un prompt que no puedes leer no lo puedes retocar.
-// Si se viera que el modelo obedece peor en español, se prueba en inglés y se
-// mide la diferencia antes de cambiarlo.
 //
 // ── POR QUÉ 1024x1536 ─────────────────────────────────────
 //
 // Medido en el navegador, no supuesto: la tarjeta de Descubrir mide 362x579 en
 // un Pixel, 402x667 en un iPhone Max y 384x650 en un Android grande. O sea una
 // proporción de 0,59 a 0,625. De los tres tamaños que da la API, el vertical es
-// 1024x1536 = 0,667, que es el más cercano.
+// 1024x1536 = 0,667, el más cercano.
 //
 // Y falla por el lado bueno: al ser la imagen MÁS ANCHA que la tarjeta, el
 // `object-fit: cover` recorta POR LOS LADOS y no por arriba y abajo. Por eso
-// todas las plantillas piden el sujeto centrado y con aire a los lados: lo que
-// se pierda al recortar no puede ser el sujeto.
+// todas las plantillas piden el sujeto centrado y con aire a los lados.
 export const TAMANO = '1024x1536'
 export const MODELO = 'gpt-image-1'
 export const CALIDAD = 'medium'
 
-// ── Lo que vale para los tres, para que la comparación sea justa ──
+// ── CAMBIO 1 · La cara es ESTRUCTURA, no una recomendación ──
 //
-// Si una regla estuviera solo en un estilo, estaríamos comparando el estilo CON
-// la regla, no los estilos entre sí.
-const COMUNES = [
+// «Sin caras reconocibles» no bastó: en la primera vuelta salieron caras de
+// perfil bien iluminadas en karaoke, empresa y maratón. El modelo obedecía la
+// prohibición pero no tenía ningún encuadre que poner en su lugar.
+//
+// Así que ya no se prohíbe una cara: se PIDE un encuadre concreto, de estos
+// cuatro y ninguno más. Cada gooal lleva el suyo escrito.
+const ENCUADRES = {
+  espaldas: 'La persona está DE ESPALDAS a la cámara, se le ve la nuca y los hombros, nunca la cara.',
+  hombros: 'El encuadre está RECORTADO POR LOS HOMBROS: se ven las manos, los brazos y el torso, y la cabeza queda fuera del encuadre por arriba.',
+  contraluz: 'La persona está A CONTRALUZ y sale como una SILUETA oscura y limpia contra la luz: no se le distingue ni un rasgo de la cara.',
+  casco: 'La persona lleva CASCO Y GAFAS que le tapan la cara por completo, y además está en pleno movimiento.',
+}
+
+// El encuadre de cada gooal. Lo elijo yo mirando qué tiene sentido en esa
+// escena: a un esquiador se le pone casco porque lo lleva de verdad, y a quien
+// come se le recorta por los hombros porque lo que importa son las manos y el
+// plato.
+const ENCUADRE_DE = {
+  'Montar tu propia empresa': 'hombros',
+  'Practicar esquí': 'casco',
+  'Probar el fugu': 'hombros',
+  'Cantar en un karaoke': 'contraluz',
+  'Saltar en paracaídas': 'casco',
+  'Caminar sobre un glaciar en Islandia': 'espaldas',
+  'Dormir en una cabaña sin electricidad': 'espaldas',
+  'Correr la Marató de Barcelona': 'espaldas',
+  'Sacarte el C1 de inglés': 'hombros',
+  'Publicar un libro': 'hombros',
+  'Terminar un máster': 'espaldas',
+  'Vivir un año en otro país': 'espaldas',
+  'Sacarte el cinturón negro': 'espaldas',
+  'Doctorarte': 'espaldas',
+}
+
+// Y para los 500 y pico que no tienen el suyo escrito, el que mejor le va a su
+// categoría. Es un valor por defecto, no una regla: el mapa de arriba manda.
+const ENCUADRE_POR_CATEGORIA = {
+  deporte: 'espaldas',
+  gastronomia: 'hombros',
+  naturaleza: 'espaldas',
+  viajes: 'espaldas',
+  eventos: 'contraluz',
+  vida: 'hombros',
+}
+
+// ── CAMBIO 2 · Prohibido POR SU NOMBRE lo que se coló ──────
+//
+// «Ni una letra» no bastó ni en la A ni en la C: la A colgó un cartel que ponía
+// «Open» y la C puso dos líneas de texto en la pantalla del karaoke. Un modelo
+// de imagen no entiende «letra» como categoría; entiende objetos. Así que se
+// prohíben los OBJETOS que traen letras.
+const PROHIBIDO = [
+  'PROHIBIDO que aparezca ninguno de estos objetos:',
+  'carteles, rótulos, letreros, señales, placas, menús, pizarras, libros abiertos,',
+  'dorsales o petos con número legible, camisetas con estampado, etiquetas, envases con marca,',
+  'pantallas, televisores o monitores encendidos con texto,',
+  'y ninguna palabra, letra, número, logotipo, marca de agua ni firma en ninguna parte.',
+].join(' '),
+
+// ── Lo que vale para todos, para que la comparación sea justa ──
+  COMUNES = [
   'Formato vertical.',
-  'NI UNA SOLA LETRA, palabra, número, logotipo, cartel, marca de agua ni firma dentro de la imagen.',
-  'Ninguna cara reconocible: las personas aparecen de espaldas, en movimiento, a contraluz, muy lejos o con la cara tapada por el equipo.',
   'El sujeto va centrado y con aire a los lados, porque la imagen se recorta por los lados al mostrarse.',
   'Sin bordes, sin marco, sin collage: una sola escena que llena todo el encuadre.',
 ].join(' ')
 
-// ── Los tres estilos ──────────────────────────────────────
+// ── CAMBIO 3 · Los abstractos llevan la escena ESCRITA ─────
+//
+// «Montar tu propia empresa» salió distinto en cada vuelta —una tecleando, otra
+// colgando el cartel de abierto— porque le dejábamos elegir. En un gooal que no
+// tiene nada que fotografiar, la escena no la puede escoger el modelo: la
+// escribo yo, una sola, y se repite siempre.
+//
+// Son 14 gooals de 541 (un 2,6%), así que escribirlas a mano es asumible y es
+// lo único que da consistencia donde no hay nada real que retratar.
+export const ESCENAS = {
+  'Montar tu propia empresa':
+    'Dos manos abriendo la persiana metálica de un local pequeño a primera hora, con cajas de cartón aún sin abrir dentro.',
+  'Sacarte el C1 de inglés':
+    'Unas manos dejando el bolígrafo sobre un examen terminado, en un pupitre de aula vacía junto a una ventana.',
+  'Publicar un libro':
+    'Unas manos sosteniendo un libro recién impreso, cerrado y sin nada escrito en la cubierta, sobre una mesa de madera.',
+  'Terminar un máster':
+    'Alguien de espaldas bajando la escalinata de piedra de una facultad con una carpeta bajo el brazo.',
+  'Vivir un año en otro país':
+    'Alguien de espaldas en el balcón de un piso extranjero al atardecer, con una maleta todavía abierta detrás.',
+  'Sacarte el cinturón negro':
+    'Unas manos atándose un cinturón negro sobre un kimono blanco, en un tatami vacío.',
+  'Doctorarte':
+    'Alguien de espaldas delante de una pizarra llena de fórmulas borrosas, en un aula vacía.',
+  'Terminar una carrera universitaria':
+    'Un birrete lanzado al aire contra el cielo, visto desde abajo.',
+  'Sacarte el carnet de moto':
+    'Unas manos con guantes poniéndose el casco junto a una moto parada en un circuito de prácticas.',
+  'Sacarte el título de buceo Open Water':
+    'Un buceador visto desde abajo, en silueta contra la superficie iluminada del agua.',
+  'Sacarte el título de patrón de embarcaciones':
+    'Unas manos sobre la rueda del timón de una embarcación pequeña, con el mar abierto delante.',
+  'Sacarte la licencia de piloto':
+    'Unas manos sobre los mandos de una avioneta pequeña, con la pista delante a través del parabrisas.',
+  'Mudarte a otro continente':
+    'Alguien de espaldas empujando un carro de maletas por una terminal de aeropuerto casi vacía.',
+  'Hacer un voluntariado en el extranjero':
+    'Varias manos pasándose cajas en fila, al aire libre, sin que se vea ninguna cara.',
+}
+
+/** Los gooals que no tienen nada que fotografiar, los 14 del catálogo. */
+export const ABSTRACTOS = Object.keys(ESCENAS)
+
+// ── Los estilos ───────────────────────────────────────────
 export const ESTILOS = {
   A: {
     nombre: 'Fotográfico editorial',
-    resumen: 'Como una buena foto de revista de viajes: luz natural, momento real.',
+    resumen: 'Foto de revista de viajes, con tono fijo: luz cálida de tarde, un punto desaturada.',
+    // CAMBIO 4 · El tono fijo, robado de la C.
+    //
+    // Lo que daba coherencia a la C no era el estilo: era que todas compartían
+    // luz. Así que la A se queda su propio realismo y le copia eso, con la luz
+    // al revés —cálida en vez de fría— para que el conjunto no salga triste.
     bloque: [
       'Fotografía editorial de revista de viajes.',
-      'Luz natural del momento real del día, sin flash ni iluminación de estudio.',
-      'Un instante que está ocurriendo, no una pose: nadie mira a cámara, nadie sonríe al objetivo.',
-      'Colores naturales y fieles, grano fino de película, profundidad de campo de objetivo rápido.',
-      'Nada de aspecto de banco de imágenes: ni gente demasiado guapa, ni ropa nueva, ni escenario ordenado.',
+      'TONO FIJO, el mismo en todas: luz CÁLIDA de media tarde, dorada y baja; si la escena es de interior o de noche, esa luz cálida viene de las lámparas.',
+      'Color ligeramente desaturado, sin colores chillones, sin azules fríos dominando la escena.',
+      'Un instante que está ocurriendo, no una pose: nadie mira a cámara.',
+      'Grano fino de película y profundidad de campo de objetivo rápido.',
+      'La escena transmite ganas de hacerlo: es un buen momento, no un momento duro ni solitario.',
+      'Nada de aspecto de banco de imágenes: ni ropa nueva, ni escenario ordenado, ni gente posando.',
     ].join(' '),
   },
   B: {
     nombre: 'Ilustración plana',
-    resumen: 'Formas grandes, pocos colores, la paleta de la marca. Inconfundiblemente nuestra.',
+    resumen: 'Formas grandes, pocos colores, la paleta de la marca.',
     bloque: [
       'Ilustración vectorial plana, geométrica, de formas grandes y simples.',
       'Sin degradados, sin sombras suaves, sin texturas, sin contornos dibujados: solo manchas de color planas.',
       'PALETA CERRADA, exactamente estos cuatro colores y ninguno más: negro casi puro #0B0B0B, verde menta luminoso #00D1A7, blanco roto #F5F5F2 y gris verdoso apagado #7A8A85.',
-      'El fondo es el negro #0B0B0B o el blanco roto #F5F5F2, y el verde menta se usa solo como acento en una parte pequeña.',
+      'EL FONDO ES SIEMPRE el negro #0B0B0B, nunca claro, y el sujeto se dibuja en blanco roto y verde menta para que destaque con fuerza sobre él.',
+      'Nada de verde oscuro sobre negro: lo que tenga que leerse va en blanco roto.',
       'Las figuras son siluetas simplificadas sin rasgos faciales.',
-      'Composición de cartel: mucho aire, pocos elementos, una idea sola.',
-    ].join(' '),
-  },
-  C: {
-    nombre: 'Foto estilizada',
-    resumen: 'Textura de foto, tratamiento gráfico: una luz, mucho contraste, color apagado y un acento.',
-    bloque: [
-      'Fotografía con tratamiento gráfico, cinematográfica.',
-      'Una sola fuente de luz fuerte y direccional que deja grandes zonas en sombra; contraste muy alto, negros profundos.',
-      'Color desaturado, casi monocromo, salvo UN ÚNICO acento de color saturado en un elemento pequeño de la escena.',
-      'La figura es pequeña dentro del encuadre y el espacio vacío manda: mucho aire alrededor.',
-      'Composición gráfica y limpia, líneas claras, nada de desorden en el fondo.',
+      'Composición de cartel: mucho aire, pocos elementos, una idea sola y reconocible a tamaño pequeño.',
     ].join(' '),
   },
 }
 
 /**
  * El prompt de un gooal en un estilo. Se arma por partes para que se vea de
- * dónde sale cada trozo: la acción del título, el contexto, las reglas comunes
- * y el estilo.
+ * dónde sale cada trozo: la escena, el contexto, el encuadre de la cara, lo
+ * prohibido, las reglas comunes y el estilo.
  *
  * EL SUJETO ES LA ACCIÓN, NO EL DECORADO. Es la regla que ya está en CLAUDE.md
  * («Un gooal es una experiencia, no un sitio»): «Subir al Angliru» es una bici
@@ -93,20 +208,36 @@ export function construirPrompt(gooal, clave) {
   if (!estilo) throw new Error('no existe el estilo ' + clave)
 
   const partes = []
-  partes.push(`La acción de «${gooal.titulo}», ocurriendo.`)
-  partes.push('EL SUJETO ES LA ACCIÓN, no el lugar ni el objeto: se tiene que ver a alguien haciéndolo.')
 
-  if (gooal.ambito === 'lugar' && (gooal.ciudad || gooal.pais)) {
-    const donde = [gooal.ciudad, gooal.pais].filter(Boolean).join(', ')
-    partes.push(`Ocurre en ${donde}, y eso se nota en el entorno, pero el entorno es contexto y no el tema.`)
+  // Si es de los abstractos, manda la escena escrita. Si no, la acción del
+  // título.
+  const escena = ESCENAS[gooal.titulo]
+  if (escena) {
+    partes.push(escena)
+    partes.push('Esta escena es FIJA: siempre esta y no otra.')
+  } else {
+    partes.push(`La acción de «${gooal.titulo}», ocurriendo.`)
+    partes.push('EL SUJETO ES LA ACCIÓN, no el lugar ni el objeto: se tiene que ver a alguien haciéndolo.')
+    if (gooal.ambito === 'lugar' && (gooal.ciudad || gooal.pais)) {
+      const donde = [gooal.ciudad, gooal.pais].filter(Boolean).join(', ')
+      partes.push(`Ocurre en ${donde}, y eso se nota en el entorno, pero el entorno es contexto y no el tema.`)
+    }
+    partes.push(CONTEXTO_CATEGORIA[gooal.categoria] ?? '')
   }
 
-  partes.push(CONTEXTO_CATEGORIA[gooal.categoria] ?? '')
+  const encuadre = ENCUADRE_DE[gooal.titulo] ?? ENCUADRE_POR_CATEGORIA[gooal.categoria] ?? 'espaldas'
+  partes.push(ENCUADRES[encuadre])
+
+  partes.push(PROHIBIDO)
   partes.push(COMUNES)
   partes.push(estilo.bloque)
 
   return partes.filter(Boolean).join(' ')
 }
+
+/** El encuadre que le toca a un gooal, para poder enseñarlo en la hoja. */
+export const encuadreDe = gooal =>
+  ENCUADRE_DE[gooal.titulo] ?? ENCUADRE_POR_CATEGORIA[gooal.categoria] ?? 'espaldas'
 
 // Una pista corta por categoría: lo que esa categoría suele necesitar para que
 // la escena no salga genérica. No describe el gooal — eso lo hace el título.
