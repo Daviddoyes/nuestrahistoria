@@ -10,12 +10,19 @@ import { createClient } from '@supabase/supabase-js'
 
 // La carpeta de los ficheros intermedios, calculada desde este guion: así no
 // lleva escrita dentro la ruta del ordenador de nadie.
+// --candidatas=<nombre> elige de qué tanda, y --carpeta=<nombre> dónde deja las
+// miniaturas. Cada tanda a lo suyo, para no mezclarse con la anterior.
+const argumento = (n, d) => {
+  const a = process.argv.find(x => x.startsWith('--' + n + '='))
+  return a ? a.slice(n.length + 3) : d
+}
 const SALIDA = fileURLToPath(new URL('../../Claude outputs', import.meta.url))
-const CARPETA = SALIDA + '/fotos-elegir'
+const FUENTE = SALIDA + '/' + argumento('candidatas', 'fotos-candidatas') + '.json'
+const CARPETA = SALIDA + '/' + argumento('carpeta', 'fotos-elegir')
 const AGENTE = 'GooALS/1.0 (https://gooals.app) catalogo-de-fotos'
 const dormir = ms => new Promise(r => setTimeout(r, ms))
 
-const filas = JSON.parse(readFileSync(SALIDA + '/fotos-candidatas.json', 'utf8'))
+const filas = JSON.parse(readFileSync(FUENTE, 'utf8'))
 mkdirSync(CARPETA, { recursive: true })
 
 // ── El orden: lo más conocido primero ─────────────────────
@@ -313,5 +320,5 @@ pintar(); irA(0)
 </body></html>`
 
 writeFileSync(SALIDA + '/elegir-fotos.html', html, 'utf8')
-writeFileSync(SALIDA + '/fotos-candidatas.json', JSON.stringify(filas, null, 1), 'utf8')
+writeFileSync(FUENTE, JSON.stringify(filas, null, 1), 'utf8')
 console.log('\nHOJA: Claude outputs/elegir-fotos.html')

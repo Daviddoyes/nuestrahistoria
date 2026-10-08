@@ -784,6 +784,23 @@ La regla práctica:
 Lo mismo valía ya para `scripts/lib/paises-iso.mjs`, que nació igual: de una
 tabla copiada que estaba incompleta en un sitio y completa en otro.
 
+### Y el matiz que costó una hora: un 429 no siempre es un freno
+
+OpenAI devuelve **429 también cuando la cuenta se queda sin saldo**. El mismo
+código para «ahora no» y para «no puedes pagar esto». Se estuvo una hora
+reintentando con esperas de hasta dos minutos, y el informe decía que el límite
+estaba «caliente de tanto machacarlo». No lo estaba: se había acabado el
+crédito a mitad de tanda.
+
+> **El estado HTTP no basta para clasificar un error: hay que mirar el cuerpo.**
+>  y  llegan con un 429 y no se
+> arreglan esperando nunca.
+
+Y la forma del fallo es la de siempre: una regla que cubre *casi* todos los
+casos —429 es un freno— es peor que ninguna cuando falla, porque los reintentos
+hacen que parezca que algo está pasando. Ahora la tanda se para en el primer
+intento y dice qué hay que hacer.
+
 ## Antes de medir parecido entre nombres, pruébalo en catalán
 
 La zona donde esto se usa es catalana. **«Marató» y «Maratón» son la misma

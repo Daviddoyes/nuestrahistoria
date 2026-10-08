@@ -32,6 +32,18 @@ export const ESPERAS = [10000, 30000, 60000, 120000]
  */
 export const esFreno = estado => estado === 429 || estado >= 500
 
+// ── PERO UN 429 NO SIEMPRE ES UN FRENO ────────────────────
+//
+// OpenAI devuelve 429 también cuando la cuenta se queda SIN SALDO
+// (`insufficient_quota` / `credit_balance_exhausted`), y eso no se arregla
+// esperando: se arregla pagando. Costó una hora de reintentos con esperas de
+// dos minutos creyendo que era un límite por ráfaga caliente.
+//
+// El estado HTTP no basta: hay que mirar el cuerpo. Quien llame a `intentar`
+// debe clasificar primero lo definitivo y solo después devolver `{ freno }`.
+// Esta función dice qué estados PUEDEN ser un freno, no cuáles LO SON.
+export const CODIGOS_DEFINITIVOS = new Set(['insufficient_quota', 'credit_balance_exhausted', 'billing_hard_limit_reached'])
+
 export const dormir = ms => new Promise(r => setTimeout(r, ms))
 
 /**

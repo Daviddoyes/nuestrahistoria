@@ -147,6 +147,7 @@ mkdirSync(SALIDA, { recursive: true })
 // después de que este guion perdiera cuatro de trece imágenes por tener sus
 // propias esperas copiadas a mano, más cortas que las que ya se habían
 // aprendido en otro sitio.
+let sinSaldo = false
 const frenos = crearFrenos()
 
 async function pedirImagen(prompt) {
@@ -159,8 +160,20 @@ async function pedirImagen(prompt) {
         body: JSON.stringify({ model: MODELO, prompt, size: TAMANO, quality: CALIDAD, n: 1 }),
       })
     } catch (e) { return { freno: 'no conecta: ' + e.message } }
-    if (esFreno(resp.status)) return { freno: 'responde ' + resp.status }
+    // UN 429 NO SIEMPRE ES UN FRENO. OpenAI devuelve 429 también cuando la
+    // cuenta se queda SIN SALDO, y eso no se arregla esperando: se arregla
+    // pagando. Hay que mirar el cuerpo, no solo el estado.
+    //
+    // Costó una hora larga de reintentos con esperas de dos minutos creyendo
+    // que era un límite por ráfaga «caliente». No lo era: se había acabado el
+    // crédito a mitad de tanda.
     const j = await resp.json().catch(() => null)
+    const codigo = j && j.error && (j.error.code || j.error.type)
+    if (codigo === 'insufficient_quota' || codigo === 'credit_balance_exhausted') {
+      sinSaldo = true
+      return { error: 'SIN SALDO en la cuenta de OpenAI. Hay que recargar en https://platform.openai.com/settings/organization/billing/' }
+    }
+    if (esFreno(resp.status)) return { freno: 'responde ' + resp.status }
     // Un 400 es el prompt: reintentarlo da lo mismo y se paga dos veces.
     if (!resp.ok) return { error: (j && j.error && j.error.message) || ('responde ' + resp.status) }
     const b64 = j && j.data && j.data[0] && j.data[0].b64_json
@@ -178,6 +191,7 @@ let saltadas = 0, fallos = 0, n = 0
 const EN_PARALELO = Number(arg('paralelo', '3'))
 
 async function trabajar(t) {
+  if (sinSaldo) return   // no se sigue pidiendo lo que no se puede pagar
   const nombre = nombreDe(t)
   const ruta = SALIDA + '/' + nombre + '.png'
   // El prompt se guarda SIEMPRE al lado de su imagen, aunque la imagen falle:
