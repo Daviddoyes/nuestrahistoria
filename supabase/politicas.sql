@@ -364,7 +364,8 @@ order by tablename;
 
 -- Y para comprobarlo de verdad, desde fuera y no desde el esquema:
 --   node --env-file=.env.local scripts/comprobar-rls.mjs
---   → 15 de 15
+--   → 23 de 23 (desde el 8-10-2026, que es cuando empezó a mirar también
+--     los permisos por columna; antes eran 15 y se le escapaba es_admin)
 
 -- ═══════════════════════════════════════════════════════════
 -- LA SEGUNDA CERRADURA · los permisos de columna

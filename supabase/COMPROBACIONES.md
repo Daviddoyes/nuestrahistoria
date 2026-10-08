@@ -3,6 +3,45 @@
 Lo que se midió, cuándo, y el resultado. Está aquí porque un número dicho en una
 conversación se pierde, y luego nadie sabe si aquello llegó a comprobarse.
 
+## Las dos cerraduras, desde fuera · 8-10-2026 · **23 de 23**
+
+Después de aplicar `supabase/fase3y.sql`, que echó la **segunda cerradura**: los
+permisos por columna de `profiles` y `user_gooals`.
+
+```bash
+node --env-file=.env.local scripts/comprobar-rls.mjs
+```
+
+Hasta este día el mismo guion decía **15 de 15** mientras cualquiera con sesión
+podía ponerse `es_admin = true` desde el navegador. No mentía: miraba una sola
+cerradura, la de las filas. Una política decide **qué filas** tocas; un permiso
+decide **qué columnas**. Ahora mira las dos, y son 23 comprobaciones.
+
+Medido con una cuenta real creada y borrada para esto, con la clave pública:
+
+| intento, con sesión | antes del 8-10 | ahora |
+|---|---|---|
+| ponerse `profiles.es_admin = true` | **lo conseguía** | rechazado (42501) |
+| ponerse `profiles.puntos_totales = 9999` | **lo conseguía** | rechazado |
+| ponerse `profiles.nivel = 'Leyenda'` | **lo conseguía** | rechazado |
+| insertarse un gooal conseguido con 999 puntos | **lo conseguía** | rechazado |
+| leer `user_gooals` | lo conseguía | rechazado |
+| cambiarse el nombre (editar perfil) | funcionaba | **sigue funcionando** |
+
+> La última fila es la mitad que importa igual que las otras: una cerradura que
+> cierra de más rompe editar perfil, y eso no se ve si solo se comprueba lo que
+> debe estar cerrado.
+
+Cada intento mira **el error Y el valor**, releyendo la fila con la clave
+secreta. Un `update` parado por la RLS devuelve 0 filas **sin error**; uno parado
+por permisos devuelve **42501**. Confundirlos daría por cerrada una tabla
+abierta, que es exactamente como esto pasó desapercibido.
+
+> Y la primera vez que se lanzó así dio **17 de 23**, con `fase3y.sql` todavía
+> sin pegar aunque se había dado por aplicado. Esa es la razón de que este
+> fichero exista: el número que vale es el que sale de medir, no el que alguien
+> recuerda.
+
 ## RLS, desde fuera · 7-10-2026 · **15 de 15**
 
 Después de aplicar `supabase/fase3w.sql`, que quitó las dos últimas políticas de
