@@ -863,4 +863,11 @@ sigue; una nota pendiente espera a alguien.
   hasta que esto esté cerrado**. Se cierra pasando el alta a un disparador sobre
   `auth.users` o a una Server Action; entonces el `grant insert` de
   `politicas.sql` se va entero. Anotado el 8-10-2026.
+- **En pantallas cortas la tarjeta de Descubrir se sale.** En un iPhone SE
+  (375×667) mide **347×402**, o sea una proporción de **0,863**, frente al
+  0,59–0,625 de todos los demás móviles (362×579 en un Pixel, 402×667 en un
+  iPhone Max, 384×650 en un Android grande). La tarjeta es `flex:1`, así que en
+  una pantalla corta se queda casi cuadrada. **No es un problema de la foto: es
+  de la pantalla.** Detectado el 8-10-2026 midiendo la proporción de la tarjeta
+  para las fotos de IA, que era otra cosa. Pendiente de mirar.
 - No hay tests.
