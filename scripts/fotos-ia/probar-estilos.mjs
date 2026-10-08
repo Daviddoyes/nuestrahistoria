@@ -88,11 +88,16 @@ const gooals = PEDIDOS.map(x => {
   return { ...g, caso: x.caso }
 })
 
+const porTitulo = [...gooals].sort((a, b) => a.titulo.localeCompare(b.titulo, 'es'))
 const trabajos = []
 for (const g of gooals) {
+  const indice = porTitulo.findIndex(x => x.titulo === g.titulo)
   for (const estilo of estilosPedidos) {
     for (const vuelta of [1, 2]) {
-      trabajos.push({ gooal: g, estilo, vuelta, prompt: construirPrompt(g, estilo) })
+      // El índice decide a quién le toca salir en la foto, por turno. Es la
+      // posición del gooal en la lista ORDENADA POR TÍTULO, no en la lista tal
+      // como venga: así dos lanzamientos de la misma tanda reparten igual.
+      trabajos.push({ gooal: g, estilo, vuelta, prompt: construirPrompt(g, estilo, indice) })
     }
   }
 }

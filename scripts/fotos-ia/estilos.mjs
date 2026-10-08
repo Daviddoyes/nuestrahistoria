@@ -94,6 +94,32 @@ const ENCUADRE_POR_CATEGORIA = {
   vida: 'hombros',
 }
 
+// ── QUIÉN SALE EN LA FOTO, por turno y no al azar ──────────
+//
+// Las 16 de la segunda ronda eran hombres. Las ocho escenas, las dos vueltas,
+// todas. Sobre 260 tarjetas eso canta, y la mitad de los usuarios no son
+// hombres.
+//
+// La solución NO es pedir «a veces una mujer»: eso lo deja al azar del modelo,
+// que es justo el azar que produjo 16 hombres seguidos. Se reparte POR TURNO,
+// según la posición del gooal en la lista: seis variantes, tres mujeres y tres
+// hombres, tres franjas de edad. Con eso el reparto es exacto y no depende de
+// la suerte.
+const PERSONAS = [
+  'una mujer joven',
+  'un hombre de mediana edad',
+  'una mujer mayor',
+  'un hombre joven',
+  'una mujer de mediana edad',
+  'un hombre mayor',
+]
+
+// Y que no sean todos atléticos. En esquí o en una maratón un cuerpo de
+// deportista es lo natural; en un karaoke, comiendo o durmiendo, no — y si
+// todas las fichas enseñan a alguien en forma, el catálogo dice sin querer que
+// esto es para gente en forma.
+const CUERPO_CORRIENTE = 'de complexión corriente, ni atlética ni de modelo.'
+
 // ── CAMBIO 2 · Prohibido POR SU NOMBRE lo que se coló ──────
 //
 // «Ni una letra» no bastó ni en la A ni en la C: la A colgó un cartel que ponía
@@ -124,6 +150,23 @@ const PROHIBIDO = [
 //
 // Son 14 gooals de 541 (un 2,6%), así que escribirlas a mano es asumible y es
 // lo único que da consistencia donde no hay nada real que retratar.
+//
+// ── Y TAMBIÉN LOS TÍTULOS QUE NIEGAN ALGO ─────────────────
+//
+// Hay un segundo grupo que necesita escena escrita por otra razón: cuando el
+// título NIEGA o CONDICIONA algo, una escena corriente puede decir lo
+// contrario sin que nadie lo note.
+//
+// Pasó con «Dormir en una cabaña sin electricidad»: salió con una lámpara
+// eléctrica encendida, con su pantalla de tela, en LAS DOS vueltas. La foto
+// decía justo lo contrario que el título, y el modelo no tenía forma de saberlo
+// porque «sin electricidad» no describe nada que se vea: describe algo que NO
+// está. Una ausencia no se fotografía; hay que poner en su lugar lo que sí
+// está, que aquí es una vela.
+//
+// Se barrió el catálogo entero buscando más. Salieron seis candidatos y tres
+// eran falsos positivos (los «desierto», donde el desierto es el sitio y no una
+// negación). Los tres de verdad llevan su escena aquí abajo.
 export const ESCENAS = {
   'Montar tu propia empresa':
     'Dos manos abriendo la persiana metálica de un local pequeño a primera hora, con cajas de cartón aún sin abrir dentro.',
@@ -153,27 +196,55 @@ export const ESCENAS = {
     'Alguien de espaldas empujando un carro de maletas por una terminal de aeropuerto casi vacía.',
   'Hacer un voluntariado en el extranjero':
     'Varias manos pasándose cajas en fila, al aire libre, sin que se vea ninguna cara.',
+
+  // ── Los tres que niegan algo ────────────────────────────
+  'Dormir en una cabaña sin electricidad':
+    'El interior de una cabaña de madera de noche, alumbrado SOLO por una vela encendida sobre la mesilla y el resplandor de la chimenea. NO hay ninguna lámpara, ni bombilla, ni enchufe, ni cable, ni interruptor en toda la escena: la cabaña no tiene electricidad y eso se tiene que ver. Alguien acostado bajo las mantas.',
+  'Probar el pulpo vivo':
+    'Un plato de tentáculos de pulpo todavía MOVIÉNDOSE, con las ventosas agarradas al borde del plato, y unos palillos a punto de coger uno. El pulpo está crudo y vivo: no está cocinado, ni rojo, ni a la brasa.',
+  'Ir a unos Juegos Olímpicos de invierno':
+    'Una grada llena de gente abrigada viendo una prueba sobre NIEVE Y HIELO, al aire libre, con la pista blanca abajo y montañas nevadas al fondo. Es invierno y eso manda en toda la escena.',
 }
 
-/** Los gooals que no tienen nada que fotografiar, los 14 del catálogo. */
-export const ABSTRACTOS = Object.keys(ESCENAS)
+/**
+ * Los gooals que no tienen nada que fotografiar. NO es `Object.keys(ESCENAS)`:
+ * en ese mapa también están los tres que niegan algo, que sí son fotografiables
+ * y solo necesitan que la escena diga lo que el título niega.
+ */
+export const ABSTRACTOS = [
+  'Montar tu propia empresa', 'Sacarte el C1 de inglés', 'Publicar un libro',
+  'Terminar un máster', 'Vivir un año en otro país', 'Sacarte el cinturón negro',
+  'Doctorarte', 'Terminar una carrera universitaria', 'Sacarte el carnet de moto',
+  'Sacarte el título de buceo Open Water', 'Sacarte el título de patrón de embarcaciones',
+  'Sacarte la licencia de piloto', 'Mudarte a otro continente',
+  'Hacer un voluntariado en el extranjero',
+]
 
 // ── Los estilos ───────────────────────────────────────────
 export const ESTILOS = {
   A: {
     nombre: 'Fotográfico editorial',
-    resumen: 'Foto de revista de viajes, con tono fijo: luz cálida de tarde, un punto desaturada.',
-    // CAMBIO 4 · El tono fijo, robado de la C.
+    resumen: 'Foto de revista de viajes. Tratamiento fijo; la temperatura la pone la escena.',
+    // EL TRATAMIENTO ES FIJO, LA TEMPERATURA NO.
     //
-    // Lo que daba coherencia a la C no era el estilo: era que todas compartían
-    // luz. Así que la A se queda su propio realismo y le copia eso, con la luz
-    // al revés —cálida en vez de fría— para que el conjunto no salga triste.
+    // La segunda ronda fijó «luz cálida de tarde» y compró consistencia, pero
+    // pagándola con una mentira: el glaciar de Islandia salía color duna,
+    // porque la nieve en ámbar se lee como arena. Un gooal que dice glaciar no
+    // puede salir desierto.
+    //
+    // Fijar la temperatura es elegir el color de todas las escenas desde fuera,
+    // y eso acaba contradiciendo a alguna. Lo que de verdad daba coherencia —y
+    // esto se vio en la C— no era el color: era que todas compartieran
+    // TRATAMIENTO. Así que se fija el tratamiento (una luz, sol bajo, grano,
+    // saturación contenida, nada de HDR) y la temperatura la pone la escena: la
+    // nieve sale fría porque la nieve es fría.
     bloque: [
       'Fotografía editorial de revista de viajes.',
-      'TONO FIJO, el mismo en todas: luz CÁLIDA de media tarde, dorada y baja; si la escena es de interior o de noche, esa luz cálida viene de las lámparas.',
-      'Color ligeramente desaturado, sin colores chillones, sin azules fríos dominando la escena.',
-      'Un instante que está ocurriendo, no una pose: nadie mira a cámara.',
+      'TRATAMIENTO FIJO, el mismo en todas: UNA SOLA fuente de luz principal, fuerte y direccional, de sol bajo o de la luz que de verdad haya en ese sitio.',
+      'LA TEMPERATURA DE COLOR LA PONE LA ESCENA y no se fuerza: la nieve y el hielo salen fríos y azulados, el interior de noche sale cálido. Nada de dar un tono dorado a lo que no lo tiene.',
+      'Saturación contenida, sin aplanar las sombras, sin HDR, sin ese brillo parejo de foto de postal o de folleto.',
       'Grano fino de película y profundidad de campo de objetivo rápido.',
+      'Un instante que está ocurriendo, no una pose: nadie mira a cámara.',
       'La escena transmite ganas de hacerlo: es un buen momento, no un momento duro ni solitario.',
       'Nada de aspecto de banco de imágenes: ni ropa nueva, ni escenario ordenado, ni gente posando.',
     ].join(' '),
@@ -203,14 +274,20 @@ export const ESTILOS = {
  * subiendo, no la montaña. Por eso el lugar entra como CONTEXTO y se dice
  * expresamente que no sea el sujeto.
  */
-export function construirPrompt(gooal, clave) {
+export function construirPrompt(gooal, clave, indice = 0) {
   const estilo = ESTILOS[clave]
   if (!estilo) throw new Error('no existe el estilo ' + clave)
 
   const partes = []
 
-  // Si es de los abstractos, manda la escena escrita. Si no, la acción del
-  // título.
+  // Quién sale, por turno. El índice es la posición del gooal en la lista que
+  // se está generando, ordenada por título: así el reparto es el mismo cada vez
+  // que se lance y no depende de la suerte del modelo.
+  const persona = PERSONAS[indice % PERSONAS.length]
+  partes.push('Quien aparece en la foto es ' + persona +
+    (gooal.categoria === 'deporte' ? '.' : ', ' + CUERPO_CORRIENTE))
+
+  // Si tiene escena escrita, manda ella. Si no, la acción del título.
   const escena = ESCENAS[gooal.titulo]
   if (escena) {
     partes.push(escena)
