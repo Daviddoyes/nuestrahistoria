@@ -115,6 +115,38 @@ Aunque algo escribiera una dificultad, el disparador la pisa con la de los
 puntos. Los puntos se guardan en la fila de `gooals_v2` a propósito: así un
 cambio de baremo no reescribe el histórico de puntos ya ganados.
 
+### Los puntos ganados se congelan, y rehacerlos es un acto deliberado
+
+Decidido el 8-10-2026, después de proponer lo contrario y medirlo.
+
+Cuando alguien consigue un gooal, sus puntos **se copian** a
+`user_gooals.puntos_ganados` ([actions.ts](../src/lib/actions.ts), en
+`conseguirSinFoto` y `completarGooal`) y de ahí salen todas las sumas. El
+catálogo **no se vuelve a mirar nunca**: ni al pintar el perfil, ni en Inicio,
+ni al recalcular `profiles.puntos_totales`.
+
+Es la misma razón por la que `gooals_v2.puntos` vive en la fila y no en una
+tabla de baremos, y está escrita al lado de la suma del perfil. Aquí queda el
+porqué, para que no se vuelva a proponer:
+
+> **Un gooal conseguido es un recuerdo, no una posición en una tabla.** Quien lo
+> hizo cuando valía 8 lo hizo con las reglas de ese día.
+
+Y el motivo práctico, que es el que lo cierra: leer los puntos del catálogo al
+sumar convertiría **cada corrección de baremo en un cambio silencioso del
+marcador de todo el mundo**. No es hipotético — el 8-10-2026, en una tarde, «Hacer
+una vía ferrata» pasó de 5 a 3 y «Recorrer un GR entero» de 4 a 8. Con los
+puntos en vivo, eso le habría movido el total a cualquiera que los tuviera, sin
+que nadie lo pidiera y sin que apareciera en ningún sitio.
+
+Cuando un baremo esté mal de verdad y haya que rehacer el histórico, se hace con
+**un guion aparte, que se lanza a propósito y se avisa**. Deliberado, nunca
+efecto secundario.
+
+Y la consecuencia para la seguridad, que es lo que hay que tener delante al
+tocar la RLS: **como la copia se queda, la protección no puede ser «no hay nada
+que falsear».** Tiene que ser que esa columna **solo la escriba el servidor**.
+
 ### Solo se ve lo verificado, pero lo de cada uno es suyo
 
 `gooals_v2.estado` es `borrador` o `verificado`. **Todo lo que enseña el catálogo**
