@@ -870,4 +870,9 @@ sigue; una nota pendiente espera a alguien.
   una pantalla corta se queda casi cuadrada. **No es un problema de la foto: es
   de la pantalla.** Detectado el 8-10-2026 midiendo la proporción de la tarjeta
   para las fotos de IA, que era otra cosa. Pendiente de mirar.
+- **Las 275 fotos de Commons no se sustituyen en bloque**, y es deliberado: casi
+  todas son lugares con nombre, y ahí una foto real gana siempre — una Sagrada
+  Família generada sería una basílica parecida pero falsa. Lo que se hará, poco
+  a poco: David marca las de Commons que no le valen según las vaya viendo, y
+  **esas se regeneran una a una**. Decidido el 8-10-2026.
 - No hay tests.
