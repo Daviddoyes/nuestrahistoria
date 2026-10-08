@@ -793,7 +793,7 @@ estaba «caliente de tanto machacarlo». No lo estaba: se había acabado el
 crédito a mitad de tanda.
 
 > **El estado HTTP no basta para clasificar un error: hay que mirar el cuerpo.**
->  y  llegan con un 429 y no se
+> `insufficient_quota` y `credit_balance_exhausted` llegan con un 429 y no se
 > arreglan esperando nunca.
 
 Y la forma del fallo es la de siempre: una regla que cubre *casi* todos los
