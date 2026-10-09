@@ -44,7 +44,7 @@
 // `object-fit: cover` recorta POR LOS LADOS y no por arriba y abajo. Por eso
 // todas las plantillas piden el sujeto centrado y con aire a los lados.
 import { clasificar } from './reparto-reglas.mjs'
-import { DECIDIDOS } from './decisiones.mjs'
+import { DECIDIDOS, CAMARA } from './decisiones.mjs'
 
 export const CON_SITIO_RECONOCIBLE = new Set([
   "Bañarte en la cala de Sa Tuna",
@@ -159,7 +159,7 @@ const ENCUADRES = {
   // ── Los seis SIN persona, que son los que hay que preferir ──
   objeto: 'En la foto NO HAY NINGUNA PERSONA. Se ve solo el objeto que cuenta el gooal, en su sitio real, como si quien lo usa acabara de irse.',
   detalle: 'Primerísimo plano de UNA sola textura o UNA sola pieza, tan cerca que el resto de la escena no se ve. NO HAY NINGUNA PERSONA.',
-  lugar_vacio: 'El lugar donde pasa el gooal, COMPLETAMENTE VACÍO de gente, con luz de primera hora. NO HAY NINGUNA PERSONA, ni de lejos.',
+  lugar_vacio: 'El lugar donde pasa el gooal, COMPLETAMENTE VACÍO de gente. NO HAY NINGUNA PERSONA, ni de lejos.',
   primera_persona: 'La cámara está DONDE ESTARÍAN LOS OJOS de quien lo vive: se ve lo que ve. De su cuerpo no se ve nada, o como mucho las manos en primer plano por el borde de abajo.',
   manos: 'Se ven ÚNICAMENTE LAS MANOS haciendo la acción, desde cerca. Ni cara, ni cabeza, ni torso, ni hombros.',
   silueta_lejana: 'Una figura humana DIMINUTA dentro de un paisaje grande: ocupa menos de una décima del alto de la foto y no se le distingue ningún rasgo. Está para dar escala, no es el sujeto.',
@@ -572,6 +572,25 @@ const momentoDe = titulo => {
 }
 
 
+/** Cómo se dice cada ángulo en el prompt. */
+const ANGULOS = {
+  "cenital": "La cámara mira A PLOMO DESDE ARRIBA, perpendicular al suelo.",
+  "a ras de suelo": "La cámara está A RAS DE SUELO, muy baja, casi apoyada.",
+  "a la altura de los ojos": "La cámara está A LA ALTURA DE LOS OJOS de quien estuviera allí de pie.",
+  "contrapicado": "La cámara mira HACIA ARRIBA desde abajo, en contrapicado.",
+  "desde muy cerca": "La cámara está MUY CERCA del sujeto, a un palmo, con poca profundidad de campo.",
+}
+
+/** Y cada luz. Ninguna es la de por defecto: cada gooal lleva la suya. */
+const LUCES = {
+  "amanecer": "Luz de AMANECER, rasante y tibia, con sombras largas.",
+  "mediodía duro": "Luz de MEDIODÍA, dura y vertical, con sombras cortas y marcadas y mucho contraste.",
+  "tarde larga": "Luz de TARDE LARGA, baja y cálida, poco antes de ponerse el sol.",
+  "noche": "De NOCHE, con luz artificial puntual y negros profundos alrededor.",
+  "interior": "EN INTERIOR, con luz que entra por una ventana o de lámparas, sin cielo.",
+  "día nublado": "Día NUBLADO y plano, con luz difusa y sin sombras marcadas.",
+}
+
 /**
  * El prompt de un gooal en un estilo. Se arma por partes para que se vea de
  * dónde sale cada trozo: la escena, el contexto, el encuadre de la cara, lo
@@ -683,6 +702,17 @@ export function construirPrompt(gooal, clave, indice = 0) {
   if (cerrado && CUERPO.has(encuadre)) {
     partes.push('ENCUADRE CERRADO sobre la acción: la cámara está MUY CERCA y solo entran el gesto, las manos, el equipo y el terreno inmediato.')
     partes.push('NO se ve el lugar: ni el horizonte, ni la silueta de la montaña, ni el edificio, ni nada que permita reconocer dónde es. Fondo desenfocado o fuera de cuadro.')
+  }
+
+  // ── EL SEGUNDO EJE: desde dónde se mira y con qué luz ───
+  //
+  // Sin esto, variábamos QUÉ se ve y dejábamos sin tocar CÓMO se mira: 47
+  // fotos de objeto con la misma cámara son 47 fotos iguales aunque el
+  // objeto cambie. Solo lo llevan los gooals que lo tienen DECIDIDO.
+  const camara = CAMARA[gooal.titulo]
+  if (camara) {
+    partes.push(ANGULOS[camara[0]] ?? "")
+    partes.push(LUCES[camara[1]] ?? "")
   }
 
   // El momento SOLO donde hay cuerpo: varios nombran brazos, manos o un

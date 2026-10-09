@@ -20,6 +20,7 @@ import { writeFileSync } from 'node:fs'
 import { createClient } from '@supabase/supabase-js'
 import { encuadreDe, porQueEncuadre, ENCUADRE_DE, construirPrompt } from './estilos.mjs'
 import { destinoDe, comprobarControl, CONTROL } from './reparto-reglas.mjs'
+import { CAMARA } from './decisiones.mjs'
 
 // ══ EL CONTROL, ANTES DE NADA ═════════════════════════════
 //
@@ -122,6 +123,34 @@ if (pctDescarte > 30) {
 }
 
 // ── c) Lo que costaría ────────────────────────────────────
+// ── EL SEGUNDO EJE, CONTADO ───────────────────────────────
+//
+// El eje que nadie cuenta es el que se degrada: variábamos QUÉ se ve y
+// dejábamos sin tocar CÓMO se mira. Dentro de una misma familia de encuadre,
+// ningún par ángulo+luz puede repetirse más de tres veces.
+console.log('')
+console.log('── CÓMO SE MIRA, dentro de cada encuadre ──')
+let pasados = 0
+let sinCamara = 0
+for (const [nombre, lista] of orden) {
+  const pares = {}
+  for (const g of lista) {
+    const c = CAMARA[g.titulo]
+    if (!c) { sinCamara++; continue }
+    const par = c[0] + ' + ' + c[1]
+    pares[par] = (pares[par] ?? 0) + 1
+  }
+  const repes = Object.entries(pares).filter(([, n]) => n > 3)
+  const conCamara = Object.values(pares).reduce((a, b) => a + b, 0)
+  if (conCamara === 0) continue
+  console.log(`  ${nombre.padEnd(17)} ${conCamara} decididos, ${Object.keys(pares).length} pares distintos` +
+    (repes.length ? '   <- SE PASAN DEL TOPE DE 3:' : ''))
+  for (const [par, n] of repes) { pasados++; console.log(`        ${par}  x${n}`) }
+}
+console.log(pasados === 0
+  ? '  ningún par ángulo+luz se repite más de tres veces dentro de su encuadre'
+  : `  ${pasados} par(es) por encima del tope. Cámbialos.`)
+console.log(`  (${sinCamara} de los ${aIA.length} no llevan cámara decidida: los eligió una regla, no una persona)`)
 console.log('\n── LO QUE COSTARÍA GENERARLOS ──')
 const aGenerar = yaIA.length + sinNada.length
 console.log(`  a rehacer + sin nada: ${aGenerar} imágenes x ${EURO_POR_IMAGEN} $ = ${(aGenerar * EURO_POR_IMAGEN).toFixed(2)} $`)
