@@ -771,6 +771,52 @@ que no se repitan.
 Se va a repetir con las ferratas, las cimas, los GR y los mercados: cuando se
 añadan gooals a un grupo, se les añade su momento.
 
+## De dónde sale la foto de un gooal
+
+Medido sobre **205 gooals revisados a ojo, uno a uno**, entre el 8 y el 9 de
+octubre de 2026. Es lo que de verdad nos llevamos de tres días de pruebas.
+
+```
+museos y monumentos .......... Commons, 10/10
+paseos y vistas .............. Commons,  9/10
+cumbres y miradores .......... Commons, 7-9/10
+fiestas ...................... Commons,  7/10
+deporte de competición ....... Commons,  3/10  → IA
+acciones genéricas ........... IA (Commons no tiene gente haciendo cosas)
+```
+
+**El deporte de competición casi no está en Commons por derechos de imagen
+dentro de los recintos.** En la hoja de competición salieron aficionados
+haciéndose fotos con pilotos, paddocks vacíos y tres logotipos del Seis Naciones
+sobre fondo negro. **La excepción es el ciclismo de carretera** —Tour, Giro,
+Vuelta—, que se fotografía desde la cuneta y sí está: salieron el pelotón de
+cerca y el maillot amarillo entre el público.
+
+> **Antes de lanzar una tanda nueva, mira esta tabla y ELIGE la fuente. No
+> pruebes las dos.** Probar las dos costó una tarde entera y 217 búsquedas para
+> acabar sabiendo lo que esta tabla dice en seis líneas.
+
+Y la regla que decide a qué fila mirar es la de más arriba: **si el verbo es
+ESTAR** —visitar, ver, pasear, cruzar, subir a, ir a— el lugar es la acción y
+Commons lo tiene. **Si es HACER algo en un sitio** —comer, bucear, correr,
+dormir, escalar— Commons tiene el sitio pero no la acción, y toca IA con
+encuadre cerrado.
+
+### Una hoja de revisión que no deja decidir no es una revisión
+
+Las primeras hojas iban a veinte gooals por página, cuatro candidatas cada uno.
+Cada miniatura salía a **130 px**, y a ese tamaño **no se puede contestar la
+única pregunta que importa**: ¿esta foto enseña lo que dice el título? Se ve que
+hay un edificio; no se ve si es *ese* edificio.
+
+Se rehicieron a **diez por hoja y a tamaño completo** —250 px por miniatura— y
+entonces sí. Son el doble de hojas y se miran igual de rápido, porque lo que
+cuesta no es pasar páginas: es dudar.
+
+> Antes de montar una hoja de contacto, comprueba a qué tamaño se va a ver de
+> verdad **una** miniatura. Si a ese tamaño no puedes decidir, la hoja no sirve
+> por muchos que quepan.
+
 ## Prohibir no sustituye a describir
 
 Tercera vez esta semana, y las dos anteriores están anotadas por separado más
