@@ -14,14 +14,19 @@
 // Cuatro fallos de la misma familia en una semana dicen que el formato es el
 // problema, no el cuidado. Así que aquí no hay ni una barra invertida: listas
 // de palabras normales, y la comparación la hace código que se lee.
+//
+// ── Y POR QUÉ AQUÍ NO SE QUITAN LAS TILDES ────────────────
+//
+// Se quitaban, y «Probar la carne de cocodrilo» salió clasificado como un
+// documento: sin tildes, **carne y carné son la misma palabra**. En este repo
+// ya estaba escrito que quitar tildes no arregla el par marató/maratón; esto
+// es el otro filo del mismo cuchillo, y es peor, porque rompe palabras que
+// estaban bien. Así que se compara la palabra REAL, con su tilde, y las listas
+// de abajo van acentuadas.
 
-// ── Comparar sin sufrir ───────────────────────────────────
-
-const sinTildes = texto => texto.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
-
-/** Las palabras de un título, sin tildes, sin signos y en minúscula. */
+/** Las palabras de un título, en minúscula, sin signos, CON sus tildes. */
 function palabrasDe(titulo) {
-  return sinTildes(titulo)
+  return titulo.toLowerCase()
     .replace(/[«».,:;()¿?¡!'"]/g, ' ')
     .split(/\s+/)
     .filter(Boolean)
@@ -31,7 +36,7 @@ function palabrasDe(titulo) {
 function empiezaPor(titulo, expresiones) {
   const p = palabrasDe(titulo)
   return expresiones.some(e => {
-    const trozo = sinTildes(e).split(' ')
+    const trozo = e.toLowerCase().split(' ')
     return trozo.every((palabra, i) => p[i] === palabra)
   })
 }
@@ -40,9 +45,9 @@ function empiezaPor(titulo, expresiones) {
 function contiene(titulo, palabras) {
   const p = new Set(palabrasDe(titulo))
   return palabras.some(palabra => {
-    const trozo = sinTildes(palabra).split(' ')
+    const trozo = palabra.toLowerCase().split(' ')
     if (trozo.length === 1) return p.has(trozo[0])
-    return sinTildes(titulo).includes(sinTildes(palabra))
+    return titulo.toLowerCase().includes(palabra.toLowerCase())
   })
 }
 
@@ -77,10 +82,10 @@ const VERBOS_DE_VER = [
 /** Lo que es un ACONTECIMIENTO y no un sitio: no hay recinto que reconocer. */
 const ES_UN_ACONTECIMIENTO = [
   'festival', 'fiesta', 'festa', 'feria', 'fira', 'carnaval', 'aplec', 'patum',
-  'maraton', 'marato', 'mitja', 'media maraton', 'ultra', 'trail', 'carrera',
-  'gran premio', 'copa', 'mundial', 'olimpiadas', 'juegos olimpicos', 'regata',
-  'concurso', 'procesion', 'correfoc', 'encierro', 'partido', 'final', 'etapa',
-  'rock', 'cruilla', 'nochevieja', 'eclipse',
+  'maratón', 'marató', 'mitja', 'media maratón', 'ultra', 'trail', 'carrera',
+  'gran premio', 'copa', 'mundial', 'olimpiadas', 'juegos olímpicos', 'regata',
+  'concurso', 'procesión', 'correfoc', 'encierro', 'partido', 'final', 'etapa',
+  'rock', 'cruïlla', 'nochevieja', 'eclipse',
 ]
 
 /** Las mayúsculas que NO son un sitio: marcas, niveles, pruebas, meses. */
@@ -98,7 +103,7 @@ export function tieneNombrePropio(titulo) {
     const limpia = cruda.replace(/[«».,:;()¿?¡!]/g, '')
     if (limpia.length < 2) return false
     if (limpia[0] !== limpia[0].toUpperCase() || limpia[0] === limpia[0].toLowerCase()) return false
-    return !MAYUSCULAS_QUE_NO_SON_SITIO.includes(sinTildes(limpia))
+    return !MAYUSCULAS_QUE_NO_SON_SITIO.includes(limpia.toLowerCase())
   })
 }
 
@@ -122,18 +127,28 @@ export function destinoDe(gooal) {
 
 // ══ PREGUNTA 2 · EL ENCUADRE, EN ESTE ORDEN ═══════════════
 //
-// La primera que se cumple, gana. Y a 'espaldas' solo se llega por el final:
-// ya no hay ningún valor por defecto de categoría que lleve allí.
+// La primera que se cumple, gana. Y si no se cumple ninguna, NO HAY SALIDA: el
+// guion falla con el nombre del gooal. Ver `clasificar`.
+
+/**
+ * EL VERBO MANDA SOBRE EL SITIO, y va antes que todo lo demás.
+ *
+ * «Comer en el mercado de Chatuchak» salía como 'lugar_vacio' y su escena pedía
+ * un mercado de comida COMPLETAMENTE VACÍO. El problema no era la palabra
+ * «mercado»: era el orden. **Lo que haces decide el encuadre; dónde lo haces
+ * solo decide el decorado.**
+ */
+const EMPIEZA_COMIDA = ['comer', 'comerte', 'cenar', 'desayunar', 'almorzar', 'merendar', 'probar', 'degustar', 'catar']
 
 /** a) Hay un OBJETO que ES el gooal: el diploma, el sello, el dorsal. */
 const EMPIEZA_OBJETO = ['sacarte', 'sacarse', 'obtener', 'publicar', 'doctorarte']
-const PALABRA_OBJETO = ['carne', 'carnet', 'diploma', 'titulo', 'certificado', 'medalla', 'trofeo', 'pasaporte', 'sello']
+const PALABRA_OBJETO = ['carné', 'carnet', 'diploma', 'título', 'certificado', 'medalla', 'trofeo', 'pasaporte', 'sello']
 
 /** b) El gooal es ESTAR en un sitio, y el sitio es un TIPO, no un nombre. */
-const EMPIEZA_LUGAR = ['dormir en', 'alojarte en', 'pasar una noche en', 'pasar un dia en', 'entrar en', 'visitar', 'pasear por']
+const EMPIEZA_LUGAR = ['dormir en', 'alojarte en', 'pasar una noche en', 'pasar un día en', 'entrar en', 'visitar', 'pasear por']
 const PALABRA_LUGAR = [
   'faro', 'castillo', 'mirador', 'monasterio', 'catedral', 'bodega', 'mercado',
-  'balneario', 'termas', 'refugio', 'cabana', 'mezquita', 'templo', 'ruinas',
+  'balneario', 'termas', 'refugio', 'cabaña', 'mezquita', 'templo', 'ruinas',
   'cueva', 'palacio', 'museo', 'invernadero', 'hammam', 'onsen',
 ]
 
@@ -141,15 +156,15 @@ const PALABRA_LUGAR = [
 const EMPIEZA_VER = ['ver', 'contemplar', 'mirar', 'presenciar', 'observar']
 const PALABRA_VER = [
   'amanecer', 'atardecer', 'puesta de sol', 'aurora boreal', 'auroras',
-  'eclipse', 'via lactea', 'estrellas', 'lluvia de estrellas', 'niebla',
+  'eclipse', 'vía láctea', 'estrellas', 'lluvia de estrellas', 'niebla',
 ]
 
 /** d) Se hace con las manos y se reconoce por ellas. */
 const EMPIEZA_MANOS = ['cocinar', 'amasar', 'hacer pan', 'tallar', 'moldear', 'pintar', 'dibujar', 'escribir', 'tejer', 'coser', 'plantar', 'sembrar']
-const PALABRA_MANOS = ['ceramica', 'alfareria', 'torno', 'caligrafia', 'origami', 'sushi', 'coctel', 'pasta fresca']
+const PALABRA_MANOS = ['cerámica', 'alfarería', 'torno', 'caligrafía', 'origami', 'sushi', 'cóctel', 'pasta fresca']
 
 /** e) Hace falta un cuerpo, y la escala del paisaje es parte del gooal. */
-const PALABRA_SILUETA = ['cumbre', 'cima', 'travesia', 'trek', 'duna', 'desierto', 'glaciar', 'canon', 'acantilado', 'dosmil', 'tresmil', 'cuatromil']
+const PALABRA_SILUETA = ['cumbre', 'cima', 'travesía', 'trek', 'duna', 'desierto', 'glaciar', 'cañón', 'acantilado', 'dosmil', 'tresmil', 'cuatromil']
 
 /**
  * El encuadre que le toca a una categoría CUANDO YA SE HA DECIDIDO que el gooal
@@ -162,15 +177,25 @@ const PALABRA_SILUETA = ['cumbre', 'cima', 'travesia', 'trek', 'duna', 'desierto
 const POR_CATEGORIA = { gastronomia: 'plato', eventos: 'contraluz', vida: 'hombros' }
 
 /**
- * Devuelve { encuadre, por } donde `por` dice QUÉ regla ganó: 'a'..'e',
- * 'categoria' o 'ultimo-recurso'.
+ * Devuelve { encuadre, por } donde `por` dice QUÉ regla ganó: 'comida',
+ * 'a'..'e', 'categoria' — o `encuadre: null` y `por: 'sin-decidir'`.
  *
- * Que `por` exista no es decoración: es lo que permite al guion avisar cuando
- * demasiados gooals llegan al mismo encuadre **sin que ninguna regla haya
- * casado**, que es la firma exacta del fallo del \b.
+ * ── NO HAY ÚLTIMO RECURSO, Y ESE ES EL CAMBIO ─────────────
+ *
+ * Antes, lo que no casaba con nada caía en 'espaldas'. Por eso 'espaldas' era
+ * el 41 % del catálogo: no porque le fuera a 107 gooals, sino porque **había
+ * una salida**. Quitada la salida, no puede volver.
+ *
+ * Es el mismo candado que el de los créditos de las fotos: lo que no se ha
+ * decidido no pasa, en vez de pasar con la opción cómoda. Lo que no case aquí
+ * tiene que estar escrito a mano en ENCUADRE_DE, con su nombre y apellido.
  */
 export function clasificar(gooal) {
   const t = gooal.titulo
+  // El verbo primero: lo que haces manda sobre dónde lo haces.
+  if (empiezaPor(t, EMPIEZA_COMIDA)) {
+    return { encuadre: POR_CATEGORIA[gooal.categoria] ?? 'plato', por: 'comida' }
+  }
   if (empiezaPor(t, EMPIEZA_OBJETO) || contiene(t, PALABRA_OBJETO)) return { encuadre: 'objeto', por: 'a' }
   if (empiezaPor(t, EMPIEZA_LUGAR) || contiene(t, PALABRA_LUGAR)) return { encuadre: 'lugar_vacio', por: 'b' }
   if (empiezaPor(t, EMPIEZA_VER) || contiene(t, PALABRA_VER)) return { encuadre: 'primera_persona', por: 'c' }
@@ -178,7 +203,7 @@ export function clasificar(gooal) {
   if (contiene(t, PALABRA_SILUETA)) return { encuadre: 'silueta_lejana', por: 'e' }
   const porCategoria = POR_CATEGORIA[gooal.categoria]
   if (porCategoria) return { encuadre: porCategoria, por: 'categoria' }
-  return { encuadre: 'espaldas', por: 'ultimo-recurso' }
+  return { encuadre: null, por: 'sin-decidir' }
 }
 
 // ══ EL CONTROL NEGATIVO ═══════════════════════════════════
@@ -205,7 +230,10 @@ export const CONTROL = [
   { titulo: 'Comerte un escorpión', categoria: 'gastronomia', encuadre: 'plato' },
   { titulo: 'Ir a un concierto de tu grupo favorito', categoria: 'eventos', encuadre: 'contraluz' },
   { titulo: 'Aprender a tocar un instrumento', categoria: 'vida', encuadre: 'hombros' },
-  { titulo: 'Correr un 10K', categoria: 'deporte', encuadre: 'espaldas' },
+  // Los dos que cazaron defectos de verdad, y se quedan de guardia:
+  // el verbo mandando sobre el sitio, y carne con y sin tilde.
+  { titulo: 'Comer en el mercado de Chatuchak', categoria: 'gastronomia', encuadre: 'plato' },
+  { titulo: 'Probar la carne de cocodrilo', categoria: 'gastronomia', encuadre: 'plato' },
 ]
 
 /** Lanza si alguno falla, con la lista entera de los que fallan. */

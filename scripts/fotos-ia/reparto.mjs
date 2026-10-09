@@ -19,7 +19,7 @@
 import { writeFileSync } from 'node:fs'
 import { createClient } from '@supabase/supabase-js'
 import { encuadreDe, porQueEncuadre, ENCUADRE_DE, construirPrompt } from './estilos.mjs'
-import { destinoDe, comprobarControl } from './reparto-reglas.mjs'
+import { destinoDe, comprobarControl, CONTROL } from './reparto-reglas.mjs'
 
 // ══ EL CONTROL, ANTES DE NADA ═════════════════════════════
 //
@@ -27,7 +27,7 @@ import { destinoDe, comprobarControl } from './reparto-reglas.mjs'
 // **un reparto que sale con las reglas rotas es peor que ninguno, porque
 // parece un resultado.** Esto es lo que habría cazado en el primer segundo que
 // todas las reglas estaban muertas y todo caía en 'espaldas'.
-console.log('Control: ' + comprobarControl(encuadreDe) + ' de 15 titulos dan el encuadre que deben.')
+console.log('Control: ' + comprobarControl(encuadreDe) + ' de ' + CONTROL.length + ' titulos dan el encuadre que deben.')
 
 
 const s = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } })
@@ -66,8 +66,8 @@ const todo = filas.map((g, i) => {
     indice: i,
     destino,
     porque,
-    encuadre: encuadreDe(g),
-    por: porQueEncuadre(g),
+    encuadre: destino === 'ia' ? encuadreDe(g) : null,
+    por: destino === 'ia' ? porQueEncuadre(g) : null,
     aMano: Boolean(ENCUADRE_DE[g.titulo]),
   }
 })

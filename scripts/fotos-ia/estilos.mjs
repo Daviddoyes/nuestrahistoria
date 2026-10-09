@@ -44,6 +44,7 @@
 // `object-fit: cover` recorta POR LOS LADOS y no por arriba y abajo. Por eso
 // todas las plantillas piden el sujeto centrado y con aire a los lados.
 import { clasificar } from './reparto-reglas.mjs'
+import { DECIDIDOS } from './decisiones.mjs'
 
 export const CON_SITIO_RECONOCIBLE = new Set([
   "Bañarte en la cala de Sa Tuna",
@@ -187,7 +188,19 @@ const SOLO_MANOS = new Set(['manos', 'plato'])
 // escena: a un esquiador se le pone casco porque lo lleva de verdad, y a quien
 // come se le recorta por los hombros porque lo que importa son las manos y el
 // plato.
+/** Los encuadres de decisiones.mjs, para mezclarlos abajo. */
+const ENCUADRE_DECIDIDO = Object.fromEntries(
+  Object.entries(DECIDIDOS).map(([titulo, [encuadre]]) => [titulo, encuadre]),
+)
+/** Y sus escenas. Las que van con null ya tienen una escrita más abajo. */
+const ESCENA_DECIDIDA = Object.fromEntries(
+  Object.entries(DECIDIDOS)
+    .filter(([, [, escena]]) => escena)
+    .map(([titulo, [, escena]]) => [titulo, escena]),
+)
+
 const ENCUADRE_DE = {
+  ...ENCUADRE_DECIDIDO,
   // ── La familia «Practicar X», decidida una a una ────────
   //
   // 'espaldas' está PROHIBIDO aquí: eran 16 de los 39 que caían ahí, y la
@@ -232,7 +245,8 @@ const ENCUADRE_DE = {
   'Pasar un día en Ferrari Land': 'contraluz',
   // Las escenas de objeto: lo que se ve son unas manos sosteniendo algo, así
   // que la cabeza va fuera del encuadre.
-  'Doctorarte': 'hombros',
+  // El birrete solo lo dice entero: las manos sobraban.
+  'Doctorarte': 'objeto',
   'Probar el pulpo vivo': 'plato',
   'Hacer un voluntariado en el extranjero': 'hombros',
   'Terminar una carrera universitaria': 'hombros',
@@ -253,7 +267,9 @@ const ENCUADRE_DE = {
   'Publicar un libro': 'objeto',
   'Terminar un máster': 'espaldas',
   'Vivir un año en otro país': 'espaldas',
-  'Sacarte el cinturón negro': 'espaldas',
+  // Aquí SÍ hacen falta las manos, y por una razón: el cinturón doblado y
+  // quieto no dice que te lo hayas ganado; atarlo sí.
+  'Sacarte el cinturón negro': 'manos',
 }
 
 // ── QUIÉN SALE EN LA FOTO, por turno y no al azar ──────────
@@ -330,6 +346,7 @@ const PROHIBIDO = [
 // eran falsos positivos (los «desierto», donde el desierto es el sitio y no una
 // negación). Los tres de verdad llevan su escena aquí abajo.
 export const ESCENAS = {
+  ...ESCENA_DECIDIDA,
   // Las de «Practicar X»: el objeto de cada deporte, escrito uno a uno. Sin
   // esto, un encuadre sin persona se queda sin sujeto y lo elige el modelo.
   "Practicar CrossFit": "Una barra olímpica cargada de discos, apoyada en el suelo de goma de un box, con el polvo de magnesio alrededor y las anillas colgando al fondo, desenfocadas.",
@@ -377,13 +394,13 @@ export const ESCENAS = {
   'Vivir un año en otro país':
     'Alguien de espaldas en el balcón de un piso extranjero al atardecer, con una maleta todavía abierta detrás.',
   'Sacarte el cinturón negro':
-    'Unas manos atándose un cinturón negro sobre un kimono blanco, en un tatami vacío.',
+    'Solo unas manos atando el nudo de un cinturón negro sobre un kimono blanco, de cerca, con un tatami vacío desenfocado detrás.',
   // La escena vieja decía «delante de una pizarra llena de fórmulas» y salió
   // con las fórmulas escritas y legibles. No se coló el texto: lo pedía la
   // escena. Cuando la escena obvia NECESITA texto, no se endurece la
   // prohibición — se cambia de escena.
   'Doctorarte':
-    'Un birrete apoyado sobre unas manos, junto a un diploma enrollado y atado con una cinta. El diploma está enrollado y no se ve nada escrito en ninguna parte.',
+    'Un birrete negro con su borla dejado sobre el respaldo de una silla de madera, junto a un diploma enrollado y atado con una cinta. El diploma está enrollado y no se ve nada escrito en ninguna parte. NO HAY NINGUNA PERSONA.',
   // Igual: una carrera con la distancia en el nombre pide un dorsal, y un
   // dorsal sin número no es nada. Se quitan los dorsales de la escena.
   'Correr un 10K':
@@ -653,12 +670,24 @@ export function construirPrompt(gooal, clave, indice = 0) {
   // manos sosteniendo algo.
   partes.push(ENCUADRES[encuadre])
 
-  if (cerrado) {
+  // ── Y el cerrado SOLO si hay alguien a quien encerrar ────
+  //
+  // «Dormir en un bungalow sobre el agua en Bora Bora» pedía las dos cosas a
+  // la vez: enseñar el sitio VACÍO y, a renglón seguido, que NO se vea el
+  // lugar. Eso no da error: lo resuelve el modelo por su cuenta, que es el
+  // fallo que se repite toda esta semana.
+  //
+  // No se arregla con un aviso, se arregla haciéndolo imposible. **La
+  // cláusula del encuadre cerrado existe para esconder a alguien**: donde no
+  // hay nadie no tiene nada que esconder, y encima contradice al encuadre.
+  if (cerrado && CUERPO.has(encuadre)) {
     partes.push('ENCUADRE CERRADO sobre la acción: la cámara está MUY CERCA y solo entran el gesto, las manos, el equipo y el terreno inmediato.')
     partes.push('NO se ve el lugar: ni el horizonte, ni la silueta de la montaña, ni el edificio, ni nada que permita reconocer dónde es. Fondo desenfocado o fuera de cuadro.')
   }
 
-  const momento = momentoDe(gooal.titulo)
+  // El momento SOLO donde hay cuerpo: varios nombran brazos, manos o un
+  // hombro, y en una foto sin nadie eso mete a alguien sin dar ningún error.
+  const momento = CUERPO.has(encuadre) ? momentoDe(gooal.titulo) : null
   if (momento) partes.push(momento)
 
   partes.push(PROHIBIDO)
@@ -681,7 +710,19 @@ export { momentoDe }
  * Ya no hay un tercer escalón por categoría: era el que mandaba el 78 % del
  * catálogo a 'espaldas' sin que nadie hubiera mirado ni un título.
  */
-export const encuadreDe = gooal => ENCUADRE_DE[gooal.titulo] ?? clasificar(gooal).encuadre
+export const encuadreDe = gooal => {
+  const aMano = ENCUADRE_DE[gooal.titulo]
+  if (aMano) return aMano
+  const { encuadre } = clasificar(gooal)
+  if (encuadre) return encuadre
+  // NO HAY VALOR POR DEFECTO, y es lo que impide que vuelva lo de antes:
+  // 'espaldas' llegó al 41 % porque era la salida de todo lo que no casaba
+  // con ninguna regla. Lo que no se ha decidido no pasa — se para y se
+  // decide. Es el mismo candado que el de los créditos de las fotos.
+  throw new Error(
+    `SIN DECIDIR: «${gooal.titulo}» (${gooal.categoria}). No casa ninguna regla ` +
+    'y no está escrito en ENCUADRE_DE. Decídelo a mano y escríbelo ahí.')
+}
 
 /** Para poder contar y repasar el reparto desde fuera. */
 export { ENCUADRES, CUERPO, SOLO_MANOS, ENCUADRE_DE }
