@@ -20,7 +20,7 @@ import { writeFileSync } from 'node:fs'
 import { createClient } from '@supabase/supabase-js'
 import { encuadreDe, porQueEncuadre, ENCUADRE_DE, construirPrompt } from './estilos.mjs'
 import { destinoDe, comprobarControl, CONTROL } from './reparto-reglas.mjs'
-import { CAMARA } from './decisiones.mjs'
+import { CAMARA, DECIDIDOS } from './decisiones.mjs'
 
 // ══ EL CONTROL, ANTES DE NADA ═════════════════════════════
 //
@@ -151,6 +151,45 @@ console.log(pasados === 0
   ? '  ningún par ángulo+luz se repite más de tres veces dentro de su encuadre'
   : `  ${pasados} par(es) por encima del tope. Cámbialos.`)
 console.log(`  (${sinCamara} de los ${aIA.length} no llevan cámara decidida: los eligió una regla, no una persona)`)
+// ── ESCENAS GEMELAS ───────────────────────────────────────
+//
+// El contador de ángulo+luz NO caza esto, y por eso hace falta otro: dos
+// escenas pueden describir LA MISMA IMAGEN sin compartir ni ángulo ni luz.
+// Pasó con «Correr la Cursa dels Bombers» y «Correr un maratón»: las dos
+// eran siluetas de corredores en una avenida contra el sol bajo, con
+// cámaras distintas.
+//
+// Esto NO decide: avisa. Compara las palabras con contenido de las escenas
+// de un mismo encuadre y saca las parejas que se parecen demasiado, para
+// mirarlas. Como todo lo que compara textos en este repo, trae candidatas.
+console.log('')
+console.log('── ESCENAS QUE PUEDEN SER LA MISMA FOTO ──')
+const VACIAS = new Set(['de', 'del', 'la', 'las', 'el', 'los', 'un', 'una', 'unos', 'unas', 'y', 'en', 'con', 'sin', 'por', 'al', 'a', 'que', 'se', 'su', 'sus', 'sobre', 'entre', 'desde', 'hasta', 'como', 'lo', 'le', 'no', 'ni', 'o', 'es', 'está', 'the'])
+const contenido = texto => new Set(
+  texto.toLowerCase().replace(/[.,:;«»()]/g, ' ').split(/\s+/).filter(p => p.length > 3 && !VACIAS.has(p)))
+
+const porEncuadre2 = {}
+for (const g of aIA) {
+  const dec = DECIDIDOS[g.titulo]
+  if (!dec || !dec[1]) continue
+  ;(porEncuadre2[g.encuadre] ??= []).push({ titulo: g.titulo, palabras: contenido(dec[1]) })
+}
+let gemelas = 0
+for (const [nombre, lista] of Object.entries(porEncuadre2)) {
+  for (let i = 0; i < lista.length; i++) {
+    for (let j = i + 1; j < lista.length; j++) {
+      const a = lista[i].palabras, b = lista[j].palabras
+      const comunes = [...a].filter(p => b.has(p)).length
+      const parecido = comunes / Math.min(a.size, b.size)
+      if (parecido < 0.5) continue
+      gemelas++
+      console.log(`  ${nombre}: ${Math.round(parecido * 100)} % de palabras en común`)
+      console.log(`      ${lista[i].titulo}`)
+      console.log(`      ${lista[j].titulo}`)
+    }
+  }
+}
+if (gemelas === 0) console.log('  ninguna pareja de escenas se parece lo bastante como para mirarla')
 console.log('\n── LO QUE COSTARÍA GENERARLOS ──')
 const aGenerar = yaIA.length + sinNada.length
 console.log(`  a rehacer + sin nada: ${aGenerar} imágenes x ${EURO_POR_IMAGEN} $ = ${(aGenerar * EURO_POR_IMAGEN).toFixed(2)} $`)
