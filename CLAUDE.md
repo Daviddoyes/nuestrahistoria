@@ -771,6 +771,54 @@ que no se repitan.
 Se va a repetir con las ferratas, las cimas, los GR y los mercados: cuando se
 añadan gooals a un grupo, se les añade su momento.
 
+## No indexes por un campo que no es único
+
+El guion que sube las fotos construía un índice de todo el catálogo con
+`new Map(filas.map(f => [f.titulo, f]))`. Parece inofensivo y no lo es: **el
+título NO es único en `gooals_v2`.** Conviven el gooal publicado y su gemelo
+retirado del catálogo viejo — «Correr una media maratón», «Pilotar un kart» —, y
+un `Map` se queda con **el último**, que resultó ser el retirado.
+
+El resultado: el guion informaba de que esos dos gooals «están retirados»
+teniendo el publicado delante, **y no dio ningún error**. Pasó la comprobación
+en seco, que para eso está, pero podría no haber pasado.
+
+> **Si una clave puede repetirse, o se filtra antes o se para al encontrar el
+> duplicado. Adivinar no es una opción**, y quedarse con el último es adivinar
+> sin saberlo.
+
+Ahora el índice se construye solo con lo publicado, y si un título saliera dos
+veces *publicado* el guion se detiene y los nombra. Lo mismo vale para
+`gooals_v2.titulo` en cualquier otro sitio: es el campo por el que da la gana
+indexar, y es el que no se puede.
+
+## Una regla que el estado actual no puede cumplir es un bloqueo, no una regla
+
+«Lo que no está declarado no se sube.» Buena regla, y el guion la aplicaba: se
+paraba si encontraba en el catálogo una imagen que no estuviera en
+`scripts/fotos-definitivas.json`.
+
+Se paraba **siempre**, porque las 275 fotos que ya estaban en el catálogo vivían
+solo en la base: las subió el pipeline viejo antes de que ese fichero
+existiera. La regla era incumplible desde el primer día.
+
+> **Cuando una regla nueva choca con lo que ya hay, la salida no es relajar la
+> regla: es poner al día lo que ya hay.** Relajarla —«falla solo con las
+> nuevas»— deja un agujero permanente y encima disimulado.
+
+Se declararon las 275 leyéndolas de la base. Pero eso trae su propia trampa, y
+está avisada en el propio fichero:
+
+> **`fotos-definitivas.json` guarda ahora DOS CLASES de entrada que no son lo
+> mismo.** Las 232 nuevas pasaron una revisión a ojo, una a una. Las 275
+> heredadas solo se leyeron de la base: **nadie las ha mirado** con los
+> criterios de esta semana. Llevan `ya_subida: true` y `revisada: false`, y la
+> cabecera del fichero lo dice con todas las letras, para que dentro de seis
+> meses nadie lo lea como si fueran 507 fotos aprobadas.
+
+Esas 275 son justo la lista que David irá marcando según vea alguna que no le
+valga, que es la deuda apuntada el 8-10-2026.
+
 ## De dónde sale la foto de un gooal
 
 Medido sobre **205 gooals revisados a ojo, uno a uno**, entre el 8 y el 9 de
