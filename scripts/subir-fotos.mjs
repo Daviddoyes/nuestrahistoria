@@ -36,7 +36,7 @@
 // guion se detiene y lo dice**: significa que el fichero de definitivas miente,
 // y eso se arregla mirando, no rellenando el hueco.
 import { createClient } from '@supabase/supabase-js'
-import { readFileSync, existsSync } from 'node:fs'
+import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { crearFrenos, esFreno } from './lib/frenos.mjs'
 
@@ -56,7 +56,8 @@ const clave = process.env.SUPABASE_SERVICE_ROLE_KEY
 if (!url || !clave) throw new Error('Faltan las variables. Lánzalo con --env-file=.env.local')
 const s = createClient(url, clave, { auth: { persistSession: false } })
 
-const declaradas = JSON.parse(readFileSync(DECLARADAS, 'utf8')).gooals
+const declaradasEnteras = JSON.parse(readFileSync(DECLARADAS, 'utf8'))
+const declaradas = declaradasEnteras.gooals
 const titulos = Object.keys(declaradas)
 console.log('Declaradas en fotos-definitivas.json: ' + titulos.length)
 
@@ -235,10 +236,13 @@ for (const [titulo, d] of Object.entries(declaradas)) {
   n++
   if (d.ya_subida) { saltadas++; continue }
   const g = porTitulo.get(titulo)
-  // Si ya subimos esta misma imagen en una pasada anterior, se reconoce porque
-  // la fila ya apunta a un objeto del cubo con el id de este gooal.
-  const yaSuya = (objetos ?? []).find(o => o.name.startsWith(g.id) && g.imagen_url?.endsWith(o.name))
-  if (yaSuya) { saltadas++; subidas.set(titulo, yaSuya.name); continue }
+
+  // ¿Ya está subida? Se mira `subida_como` del FICHERO, no `imagen_url` de la
+  // fila. La fila no se escribe hasta el paso 3, así que entre el paso 2 y el
+  // 3 la base no sabe nada de lo que acaba de subirse: relanzar el guion ahí
+  // en medio volvería a subirlo todo con nombre nuevo, duplicando el cubo sin
+  // que nada fallara. La memoria de lo hecho va en el fichero, como todo.
+  if (d.subida_como && enCubo.has(d.subida_como)) { saltadas++; subidas.set(titulo, d.subida_como); continue }
 
   try {
     await frenos.antesDePedir()
@@ -253,6 +257,10 @@ for (const [titulo, d] of Object.entries(declaradas)) {
     if (error) throw new Error(error.message)
     enCubo.add(objeto)
     subidas.set(titulo, objeto)
+    // Se anota EN CUANTO se sube, no al final: si esto se corta a la mitad, lo
+    // subido tiene que quedar escrito o se vuelve a pagar y se duplica.
+    d.subida_como = objeto
+    writeFileSync(DECLARADAS, JSON.stringify(declaradasEnteras, null, 1), 'utf8')
     nuevas++
     console.log(`${String(n).padStart(3)}/${titulos.length}  ${String(Math.round(webp.length / 1024)).padStart(4)} KB · ${objeto} · ${titulo.slice(0, 46)}`)
     if (d.fuente === 'commons') await dormir(300)
@@ -275,7 +283,7 @@ if (!escribir) {
 let escritas = 0, rechazadas = 0
 for (const [titulo, d] of Object.entries(declaradas)) {
   if (d.ya_subida) continue   // su fila ya está escrita desde antes
-  const objeto = subidas.get(titulo)
+  const objeto = subidas.get(titulo) ?? d.subida_como
   if (!objeto) continue
   const g = porTitulo.get(titulo)
   const fila = d.fuente === 'ia'
