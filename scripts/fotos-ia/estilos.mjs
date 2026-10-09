@@ -147,6 +147,9 @@ const ENCUADRE_DE = {
   'Caminar sobre un glaciar en Islandia': 'espaldas',
   'Dormir en una cabaña sin electricidad': 'espaldas',
   'Correr la Marató de Barcelona': 'espaldas',
+  'Bañarte en la piscina del Marina Bay Sands': 'espaldas',
+  'Flotar en el mar Muerto': 'espaldas',
+  'Pasar un día en Ferrari Land': 'contraluz',
   // Las escenas de objeto: lo que se ve son unas manos sosteniendo algo, así
   // que la cabeza va fuera del encuadre.
   'Doctorarte': 'hombros',
@@ -256,8 +259,22 @@ const PROHIBIDO = [
 export const ESCENAS = {
   'Montar tu propia empresa':
     'Dos manos abriendo la persiana metálica de un local pequeño a primera hora, con cajas de cartón aún sin abrir dentro.',
+  // La versión anterior decía «un examen terminado» y salió con la hoja llena
+  // de texto impreso: un examen ES texto. Se le da la vuelta a la hoja.
   'Sacarte el C1 de inglés':
-    'Unas manos dejando el bolígrafo sobre un examen terminado, en un pupitre de aula vacía junto a una ventana.',
+    'Unas manos dejando el bolígrafo sobre una hoja de examen YA VUELTA DEL REVÉS sobre el pupitre, de modo que solo se ve el dorso en blanco del papel, sin una sola letra. Aula vacía junto a una ventana, luz de tarde.',
+
+  // ── Tres que reclamaban su sitio o metían una marca ──────
+  // El encuadre cerrado no bastó: el modelo metió el edificio, el escudo de la
+  // marca y un periódico. Cuando una escena tiene un elemento que TIRA de lo
+  // prohibido, hay que escribir la escena sin ese elemento, no repetir la
+  // prohibición.
+  'Bañarte en la piscina del Marina Bay Sands':
+    'Alguien de espaldas apoyado en el borde de una piscina infinita en altura, con el agua desbordando por el canto de piedra. Detrás solo hay cielo y una ciudad completamente desenfocada: NO se ve ningún edificio reconocible, ni torres, ni una azotea con forma.',
+  'Flotar en el mar Muerto':
+    'Alguien flotando boca arriba en agua densa y turquesa, con las rodillas y las manos asomando por encima de la superficie y costras de sal blanca en la orilla. NO sostiene nada: ni periódico, ni libro, ni papel, ni revista.',
+  'Pasar un día en Ferrari Land':
+    'El rizo rojo de una montaña rusa visto desde abajo contra el cielo, con un vagón pasando por lo alto y los brazos de la gente levantados. Ni un logotipo, ni un escudo, ni un emblema, ni una marca en ninguna parte.',
   'Publicar un libro':
     'Unas manos sosteniendo un libro recién impreso, cerrado y sin nada escrito en la cubierta, sobre una mesa de madera.',
   'Terminar un máster':

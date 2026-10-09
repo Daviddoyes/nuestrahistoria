@@ -508,6 +508,517 @@
    "licencia": "CC BY-SA 3.0",
    "pagina": "https://commons.wikimedia.org/wiki/File:V%C3%ADa_ferrata_Olmo-Urquiza.jpg",
    "candidata": 1
+  },
+  "Bañarte en los gorgs de la Garrotxa": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-banarte-en-los-gorgs-de-la-garrotxa-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-banarte-en-los-gorgs-de-la-garrotxa-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Bañarte en la piscina del Marina Bay Sands": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v3/A-banarte-en-la-piscina-del-marina-bay-sands-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v3/A-banarte-en-la-piscina-del-marina-bay-sands-1.txt",
+   "tanda": "tanda-hacer-v3"
+  },
+  "Bañarte en la cala de Sa Tuna": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-banarte-en-la-cala-de-sa-tuna-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-banarte-en-la-cala-de-sa-tuna-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Bañarte en una playa de arena negra de Santorini": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-banarte-en-una-playa-de-arena-negra-de-san-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-banarte-en-una-playa-de-arena-negra-de-san-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Bucear en las islas Medes": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-bucear-en-las-islas-medes-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-bucear-en-las-islas-medes-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Bucear en Raja Ampat": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-bucear-en-raja-ampat-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-bucear-en-raja-ampat-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Caminar sobre un glaciar en Islandia": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-caminar-sobre-un-glaciar-en-islandia-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-caminar-sobre-un-glaciar-en-islandia-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Comer arroz en el Delta del Ebro": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-comer-arroz-en-el-delta-del-ebro-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-comer-arroz-en-el-delta-del-ebro-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Comer en el mercado de Toyosu": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-comer-en-el-mercado-de-toyosu-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-comer-en-el-mercado-de-toyosu-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Comer en un restaurante con una estrella Michelin": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-comer-en-un-restaurante-con-una-estrella-m-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-comer-en-un-restaurante-con-una-estrella-m-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Comer gambas de Palamós": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-comer-gambas-de-palamos-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-comer-gambas-de-palamos-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Comer suquet de peix en la Costa Brava": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-comer-suquet-de-peix-en-la-costa-brava-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-comer-suquet-de-peix-en-la-costa-brava-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Correr un encierro de San Fermín": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-correr-un-encierro-de-san-fermin-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-correr-un-encierro-de-san-fermin-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Correr la Mitja de Granollers": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-correr-la-mitja-de-granollers-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-correr-la-mitja-de-granollers-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Correr la Ultra Pirineu": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-correr-la-ultra-pirineu-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-correr-la-ultra-pirineu-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Dormir en el desierto de Wadi Rum": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-dormir-en-el-desierto-de-wadi-rum-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-dormir-en-el-desierto-de-wadi-rum-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Dormir en un bungalow sobre el agua en Bora Bora": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-dormir-en-un-bungalow-sobre-el-agua-en-bor-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-dormir-en-un-bungalow-sobre-el-agua-en-bor-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Dormir en un bungalow sobre el agua en Maldivas": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-dormir-en-un-bungalow-sobre-el-agua-en-mal-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-dormir-en-un-bungalow-sobre-el-agua-en-mal-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Escalar una aguja de Montserrat": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-escalar-una-aguja-de-montserrat-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-escalar-una-aguja-de-montserrat-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Escalar en Siurana": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-escalar-en-siurana-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-escalar-en-siurana-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Flotar en el mar Muerto": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v3/A-flotar-en-el-mar-muerto-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v3/A-flotar-en-el-mar-muerto-1.txt",
+   "tanda": "tanda-hacer-v3"
+  },
+  "Hacer barranquismo en la Noguera": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-hacer-barranquismo-en-la-noguera-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-hacer-barranquismo-en-la-noguera-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Formar parte de un castell": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-formar-parte-de-un-castell-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-formar-parte-de-un-castell-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Hacer el Camí dels Bons Homes": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-hacer-el-cami-dels-bons-homes-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-hacer-el-cami-dels-bons-homes-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Hacer el Camino de Santiago desde Montserrat": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-hacer-el-camino-de-santiago-desde-montserr-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-hacer-el-camino-de-santiago-desde-montserr-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Hacer la ferrata de Boixadera dels Bancs": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-hacer-la-ferrata-de-boixadera-dels-bancs-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-hacer-la-ferrata-de-boixadera-dels-bancs-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Hacer la ferrata de Les Baumes": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-hacer-la-ferrata-de-les-baumes-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-hacer-la-ferrata-de-les-baumes-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Hacer la ferrata del Salt del Grill": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-hacer-la-ferrata-del-salt-del-grill-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-hacer-la-ferrata-del-salt-del-grill-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Hacer la Matagalls-Montserrat": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-hacer-la-matagalls-montserrat-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-hacer-la-matagalls-montserrat-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Hacer la ruta de las nueve ermitas del Montsant": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-hacer-la-ruta-de-las-nueve-ermitas-del-mon-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-hacer-la-ruta-de-las-nueve-ermitas-del-mon-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Hacer la Travessia del Port de Barcelona nadando": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-hacer-la-travessia-del-port-de-barcelona-n-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-hacer-la-travessia-del-port-de-barcelona-n-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Hacer la Vía Verde del Carrilet de Olot a Girona": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-hacer-la-via-verde-del-carrilet-de-olot-a--1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-hacer-la-via-verde-del-carrilet-de-olot-a--1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Hacer los Carros de Foc": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-hacer-los-carros-de-foc-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-hacer-los-carros-de-foc-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Hacer paddle surf en el cabo de Creus": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-hacer-paddle-surf-en-el-cabo-de-creus-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-hacer-paddle-surf-en-el-cabo-de-creus-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Hacer rafting por el Noguera Pallaresa": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-hacer-rafting-por-el-noguera-pallaresa-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-hacer-rafting-por-el-noguera-pallaresa-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Hacer un safari por el desierto de Dubái": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-hacer-un-safari-por-el-desierto-de-dubai-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-hacer-un-safari-por-el-desierto-de-dubai-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Jugar al Holi en India": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-jugar-al-holi-en-india-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-jugar-al-holi-en-india-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Mojarte en el Songkran": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-mojarte-en-el-songkran-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-mojarte-en-el-songkran-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Navegar entre los islotes de El Nido": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-navegar-entre-los-islotes-de-el-nido-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-navegar-entre-los-islotes-de-el-nido-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Navegar por el Amazonas": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-navegar-por-el-amazonas-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-navegar-por-el-amazonas-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Navegar por el delta del Ebro": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-navegar-por-el-delta-del-ebro-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-navegar-por-el-delta-del-ebro-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Navegar por el río Li en Guilin": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-navegar-por-el-rio-li-en-guilin-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-navegar-por-el-rio-li-en-guilin-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Navegar por la bahía de Ha Long": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-navegar-por-la-bahia-de-ha-long-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-navegar-por-la-bahia-de-ha-long-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Navegar por los fiordos noruegos": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-navegar-por-los-fiordos-noruegos-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-navegar-por-los-fiordos-noruegos-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Pasar un día en Ferrari Land": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v3/A-pasar-un-dia-en-ferrari-land-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v3/A-pasar-un-dia-en-ferrari-land-1.txt",
+   "tanda": "tanda-hacer-v3"
+  },
+  "Pasar un día en PortAventura": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-pasar-un-dia-en-portaventura-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-pasar-un-dia-en-portaventura-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Recorrer el Camí de Ronda entero": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-recorrer-el-cami-de-ronda-entero-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-recorrer-el-cami-de-ronda-entero-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Recorrer el carril bici más largo del mundo": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-recorrer-el-carril-bici-mas-largo-del-mund-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-recorrer-el-carril-bici-mas-largo-del-mund-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Recorrer el GR-11 por el Pirineo catalán": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-recorrer-el-gr-11-por-el-pirineo-catalan-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-recorrer-el-gr-11-por-el-pirineo-catalan-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Recorrer el Parc Natural del Montseny": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-recorrer-el-parc-natural-del-montseny-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-recorrer-el-parc-natural-del-montseny-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Recorrer la Tarragona romana": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-recorrer-la-tarragona-romana-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-recorrer-la-tarragona-romana-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Recorrer la Vía Dolorosa": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-recorrer-la-via-dolorosa-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-recorrer-la-via-dolorosa-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Recorrer las islas Feroe": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-recorrer-las-islas-feroe-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-recorrer-las-islas-feroe-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Recorrer las murallas de Dubrovnik": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-recorrer-las-murallas-de-dubrovnik-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-recorrer-las-murallas-de-dubrovnik-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Recorrer las murallas de Montblanc": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-recorrer-las-murallas-de-montblanc-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-recorrer-las-murallas-de-montblanc-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Recorrer las Torres del Paine": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-recorrer-las-torres-del-paine-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-recorrer-las-torres-del-paine-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Recorrer los canales de Ámsterdam en barco": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-recorrer-los-canales-de-amsterdam-en-barco-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-recorrer-los-canales-de-amsterdam-en-barco-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Recorrer los túneles de Cu Chi": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-recorrer-los-tuneles-de-cu-chi-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-recorrer-los-tuneles-de-cu-chi-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Recorrer un GR entero": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-recorrer-un-gr-entero-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-recorrer-un-gr-entero-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Recorrer un mercado flotante de Tailandia": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-recorrer-un-mercado-flotante-de-tailandia-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-recorrer-un-mercado-flotante-de-tailandia-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Sacarte el C1 de inglés": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v3/A-sacarte-el-c1-de-ingles-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v3/A-sacarte-el-c1-de-ingles-1.txt",
+   "tanda": "tanda-hacer-v3"
+  },
+  "Sacarte el título de buceo Open Water": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-sacarte-el-titulo-de-buceo-open-water-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-sacarte-el-titulo-de-buceo-open-water-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Saltar en puenting en Queenstown": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-saltar-en-puenting-en-queenstown-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-saltar-en-puenting-en-queenstown-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Subir en bici a la Rabassa": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-subir-en-bici-a-la-rabassa-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-subir-en-bici-a-la-rabassa-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Subir en bici al Alpe d'Huez": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-subir-en-bici-al-alpe-d-huez-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-subir-en-bici-al-alpe-d-huez-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Subir en bici al Angliru": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-subir-en-bici-al-angliru-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-subir-en-bici-al-angliru-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Subir en bici al Mont Ventoux": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-subir-en-bici-al-mont-ventoux-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-subir-en-bici-al-mont-ventoux-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Subir en bici al Port del Cantó": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-subir-en-bici-al-port-del-canto-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-subir-en-bici-al-port-del-canto-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Terminar un Ironman": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-terminar-un-ironman-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-terminar-un-ironman-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Terminar un medio Ironman": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-terminar-un-medio-ironman-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-terminar-un-medio-ironman-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Terminar una Hyrox": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-terminar-una-hyrox-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-terminar-una-hyrox-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Volar en globo sobre la Capadocia": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-volar-en-globo-sobre-la-capadocia-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-volar-en-globo-sobre-la-capadocia-1.txt",
+   "tanda": "tanda-hacer-v2"
+  },
+  "Volar en globo sobre los volcanes de la Garrotxa": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-hacer-v2/A-volar-en-globo-sobre-los-volcanes-de-la-ga-1.png",
+   "prompt": "Claude outputs/tanda-hacer-v2/A-volar-en-globo-sobre-los-volcanes-de-la-ga-1.txt",
+   "tanda": "tanda-hacer-v2"
   }
  }
 }
