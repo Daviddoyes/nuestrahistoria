@@ -1,4 +1,5 @@
 import { createServiceRoleClient } from '@/lib/supabase/service'
+import { leerTodo } from '@/lib/paginar'
 import type { VisibilidadFoto } from '@/types/gooals'
 
 /**
@@ -39,14 +40,21 @@ export async function amigosDe(userId: string | null | undefined): Promise<Set<s
 
   // Las dos direcciones, en dos consultas y cruzadas aquí. Se podría pedir a la
   // base con un join, pero así no hay SQL suelto repartido y se ve la regla.
+  //
+  // Paginado, y no es un adorno: `follows` crece con cada "seguir" de cualquiera
+  // y PostgREST corta en 1.000 filas SIN avisar. Si se pasara de ahí, esto
+  // devolvería una lista de amigos incompleta y el fallo sería que a alguien
+  // deja de vérsele una foto que sí debería ver, sin ningún error por ningún lado.
   const [sigo, meSiguen] = await Promise.all([
-    service.from('follows').select('following_id').eq('follower_id', userId),
-    service.from('follows').select('follower_id').eq('following_id', userId),
+    leerTodo<{ following_id: string }>('a quién sigue', (desde, hasta) =>
+      service.from('follows').select('following_id').eq('follower_id', userId).order('id').range(desde, hasta)),
+    leerTodo<{ follower_id: string }>('quién le sigue', (desde, hasta) =>
+      service.from('follows').select('follower_id').eq('following_id', userId).order('id').range(desde, hasta)),
   ])
 
-  const losQueSigo = new Set(((sigo.data ?? []) as { following_id: string }[]).map(f => f.following_id))
+  const losQueSigo = new Set(sigo.map(f => f.following_id))
   const amigos = new Set<string>()
-  for (const f of (meSiguen.data ?? []) as { follower_id: string }[]) {
+  for (const f of meSiguen) {
     if (losQueSigo.has(f.follower_id)) amigos.add(f.follower_id)
   }
   return amigos

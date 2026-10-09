@@ -9,6 +9,7 @@ import {
 } from '@/lib/gooals'
 import { limpiarBusqueda } from '@/lib/busqueda'
 import { amigosDe, puedeVerLaFoto, VISIBILIDADES } from '@/lib/permisos'
+import { leerTodo } from '@/lib/paginar'
 import {
   BUCKET_LOGROS, errorDeArchivo, rutaDeRecuerdo, tipoDeRecuerdo, type TipoRecuerdo,
 } from '@/lib/recuerdo-media'
@@ -1178,34 +1179,7 @@ export async function getListaSeguidores(
  * Filas por consulta al leer listas del perfil. Es el tope de PostgREST, que
  * corta en 1.000 sin avisar; ya rompió Explorar y los porcentajes del perfil.
  */
-const FILAS_POR_VUELTA = 1000
-
 /** Lo que enseña la tarjeta "en común": 4 miniaturas y 5 títulos. El resto es un número. */
-/**
- * Lee una consulta entera, de 1.000 en 1.000. Quien llama debe ordenar por algo
- * que acabe en `id`: sin un orden estable, dos vueltas pueden repetir una fila o
- * saltarse otra.
- *
- * Si una vuelta falla se lanza el error en vez de devolver lo leído: un perfil
- * con la mitad de sus gooals, o un "0 en común" por un fallo de red, es un dato
- * falso que nadie detectaría.
- */
-async function leerTodo<T>(
-  etiqueta: string,
-  pedir: (desde: number, hasta: number) => PromiseLike<{ data: unknown[] | null; error: unknown }>
-): Promise<T[]> {
-  const filas: T[] = []
-  for (let desde = 0; ; desde += FILAS_POR_VUELTA) {
-    const { data, error } = await pedir(desde, desde + FILAS_POR_VUELTA - 1)
-    if (error) {
-      console.error(`[${etiqueta}]`, error)
-      throw new Error(`No se pudo leer ${etiqueta}`)
-    }
-    const vuelta = (data ?? []) as T[]
-    filas.push(...vuelta)
-    if (vuelta.length < FILAS_POR_VUELTA) return filas
-  }
-}
 
 type FilaUserGooal = {
   id: string
