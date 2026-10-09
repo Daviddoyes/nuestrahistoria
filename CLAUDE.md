@@ -696,9 +696,7 @@ barra siguió con cuatro pestañas y eso solo se supo al abrir la pantalla.
 En la práctica, el molde es este, y no cuesta nada:
 
 ```js
-const leer = f => readFileSync(f, 'utf8').replace(/
-/g, '
-')  // CRLF fuera
+const leer = f => readFileSync(f, 'utf8').replace(/\r\n/g, '\n')  // CRLF fuera
 let s = leer(fichero)
 const cambiar = (viejo, nuevo) => {
   if (s.split(viejo).length !== 2) {   // ni 0 veces ni 2: exactamente 1
