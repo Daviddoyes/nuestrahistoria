@@ -769,6 +769,30 @@ Y lo bueno de ponerlos: los datos de prueba hacen aparecer también lo de al
 lado. El post que se insertó para la línea del muro enseñó, de paso, que el
 texto sale bien con el nombre y el gooal, cosa que nadie había visto nunca.
 
+## Una foto vale si se entiende sin leer el título
+
+Esta va por encima de todos los contadores de este repo, y conviene leerla
+antes que ninguna de las otras reglas de las fotos:
+
+> **Una foto vale si, en una tarjeta y sin leer el título, se entiende de qué
+> gooal es.**
+
+Los once encuadres, los ángulos, las luces y los topes son el VOCABULARIO. Esto
+es la regla. Una foto puede cumplir su encuadre, respetar su cámara, pasar el
+tope de los pares y no repetirse con ninguna otra, y seguir sin valer — porque
+nada de eso pregunta lo único que importa.
+
+Ejemplos medidos, todos de fotos correctas que no valían: una manta térmica
+dorada (no dice maratón), un dorsal en blanco (no dice carrera), un mosquetón
+sobre madera (no dice puenting), una pared de sal (no dice nada). Y al revés:
+una masa de corredores vista desde arriba dice «carrera popular» en medio
+segundo sin una sola letra.
+
+Y de aquí sale lo que ningún guion puede comprobar: **la imagen puede no
+contener lo que su encuadre pedía.** «Practicar pádel» salió cuatro veces sin
+pala. Eso no lo caza un contador, ni una alarma, ni una regla: solo se ve
+mirando la imagen, y por eso las tandas van de cuarenta y se miran.
+
 ## Dos fallos no son un prompt malo: es el encuadre equivocado
 
 Sale de generar fotos del catálogo, y vale para cualquier cosa que se intente
@@ -790,6 +814,23 @@ de las tres, porque ninguna es un problema de escena.
 
 Es pariente de «cada heurística nueva arregla unos casos y rompe otros»: a la
 segunda vuelta, lo que hay que cambiar es de herramienta, no de ajuste.
+
+### Y tres fallos con TRES encuadres distintos dicen otra cosa
+
+La cuenta no es la misma y la conclusión tampoco:
+
+> **Dos fallos con el MISMO encuadre**: el encuadre está mal para ese gooal. Se
+> le cambia el encuadre.
+>
+> **Tres fallos con TRES encuadres distintos**: el que no existe es el SUJETO.
+> El modelo no sabe hacer esa cosa, y cambiar la mirada no la va a traer. Hay
+> que cambiar el sujeto, no la manera de mirarlo.
+
+«Practicar pádel» lo demostró: objeto (una pala en el suelo), detalle (la cara
+de la pala), hombros (la pala en la mano). Las tres veces salió una pista sin
+pala. Cuando la tercera mirada falla, deja de ser un problema de encuadre y la
+pregunta pasa a ser otra: **¿qué otra cosa cuenta este gooal?** — o si lo que
+toca es dejarle su foto de Commons y no generarlo.
 
 ## Un fallo con forma conocida nunca está solo
 

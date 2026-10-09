@@ -71,7 +71,7 @@ export const DECIDIDOS = {
   'Hacer los Carros de Foc': ['objeto',
     'Una mochila pequeña y dos bastones de montaña apoyados en la puerta de madera de un refugio de alta montaña.'],
   'Hacer la Travessia del Port de Barcelona nadando': ['contraluz',
-    'La silueta de un nadador en brazada sobre el agua encendida por el sol bajo, recortada en negro.'],
+    'Primer plano de un nadador DE PERFIL en plena brazada, con el brazo saliendo del agua y las gotas en el aire, todo en silueta negra contra el agua encendida por el sol bajo.'],
   'Hacer paddle surf en el cabo de Creus': ['lugar_vacio',
     'Una cala de roca desnuda con el agua lisa como un espejo, sin una sola persona.'],
   'Hacer un safari en el Masái Mara': ['primera_persona',
@@ -136,10 +136,10 @@ export const DECIDIDOS = {
   'Correr un 10K': ['espaldas', null],   // decidido y con escena escrita desde el 8-10
   'Correr la Cursa dels Bombers': ['espaldas',
     'Una masa compacta de corredores vista desde arriba, llenando la calzada de lado a lado entre los edificios, todos de espaldas y sin un solo dorsal con número.'],
-  'Correr la Mitja de Granollers': ['objeto',
-    'Un dorsal completamente en blanco, SIN NINGÚN NÚMERO, sujeto con cuatro imperdibles sobre una camiseta técnica doblada.'],
-  'Correr la Ultra Pirineu': ['detalle',
-    'Primerísimo plano de unas zapatillas de trail embarradas, recortadas contra un sendero de piedra mojada.'],
+  'Correr la Mitja de Granollers': ['espaldas',
+    'Un corredor de espaldas subiendo una cuesta de calle adoquinada entre edificios, visto desde abajo, en plena zancada y con camiseta lisa sin dorsal.'],
+  'Correr la Ultra Pirineu': ['contraluz',
+    'La silueta de un corredor con bastones avanzando por una cresta pelada de montaña, recortada contra el cielo del atardecer.'],
   'Correr un maratón': ['contraluz',
     'Siluetas de corredores en una avenida larga, recortadas contra el sol bajo que llena el fondo de luz.'],
   'Correr un ultratrail': ['espaldas',
@@ -243,9 +243,9 @@ export const DECIDIDOS = {
   // ══ SALTAR (2) ══════════════════════════════════════════
 
   'Saltar en puenting': ['contraluz',
-    'Visto DESDE ARRIBA, desde la pasarela: alguien en caída libre hacia el fondo del barranco, pequeño, con la cuerda elástica tensándose hacia la cámara y el río abajo.'],
-  'Saltar en puenting en Queenstown': ['objeto',
-    'Una cuerda elástica gruesa enrollada sobre el suelo de madera de una pasarela, con un mosquetón grande de acero encima.'],
+    'Alguien en pleno salto con los brazos abiertos cayendo hacia un río, con la CUERDA ELÁSTICA bien visible tensándose desde los tobillos hacia arriba, y la pared del barranco al fondo.'],
+  'Saltar en puenting en Queenstown': ['espaldas',
+    'Alguien de espaldas en el borde de una pasarela, con el arnés y las cintas puestos y el vacío del barranco abriéndose delante.'],
 
   // ══ LOS SUELTOS (11) ════════════════════════════════════
 
@@ -285,8 +285,8 @@ export const DECIDIDOS = {
     "Un todoterreno parado de perfil en lo alto de una duna, con las huellas de las ruedas bajando por la arena."],
   "Hacer una travesía de varios días en montaña": ["lugar_vacio",
     "Una tienda de campaña pequeña y naranja montada sola en un collado de hierba, cerrada, sin nadie alrededor."],
-  "Nadar en aguas abiertas una travesía": ['objeto',
-    'Un gorro de silicona naranja y unas gafas de natación sobre la madera mojada de un pantalán.'],
+  "Nadar en aguas abiertas una travesía": ['espaldas',
+    'Un nadador visto desde detrás en plena brazada en mar abierto, con el gorro y la espalda saliendo del agua y la estela de espuma.'],
 }
 
 /**
@@ -348,8 +348,8 @@ export const CAMARA = {
   "Navegar por Milford Sound": ["contrapicado", "día nublado"],
   "Correr un 10K": ["a la altura de los ojos", "amanecer"],
   "Correr la Cursa dels Bombers": ["cenital", "mediodía duro"],
-  "Correr la Mitja de Granollers": ["cenital", "interior"],
-  "Correr la Ultra Pirineu": ["cenital", "día nublado"],
+  "Correr la Mitja de Granollers": ["contrapicado", "tarde larga"],
+  "Correr la Ultra Pirineu": ["contrapicado", "tarde larga"],
   "Correr un maratón": ["a ras de suelo", "amanecer"],
   "Correr un ultratrail": ["a la altura de los ojos", "día nublado"],
   "Correr una media maratón": ["desde muy cerca", "mediodía duro"],
@@ -386,8 +386,8 @@ export const CAMARA = {
   "Bajar al cráter del volcán Santa Margarida": ["contrapicado", "tarde larga"],
   "Escalar en Siurana": ["desde muy cerca", "tarde larga"],
   "Escalar una aguja de Montserrat": ["contrapicado", "tarde larga"],
-  "Saltar en puenting": ["cenital", "mediodía duro"],
-  "Saltar en puenting en Queenstown": ["a ras de suelo", "día nublado"],
+  "Saltar en puenting": ["a la altura de los ojos", "mediodía duro"],
+  "Saltar en puenting en Queenstown": ["a la altura de los ojos", "día nublado"],
   "Beber una cerveza en la Hofbräuhaus": ["a la altura de los ojos", "interior"],
   "Dar una vuelta al Nürburgring": ["a la altura de los ojos", "día nublado"],
   "Escuchar jazz en directo en Bourbon Street": ["a la altura de los ojos", "interior"],
@@ -401,7 +401,7 @@ export const CAMARA = {
   "Tomar un café en el Café Central": ["cenital", "interior"],
   "Practicar CrossFit": ["a ras de suelo", "interior"],
   "Practicar golf": ["desde muy cerca", "amanecer"],
-  "Practicar pádel": ["desde muy cerca", "tarde larga"],
+  "Practicar pádel": ["a la altura de los ojos", "tarde larga"],
   "Practicar tenis": ["cenital", "tarde larga"],
   "Practicar hípica": ["a la altura de los ojos", "día nublado"],
   "Practicar surf": ["contrapicado", "tarde larga"],
@@ -424,7 +424,7 @@ export const CAMARA = {
   "Hacer cumbre en un tresmil": ["desde muy cerca", "mediodía duro"],
   "Hacer un safari por el desierto de Dubái": ["a la altura de los ojos", "tarde larga"],
   "Hacer una travesía de varios días en montaña": ["a ras de suelo", "amanecer"],
-  "Nadar en aguas abiertas una travesía": ["cenital", "amanecer"],
+  "Nadar en aguas abiertas una travesía": ["a ras de suelo", "amanecer"],
 }
 
 /**

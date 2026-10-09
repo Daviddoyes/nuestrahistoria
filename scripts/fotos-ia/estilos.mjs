@@ -266,7 +266,7 @@ const ENCUADRE_DE = {
   // vela LA VISTA ES EL DEPORTE, así que se mira desde sus ojos.
   "Practicar CrossFit": "objeto",
   "Practicar golf": "objeto",
-  "Practicar pádel": "objeto",
+  "Practicar pádel": "hombros",
   "Practicar tenis": "objeto",
   "Practicar hípica": "objeto",
   "Practicar surf": "objeto",
@@ -408,7 +408,7 @@ export const ESCENAS = {
   // esto, un encuadre sin persona se queda sin sujeto y lo elige el modelo.
   "Practicar CrossFit": "Una barra olímpica cargada de discos, apoyada en el suelo de goma de un box, con el polvo de magnesio alrededor y las anillas colgando al fondo, desenfocadas.",
   "Practicar golf": "Una bola blanca sobre el tee, recién colocada en la hierba cortada al ras, con la cabeza del palo detrás y el green perdiéndose desenfocado.",
-  "Practicar pádel": "Una pala y una pelota en el suelo de la pista, junto a la pared de cristal, con la luz de la tarde entrando en diagonal.",
+  "Practicar pádel": "Encuadre recortado por los hombros: el torso y el brazo de alguien en el momento de golpear con una pala de pádel, con la pared de cristal de la pista detrás.",
   "Practicar tenis": "Una raqueta apoyada en la red y una pelota amarilla parada sobre la tierra batida, con la marca de la línea blanca al lado.",
   "Practicar hípica": "Una silla de montar de cuero y unas riendas colgadas de la valla de madera de un picadero de arena.",
   "Practicar surf": "Una tabla de surf clavada en la arena mojada al borde del agua, con la cera marcada y la quilla a la vista.",
