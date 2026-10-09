@@ -1415,4 +1415,13 @@ sigue; una nota pendiente espera a alguien.
   200 y parece completa. Hoy el máximo posible son 56 usuarios en toda la app,
   así que no corre prisa; cuando el número se acerque, o se pagina o se dice en
   pantalla que hay más. Anotado el 9-10-2026.
+- **Las tres relaciones de "en común" se calculan en el navegador**, cruzando
+  las dos listas que el perfil ya se trae con mis propios estados. Hoy eso no
+  añade ni una consulta y por eso se hizo así. Pero **se apoya en que el perfil
+  cargue las dos listas ENTERAS**: el día que esa carga se pagine o se recorte,
+  las tres cifras empezarán a contar solo lo que se haya traído y seguirán
+  pintándose igual de bien — sin error, sin aviso, con números más pequeños de
+  los que son. No tiene fecha, tiene condición: **cuando se toque la carga del
+  perfil, esto se mira el mismo día.** Vive en `cruzar()`, dentro de
+  `src/components/perfil/EnComun.tsx`. Anotado el 9-10-2026.
 - No hay tests.
