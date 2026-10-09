@@ -1,22 +1,29 @@
 'use client'
 
-export type PestanaPerfil = 'conseguidos' | 'pendientes'
+export type PestanaPerfil = 'conseguidos' | 'pendientes' | 'comun'
 
 type Props = {
   activa: PestanaPerfil
+  /**
+   * La tercera solo en el perfil de otra persona: en el tuyo, "en común" no
+   * tiene con quién.
+   */
+  conComun: boolean
   onCambiar: (pestana: PestanaPerfil) => void
 }
 
 /**
- * Las dos pestañas del perfil, mitad y mitad.
+ * Las pestañas del perfil: dos en el tuyo, tres en el de otra persona.
  *
- * Sin números: los dos están justo encima, en las tres cifras. Cuando los
- * llevaban, la misma pantalla decía "34" dos veces a cuatro dedos de distancia.
+ * Sin números a propósito. En el perfil ajeno los dos primeros estarían a
+ * cuatro dedos de las mismas cifras en su universo; y el de "en común" sería
+ * engañoso, porque ahí dentro no hay una lista sino tres.
  */
-export default function PestanasPerfil({ activa, onCambiar }: Props) {
+export default function PestanasPerfil({ activa, conComun, onCambiar }: Props) {
   const pestanas: { id: PestanaPerfil; texto: string }[] = [
     { id: 'conseguidos', texto: 'Conseguidos' },
     { id: 'pendientes', texto: 'Pendientes' },
+    ...(conComun ? [{ id: 'comun' as const, texto: 'En común' }] : []),
   ]
 
   return (

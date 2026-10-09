@@ -13,11 +13,10 @@ import GooalV2DetailModal from '@/components/GooalV2DetailModal'
 import CelebracionPuntos from '@/components/CelebracionPuntos'
 import type { ResultadoCompletado } from '@/components/AnadirFotoModal'
 import CabeceraPerfil from '@/components/perfil/CabeceraPerfil'
-import TarjetaCifras from '@/components/perfil/TarjetaCifras'
-import PastillasCategorias from '@/components/perfil/PastillasCategorias'
 import PestanasPerfil, { type PestanaPerfil } from '@/components/perfil/PestanasPerfil'
+import Universo from '@/components/perfil/Universo'
+import EnComun, { CabeceraRelacion, cruzar, type RelacionEnComun } from '@/components/perfil/EnComun'
 import ListaPerfil from '@/components/perfil/ListaPerfil'
-import FiltroEnComun from '@/components/perfil/FiltroEnComun'
 import { ProveedorFotosPrivadas } from '@/components/FotosPrivadas'
 import type { EstadoUserGooal, GooalV2, LineaPerfil, PerfilCompleto, VisibilidadFoto } from '@/types/gooals'
 
@@ -49,7 +48,13 @@ function PerfilContenido() {
   const [error, setError] = useState('')
   const [siguiendoAccion, setSiguiendoAccion] = useState(false)
   const [pestana, setPestana] = useState<PestanaPerfil>('conseguidos')
-  const [soloEnComun, setSoloEnComun] = useState(false)
+  /**
+   * Qué relación de "en común" se está mirando. null = las tres filas.
+   *
+   * Es un estado y no una ruta porque se entra y se sale dentro de la misma
+   * pantalla; al cambiar de pestaña o de perfil vuelve a null solo.
+   */
+  const [relacion, setRelacion] = useState<RelacionEnComun | null>(null)
 
   const [lista, setLista] = useState<'seguidores' | 'siguiendo' | null>(null)
   const [ficha, setFicha] = useState<FichaAbierta | null>(null)
@@ -73,7 +78,7 @@ function PerfilContenido() {
     if (!silencioso) {
       setLoading(true)
       setPestana('conseguidos')
-      setSoloEnComun(false)
+      setRelacion(null)
     }
     try {
       const [p, estados] = await Promise.all([getPerfil(username ?? undefined), getMisEstadosGooals()])
@@ -151,10 +156,10 @@ function PerfilContenido() {
 
   const cambiarPestana = (nueva: PestanaPerfil) => {
     setPestana(nueva)
-    // El filtro vuelve a "Todos" al cambiar de pestaña: lo que compartís en una
-    // no dice nada de la otra, y si en la nueva no hay nada en común la pastilla
-    // desaparece y el filtro se quedaría puesto, enseñando una lista vacía.
-    setSoloEnComun(false)
+    // Salir de "en común" cierra la relación que estuviera abierta: volver a esa
+    // pestaña y aparecer dentro de una sublista es de las cosas que hacen que
+    // alguien no sepa dónde está.
+    setRelacion(null)
   }
 
   if (loading) return <PantallaCargando />
@@ -186,10 +191,14 @@ function PerfilContenido() {
     </button>
   )
 
-  const lineas = pestana === 'conseguidos' ? perfil.conseguidos : perfil.pendientes
-  const cuantasEnComun = lineas.filter(l => l.enComun).length
-  const visibles = soloEnComun ? lineas.filter(l => l.enComun) : lineas
-  const nivel = progresoNivel(perfil.puntos).actual
+  const lineas = pestana === 'pendientes' ? perfil.pendientes : perfil.conseguidos
+  const progreso = progresoNivel(perfil.puntos)
+  const nivel = progreso.actual
+  // Los gooals de la relación abierta. Se cruza aquí y no en el servidor porque
+  // las dos piezas ya están en la pantalla: sus listas y mis estados.
+  const deLaRelacion = relacion
+    ? cruzar(perfil.conseguidos, perfil.pendientes, misEstados)[relacion]
+    : []
 
   return (
     <>
@@ -210,10 +219,10 @@ function PerfilContenido() {
             </button>
           </div>
 
-          {/* TU pantalla es ahora la entrada (/inicio): allí está el universo,
-              el nivel y las cifras. Aquí abajo queda lo que no cabía allí, que
-              son tus dos listas enteras. El perfil de OTRA persona sí se pinta
-              entero aquí, porque de ella no hay ninguna otra pantalla. */}
+          {/* TU pantalla es la entrada (/inicio): allí está tu universo, tu nivel
+              y tus cifras. Aquí queda lo que no cabía allí, que son tus dos
+              listas enteras. El perfil de OTRA persona sí se pinta entero aquí,
+              porque de ella no hay ninguna otra pantalla. */}
           {perfil.esPropio ? (
             <h1
               className="fuente-titular"
@@ -222,81 +231,104 @@ function PerfilContenido() {
               Tus gooals
             </h1>
           ) : (
-            <CabeceraPerfil
-              usuario={perfil.usuario}
-              esPropio={perfil.esPropio}
-              siguiendolo={perfil.siguiendolo}
-              seguidores={perfil.seguidores}
-              siguiendo={perfil.siguiendo}
-              siguiendoAccion={siguiendoAccion}
-              nivel={nivel}
-              onSeguir={handleSeguir}
-              onAjustes={() => { /* los ajustes viven en Tú */ }}
-              onLista={setLista}
-            />
+            <>
+              <CabeceraPerfil
+                usuario={perfil.usuario}
+                siguiendolo={perfil.siguiendolo}
+                seguidores={perfil.seguidores}
+                siguiendo={perfil.siguiendo}
+                siguiendoAccion={siguiendoAccion}
+                onSeguir={handleSeguir}
+                onLista={setLista}
+              />
+
+              <div style={{ textAlign: 'center', marginTop: 18 }}>
+                <p
+                  className="fuente-titular"
+                  style={{ fontSize: 20, fontWeight: 650, lineHeight: 1, letterSpacing: '.1em', textIndent: '.1em', textTransform: 'uppercase' }}
+                >
+                  {nivel.nombre}
+                </p>
+                <p style={{ marginTop: 6, fontSize: 12, color: '#7A8A85', fontWeight: 500, lineHeight: 1 }}>
+                  {perfil.puntos} puntos
+                </p>
+              </div>
+
+              {/* Su universo, con las seis categorías en LAS MISMAS posiciones que
+                  el tuyo: es lo que permite compararos de un vistazo sin leer ni
+                  un número.
+
+                  Sus intereses van en null a propósito, así que sus categorías
+                  vacías salen en gris y nunca en verde: lo que marcó en el alta
+                  no es algo que publicara.
+
+                  16 y no 8: la etiqueta de la categoría de arriba (VIDA) se le
+                  montaba casi encima a la línea de los puntos. */}
+              <div style={{ marginTop: 16 }}>
+                <Universo
+                  conteos={perfil.porCategoria}
+                  intereses={null}
+                  foto={perfil.usuario.foto_perfil_url}
+                  nombre={perfil.usuario.nombre}
+                  porcentajeNivel={progreso.porcentaje}
+                  resumen={`Gooals conseguidos por ${perfil.usuario.nombre}: ${perfil.conseguidos.length} en total.`}
+                />
+              </div>
+            </>
           )}
 
           {error && (
             <p role="alert" className="text-sm text-[#FF5252] bg-[rgba(255,82,82,0.14)] px-3 py-2 rounded-lg mt-4">{error}</p>
           )}
 
-          {!perfil.esPropio && (
-            <>
-              <div style={{ marginTop: 14 }}>
-                <TarjetaCifras
-                  conseguidos={perfil.conseguidos.length}
-                  pendientes={perfil.pendientes.length}
-                  puntos={perfil.puntos}
-                  conProgreso={false}
+          <div style={{ marginTop: perfil.esPropio ? 20 : 8 }}>
+            <PestanasPerfil activa={pestana} conComun={!perfil.esPropio} onCambiar={cambiarPestana} />
+          </div>
+
+          <div role="tabpanel" style={{ paddingTop: 12 }}>
+            {pestana === 'comun' ? (
+              relacion === null ? (
+                <EnComun
+                  conseguidos={perfil.conseguidos}
+                  pendientes={perfil.pendientes}
+                  misEstados={misEstados}
+                  nombre={perfil.usuario.nombre}
+                  onAbrirRelacion={setRelacion}
                 />
-              </div>
-
-              {/* Las categorías van entre las cifras y las pestañas, y comparten el
-                  color con las barritas de la lista: "mucho viajes y poco deporte"
-                  dice qué clase de persona es alguien mejor que el número total. */}
-              <div style={{ marginTop: 14 }}>
-                <PastillasCategorias conteos={perfil.porCategoria} />
-              </div>
-            </>
-          )}
-
-            <div style={{ marginTop: 20 }}>
-              <PestanasPerfil activa={pestana} onCambiar={cambiarPestana} />
-            </div>
-
-            {/* La misma pantalla en el perfil propio y en el ajeno. La única
-                diferencia es esta pastilla, y se quita ella sola cuando no hay nada
-                en común, que con pocos usuarios es casi siempre. */}
-            <FiltroEnComun
-              activo={soloEnComun}
-              total={lineas.length}
-              enComun={cuantasEnComun}
-              onCambiar={setSoloEnComun}
-            />
-
-            <div role="tabpanel" style={{ paddingTop: 12 }}>
-              {lineas.length === 0 ? (
-                pestana === 'conseguidos' ? (
-                  <EstadoVacio
-                    titulo={perfil.esPropio ? 'Aún no has conseguido ningún gooal.' : 'Todavía no ha conseguido ningún gooal.'}
-                    texto={perfil.esPropio ? 'Elige uno y ve a por él.' : undefined}
-                    /* Sin botón en TU perfil: arriba, a dos dedos, ya hay uno que
-                       lleva al mismo sitio ("Busca algo que ya hayas hecho"). Dos
-                       botones distintos a la misma pantalla no son dos opciones,
-                       son una duda. */
-                    accion={undefined}
-                  />
-                ) : (
-                  <EstadoVacio
-                    titulo={perfil.esPropio ? 'Tu lista de pendientes está vacía.' : 'No tiene gooals pendientes.'}
-                    texto={perfil.esPropio ? 'Añade los que quieras vivir desde Explorar.' : undefined}
-                    accion={perfil.esPropio ? botonExplorar : undefined}
-                  />
-                )
               ) : (
-                <ListaPerfil lineas={visibles} onAbrir={abrirLinea} />
-              )}
-            </div>
+                <>
+                  <CabeceraRelacion
+                    relacion={relacion}
+                    nombre={perfil.usuario.nombre}
+                    cuantos={deLaRelacion.length}
+                    onVolver={() => setRelacion(null)}
+                  />
+                  <div style={{ paddingTop: 10 }}>
+                    <ListaPerfil lineas={deLaRelacion} onAbrir={abrirLinea} />
+                  </div>
+                </>
+              )
+            ) : lineas.length === 0 ? (
+              pestana === 'conseguidos' ? (
+                <EstadoVacio
+                  titulo={perfil.esPropio ? 'Aún no has conseguido ningún gooal.' : 'Todavía no ha conseguido ningún gooal.'}
+                  texto={perfil.esPropio ? 'Elige uno y ve a por él.' : undefined}
+                  /* Sin botón en TU perfil: en Tú, a una pantalla, ya hay uno que
+                     lleva al mismo sitio. Dos botones distintos a la misma
+                     pantalla no son dos opciones, son una duda. */
+                  accion={undefined}
+                />
+              ) : (
+                <EstadoVacio
+                  titulo={perfil.esPropio ? 'Tu lista de pendientes está vacía.' : 'No tiene gooals pendientes.'}
+                  texto={perfil.esPropio ? 'Añade los que quieras vivir desde Explorar.' : undefined}
+                  accion={perfil.esPropio ? botonExplorar : undefined}
+                />
+              )
+            ) : (
+              <ListaPerfil lineas={lineas} onAbrir={abrirLinea} />
+            )}
+          </div>
 
         </div>
       </AppShell>
