@@ -683,6 +683,66 @@ candidatos**, y al mirarlos uno a uno **solo 2 lo eran de verdad**. Los otros 11
 ya tenían una escena que no pedía texto. Otra vez: la regla trae candidatos,
 decide quien mira.
 
+## Un reemplazo que no encuentra su texto es un FALLO, no un acierto
+
+`BottomNav.tsx` estaba guardado con finales de línea de Windows (CRLF) y el
+guion que lo modificaba buscaba textos de varias líneas escritos con saltos
+normales. **No casó ninguno, no cambió nada, y el guion imprimió "ok".** La
+barra siguió con cuatro pestañas y eso solo se supo al abrir la pantalla.
+
+> **Todo guion que modifique ficheros tiene que FALLAR si el número de
+> sustituciones es cero, y decir en cuál.** No avisar: fallar y parar.
+
+En la práctica, el molde es este, y no cuesta nada:
+
+```js
+const leer = f => readFileSync(f, 'utf8').replace(/
+/g, '
+')  // CRLF fuera
+let s = leer(fichero)
+const cambiar = (viejo, nuevo) => {
+  if (s.split(viejo).length !== 2) {   // ni 0 veces ni 2: exactamente 1
+    console.error('PARA, no encuentro:', JSON.stringify(viejo.slice(0, 60)))
+    process.exit(1)
+  }
+  s = s.replace(viejo, nuevo)
+}
+```
+
+Dos detalles que son el fallo entero:
+
+1. **Normalizar los finales de línea al leer.** El repo se trabaja en Windows
+   con `core.autocrlf`, así que en disco hay CRLF y en git LF. Un fichero que
+   ya hayas reescrito entero estará en LF y el de al lado no: **el mismo guion
+   funciona en unos ficheros y falla en otros**, que es lo que más despista.
+2. **Comprobar que aparece UNA vez, no "al menos una".** Si aparece dos, el
+   `replace` cambia la primera y deja la otra, y eso tampoco es lo que querías.
+
+Y el reverso, que pasó el mismo día: si un cambio ya estaba aplicado de una
+vuelta anterior, el guion para y **no escribe nada de lo que sí había hecho**.
+Por eso el guion se relanza entero después de quitar lo ya aplicado, nunca se
+da por bueno a medias.
+
+## Probar el estado vacío no prueba el lleno
+
+El muro perdió su pestaña y pasó a llegarse desde una línea que solo aparece
+cuando hay algo que contar. Para comprobar esa puerta **había que insertar un
+post de verdad**: con las cuentas de prueba recién creadas, lo único que se
+habría comprobado es que la línea no sale nunca — que es la mitad que no
+importaba.
+
+> **Cuando algo solo existe si hay datos, la prueba pone los datos.** Si no, lo
+> que pasa en verde es el caso vacío, y el caso vacío casi siempre funciona.
+
+Es la misma familia que el cebo de `invitaciones_email` y que lo de la
+comprobación a medias, pero al revés: allí faltaba el cebo que debía ser
+rechazado, y aquí falta el dato que hace aparecer lo que se quiere ver. En las
+dos, **la prueba pasa sin haber mirado nada.**
+
+Y lo bueno de ponerlos: los datos de prueba hacen aparecer también lo de al
+lado. El post que se insertó para la línea del muro enseñó, de paso, que el
+texto sale bien con el nombre y el gooal, cosa que nadie había visto nunca.
+
 ## Un fallo con forma conocida nunca está solo
 
 Al arreglar algo, la pregunta no es «¿ya está?», es **«¿dónde más está esto
