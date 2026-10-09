@@ -7,6 +7,7 @@ import {
   CATEGORIAS, CATEGORIA_LABEL, DIFICULTAD_META, PUNTOS_MIN,
   dificultadDePuntos, puntosEnEscala, type CategoriaGooal,
 } from '@/lib/gooals'
+import { FUENTES_FOTO, NOMBRE_FUENTE, queFaltaEnLaFoto } from '@/lib/foto-credito'
 import SelectorPuntos from './SelectorPuntos'
 import ListaTrabajo from './catalogo/ListaTrabajo'
 import RecordatorioCriterio from './RecordatorioCriterio'
@@ -53,6 +54,7 @@ function NuevoGooalModal({ onClose, onSaved }: { onClose: () => void; onSaved: (
     titulo: '', descripcion: '', categoria: 'viajes' as CategoriaGooal,
     puntos: PUNTOS_MIN,
     ciudad: '', pais: 'España', imagen_url: '', activo: true,
+    foto_fuente: '', foto_autor: '', foto_licencia: '', foto_origen: '', foto_prompt: '',
   })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -114,6 +116,52 @@ function NuevoGooalModal({ onClose, onSaved }: { onClose: () => void; onSaved: (
           <input style={inputStyle} value={f.imagen_url} placeholder="https://..."
             onChange={e => setF({ ...f, imagen_url: e.target.value })} />
         </div>
+
+        {/* El crédito solo aparece cuando hay imagen: si no, es ruido. Y lo que
+            se pide depende de la fuente, porque una imagen generada no tiene
+            autor y una de Commons no tiene prompt. */}
+        {f.imagen_url.trim() !== '' && (
+          <>
+            <div>
+              <label style={labelStyle}>¿De dónde sale la imagen?</label>
+              <select style={inputStyle} value={f.foto_fuente}
+                onChange={e => setF({ ...f, foto_fuente: e.target.value })}>
+                <option value="">Elige una…</option>
+                {FUENTES_FOTO.map(v => <option key={v} value={v}>{NOMBRE_FUENTE[v]}</option>)}
+              </select>
+            </div>
+
+            {f.foto_fuente === 'commons' && (
+              <>
+                <div>
+                  <label style={labelStyle}>Autor</label>
+                  <input style={inputStyle} value={f.foto_autor} placeholder="Quien hizo la foto"
+                    onChange={e => setF({ ...f, foto_autor: e.target.value })} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Licencia</label>
+                  <input style={inputStyle} value={f.foto_licencia} placeholder="CC BY-SA 4.0"
+                    onChange={e => setF({ ...f, foto_licencia: e.target.value })} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Página del fichero en Commons</label>
+                  <input style={inputStyle} value={f.foto_origen} placeholder="https://commons.wikimedia.org/wiki/File:..."
+                    onChange={e => setF({ ...f, foto_origen: e.target.value })} />
+                </div>
+              </>
+            )}
+
+            {f.foto_fuente === 'ia' && (
+              <div>
+                <label style={labelStyle}>El prompt con el que se generó</label>
+                <textarea style={{ ...inputStyle, minHeight: 90, resize: 'vertical' }} value={f.foto_prompt}
+                  placeholder="Pégalo entero: sin él, esta foto no se puede retocar ni volver a generar."
+                  onChange={e => setF({ ...f, foto_prompt: e.target.value })} />
+              </div>
+            )}
+          </>
+        )}
+
 
         <div>
           <label style={labelStyle}>Descripción</label>

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createServiceRoleClient } from '@/lib/supabase/service'
 import { esAdmin } from '@/lib/admin-auth'
 import { limpiarBusqueda } from '@/lib/busqueda'
+import { camposDeFoto, queFaltaEnLaFoto, type DatosFoto } from '@/lib/foto-credito'
 import {
   CATEGORIAS, PUNTOS_MIN, ambitoDeGooal, esCategoria, normalizarCategoriaGooal, puntosEnEscala,
   type EstadoGooal,
@@ -35,7 +36,9 @@ function normalizarGooal(body: Record<string, unknown>, estado: EstadoGooal) {
     puntos: puntosEnEscala(body.puntos) ?? PUNTOS_MIN,
     ciudad,
     pais,
-    imagen_url: texto(body.imagen_url),
+      // Los seis campos de la foto van juntos y normalizados: sin imagen se
+      // borra el crédito entero, y el crédito depende de la fuente.
+      ...camposDeFoto(body as DatosFoto),
     activo: body.activo === undefined ? true : Boolean(body.activo),
     estado,
     ambito: ambitoDeGooal({ categoria, ciudad, pais }),
@@ -127,6 +130,11 @@ export async function POST(request: Request) {
   const body = await request.json()
   const service = createServiceRoleClient()
 
+  // El crédito de la foto se comprueba AQUÍ y no solo en el formulario: una
+  // pantalla se puede saltar, y la restricción de la base daría un error de
+  // Postgres en vez de decir qué falta.
+  const faltaFoto = (g: Record<string, unknown>) => queFaltaEnLaFoto(g as DatosFoto)
+
   // Alta en lote: es lo que usa "Generar con IA" al guardar los 20 gooals.
   // Nacen en BORRADOR: son textos escritos por la IA que el admin solo ha visto
   // de pasada en una lista, igual que lo que genera el pipeline de siembra.
@@ -139,6 +147,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Ningún gooal válido' }, { status: 400 })
     }
 
+    for (const g of body.gooals as Record<string, unknown>[]) {
+      const falta = faltaFoto(g)
+      if (falta) return NextResponse.json({ error: falta }, { status: 400 })
+    }
+
     const { error } = await service.from('gooals_v2').insert(filas)
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     return NextResponse.json({ success: true, insertados: filas.length })
@@ -148,6 +161,9 @@ export async function POST(request: Request) {
   // campo; crearlo ya es revisarlo.
   const fila = normalizarGooal(body, 'verificado')
   if (!fila) return NextResponse.json({ error: 'El título es obligatorio' }, { status: 400 })
+
+  const faltaEnLaFoto = faltaFoto(body)
+  if (faltaEnLaFoto) return NextResponse.json({ error: faltaEnLaFoto }, { status: 400 })
 
   const { data, error } = await service.from('gooals_v2').insert(fila).select('id').single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
@@ -170,18 +186,34 @@ export async function PATCH(request: Request) {
   const service = createServiceRoleClient()
   const { data: actual } = await service
     .from('gooals_v2')
-    .select('ciudad, pais, lat, ambito')
+    .select('ciudad, pais, lat, ambito, imagen_url, foto_fuente, foto_autor, foto_licencia, foto_origen, foto_prompt')
     .eq('id', id)
     .maybeSingle()
   if (!actual) return NextResponse.json({ error: 'Ese gooal ya no existe' }, { status: 404 })
   const antes = actual as { ciudad: string | null; pais: string | null; lat: number | null; ambito: string }
+    const fotoActual = actual as DatosFoto
 
   const texto = (valor: unknown) => String(valor ?? '').trim() || null
   const cambios: Record<string, unknown> = {}
 
   if (body.activo !== undefined) cambios.activo = Boolean(body.activo)
   if (body.descripcion !== undefined) cambios.descripcion = texto(body.descripcion)
-  if (body.imagen_url !== undefined) cambios.imagen_url = texto(body.imagen_url)
+    // La foto se toca ENTERA o no se toca: cambiar la dirección sin su crédito
+    // dejaría una fila que la restricción de la base rechaza, y el panel daría
+    // un error de Postgres en vez de decir qué falta.
+    if (body.imagen_url !== undefined || body.foto_fuente !== undefined) {
+      const foto = camposDeFoto({
+        imagen_url: (body.imagen_url ?? fotoActual.imagen_url) as string | null,
+        foto_fuente: (body.foto_fuente ?? fotoActual.foto_fuente) as string | null,
+        foto_autor: (body.foto_autor ?? fotoActual.foto_autor) as string | null,
+        foto_licencia: (body.foto_licencia ?? fotoActual.foto_licencia) as string | null,
+        foto_origen: (body.foto_origen ?? fotoActual.foto_origen) as string | null,
+        foto_prompt: (body.foto_prompt ?? fotoActual.foto_prompt) as string | null,
+      })
+      const falta = queFaltaEnLaFoto(foto)
+      if (falta) return NextResponse.json({ error: falta }, { status: 400 })
+      Object.assign(cambios, foto)
+    }
 
   if (body.titulo !== undefined) {
     const titulo = String(body.titulo).trim().slice(0, 200)
