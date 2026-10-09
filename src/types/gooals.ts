@@ -182,6 +182,15 @@ export type ResumenInicio = {
   conseguidos: number
   pendientes: number
   puntos: number
+  /** Cuántos amigos (seguirse los dos), para la tercera cifra del universo. */
+  amigos: number
+  /** Los dos números de las pestañas del panel de gente. */
+  seguidores: number
+  siguiendo: number
+  /** Las seis categorías, para pintar el universo. Ordenadas por número. */
+  porCategoria: ConteoCategoria[]
+  /** Lo que dijo en el alta que le interesa, filtrado a las seis categorías. */
+  intereses: CategoriaGooal[]
   /** Los pendientes más recientes, para "Sigue con lo tuyo". */
   siguientes: { userGooalId: string; gooal: GooalResumen }[]
 }

@@ -3,8 +3,9 @@
 import { Suspense, useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
+import { MapPin, X } from 'lucide-react'
 import {
-  getMyProfile, getMisEstadosGooals, getGooalV2, getCuantosEnMapa,
+  getMyProfile, getMisEstadosGooals, getGooalV2, getCuantosEnMapa, getCercaDeMi,
 } from '@/lib/actions'
 import AppShell, { PantallaCargando } from '@/components/AppShell'
 import ExplorarFeed from '@/components/ExplorarFeed'
@@ -14,7 +15,8 @@ import GooalV2DetailModal from '@/components/GooalV2DetailModal'
 import SugerirGooalSheet from '@/components/SugerirGooalSheet'
 import CelebracionPuntos from '@/components/CelebracionPuntos'
 import type { ResultadoCompletado } from '@/components/AnadirFotoModal'
-import type { Profile, GooalV2, EstadoUserGooal } from '@/types/gooals'
+import Tira from '@/components/TiraGooals'
+import type { Profile, GooalV2, EstadoUserGooal, GooalCerca, GooalResumen } from '@/types/gooals'
 
 /**
  * Leaflet toca `window` nada más cargarse, así que no puede renderizarse en el
@@ -73,6 +75,47 @@ function ExplorarContenido() {
    * al mapa te devolvería a la vista del mundo entero cada vez.
    */
   const [mapaVisitado, setMapaVisitado] = useState(pestana === 'mapa')
+
+  /**
+   * "Cerca de ti" vive AQUÍ, en el mapa, y no en la pantalla de entrada.
+   *
+   * Pide la ubicación, y el cartel del sistema pidiéndola nada más abrir la app
+   * es de las cosas que hacen que alguien la cierre y no vuelva. En el mapa se
+   * pide donde tiene sentido: estás mirando sitios y lo has tocado tú.
+   */
+  const [cerca, setCerca] = useState<GooalCerca[] | null>(null)
+  const [buscandoCerca, setBuscandoCerca] = useState(false)
+  const [errorCerca, setErrorCerca] = useState('')
+
+  const ubicacion = () => {
+    setErrorCerca('')
+    if (!navigator.geolocation) {
+      setErrorCerca('Este navegador no sabe decirnos dónde estás.')
+      return
+    }
+    setBuscandoCerca(true)
+    navigator.geolocation.getCurrentPosition(
+      async pos => {
+        try {
+          setCerca(await getCercaDeMi(pos.coords.latitude, pos.coords.longitude))
+        } catch (err) {
+          console.error('[explorar:cerca]', err)
+          setErrorCerca('No hemos podido buscar lo que tienes cerca.')
+        } finally {
+          setBuscandoCerca(false)
+        }
+      },
+      err => {
+        setBuscandoCerca(false)
+        // Que diga qué pasó: "no se pudo" a secas deja a la persona sin saber
+        // si el fallo es suyo, nuestro o del móvil.
+        setErrorCerca(err.code === err.PERMISSION_DENIED
+          ? 'No nos has dado permiso para saber dónde estás. Puedes cambiarlo en los ajustes del navegador.'
+          : 'No hemos podido saber dónde estás. Inténtalo de nuevo.')
+      },
+      { timeout: 10000, maximumAge: 5 * 60 * 1000 },
+    )
+  }
 
   useEffect(() => {
     const t = setTimeout(() => setAplicada(filtros.busqueda.trim()), ESPERA_BUSQUEDA)
@@ -208,6 +251,71 @@ function ExplorarContenido() {
             }}
           >
             <MapaGooals filtros={filtrosMapa} estados={misEstados} onSeleccionar={abrirPorId} />
+
+            {/* Encima del mapa y no debajo: el mapa ocupa toda la altura, así
+                que cualquier cosa fuera de él no se vería sin hacer scroll.
+                zIndex 1000 porque Leaflet llega hasta ahí con sus capas. */}
+            {cerca === null ? (
+              <button
+                onClick={ubicacion}
+                disabled={buscandoCerca}
+                className="active:bg-[#1E2120] transition-colors disabled:opacity-60"
+                style={{
+                  position: 'absolute', left: 12, bottom: 12, zIndex: 1000,
+                  display: 'flex', alignItems: 'center', gap: 8, minHeight: 44, padding: '0 14px',
+                  borderRadius: 999, background: '#161817', border: '1px solid #2A2E2C',
+                  color: '#FFFFFF', fontSize: 13, fontWeight: 600,
+                }}
+              >
+                {buscandoCerca
+                  ? <span className="w-4 h-4 border-2 border-[#7A8A85] border-t-transparent rounded-full animate-spin" />
+                  : <MapPin aria-hidden style={{ width: 15, height: 15 }} />}
+                {buscandoCerca ? 'Mirando dónde estás...' : 'Lo que tengo cerca'}
+              </button>
+            ) : (
+              <div
+                style={{
+                  position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 1000,
+                  padding: '10px 0 12px',
+                  background: 'linear-gradient(to top, #0B0B0B 60%, rgba(11,11,11,0))',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 20px 8px' }}>
+                  <span style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '.075em', color: '#7A8A85', fontWeight: 500 }}>
+                    Cerca de ti
+                  </span>
+                  <button
+                    onClick={() => { setCerca(null); setErrorCerca('') }}
+                    aria-label="Quitar lo de cerca"
+                    className="text-[#7A8A85] active:text-[#FFFFFF] transition-colors"
+                    style={{ marginLeft: 'auto', width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  >
+                    <X style={{ width: 14, height: 14 }} />
+                  </button>
+                </div>
+                {cerca.length === 0 ? (
+                  <p style={{ fontSize: 13, color: '#7A8A85', padding: '0 20px', lineHeight: 1.5 }}>
+                    No hay ningún gooal con sitio a menos de un par de horas de aquí.
+                  </p>
+                ) : (
+                  <Tira
+                    gooals={cerca.map(c => c.gooal)}
+                    distancias={cerca.map(c => c.km)}
+                    onAbrir={(g: GooalResumen) => abrirPorId(g.id)}
+                  />
+                )}
+              </div>
+            )}
+
+            {errorCerca && (
+              <p
+                role="alert"
+                className="text-sm text-[#FF5252] bg-[#161817] border border-[rgba(255,82,82,0.35)] px-3 py-2 rounded-lg"
+                style={{ position: 'absolute', left: 12, right: 12, bottom: 64, zIndex: 1000 }}
+              >
+                {errorCerca}
+              </p>
+            )}
 
             {aviso && (
               <p

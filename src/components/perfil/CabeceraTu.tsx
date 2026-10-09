@@ -4,10 +4,12 @@ import Universo from '@/components/perfil/Universo'
 import { CATEGORIA_LABEL, type CategoriaGooal } from '@/lib/gooals'
 import { HUECO, MARCA, RADIO, SUPERFICIE, TEXTO, PESO } from '@/lib/estilo'
 import { progresoNivel } from '@/lib/niveles'
-import type { ConteoCategoria, UsuarioMini } from '@/types/gooals'
+import type { ConteoCategoria } from '@/types/gooals'
 
 type Props = {
-  usuario: UsuarioMini
+  /** Solo el nombre y la foto: es lo único que se pinta, el avatar del centro. */
+  nombre: string
+  foto: string | null
   conseguidos: number
   pendientes: number
   amigos: number
@@ -51,7 +53,7 @@ export const esDiaUno = (conseguidos: number) => conseguidos === 0
  * @usuario, seguidores) sigue siendo la que hace falta.
  */
 export default function CabeceraTu({
-  usuario, conseguidos, pendientes, amigos, puntos, conteos, intereses, onBuscar, onAmigos,
+  nombre, foto, conseguidos, pendientes, amigos, puntos, conteos, intereses, onBuscar, onAmigos,
 }: Props) {
   const progreso = progresoNivel(puntos)
   const diaUno = esDiaUno(conseguidos)
@@ -96,8 +98,8 @@ export default function CabeceraTu({
         <Universo
           conteos={conteos}
           intereses={intereses}
-          foto={usuario.foto_perfil_url}
-          nombre={usuario.nombre}
+          foto={foto}
+          nombre={nombre}
           // El día uno el aro va vacío: con 0 puntos un arco al 0 % no se
           // distingue de uno roto, y además no hay nada que haya avanzado.
           porcentajeNivel={diaUno ? null : progreso.porcentaje}

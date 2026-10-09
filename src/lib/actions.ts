@@ -1363,7 +1363,7 @@ export async function getInicio(): Promise<ResumenInicio | null> {
   if (!userId) return null
   const service = createServiceRoleClient()
 
-  const [conseguidosRes, pendientesRes, siguientesRes, puntosFilas] = await Promise.all([
+  const [conseguidosRes, pendientesRes, siguientesRes, puntosFilas, amigos, perfilRes, seguidoresRes, siguiendoRes] = await Promise.all([
     service.from('user_gooals').select('id', { count: 'exact', head: true })
       .eq('user_id', userId).eq('estado', 'completado'),
     service.from('user_gooals').select('id', { count: 'exact', head: true })
@@ -1376,10 +1376,22 @@ export async function getInicio(): Promise<ResumenInicio | null> {
       .order('created_at', { ascending: false, nullsFirst: false })
       .order('id', { ascending: true })
       .limit(SIGUIENTES_EN_INICIO),
-    leerTodo<{ puntos_ganados: number | null }>('puntos de Inicio', (desde, hasta) =>
-      service.from('user_gooals').select('puntos_ganados')
-        .eq('user_id', userId).eq('estado', 'completado')
-        .order('id', { ascending: true }).range(desde, hasta)),
+    // Los puntos Y la categoría de cada conseguido, en UNA lectura: el universo
+    // necesita el reparto por categoría y pedirlo aparte sería leer dos veces
+    // las mismas filas. Lo que NO se hace es llamar a getPerfil(), que se trae
+    // tus dos listas enteras con su gooal: la pantalla de entrada es la que más
+    // se abre y aquí solo se pintan seis números.
+    leerTodo<{ puntos_ganados: number | null; gooal: { categoria: CategoriaGooal } | null }>(
+      'puntos de Inicio', (desde, hasta) =>
+        service.from('user_gooals').select('puntos_ganados, gooal:gooals_v2(categoria)')
+          .eq('user_id', userId).eq('estado', 'completado')
+          .order('id', { ascending: true }).range(desde, hasta)),
+    amigosDe(userId),
+    service.from('profiles').select('intereses').eq('id', userId).maybeSingle(),
+    // Los dos números de las listas de gente. Se piden con count y sin traerse
+    // ni una fila: son para las pestañas del panel que abre "Amigos".
+    service.from('follows').select('id', { count: 'exact', head: true }).eq('following_id', userId),
+    service.from('follows').select('id', { count: 'exact', head: true }).eq('follower_id', userId),
   ])
 
   // El doble cast no es pereza: PostgREST tipa el join como un array aunque la
@@ -1391,6 +1403,15 @@ export async function getInicio(): Promise<ResumenInicio | null> {
     conseguidos: conseguidosRes.count ?? 0,
     pendientes: pendientesRes.count ?? 0,
     puntos: puntosFilas.reduce((suma, f) => suma + (f.puntos_ganados ?? 0), 0),
+    amigos: amigos.size,
+    seguidores: seguidoresRes.count ?? 0,
+    siguiendo: siguiendoRes.count ?? 0,
+    // Se cuenta con la misma función que el perfil para que los dos sitios
+    // digan lo mismo: el orden lo decide ella y el universo no lo usa.
+    porCategoria: contarPorCategoria(
+      puntosFilas.filter((f): f is typeof f & { gooal: { categoria: CategoriaGooal } } => Boolean(f.gooal))
+    ),
+    intereses: categoriasDeIntereses((perfilRes.data as { intereses?: unknown } | null)?.intereses),
     siguientes: filas
       .filter((f): f is { id: string; gooal: GooalResumen } => Boolean(f.gooal))
       .map(f => ({ userGooalId: f.id, gooal: f.gooal })),

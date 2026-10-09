@@ -3,118 +3,102 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Search, MapPin } from 'lucide-react'
+import { Search, Settings, ChevronRight } from 'lucide-react'
 import {
-  getInicio, getMyProfile, getSugerencias, getCercaDeMi, getGooalV2, getMisEstadosGooals,
+  getInicio, getMyProfile, getPerfil, getSugerencias, getGooalV2, getMisEstadosGooals, getMuroFeed,
 } from '@/lib/actions'
-import { CATEGORIA_COLOR } from '@/lib/gooals'
+import { MARCA, RADIO, SUPERFICIE, TEXTO } from '@/lib/estilo'
 import AppShell, { PantallaCargando } from '@/components/AppShell'
+import Tira, { CabeceraTira as Cabecera } from '@/components/TiraGooals'
+import Avatar from '@/components/Avatar'
 import GooalV2DetailModal from '@/components/GooalV2DetailModal'
 import CelebracionPuntos from '@/components/CelebracionPuntos'
+import ListaUsuariosModal from '@/components/ListaUsuariosModal'
+import EditarPerfilModal from '@/components/EditarPerfilModal'
+import BuscarUsuariosSheet from '@/components/BuscarUsuariosSheet'
+import InvitarAmigoSheet from '@/components/InvitarAmigoSheet'
+import AjustesSheet from '@/components/perfil/AjustesSheet'
+import CabeceraTu, { esDiaUno } from '@/components/perfil/CabeceraTu'
+import ParaEmpezar from '@/components/perfil/ParaEmpezar'
 import type { ResultadoCompletado } from '@/components/AnadirFotoModal'
 import type {
-  Profile, ResumenInicio, GooalResumen, GooalCerca, SugerenciasInicio,
-  GooalV2, EstadoUserGooal,
+  Profile, ResumenInicio, GooalResumen, SugerenciasInicio, MuroPostFeed,
+  GooalV2, EstadoUserGooal, PerfilCompleto,
 } from '@/types/gooals'
 
 /**
- * La pantalla de entrada.
+ * La pantalla de entrada, que es TU pantalla.
  *
- * ── POR QUÉ MANDA EL BUSCADOR ─────────────────────────────
+ * ── POR QUÉ AQUÍ Y NO EN /perfil ──────────────────────────
  *
- * Esto no es una app de abrir cada día. Se abre para tres cosas: buscar algo
- * que hacer, comprobar si existe el gooal de algo que acabas de hacer, o mirar
- * a alguien. Las dos primeras son el mismo buscador, y por eso es lo primero y
- * lo más grande de la pantalla.
+ * Esta pantalla vivía en /perfil y la entrada era otra cosa: un buscador grande
+ * y tres tiras de tarjetas. Lo que se decidió el 9-10-2026 es que lo primero que
+ * se ve al abrir sea **dónde estás tú**: tu nivel, tu universo de categorías y
+ * tus cifras; y debajo, lo que te toca.
  *
- * El buscador no busca aquí: lleva a Explorar con lo escrito puesto. Repetir la
- * búsqueda en dos sitios sería mantener dos veces lo mismo, y allí ya está todo
- * —los filtros, el scroll infinito y el "proponlo" cuando no hay resultados—
- * funcionando.
+ * **La dirección NO cambió a propósito.** Sigue siendo /inicio aunque ya no se
+ * llame "Inicio", y eso no es pereza: el `start_url` del manifest apunta aquí,
+ * así que mover la ruta habría dejado apuntando a un sitio viejo a todo el que
+ * ya tiene la app instalada, hasta que su móvil refresque el manifest. En una
+ * app instalada la dirección no la ve nadie; lo que ve la gente es qué sale.
+ *
+ * ── Y EL BUSCADOR GRANDE QUE HABÍA AQUÍ ───────────────────
+ *
+ * Tenía su razón escrita —"esto no es una app de abrir cada día, se abre para
+ * buscar algo que hacer"— y esa razón no era mala: era de cuando la entrada
+ * tenía que resolver sola las tres cosas. Ahora buscar es media barra de abajo,
+ * así que repetirlo aquí arriba sería dos puertas a la misma habitación. Queda
+ * la lupa de la esquina, que busca PERSONAS, que es lo único que Buscar no hace.
  */
 export default function InicioPage() {
   const router = useRouter()
   const [profile, setProfile] = useState<Profile | null>(null)
   const [resumen, setResumen] = useState<ResumenInicio | null>(null)
   const [sugerencias, setSugerencias] = useState<SugerenciasInicio | null>(null)
+  const [ultimoDelMuro, setUltimoDelMuro] = useState<MuroPostFeed | null>(null)
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
-  const [busqueda, setBusqueda] = useState('')
-
-  // Lo de cerca se pide solo al tocar el botón. Ver ubicacion().
-  const [cerca, setCerca] = useState<GooalCerca[] | null>(null)
-  const [buscandoCerca, setBuscandoCerca] = useState(false)
-  const [errorCerca, setErrorCerca] = useState('')
 
   const [misEstados, setMisEstados] = useState<Record<string, EstadoUserGooal>>({})
   const [ficha, setFicha] = useState<GooalV2 | null>(null)
   const [abriendo, setAbriendo] = useState(false)
   const [celebracion, setCelebracion] = useState<ResultadoCompletado | null>(null)
 
+  const [lista, setLista] = useState<'seguidores' | 'siguiendo' | null>(null)
+  const [buscando, setBuscando] = useState(false)
+  const [editando, setEditando] = useState(false)
+  const [invitando, setInvitando] = useState(false)
+  /**
+   * Los ajustes necesitan el perfil ENTERO, porque dentro está la imagen que se
+   * comparte en Stories y esa pinta tus listas. No se pide al cargar la
+   * pantalla: se pide al tocar el engranaje. Así la pantalla que más se abre no
+   * paga una consulta que casi nadie usa.
+   */
+  const [ajustes, setAjustes] = useState<PerfilCompleto | null>(null)
+  const [abriendoAjustes, setAbriendoAjustes] = useState(false)
+
   const cargar = useCallback(async (silencioso = false) => {
     if (!silencioso) setCargando(true)
     try {
-      const [prof, res, sug, estados] = await Promise.all([
-        getMyProfile(), getInicio(), getSugerencias(), getMisEstadosGooals(),
+      const [prof, res, sug, estados, muro] = await Promise.all([
+        getMyProfile(), getInicio(), getSugerencias(), getMisEstadosGooals(), getMuroFeed(5),
       ])
       if (!prof) { router.push('/'); return }
       setProfile(prof)
       setResumen(res)
       setSugerencias(sug)
       setMisEstados(estados)
+      setUltimoDelMuro(muro[0] ?? null)
       setError('')
     } catch (e) {
       console.error('[inicio]', e)
-      setError('No hemos podido cargar tu inicio. Inténtalo de nuevo.')
+      setError('No hemos podido cargar tu pantalla. Inténtalo de nuevo.')
     } finally {
       setCargando(false)
     }
   }, [router])
 
   useEffect(() => { cargar() }, [cargar])
-
-  const buscar = (e: React.FormEvent) => {
-    e.preventDefault()
-    const q = busqueda.trim()
-    router.push(q ? `/explorar?q=${encodeURIComponent(q)}` : '/explorar')
-  }
-
-  /**
-   * Pide la ubicación SOLO cuando se toca el botón.
-   *
-   * El cartel del sistema pidiendo la ubicación nada más abrir una app es de
-   * las cosas que hacen que alguien la cierre y no vuelva. Aquí sabe lo que va
-   * a pasar antes de que pase, porque lo ha pedido él.
-   */
-  const ubicacion = () => {
-    setErrorCerca('')
-    if (!navigator.geolocation) {
-      setErrorCerca('Este navegador no sabe decirnos dónde estás.')
-      return
-    }
-    setBuscandoCerca(true)
-    navigator.geolocation.getCurrentPosition(
-      async pos => {
-        try {
-          setCerca(await getCercaDeMi(pos.coords.latitude, pos.coords.longitude))
-        } catch (e) {
-          console.error('[inicio:cerca]', e)
-          setErrorCerca('No hemos podido buscar lo que tienes cerca.')
-        } finally {
-          setBuscandoCerca(false)
-        }
-      },
-      err => {
-        setBuscandoCerca(false)
-        // Que diga qué pasó: "no se pudo" a secas deja a la persona sin saber
-        // si el fallo es suyo, nuestro o del móvil.
-        setErrorCerca(err.code === err.PERMISSION_DENIED
-          ? 'No nos has dado permiso para saber dónde estás. Puedes cambiarlo en los ajustes del navegador.'
-          : 'No hemos podido saber dónde estás. Inténtalo de nuevo.')
-      },
-      { timeout: 10000, maximumAge: 5 * 60 * 1000 },
-    )
-  }
 
   const abrir = async (gooal: GooalResumen) => {
     if (abriendo) return
@@ -132,128 +116,160 @@ export default function InicioPage() {
     }
   }
 
+  const abrirAjustes = async () => {
+    if (abriendoAjustes) return
+    setAbriendoAjustes(true)
+    try {
+      const p = await getPerfil()
+      if (p) setAjustes(p)
+      else setError('No hemos podido abrir los ajustes.')
+    } catch (e) {
+      console.error('[inicio:ajustes]', e)
+      setError('No hemos podido abrir los ajustes. Inténtalo de nuevo.')
+    } finally {
+      setAbriendoAjustes(false)
+    }
+  }
+
+  const handleLogout = async () => {
+    const { createClient } = await import('@/lib/supabase/client')
+    await createClient().auth.signOut()
+    router.push('/')
+  }
+
   if (cargando) return <PantallaCargando />
-  if (!profile) return null
+  if (!profile || !resumen) return null
+
+  const diaUno = esDiaUno(resumen.conseguidos)
+  // Con foto primero: una tarjeta de 104 px es sobre todo una imagen.
+  const empezarPor = sugerencias
+    ? [...sugerencias.gooals.filter(g => g.imagen_url), ...sugerencias.gooals.filter(g => !g.imagen_url)].slice(0, 2)
+    : []
 
   return (
     <>
       <AppShell tab="inicio" fotoPerfil={profile.foto_perfil_url}>
-        <div style={{ padding: '4px 20px 32px' }}>
+        <div style={{ padding: '0 20px 32px' }}>
 
-          {/* ── El buscador ────────────────────────────────── */}
-          <form onSubmit={buscar}>
-            <label
-              style={{
-                display: 'flex', alignItems: 'center', gap: 10,
-                background: '#161817', border: '1px solid #2A2E2C', borderRadius: 14,
-                padding: '0 14px', minHeight: 52,
-              }}
+          {/* ── La barra de arriba: personas y ajustes ─────── */}
+          <div style={{ display: 'flex', alignItems: 'center', minHeight: 44 }}>
+            <button
+              onClick={() => setBuscando(true)}
+              aria-label="Buscar personas"
+              className="text-[#7A8A85] active:text-[#00D1A7] transition-colors w-11 h-11 -ml-3 flex items-center justify-center"
             >
-              <Search aria-hidden style={{ width: 17, height: 17, flexShrink: 0, color: '#7A8A85' }} />
-              <input
-                type="search"
-                value={busqueda}
-                onChange={e => setBusqueda(e.target.value)}
-                // Las dos preguntas no caben en 390 px a 16 px de letra: se
-                // cortaba a mitad de la segunda. La primera va aquí y la
-                // segunda justo debajo, donde además se explica lo de proponer.
-                placeholder="¿Qué quieres hacer?"
-                aria-label="Buscar un gooal"
-                // 16 px o más: con menos, iOS hace zoom al tocar el campo.
-                style={{
-                  flex: 1, minWidth: 0, background: 'transparent', border: 'none',
-                  outline: 'none', color: '#FFFFFF', fontSize: 16,
-                }}
-              />
-            </label>
-          </form>
-          {/* Aquí había una línea explicando que el buscador también vale para
-              marcar lo ya hecho, y las tres cifras (conseguidos · puntos ·
-              pendientes). Fuera las dos: el campo ya pregunta, y las cifras
-              viven en el perfil, que es donde se buscan. Una pantalla de entrada
-              con cuatro explicaciones no se lee, se salta. */}
+              <Search className="w-5 h-5" />
+            </button>
+            <button
+              onClick={abrirAjustes}
+              disabled={abriendoAjustes}
+              aria-label="Ajustes"
+              className="text-[#A3B1AC] active:text-[#00D1A7] transition-colors w-11 h-11 -mr-3 ml-auto flex items-center justify-center disabled:opacity-60"
+            >
+              {abriendoAjustes
+                ? <span className="w-4 h-4 border-2 border-[#7A8A85] border-t-transparent rounded-full animate-spin" />
+                : <Settings className="w-5 h-5" />}
+            </button>
+          </div>
+
+          <CabeceraTu
+            nombre={profile.nombre}
+            foto={profile.foto_perfil_url}
+            conseguidos={resumen.conseguidos}
+            pendientes={resumen.pendientes}
+            amigos={resumen.amigos}
+            puntos={resumen.puntos}
+            conteos={resumen.porCategoria}
+            intereses={resumen.intereses}
+            onBuscar={() => router.push('/explorar')}
+            onAmigos={() => setLista('seguidores')}
+          />
 
           {error && (
             <p role="alert" className="text-sm text-[#FF5252] bg-[rgba(255,82,82,0.14)] px-3 py-2 rounded-lg mt-4">{error}</p>
           )}
 
-          {/* ── Sigue con lo tuyo ──────────────────────────── */}
-          {resumen && resumen.siguientes.length > 0 && (
-            <section style={{ marginTop: 18 }}>
-              <Cabecera titulo="Sigue con lo tuyo" enlace="/perfil" texto={`Ver los ${resumen.pendientes}`} />
-              <Tira gooals={resumen.siguientes.map(s => s.gooal)} onAbrir={abrir} />
-            </section>
+          {diaUno ? (
+            /* El día uno no hay nada tuyo que seguir: lo que hay es por dónde
+               empezar, y ya lo dice ParaEmpezar. Las tiras de abajo serían dos
+               veces la misma lista de sugerencias. */
+            <div style={{ marginTop: 18 }}>
+              <ParaEmpezar gooals={empezarPor} onAbrir={abrir} />
+            </div>
+          ) : (
+            <>
+              {/* ── Sigue con lo tuyo ──────────────────────── */}
+              {resumen.siguientes.length > 0 && (
+                <section style={{ marginTop: 18 }}>
+                  <Cabecera titulo="Sigue con lo tuyo" enlace="/perfil" texto={`Ver los ${resumen.pendientes}`} />
+                  <Tira gooals={resumen.siguientes.map(s => s.gooal)} onAbrir={abrir} />
+                </section>
+              )}
+
+              {resumen.siguientes.length === 0 && (
+                <section style={{ marginTop: 18, background: SUPERFICIE.panel, borderRadius: RADIO.tarjeta, padding: 16 }}>
+                  <p style={{ fontSize: TEXTO.cuerpoGrande, color: MARCA.sand, fontWeight: 600 }}>Aún no tienes nada pendiente.</p>
+                  <p style={{ fontSize: TEXTO.cuerpo, color: MARCA.stone, marginTop: 4, lineHeight: 1.5 }}>
+                    Busca algo que te apetezca y añádelo a tu lista.
+                  </p>
+                  <Link
+                    href="/explorar"
+                    className="active:bg-[#00B893] transition-colors"
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', minHeight: 44, marginTop: 12,
+                      padding: '0 18px', borderRadius: 12, background: MARCA.aurora,
+                      color: MARCA.obsidian, fontSize: TEXTO.cuerpoGrande, fontWeight: 600,
+                    }}
+                  >
+                    Explorar gooals
+                  </Link>
+                </section>
+              )}
+
+              {/* ── De lo que te interesa ──────────────────── */}
+              {sugerencias && sugerencias.gooals.length > 0 && (
+                <section style={{ marginTop: 22 }}>
+                  {/* El criterio NO va impreso. Que se pueda explicar en una línea
+                      era para que no fuera inventado, no para escribirlo en la
+                      pantalla: vive en getSugerencias(), que es donde sirve. */}
+                  <Cabecera titulo="De lo que te interesa" enlace="/explorar" texto="Explorar" />
+                  <Tira gooals={sugerencias.gooals} onAbrir={abrir} />
+                </section>
+              )}
+            </>
           )}
 
-          {resumen && resumen.siguientes.length === 0 && (
-            <section style={{ marginTop: 18, background: '#161817', borderRadius: 16, padding: 16 }}>
-              <p style={{ fontSize: 14, color: '#FFFFFF', fontWeight: 600 }}>Aún no tienes nada pendiente.</p>
-              <p style={{ fontSize: 13, color: '#7A8A85', marginTop: 4, lineHeight: 1.5 }}>
-                Busca algo que te apetezca y añádelo a tu lista.
-              </p>
-              <Link
-                href="/explorar"
-                className="active:bg-[#00B893] transition-colors"
-                style={{
-                  display: 'inline-flex', alignItems: 'center', minHeight: 44, marginTop: 12,
-                  padding: '0 18px', borderRadius: 12, background: '#00D1A7',
-                  color: '#0B0B0B', fontSize: 14, fontWeight: 600,
-                }}
-              >
-                Explorar gooals
-              </Link>
-            </section>
+          {/* ── La línea social: la puerta del muro ────────── */}
+          {/* El muro dejó de tener pestaña propia, y la razón importa: con la
+              base casi sin seguimientos, una pestaña "Muro" está vacía para
+              TODO EL MUNDO el primer día, y una pestaña siempre vacía enseña a
+              no tocarla. Así que la puerta solo existe cuando hay algo detrás.
+              Esta es su forma más simple —lo último que ha pasado—; la de "Ari
+              y tú queréis hacer 6 cosas iguales" vendrá con las listas. */}
+          {ultimoDelMuro && (
+            <Link
+              href="/muro"
+              style={{
+                display: 'flex', alignItems: 'center', gap: 12, marginTop: 22, height: 68,
+                padding: '0 14px', borderRadius: RADIO.tarjeta,
+                background: SUPERFICIE.panel, border: `1px solid ${SUPERFICIE.linea}`,
+              }}
+            >
+              <Avatar nombre={ultimoDelMuro.autor.nombre} foto={ultimoDelMuro.autor.foto_perfil_url} size={40} neutro />
+              <span style={{ minWidth: 0, fontSize: 12.5, lineHeight: 1.35, color: MARCA.sand }}>
+                <b style={{ fontWeight: 650 }}>{ultimoDelMuro.autor.nombre}</b>
+                {ultimoDelMuro.gooal ? ' ha conseguido ' : ' ha publicado algo'}
+                {ultimoDelMuro.gooal && (
+                  <b style={{ fontWeight: 650, color: MARCA.aurora }}>{ultimoDelMuro.gooal.titulo}</b>
+                )}
+              </span>
+              <ChevronRight aria-hidden style={{ marginLeft: 'auto', flexShrink: 0, width: 16, height: 16, color: SUPERFICIE.apagado }} />
+            </Link>
           )}
-
-          {/* ── De lo que te interesa ──────────────────────── */}
-          {sugerencias && sugerencias.gooals.length > 0 && (
-            <section style={{ marginTop: 22 }}>
-              {/* El criterio NO va impreso. Que se pueda explicar en una línea
-                  era para que no fuera inventado, no para escribirlo en la
-                  pantalla: vive en getSugerencias(), que es donde sirve. */}
-              <Cabecera titulo="De lo que te interesa" enlace="/explorar" texto="Explorar" />
-              <Tira gooals={sugerencias.gooals} onAbrir={abrir} />
-            </section>
-          )}
-
-          {/* ── Cerca de ti ────────────────────────────────── */}
-          <section style={{ marginTop: 22 }}>
-            <h2 style={{ fontSize: 14, fontWeight: 600, color: '#FFFFFF', marginBottom: 10 }}>Cerca de ti</h2>
-
-            {cerca === null ? (
-              <>
-                <button
-                  onClick={ubicacion}
-                  disabled={buscandoCerca}
-                  className="active:bg-[#1E2120] transition-colors disabled:opacity-60"
-                  style={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                    width: '100%', minHeight: 48, borderRadius: 12,
-                    border: '1px solid #2A2E2C', color: '#FFFFFF', fontSize: 14, fontWeight: 600,
-                  }}
-                >
-                  {buscandoCerca
-                    ? <span className="w-4 h-4 border-2 border-[#7A8A85] border-t-transparent rounded-full animate-spin" />
-                    : <MapPin aria-hidden style={{ width: 16, height: 16 }} />}
-                  {buscandoCerca ? 'Mirando dónde estás...' : 'Ver lo que tengo cerca'}
-                </button>
-              </>
-            ) : cerca.length === 0 ? (
-              <p style={{ fontSize: 13, color: '#7A8A85', lineHeight: 1.5 }}>
-                No hay ningún gooal con sitio a menos de un par de horas de aquí.{' '}
-                <Link href="/explorar?tab=mapa" style={{ color: '#00D1A7' }}>Mira el mapa</Link>.
-              </p>
-            ) : (
-              <Tira gooals={cerca.map(c => c.gooal)} distancias={cerca.map(c => c.km)} onAbrir={abrir} />
-            )}
-
-            {errorCerca && (
-              <p role="alert" style={{ fontSize: 13, color: '#FF5252', marginTop: 10, lineHeight: 1.5 }}>{errorCerca}</p>
-            )}
-          </section>
         </div>
       </AppShell>
 
+      {/* ── Modales ──────────────────────────────────────── */}
       {ficha && (
         <GooalV2DetailModal
           gooal={ficha}
@@ -267,164 +283,49 @@ export default function InicioPage() {
       {celebracion && (
         <CelebracionPuntos resultado={celebracion} onClose={() => setCelebracion(null)} />
       )}
+
+      {lista && (
+        <ListaUsuariosModal
+          userId={profile.id}
+          tipo={lista}
+          cuantos={{ seguidores: resumen.seguidores, siguiendo: resumen.siguiendo }}
+          onClose={() => setLista(null)}
+          onUsuarioClick={username => { setLista(null); if (username) router.push(`/perfil?u=${username}`) }}
+        />
+      )}
+
+      {buscando && (
+        <BuscarUsuariosSheet
+          onClose={() => setBuscando(false)}
+          onUsuarioClick={username => { setBuscando(false); if (username) router.push(`/perfil?u=${username}`) }}
+        />
+      )}
+
+      {ajustes && (
+        <AjustesSheet
+          perfil={ajustes}
+          onClose={() => setAjustes(null)}
+          onEditar={() => { setAjustes(null); setEditando(true) }}
+          onInvitar={() => { setAjustes(null); setInvitando(true) }}
+          onCerrarSesion={handleLogout}
+        />
+      )}
+
+      {editando && (
+        <EditarPerfilModal
+          userId={profile.id}
+          nombreActual={profile.nombre}
+          fotoActual={profile.foto_perfil_url}
+          onClose={() => setEditando(false)}
+          onGuardado={cambios => {
+            setProfile(p => p && ({ ...p, ...cambios }))
+            setEditando(false)
+          }}
+        />
+      )}
+
+      {invitando && <InvitarAmigoSheet onClose={() => setInvitando(false)} />}
     </>
   )
 }
 
-function Cabecera({ titulo, enlace, texto }: { titulo: string; enlace: string; texto: string }) {
-  return (
-    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12, marginBottom: 10 }}>
-      <h2 style={{ fontSize: 14, fontWeight: 600, color: '#FFFFFF' }}>{titulo}</h2>
-      <Link href={enlace} style={{ fontSize: 12, color: '#00D1A7', whiteSpace: 'nowrap' }}>{texto}</Link>
-    </div>
-  )
-}
-
-/**
- * Una fila que se desliza. Sangra hasta los bordes de la pantalla para que se
- * note que hay más a la derecha; si acabara en el margen, parecería cortada.
- */
-function Tira({
-  gooals, distancias, onAbrir,
-}: {
-  gooals: GooalResumen[]
-  distancias?: number[]
-  onAbrir: (gooal: GooalResumen) => void
-}) {
-  return (
-    <div style={{ margin: '0 -20px' }}>
-      <div
-        style={{
-          display: 'flex', gap: 10, overflowX: 'auto', scrollbarWidth: 'none',
-          padding: '0 20px 4px',
-        }}
-      >
-        {gooals.map((g, i) => (
-          <Tarjeta
-            key={g.id}
-            gooal={g}
-            km={distancias?.[i]}
-            onAbrir={() => onAbrir(g)}
-          />
-        ))}
-      </div>
-    </div>
-  )
-}
-
-/**
- * Una tarjeta de las tiras de Inicio.
- *
- * ── LA QUE NO TIENE FOTO ES MÁS ESTRECHA ──────────────────
- *
- * Misma altura, menos ancho. Una foto es información y un degradado de color no
- * lo es, así que no deberían ocupar lo mismo en pantalla: de los 536 gooals
- * publicados solo 221 tienen foto, y según tus intereses te puede tocar una tira
- * entera de rectángulos de colores con el título abajo y mucho vacío en medio.
- *
- * Más estrecha y no más baja a propósito: en una fila horizontal el ojo sigue
- * una línea, y un borde inferior irregular se lee como roto. Un ancho distinto
- * no rompe nada.
- *
- * Y no imita a la que sí tiene foto: la barrita de su categoría, el título
- * arriba y grande llenando el hueco, y los puntos abajo.
- */
-function Tarjeta({ gooal, km, onAbrir }: { gooal: GooalResumen; km?: number; onAbrir: () => void }) {
-  const conFoto = Boolean(gooal.imagen_url)
-
-  const marco: React.CSSProperties = {
-    flex: conFoto ? '0 0 152px' : '0 0 118px',
-    height: 132, borderRadius: 14, position: 'relative', overflow: 'hidden',
-    border: '1px solid #2A2E2C', textAlign: 'left',
-  }
-
-  if (!conFoto) {
-    return (
-      <button
-        onClick={onAbrir}
-        aria-label={gooal.titulo}
-        className="active:opacity-80 transition-opacity"
-        style={{ ...marco, background: '#161817', display: 'flex' }}
-      >
-        <span aria-hidden style={{ width: 3, flexShrink: 0, background: CATEGORIA_COLOR[gooal.categoria] }} />
-        <span style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', padding: '10px 10px 9px' }}>
-          {/* La letra crece cuando el título es corto, para llenar el hueco en
-              vez de dejar medio recuadro vacío. Es el mismo truco que ya usa la
-              imagen que se comparte en Stories. */}
-          <span
-            style={{
-              flex: 1, minWidth: 0,
-              fontSize: gooal.titulo.length <= 18 ? 15.5 : gooal.titulo.length <= 34 ? 13.5 : 12.5,
-              lineHeight: 1.26, color: '#FFFFFF', fontWeight: 600,
-              // Un título largo en 118 px parte palabras antes que desbordar.
-              overflowWrap: 'anywhere',
-              display: '-webkit-box', WebkitLineClamp: 6, WebkitBoxOrient: 'vertical', overflow: 'hidden',
-            } as React.CSSProperties}
-          >
-            {gooal.titulo}
-          </span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 6 }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: '#00D1A7' }}>
-              {gooal.puntos} {gooal.puntos === 1 ? 'pt' : 'pts'}
-            </span>
-            {km !== undefined && (
-              <span style={{ fontSize: 10.5, color: '#7A8A85' }}>{km < 1 ? 'aquí' : `${km} km`}</span>
-            )}
-          </span>
-        </span>
-      </button>
-    )
-  }
-
-  return (
-    <button
-      onClick={onAbrir}
-      aria-label={gooal.titulo}
-      className="active:opacity-80 transition-opacity"
-      style={{ ...marco, background: '#161817' }}
-    >
-      {/* eslint-disable-next-line @next/next/no-img-element -- fotos del catálogo de tamaño variable */}
-      <img
-        src={gooal.imagen_url!}
-        alt=""
-        loading="lazy"
-        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-      />
-      {/* El velo sube más que antes: el título manda sobre la foto, porque es lo
-          que hace decidir. Si no cabe, mejor menos foto. */}
-      <span
-        aria-hidden
-        style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(5,6,6,0.96) 42%, rgba(5,6,6,0) 88%)' }}
-      />
-      <span
-        style={{
-          position: 'absolute', top: 7, right: 7, fontSize: 10, fontWeight: 700,
-          background: 'rgba(0,0,0,0.55)', border: '1px solid rgba(255,255,255,0.13)',
-          borderRadius: 20, padding: '3px 7px', color: '#00D1A7',
-        }}
-      >
-        {gooal.puntos}
-      </span>
-      {km !== undefined && (
-        <span
-          style={{
-            position: 'absolute', top: 7, left: 7, fontSize: 10, fontWeight: 600,
-            background: 'rgba(0,0,0,0.55)', border: '1px solid rgba(255,255,255,0.13)',
-            borderRadius: 20, padding: '3px 7px', color: '#FFFFFF',
-          }}
-        >
-          {km < 1 ? 'aquí' : `${km} km`}
-        </span>
-      )}
-      <span
-        style={{
-          position: 'absolute', left: 9, right: 9, bottom: 8,
-          fontSize: 11.5, lineHeight: 1.28, color: '#FFFFFF', fontWeight: 500,
-          display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden',
-        } as React.CSSProperties}
-      >
-        {gooal.titulo}
-      </span>
-    </button>
-  )
-}

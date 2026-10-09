@@ -1,33 +1,25 @@
 'use client'
 
-import { Suspense, useState, useEffect, useCallback, useMemo } from 'react'
+import { Suspense, useState, useEffect, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { ArrowLeft, Search, Settings } from 'lucide-react'
-import { createClient } from '@/lib/supabase/client'
+import { ArrowLeft } from 'lucide-react'
 import {
   getPerfil, seguirUsuario, dejarDeSeguir, getGooalDeLista, getMisEstadosGooals,
-  getSugerencias, getGooalV2,
 } from '@/lib/actions'
 import { progresoNivel } from '@/lib/niveles'
 import AppShell, { PantallaCargando, EstadoVacio } from '@/components/AppShell'
 import ListaUsuariosModal from '@/components/ListaUsuariosModal'
-import EditarPerfilModal from '@/components/EditarPerfilModal'
-import BuscarUsuariosSheet from '@/components/BuscarUsuariosSheet'
-import InvitarAmigoSheet from '@/components/InvitarAmigoSheet'
 import GooalV2DetailModal from '@/components/GooalV2DetailModal'
 import CelebracionPuntos from '@/components/CelebracionPuntos'
 import type { ResultadoCompletado } from '@/components/AnadirFotoModal'
 import CabeceraPerfil from '@/components/perfil/CabeceraPerfil'
-import CabeceraTu, { esDiaUno } from '@/components/perfil/CabeceraTu'
-import ParaEmpezar from '@/components/perfil/ParaEmpezar'
 import TarjetaCifras from '@/components/perfil/TarjetaCifras'
 import PastillasCategorias from '@/components/perfil/PastillasCategorias'
 import PestanasPerfil, { type PestanaPerfil } from '@/components/perfil/PestanasPerfil'
 import ListaPerfil from '@/components/perfil/ListaPerfil'
 import FiltroEnComun from '@/components/perfil/FiltroEnComun'
 import { ProveedorFotosPrivadas } from '@/components/FotosPrivadas'
-import AjustesSheet from '@/components/perfil/AjustesSheet'
-import type { EstadoUserGooal, GooalResumen, GooalV2, LineaPerfil, PerfilCompleto, VisibilidadFoto } from '@/types/gooals'
+import type { EstadoUserGooal, GooalV2, LineaPerfil, PerfilCompleto, VisibilidadFoto } from '@/types/gooals'
 
 export default function PerfilPage() {
   // useSearchParams obliga a un límite de Suspense para poder prerenderizar.
@@ -48,7 +40,6 @@ type FichaAbierta = {
 function PerfilContenido() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const supabase = useMemo(() => createClient(), [])
 
   // ?u=<username> abre el perfil de otra persona; sin parámetro, el propio.
   const username = searchParams.get('u')
@@ -61,19 +52,9 @@ function PerfilContenido() {
   const [soloEnComun, setSoloEnComun] = useState(false)
 
   const [lista, setLista] = useState<'seguidores' | 'siguiendo' | null>(null)
-  const [ajustes, setAjustes] = useState(false)
-  const [editando, setEditando] = useState(false)
-  const [buscando, setBuscando] = useState(false)
-  const [invitando, setInvitando] = useState(false)
   const [ficha, setFicha] = useState<FichaAbierta | null>(null)
   const [abriendo, setAbriendo] = useState(false)
   const [celebracion, setCelebracion] = useState<ResultadoCompletado | null>(null)
-  /**
-   * Los dos gooals del día uno. Se piden APARTE y después de pintar el perfil:
-   * solo hacen falta cuando no has conseguido nada, y hacer esperar a la
-   * pantalla entera por ellos sería pagarlos también los demás días.
-   */
-  const [paraEmpezar, setParaEmpezar] = useState<GooalResumen[]>([])
 
   /**
    * MIS estados, que no son los de la persona del perfil. La ficha ofrece
@@ -82,7 +63,6 @@ function PerfilContenido() {
    * conseguiste" sería mentira.
    */
   const [misEstados, setMisEstados] = useState<Record<string, EstadoUserGooal>>({})
-
   /**
    * `silencioso` recarga sin pantalla de carga ni cambiar de pestaña: tras
    * conseguir un gooal o fallar un "Seguir", la página no debe parpadear. Al
@@ -115,42 +95,6 @@ function PerfilContenido() {
 
   useEffect(() => { cargar() }, [cargar])
 
-  const esMiDiaUno = Boolean(perfil?.esPropio) && esDiaUno(perfil?.conseguidos.length ?? 0)
-
-  useEffect(() => {
-    // Sin vaciar al salir: esto solo se pinta el día uno, así que lo que quede
-    // guardado no lo ve nadie, y tocar el estado aquí dispara una cascada.
-    if (!esMiDiaUno) return
-    let vivo = true
-    getSugerencias()
-      .then(s => {
-        if (!vivo) return
-        // Con foto primero: una tarjeta de 104 px es sobre todo una imagen, y
-        // dos rectángulos de color seguidos no invitan a nada. Si no hubiera
-        // dos con foto, se completan con las que haya.
-        const conFoto = s.gooals.filter(g => g.imagen_url)
-        const resto = s.gooals.filter(g => !g.imagen_url)
-        setParaEmpezar([...conFoto, ...resto].slice(0, 2))
-      })
-      .catch(e => console.error('[perfil:paraEmpezar]', e))
-    return () => { vivo = false }
-  }, [esMiDiaUno])
-
-  const abrirSugerido = async (g: GooalResumen) => {
-    if (abriendo) return
-    setAbriendo(true)
-    try {
-      const completo = await getGooalV2(g.id)
-      if (completo) setFicha({ gooal: completo, logro: null })
-      else setError('Este gooal ya no está disponible.')
-    } catch (e) {
-      console.error('[perfil:sugerido]', e)
-      setError('No hemos podido abrir este gooal. Inténtalo de nuevo.')
-    } finally {
-      setAbriendo(false)
-    }
-  }
-
   const handleSeguir = async () => {
     if (!perfil) return
     setSiguiendoAccion(true)
@@ -177,7 +121,6 @@ function PerfilContenido() {
 
   const irAPerfil = (u: string | null) => {
     setLista(null)
-    setBuscando(false)
     if (!u) return
     if (perfil?.esPropio && u === perfil.usuario.username) return
     router.push(`/perfil?u=${encodeURIComponent(u)}`)
@@ -212,11 +155,6 @@ function PerfilContenido() {
     // no dice nada de la otra, y si en la nueva no hay nada en común la pastilla
     // desaparece y el filtro se quedaría puesto, enseñando una lista vacía.
     setSoloEnComun(false)
-  }
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    router.push('/')
   }
 
   if (loading) return <PantallaCargando />
@@ -259,55 +197,30 @@ function PerfilContenido() {
         <div style={{ padding: '0 20px 32px' }}>
 
           {/* ── Barra superior ─────────────────────────────── */}
+          {/* Las dos flechas vuelven atrás, a sitios distintos: desde el perfil
+              de otra persona, al tuyo; desde el tuyo, a Tú, que es de donde se
+              llega (desde "Ver los N pendientes"). */}
           <div style={{ display: 'flex', alignItems: 'center', minHeight: 44 }}>
-            {perfil.esPropio ? (
-              <button
-                onClick={() => setBuscando(true)}
-                aria-label="Buscar personas"
-                className="text-[#7A8A85] active:text-[#00D1A7] transition-colors w-11 h-11 -ml-3 flex items-center justify-center"
-              >
-                <Search className="w-5 h-5" />
-              </button>
-            ) : (
-              <button
-                onClick={() => router.push('/perfil')}
-                aria-label="Volver a mi perfil"
-                className="text-[#7A8A85] active:text-[#00D1A7] transition-colors w-11 h-11 -ml-3 flex items-center justify-center"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </button>
-            )}
-
-            {/* El engranaje vivía en la cabecera vieja, que en el perfil propio
-                ya no se pinta. Sin esto no habría puerta a editar el perfil, a
-                invitar ni a cerrar sesión. */}
-            {perfil.esPropio && (
-              <button
-                onClick={() => setAjustes(true)}
-                aria-label="Ajustes"
-                className="text-[#A3B1AC] active:text-[#00D1A7] transition-colors w-11 h-11 -mr-3 ml-auto flex items-center justify-center"
-              >
-                <Settings className="w-5 h-5" />
-              </button>
-            )}
+            <button
+              onClick={() => router.push(perfil.esPropio ? '/inicio' : '/perfil')}
+              aria-label={perfil.esPropio ? 'Volver' : 'Volver a mi perfil'}
+              className="text-[#7A8A85] active:text-[#00D1A7] transition-colors w-11 h-11 -ml-3 flex items-center justify-center"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
           </div>
 
-          {/* ── TU perfil y el de otra persona son dos cabeceras ──
-              No es que una sea "la nueva": dicen cosas distintas. La tuya es el
-              universo, tu nivel y lo que te falta; la de otra persona es quién
-              es y el botón de seguirla. La lista de abajo sí es la misma. */}
+          {/* TU pantalla es ahora la entrada (/inicio): allí está el universo,
+              el nivel y las cifras. Aquí abajo queda lo que no cabía allí, que
+              son tus dos listas enteras. El perfil de OTRA persona sí se pinta
+              entero aquí, porque de ella no hay ninguna otra pantalla. */}
           {perfil.esPropio ? (
-            <CabeceraTu
-              usuario={perfil.usuario}
-              conseguidos={perfil.conseguidos.length}
-              pendientes={perfil.pendientes.length}
-              amigos={perfil.amigos ?? 0}
-              puntos={perfil.puntos}
-              conteos={perfil.porCategoria}
-              intereses={perfil.intereses ?? []}
-              onBuscar={() => router.push('/explorar')}
-              onAmigos={() => setLista('seguidores')}
-            />
+            <h1
+              className="fuente-titular"
+              style={{ fontSize: 20, fontWeight: 650, letterSpacing: '.1em', textIndent: '.1em', textTransform: 'uppercase', paddingTop: 4 }}
+            >
+              Tus gooals
+            </h1>
           ) : (
             <CabeceraPerfil
               usuario={perfil.usuario}
@@ -318,7 +231,7 @@ function PerfilContenido() {
               siguiendoAccion={siguiendoAccion}
               nivel={nivel}
               onSeguir={handleSeguir}
-              onAjustes={() => setAjustes(true)}
+              onAjustes={() => { /* los ajustes viven en Tú */ }}
               onLista={setLista}
             />
           )}
@@ -347,15 +260,6 @@ function PerfilContenido() {
             </>
           )}
 
-          {/* El día uno, aquí abajo no va la lista: va por dónde empezar.
-              Lo que había era media pantalla diciendo "aún no has conseguido
-              ningún gooal", que es lo contrario de una bienvenida. */}
-          {esMiDiaUno ? (
-            <div style={{ marginTop: 18 }}>
-              <ParaEmpezar gooals={paraEmpezar} onAbrir={abrirSugerido} />
-            </div>
-          ) : (
-            <>
             <div style={{ marginTop: 20 }}>
               <PestanasPerfil activa={pestana} onCambiar={cambiarPestana} />
             </div>
@@ -393,8 +297,6 @@ function PerfilContenido() {
                 <ListaPerfil lineas={visibles} onAbrir={abrirLinea} />
               )}
             </div>
-            </>
-          )}
 
         </div>
       </AppShell>
@@ -409,38 +311,6 @@ function PerfilContenido() {
           onUsuarioClick={irAPerfil}
         />
       )}
-
-      {ajustes && (
-        <AjustesSheet
-          perfil={perfil}
-          onClose={() => setAjustes(false)}
-          onEditar={() => { setAjustes(false); setEditando(true) }}
-          onInvitar={() => { setAjustes(false); setInvitando(true) }}
-          onCerrarSesion={handleLogout}
-        />
-      )}
-
-      {editando && (
-        <EditarPerfilModal
-          userId={perfil.usuario.id}
-          nombreActual={perfil.usuario.nombre}
-          fotoActual={perfil.usuario.foto_perfil_url}
-          onClose={() => setEditando(false)}
-          onGuardado={cambios => {
-            setPerfil(p => p && ({ ...p, usuario: { ...p.usuario, ...cambios } }))
-            setEditando(false)
-          }}
-        />
-      )}
-
-      {buscando && (
-        <BuscarUsuariosSheet
-          onClose={() => setBuscando(false)}
-          onUsuarioClick={irAPerfil}
-        />
-      )}
-
-      {invitando && <InvitarAmigoSheet onClose={() => setInvitando(false)} />}
 
       {/* El proveedor envuelve SOLO la ficha, que es lo único de esta pantalla
           que puede enseñar la foto de alguien. La lista son títulos y no firma
