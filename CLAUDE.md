@@ -1149,4 +1149,28 @@ sigue; una nota pendiente espera a alguien.
   > **Nada entra en la base antes del 3.** Las 137 fotos pueden esperar en
   > ficheros; lo que no puede es entrar una sin crédito y que luego haya que
   > buscarla.
+- **`npm run lint` falla con 14 errores y hay que resolverlo.** Todos del mismo
+  tipo —`Calling setState synchronously within an effect can trigger cascading
+  renders`— repartidos por `inicio`, `muro`, `perfil`, `onboarding`,
+  `Descubrir`, `MapaGooals`, `InstallBanner`, `SplashScreen`,
+  `GooalV2DetailModal`, `ExplorarFeed`, `BuscarUsuariosSheet` y
+  `DownloadLanding`, más dos de `Cannot create components during render` y
+  `Cannot access refs during render`.
+
+  **El problema no son los 14 avisos: es que `npx tsc --noEmit && npm run lint
+  && npm run build` ahora falla SIEMPRE.** Una comprobación que falla por algo
+  que nadie va a arreglar deja de mirarse, y el día que avise de algo real
+  tampoco la mirará nadie — que es literalmente lo que está escrito más arriba,
+  en «Y la que da falsas alarmas se deja de mirar».
+
+  Cómo se resuelve, cuando toque:
+  1. abrir tres de los catorce y decidir si son un fallo de verdad — un
+     `setState` dentro de un efecto puede provocar un bucle de renderizado, y
+     eso **sí** se nota en el móvil
+  2. los que lo sean, se arreglan
+  3. los que no, se deciden a propósito: o se cambia el código, o se apaga esa
+     regla **dejando escrito POR QUÉ, con fecha**
+
+  Lo que no vale es dejarlos ahí haciendo fallar la comprobación. Anotado el
+  9-10-2026, con el orden de las fotos por delante.
 - No hay tests.

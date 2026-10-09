@@ -1,9 +1,6 @@
 -- ═══════════════════════════════════════════════════════════
 -- GooALS — Fase 3z: de dónde viene cada foto
 --
--- ⚠ NO PEGAR TODAVÍA. Lee «EL BLOQUEO» al final: tal como está, esto rompe
---   crear un gooal con foto desde el panel. Hay que arreglar el panel primero.
---
 -- ── QUÉ RESUELVE ──────────────────────────────────────────
 --
 -- Hasta hoy todas las fotos venían de Wikimedia Commons y la regla era simple:
@@ -103,24 +100,14 @@ group by 1 order by 1;
 
 
 -- ═══════════════════════════════════════════════════════════
--- EL BLOQUEO — por qué esto no se pega todavía
+-- APLICADO el 9-10-2026
 --
--- Es el mismo que tiene esta restricción parada desde el 5-10-2026, y sigue
--- vivo: **el panel de admin manda `imagen_url` y nada más.**
+-- Esto estuvo escrito y SIN PEGAR desde el 5-10 por una razón: el panel de
+-- admin mandaba imagen_url a secas, sin autor ni licencia, y con la
+-- restricción puesta crear un gooal con foto habría dado error al guardar.
 --
---   el formulario   src/components/admin/GooalsV2Section.tsx  (un campo, la dirección)
---   la ruta         src/app/api/admin/gooals-v2/route.ts      (escribe solo imagen_url)
---
--- Con esta restricción puesta, pegar una dirección de imagen ahí daría error al
--- guardar: la fila tendría `imagen_url` sin `foto_fuente`, y eso no encaja en
--- ninguna de las tres situaciones legales.
---
--- Lo que hay que hacer antes, y es código de la app:
---   · que el formulario pida la fuente (Commons o IA) y, si es Commons, el
---     autor, la licencia y la página del fichero
---   · que la ruta los escriba, y rechace una dirección sin su fuente
---
--- Hasta entonces, esto se queda aquí escrito y sin pegar — igual que estuvo la
--- versión anterior, y por la misma razón. Lo que NO se puede hacer es pegarlo y
--- descubrirlo cuando alguien intente crear un gooal con foto.
+-- Se levantó el 9-10 añadiendo los campos al panel. El criterio vive en
+-- src/lib/foto-credito.ts y lo comprueban el formulario y la ruta de la API,
+-- que es el freno de verdad. Si cambia la restricción de aquí, cambia ese
+-- fichero, y al revés.
 -- ═══════════════════════════════════════════════════════════
