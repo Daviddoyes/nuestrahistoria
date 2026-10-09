@@ -230,6 +230,21 @@ export type PerfilCompleto = {
   pendientes: LineaPerfil[]
   /** Las seis categorías: primero las que tienen algo, de más a menos; luego las de 0. */
   porCategoria: ConteoCategoria[]
+  /**
+   * Lo que dijo en el alta que le interesa, ya filtrado a las seis categorías.
+   *
+   * **null en el perfil ajeno, a propósito.** Lo marcado en el onboarding no es
+   * algo que se haya publicado: es una respuesta que se dio para que la app
+   * sugiera. En el universo eso se nota —una categoría a cero sale en gris en
+   * vez de en verde— y está bien que se note: de otra persona no sabes qué le
+   * apetece hasta que lo hace.
+   */
+  intereses: CategoriaGooal[] | null
+  /**
+   * Cuánta gente se sigue mutuamente con esta persona. **null en el perfil
+   * ajeno**, donde la cifra que se enseña es la de seguidores.
+   */
+  amigos: number | null
 }
 
 /**

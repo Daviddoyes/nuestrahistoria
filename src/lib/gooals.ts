@@ -88,6 +88,23 @@ export function contarPorCategoria(
     .sort((a, b) => b.conseguidos - a.conseguidos || CATEGORIAS.indexOf(a.categoria) - CATEGORIAS.indexOf(b.categoria))
 }
 
+/**
+ * Los intereses del alta, convertidos en categorías de verdad.
+ *
+ * Desde el 7-10-2026 los intereses SON las categorías, pero en `profiles` hay
+ * filas anteriores con el vocabulario viejo ('cultura', 'musica'...). Lo que no
+ * está en las seis se DESCARTA en vez de colarse: un nombre que la base no
+ * acepta dejaría una consulta sin resultados sin que nadie entendiera por qué.
+ *
+ * Vive aquí, y no copiado en cada pantalla, porque lo usan dos (las sugerencias
+ * de Inicio y el universo del perfil) y porque la razón de filtrar no se ve
+ * mirando la línea: repetida en dos ficheros, el día que cambie se arregla uno.
+ */
+export function categoriasDeIntereses(declarados: unknown): CategoriaGooal[] {
+  const lista = Array.isArray(declarados) ? declarados : []
+  return CATEGORIAS.filter(c => lista.includes(c))
+}
+
 export const DIFICULTADES: DificultadGooal[] = ['facil', 'dificil', 'epico']
 
 export const DIFICULTAD_META: Record<DificultadGooal, { emoji: string; label: string; color: string }> = {

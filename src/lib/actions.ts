@@ -5,7 +5,7 @@ import { createClient as createServerClient } from '@/lib/supabase/server'
 import { createServiceRoleClient } from '@/lib/supabase/service'
 import { calcularNivel } from '@/lib/niveles'
 import {
-  CATEGORIAS, contarPorCategoria, normalizarCategoriaGooal, type CategoriaGooal,
+  CATEGORIAS, categoriasDeIntereses, contarPorCategoria, normalizarCategoriaGooal, type CategoriaGooal,
 } from '@/lib/gooals'
 import { limpiarBusqueda } from '@/lib/busqueda'
 import { amigosDe, puedeVerLaFoto, VISIBILIDADES } from '@/lib/permisos'
@@ -93,7 +93,14 @@ export async function searchUsers(
 // Cada acción resuelve el usuario desde la cookie de sesión antes de escribir.
 // ─────────────────────────────────────────────────────────────
 
-const PERFIL_CAMPOS = 'id, nombre, username, foto_perfil_url, puntos_totales, nivel'
+// Los campos del perfil, en UNA lista. No se concatena nada al pasarla a
+// .select(): supabase-js deduce el tipo de la fila del texto literal, y un
+// 'a, b' + ', c' le deja de cuadrar y la fila pasa a ser un error.
+//
+// `intereses` viaja aquí aunque solo lo use el universo de TU perfil. Son
+// cuatro palabras y se leen en el servidor; a quien mira otro perfil no se le
+// manda nunca, porque aUsuarioMini no los copia.
+const PERFIL_CAMPOS = 'id, nombre, username, foto_perfil_url, puntos_totales, nivel, intereses'
 
 type PerfilRow = {
   id: string
@@ -102,6 +109,7 @@ type PerfilRow = {
   foto_perfil_url: string | null
   puntos_totales: number | null
   nivel: string | null
+  intereses: string[] | null
 }
 
 function aUsuarioMini(p: PerfilRow): UsuarioMini {
@@ -1312,7 +1320,10 @@ export async function getPerfil(username?: string): Promise<PerfilCompleto | nul
     idVisitante ? listarEstados(service, idVisitante) : Promise.resolve(null),
     // UNA consulta para todo el perfil. Decide si el iconito de cámara sale o
     // no, y eso no se puede resolver fila a fila sin una consulta por fila.
-    idVisitante ? amigosDe(idVisitante) : Promise.resolve(new Set<string>()),
+    // Los amigos de QUIEN MIRA, que sirven para dos cosas distintas con una sola
+    // consulta: en un perfil ajeno deciden si se ve cada foto, y en el propio
+    // son además la cifra de "Amigos" del universo (ahí quien mira es el dueño).
+    amigosDe(viewerId),
   ])
 
   // La clave foránea borra la fila si se borra su gooal del catálogo; aun así se
@@ -1361,6 +1372,8 @@ export async function getPerfil(username?: string): Promise<PerfilCompleto | nul
     pendientes,
     // Cuenta sobre lo del usuario, sin filtro de estado: sus borradores también suman.
     porCategoria: contarPorCategoria(conseguidos),
+    intereses: esPropio ? categoriasDeIntereses((perfil as PerfilRow).intereses) : null,
+    amigos: esPropio ? amigos.size : null,
   }
 }
 
@@ -1457,11 +1470,7 @@ export async function getSugerencias(): Promise<SugerenciasInicio> {
   const service = createServiceRoleClient()
 
   const { data: perfil } = await service.from('profiles').select('intereses').eq('id', userId).maybeSingle()
-  const declarados = ((perfil as { intereses: unknown } | null)?.intereses ?? []) as unknown[]
-  // Desde el 7-10-2026 los intereses SON las categorías. Se filtra igualmente:
-  // si quedara alguno del vocabulario viejo, se descarta en vez de colarse como
-  // una categoría que no existe y dejar la consulta sin resultados.
-  const categorias = CATEGORIAS.filter(c => declarados.includes(c))
+  const categorias = categoriasDeIntereses((perfil as { intereses: unknown } | null)?.intereses)
   const aBuscar = categorias.length > 0 ? categorias : CATEGORIAS
 
   const mios = new Set((await listarEstados(service, userId)).map(f => f.gooal_id))

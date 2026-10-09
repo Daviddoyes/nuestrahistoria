@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { ArrowLeft, Search } from 'lucide-react'
+import { ArrowLeft, Search, Settings } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import {
   getPerfil, seguirUsuario, dejarDeSeguir, getGooalDeLista, getMisEstadosGooals,
@@ -17,6 +17,7 @@ import GooalV2DetailModal from '@/components/GooalV2DetailModal'
 import CelebracionPuntos from '@/components/CelebracionPuntos'
 import type { ResultadoCompletado } from '@/components/AnadirFotoModal'
 import CabeceraPerfil from '@/components/perfil/CabeceraPerfil'
+import CabeceraTu from '@/components/perfil/CabeceraTu'
 import TarjetaCifras from '@/components/perfil/TarjetaCifras'
 import PastillasCategorias from '@/components/perfil/PastillasCategorias'
 import PestanasPerfil, { type PestanaPerfil } from '@/components/perfil/PestanasPerfil'
@@ -232,40 +233,74 @@ function PerfilContenido() {
                 <ArrowLeft className="w-5 h-5" />
               </button>
             )}
+
+            {/* El engranaje vivía en la cabecera vieja, que en el perfil propio
+                ya no se pinta. Sin esto no habría puerta a editar el perfil, a
+                invitar ni a cerrar sesión. */}
+            {perfil.esPropio && (
+              <button
+                onClick={() => setAjustes(true)}
+                aria-label="Ajustes"
+                className="text-[#A3B1AC] active:text-[#00D1A7] transition-colors w-11 h-11 -mr-3 ml-auto flex items-center justify-center"
+              >
+                <Settings className="w-5 h-5" />
+              </button>
+            )}
           </div>
 
-          <CabeceraPerfil
-            usuario={perfil.usuario}
-            esPropio={perfil.esPropio}
-            siguiendolo={perfil.siguiendolo}
-            seguidores={perfil.seguidores}
-            siguiendo={perfil.siguiendo}
-            siguiendoAccion={siguiendoAccion}
-            nivel={perfil.esPropio ? null : nivel}
-            onSeguir={handleSeguir}
-            onAjustes={() => setAjustes(true)}
-            onLista={setLista}
-          />
+          {/* ── TU perfil y el de otra persona son dos cabeceras ──
+              No es que una sea "la nueva": dicen cosas distintas. La tuya es el
+              universo, tu nivel y lo que te falta; la de otra persona es quién
+              es y el botón de seguirla. La lista de abajo sí es la misma. */}
+          {perfil.esPropio ? (
+            <CabeceraTu
+              usuario={perfil.usuario}
+              conseguidos={perfil.conseguidos.length}
+              pendientes={perfil.pendientes.length}
+              amigos={perfil.amigos ?? 0}
+              puntos={perfil.puntos}
+              conteos={perfil.porCategoria}
+              intereses={perfil.intereses ?? []}
+              onBuscar={() => router.push('/explorar')}
+            />
+          ) : (
+            <CabeceraPerfil
+              usuario={perfil.usuario}
+              esPropio={perfil.esPropio}
+              siguiendolo={perfil.siguiendolo}
+              seguidores={perfil.seguidores}
+              siguiendo={perfil.siguiendo}
+              siguiendoAccion={siguiendoAccion}
+              nivel={nivel}
+              onSeguir={handleSeguir}
+              onAjustes={() => setAjustes(true)}
+              onLista={setLista}
+            />
+          )}
 
           {error && (
             <p role="alert" className="text-sm text-[#FF5252] bg-[rgba(255,82,82,0.14)] px-3 py-2 rounded-lg mt-4">{error}</p>
           )}
 
-          <div style={{ marginTop: 14 }}>
-            <TarjetaCifras
-              conseguidos={perfil.conseguidos.length}
-              pendientes={perfil.pendientes.length}
-              puntos={perfil.puntos}
-              conProgreso={perfil.esPropio}
-            />
-          </div>
+          {!perfil.esPropio && (
+            <>
+              <div style={{ marginTop: 14 }}>
+                <TarjetaCifras
+                  conseguidos={perfil.conseguidos.length}
+                  pendientes={perfil.pendientes.length}
+                  puntos={perfil.puntos}
+                  conProgreso={false}
+                />
+              </div>
 
-          {/* Las categorías van entre las cifras y las pestañas, y comparten el
-              color con las barritas de la lista: "mucho viajes y poco deporte"
-              dice qué clase de persona es alguien mejor que el número total. */}
-          <div style={{ marginTop: 14 }}>
-            <PastillasCategorias conteos={perfil.porCategoria} />
-          </div>
+              {/* Las categorías van entre las cifras y las pestañas, y comparten el
+                  color con las barritas de la lista: "mucho viajes y poco deporte"
+                  dice qué clase de persona es alguien mejor que el número total. */}
+              <div style={{ marginTop: 14 }}>
+                <PastillasCategorias conteos={perfil.porCategoria} />
+              </div>
+            </>
+          )}
 
           <div style={{ marginTop: 20 }}>
             <PestanasPerfil activa={pestana} onCambiar={cambiarPestana} />
@@ -287,7 +322,11 @@ function PerfilContenido() {
                 <EstadoVacio
                   titulo={perfil.esPropio ? 'Aún no has conseguido ningún gooal.' : 'Todavía no ha conseguido ningún gooal.'}
                   texto={perfil.esPropio ? 'Elige uno y ve a por él.' : undefined}
-                  accion={perfil.esPropio ? botonExplorar : undefined}
+                  /* Sin botón en TU perfil: arriba, a dos dedos, ya hay uno que
+                     lleva al mismo sitio ("Busca algo que ya hayas hecho"). Dos
+                     botones distintos a la misma pantalla no son dos opciones,
+                     son una duda. */
+                  accion={undefined}
                 />
               ) : (
                 <EstadoVacio
