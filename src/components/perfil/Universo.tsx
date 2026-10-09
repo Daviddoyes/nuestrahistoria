@@ -33,13 +33,46 @@ import type { ConteoCategoria } from '@/types/gooals'
  */
 
 // ── La geometría, medida sobre el dibujo ──────────────────
-/** Alto del lienzo. El ancho es el de la pantalla: el centro va al 50 %. */
-const ALTO = 290
 const NUCLEO = 100
 /** A qué distancia del centro está cada burbuja. Las seis, a la misma. */
 const ORBITA = 112
-/** El centro, contando desde arriba del lienzo. */
-const CENTRO_Y = 136
+
+/**
+ * EL DIÁMETRO MÁXIMO DE UNA BURBUJA.
+ *
+ * Sin techo, 22,5·raíz(n) no para nunca: con 120 gooals en una categoría la
+ * burbuja mide 246 px y se sale de CUALQUIER móvil, incluido uno de 430.
+ *
+ * Por encima de este tamaño la burbuja deja de crecer y **el número de dentro
+ * sigue diciendo la verdad**. Sí, eso significa que alguien con 60 en viajes y
+ * alguien con 200 se verán igual de grandes, y es aceptable: lo que este dibujo
+ * compara son las seis categorías de UNA persona, y en el extremo alto esa
+ * comparación ya está saturada de todas formas — entre 60 y 200 el ojo tampoco
+ * sabría leer la diferencia en un círculo.
+ *
+ * PROVISIONAL: el número exacto está sin decidir. Los otros tamaños de este
+ * dibujo (30 para uno, 26 para la vacía) se eligieron MIRÁNDOLOS, y este se
+ * elige igual. Hay capturas de tres candidatos —80, 100 y 120— a 320 y a 430 px
+ * en "Claude outputs/techo-*.png".
+ */
+const MAXIMO = 100
+
+/** Lo que ocupa el nombre de la categoría debajo (o encima) de su burbuja. */
+const ESPACIO_ETIQUETA = 18
+
+/**
+ * El alto del lienzo y el centro NO se escriben a mano: se calculan.
+ *
+ * Estaban puestos a 290 y 136, medidos sobre el dibujo, y eso es exactamente lo
+ * que se rompe en cuanto otro número se mueve: con los tamaños de hoy, la
+ * etiqueta de la burbuja de arriba (vida, que lleva su nombre ENCIMA) ya se
+ * salía 5 px por el techo sin que nada lo dijera.
+ *
+ * Derivándolos, cambiar el máximo o la órbita ajusta el lienzo solo y no se
+ * puede desajustar.
+ */
+const ALTO = 2 * (ORBITA + MAXIMO / 2 + ESPACIO_ETIQUETA)
+const CENTRO_Y = ALTO / 2
 
 /**
  * El ángulo de cada categoría, en grados y con el 0 a la derecha: una cada 60°,
@@ -57,8 +90,8 @@ const ANGULO: Record<CategoriaGooal, number> = {
   deporte: 210,
 }
 
-/** El diámetro de una burbuja con gooals dentro: 22,5 × raíz(gooals). */
-const diametroLleno = (gooals: number) => 22.5 * Math.sqrt(gooals)
+/** El diámetro de una burbuja con gooals dentro: 22,5 × raíz(gooals), con techo. */
+const diametroLleno = (gooals: number) => Math.min(MAXIMO, 22.5 * Math.sqrt(gooals))
 
 /**
  * Los dos tamaños que la fórmula no decide, y el orden entre ellos SÍ importa:

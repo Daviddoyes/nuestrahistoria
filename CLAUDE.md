@@ -345,6 +345,34 @@ npm run dev                              # arranca en localhost:3000
 npx tsc --noEmit && npm run lint && npm run build   # antes de publicar
 ```
 
+Y **antes de dar por buena una pantalla**, que no basta con que compile:
+
+```bash
+npm run pantallas
+```
+
+Abre las pantallas de verdad en un navegador sin ventana y **falla si algo se
+sale por el lado**, diciendo QUÉ elemento y cuántos píxeles. Siete anchos (320,
+360, 375, 390, 393, 412, 430) por cuatro altos (568, 667, 844, 932), sobre Tú,
+Descubrir, tus listas, el perfil ajeno con "En común" y el muro. Necesita el
+servidor de desarrollo levantado.
+
+Tres cosas que hay que saber de él:
+
+1. **Siembra el caso extremo y lo borra al terminar.** Crea una cuenta con 120
+   gooals en una categoría, nombre y usuario largos, sin foto, con una amiga
+   que comparte gooals en los tres cruces y con un post en el muro. Con los
+   datos de hoy pasaría entero en verde y no habría servido para nada: **el
+   caso que rompe no es el normal.**
+2. **Mira los rectángulos de los elementos, no `scrollWidth`.** El área que
+   hace scroll es un div de dentro de AppShell, no el documento, así que un
+   desborde ahí dentro no mueve ese número. Y excluye lo que vive dentro de
+   algo que se desliza a lo ancho a propósito —las tiras de tarjetas—, porque
+   eso sobresale por diseño y llenaría el informe de falsos positivos.
+3. **Mide el desborde LATERAL, y nada más.** Que algo quede demasiado alto, o
+   una tarjeta casi cuadrada en una pantalla corta, no lo caza: eso sigue
+   siendo de mirar.
+
 El catálogo, desde `scripts/seed-gooals/`:
 
 ```bash

@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "pantallas": "node --env-file=.env.local scripts/comprobar-pantallas.mjs",
     "lint": "eslint"
   },
   "dependencies": {
