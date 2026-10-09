@@ -279,17 +279,13 @@ export async function getMuroFeed(limite = 40): Promise<MuroPostFeed[]> {
 
   const service = createServiceRoleClient()
 
-  const { data: siguiendo } = await service
-    .from('follows')
-    .select('following_id')
-    .eq('follower_id', userId)
+  // Paginado: a quién sigue alguien no tiene techo, y PostgREST corta en 1.000
+  // sin avisar. Pasado ese punto, el muro dejaría de enseñar a parte de la
+  // gente a la que sigues y parecería que esas personas no publican nada.
+  const siguiendo = await leerTodo<{ following_id: string }>('a quién sigue', (desde, hasta) =>
+    service.from('follows').select('following_id').eq('follower_id', userId).order('id').range(desde, hasta))
 
-  const autorIds = [
-    ...new Set([
-      userId,
-      ...((siguiendo ?? []) as { following_id: string }[]).map(f => f.following_id),
-    ]),
-  ]
+  const autorIds = [...new Set([userId, ...siguiendo.map(f => f.following_id)])]
 
   const { data: posts } = await service
     .from('muro_posts')
