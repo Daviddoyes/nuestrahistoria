@@ -70,8 +70,8 @@ export const DECIDIDOS = {
     'Una vía verde de tierra apisonada entre plataneros, entrando en un túnel antiguo de piedra, completamente vacía.'],
   'Hacer los Carros de Foc': ['objeto',
     'Una mochila pequeña y dos bastones de montaña apoyados en la puerta de madera de un refugio de alta montaña.'],
-  'Hacer la Travessia del Port de Barcelona nadando': ['contraluz',
-    'Primer plano de un nadador DE PERFIL en plena brazada, con el brazo saliendo del agua y las gotas en el aire, todo en silueta negra contra el agua encendida por el sol bajo.'],
+  'Hacer la Travessia del Port de Barcelona nadando': ['primera_persona',
+    'Desde dentro del agua y a ras de superficie, mirando hacia delante: una hilera de boyas naranjas perdiéndose hacia el fondo del puerto y NINGUNA ORILLA cerca. Lo que cuenta la foto es la distancia que queda, no la brazada.'],
   'Hacer paddle surf en el cabo de Creus': ['lugar_vacio',
     'Una cala de roca desnuda con el agua lisa como un espejo, sin una sola persona.'],
   'Hacer un safari en el Masái Mara': ['primera_persona',
@@ -242,10 +242,10 @@ export const DECIDIDOS = {
 
   // ══ SALTAR (2) ══════════════════════════════════════════
 
-  'Saltar en puenting': ['contraluz',
-    'Alguien en pleno salto con los brazos abiertos cayendo hacia un río, con la CUERDA ELÁSTICA bien visible tensándose desde los tobillos hacia arriba, y la pared del barranco al fondo.'],
-  'Saltar en puenting en Queenstown': ['espaldas',
-    'Alguien de espaldas en el borde de una pasarela, con el arnés y las cintas puestos y el vacío del barranco abriéndose delante.'],
+  'Saltar en puenting': ['detalle',
+    'Primerísimo plano de unos tobillos envueltos en una cinta de arnés, con la CUERDA ELÁSTICA gruesa saliendo de ellos y bajando hacia el vacío, y el fondo del barranco desenfocado muy abajo.'],
+  'Saltar en puenting en Queenstown': ['lugar_vacio',
+    'Una pasarela estrecha de madera y acero saliendo en voladizo sobre un cañón, vacía, con la plataforma de salto al final y un río turquesa muy abajo.'],
 
   // ══ LOS SUELTOS (11) ════════════════════════════════════
 
@@ -285,8 +285,59 @@ export const DECIDIDOS = {
     "Un todoterreno parado de perfil en lo alto de una duna, con las huellas de las ruedas bajando por la arena."],
   "Hacer una travesía de varios días en montaña": ["lugar_vacio",
     "Una tienda de campaña pequeña y naranja montada sola en un collado de hierba, cerrada, sin nadie alrededor."],
-  "Nadar en aguas abiertas una travesía": ['espaldas',
-    'Un nadador visto desde detrás en plena brazada en mar abierto, con el gorro y la espalda saliendo del agua y la estela de espuma.'],
+  "Nadar en aguas abiertas una travesía": ['lugar_vacio',
+    'Una hilera de boyas naranjas perdiéndose en línea hacia el horizonte en mar abierto, SIN NINGUNA ORILLA a la vista, con la superficie picada.'],
+  // ══ LAS QUE VIVÍAN EN estilos.mjs ══════════════════════
+  //
+  // Estaban en un ENCUADRE_DE propio de aquel fichero, y eso era una segunda
+  // fuente de verdad: un título en los dos sitios y ganaba el de allí, en
+  // silencio. Pasó con «Practicar pádel», y encima «Practicar esquí» estaba
+  // DOS VECES dentro del mismo objeto (primera_persona y casco, ganaba el
+  // último). Ahora el encuadre de un gooal se escribe aquí y en ningún otro
+  // sitio; sus escenas siguen en ESCENAS, que es texto del prompt.
+  //
+  // Las que van con null ya tienen su escena escrita en ESCENAS.
+  "Montar tu propia empresa": ["hombros", null],
+  "Probar el fugu": ["hombros", null],
+  "Cantar en un karaoke": ["contraluz", null],
+  "Saltar en paracaídas": ["casco", null],
+  "Caminar sobre un glaciar en Islandia": ["espaldas", null],
+  "Dormir en una cabaña sin electricidad": ["espaldas", null],
+  "Correr la Marató de Barcelona": ["espaldas", null],
+  "Bañarte en la piscina del Marina Bay Sands": ["espaldas", null],
+  "Flotar en el mar Muerto": ["espaldas", null],
+  "Pasar un día en Ferrari Land": ["contraluz", null],
+  "Doctorarte": ["objeto", null],
+  "Probar el pulpo vivo": ["plato", null],
+  "Hacer un voluntariado en el extranjero": ["hombros", null],
+  "Terminar una carrera universitaria": ["hombros", null],
+  "Sacarte el título de buceo Open Water": ["contraluz", null],
+  "Hacer una cata de whisky en una destilería": ["hombros", null],
+  "Ver un eclipse solar total": ["espaldas", null],
+  "Sacarte el C1 de inglés": ["objeto", null],
+  "Publicar un libro": ["objeto", null],
+  "Terminar un máster": ["espaldas", null],
+  "Vivir un año en otro país": ["espaldas", null],
+  "Sacarte el cinturón negro": ["manos", null],
+  "Practicar CrossFit": ["objeto", null],
+  "Practicar golf": ["objeto", null],
+  "Practicar pádel": ["hombros", null],
+  "Practicar tenis": ["objeto", null],
+  "Practicar hípica": ["objeto", null],
+  "Practicar surf": ["objeto", null],
+  "Practicar windsurf": ["objeto", null],
+  "Practicar kitesurf": ["objeto", null],
+  "Practicar wakeboard": ["objeto", null],
+  "Practicar paddle surf": ["objeto", null],
+  "Practicar snowboard": ["objeto", null],
+  "Practicar esquí de travesía": ["objeto", null],
+  "Practicar escalada en roca": ["objeto", null],
+  "Practicar escalada en hielo": ["detalle", null],
+  "Practicar motocross": ["detalle", null],
+  "Practicar patinaje sobre hielo": ["detalle", null],
+  "Practicar escalada en rocódromo": ["lugar_vacio", null],
+  "Practicar esquí": ["primera_persona", null],
+  "Practicar vela": ["primera_persona", null],
 }
 
 /**
@@ -319,7 +370,7 @@ export const CAMARA = {
   "Hacer la ruta de las nueve ermitas del Montsant": ["a la altura de los ojos", "mediodía duro"],
   "Hacer la Vía Verde del Carrilet de Olot a Girona": ["a ras de suelo", "día nublado"],
   "Hacer los Carros de Foc": ["a la altura de los ojos", "amanecer"],
-  "Hacer la Travessia del Port de Barcelona nadando": ["a ras de suelo", "tarde larga"],
+  "Hacer la Travessia del Port de Barcelona nadando": ["contrapicado", "tarde larga"],
   "Hacer paddle surf en el cabo de Creus": ["a la altura de los ojos", "amanecer"],
   "Hacer un safari en el Masái Mara": ["a la altura de los ojos", "tarde larga"],
   "Hacer un safari en el Serengeti": ["a la altura de los ojos", "mediodía duro"],
@@ -386,8 +437,8 @@ export const CAMARA = {
   "Bajar al cráter del volcán Santa Margarida": ["contrapicado", "tarde larga"],
   "Escalar en Siurana": ["desde muy cerca", "tarde larga"],
   "Escalar una aguja de Montserrat": ["contrapicado", "tarde larga"],
-  "Saltar en puenting": ["a la altura de los ojos", "mediodía duro"],
-  "Saltar en puenting en Queenstown": ["a la altura de los ojos", "día nublado"],
+  "Saltar en puenting": ["cenital", "mediodía duro"],
+  "Saltar en puenting en Queenstown": ["cenital", "día nublado"],
   "Beber una cerveza en la Hofbräuhaus": ["a la altura de los ojos", "interior"],
   "Dar una vuelta al Nürburgring": ["a la altura de los ojos", "día nublado"],
   "Escuchar jazz en directo en Bourbon Street": ["a la altura de los ojos", "interior"],
@@ -424,7 +475,43 @@ export const CAMARA = {
   "Hacer cumbre en un tresmil": ["desde muy cerca", "mediodía duro"],
   "Hacer un safari por el desierto de Dubái": ["a la altura de los ojos", "tarde larga"],
   "Hacer una travesía de varios días en montaña": ["a ras de suelo", "amanecer"],
-  "Nadar en aguas abiertas una travesía": ["a ras de suelo", "amanecer"],
+  "Nadar en aguas abiertas una travesía": ["cenital", "amanecer"],
+  // ── Las de la tanda de cuarenta ─────────────────────────
+  // Su encuadre lo eligió una regla, así que no habían pasado por aquí. Sin
+  // esto, las 8 de plato saldrían con el mismo ángulo y la misma luz, que es
+  // justo el problema que este eje existe para evitar, en una tanda de 40.
+  "Comerte un escorpión": ["cenital", "interior"],
+  "Comerte una tarántula": ["desde muy cerca", "mediodía duro"],
+  "Hacer una calçotada en Valls": ["a la altura de los ojos", "tarde larga"],
+  "Comer en un hawker centre de Singapur": ["a la altura de los ojos", "interior"],
+  "Comer gambas de Palamós": ["cenital", "mediodía duro"],
+  "Comer en un restaurante con una estrella Michelin": ["cenital", "tarde larga"],
+  "Comer en los puestos de Jemaa el-Fna": ["a ras de suelo", "interior"],
+  "Comer xató en Vilanova": ["desde muy cerca", "día nublado"],
+  "Formar parte de un castell": ["contrapicado", "mediodía duro"],
+  "Ir a la Nit del Foc de las Fallas": ["a ras de suelo", "interior"],
+  "Ir al Carnaval de Río": ["a la altura de los ojos", "interior"],
+  "Ir a la Feria de Abril": ["a la altura de los ojos", "tarde larga"],
+  "Ir al Canet Rock": ["contrapicado", "interior"],
+  "Ir a la Patum de Berga": ["a ras de suelo", "tarde larga"],
+  "Beber en una carpa del Oktoberfest": ["a la altura de los ojos", "día nublado"],
+  "Hacerte un tatuaje": ["desde muy cerca", "interior"],
+  "Dar una charla ante más de cien personas": ["contrapicado", "interior"],
+  "Donar médula": ["cenital", "interior"],
+  "Tocar un instrumento delante de público": ["a la altura de los ojos", "tarde larga"],
+  "Montar tu propia empresa": ["a la altura de los ojos", "día nublado"],
+  "Terminar una carrera universitaria": ["a ras de suelo", "mediodía duro"],
+  "Ver un Gran Premio de Fórmula 1": ["a la altura de los ojos", "mediodía duro"],
+  "Ver un partido de la NBA": ["contrapicado", "interior"],
+  "Ver una etapa del Tour de Francia": ["a ras de suelo", "tarde larga"],
+  "Ver la Nochevieja en Times Square": ["contrapicado", "interior"],
+  "Ver una procesión de la Semana Santa de Sevilla": ["a la altura de los ojos", "interior"],
+  "Ver el festival de globos de Albuquerque": ["cenital", "amanecer"],
+  "Pasar un día en PortAventura": ["contrapicado", "tarde larga"],
+  "Sacarte el carnet de moto": ["cenital", "día nublado"],
+  "Sacarte la licencia de piloto": ["desde muy cerca", "interior"],
+  "Doctorarte": ["cenital", "interior"],
+  "Vivir un año en otro país": ["a la altura de los ojos", "tarde larga"],
 }
 
 /**
@@ -442,3 +529,33 @@ export const APROBADAS = new Set([
   'Lanzar una moneda en la Fontana di Trevi', // detalle, a la segunda
   'Sacarte el cinturón negro',            // manos, a la segunda
 ])
+
+/**
+ * SUJETOS QUE EL MODELO NO SABE HACER.
+ *
+ * Lo útil de esta lista no son los nombres: es reconocer LA FORMA DEL FALLO
+ * la próxima vez. Por eso cada uno lleva escrito lo que pasó en cada intento.
+ *
+ * ── CUÁNDO SE ENTRA AQUÍ ──────────────────────────────────
+ *
+ *     Si un sujeto falla DOS veces con DOS ENCUADRES DISTINTOS, se anota
+ *     aquí y se le busca foto en Commons, en vez de probar un tercero.
+ *
+ * El umbral es dos y no tres a propósito: el pádel costó CUATRO intentos y
+ * cuatro encuadres, y lo que hay que conseguir es que se note al segundo.
+ * Dos fallos con el MISMO encuadre siguen significando otra cosa —que el
+ * encuadre está mal y hay que cambiarlo—; son dos cuentas distintas.
+ *
+ * Lo que va aquí NO se genera: se queda con su foto de Commons.
+ */
+export const NO_SABE_HACERLO = {
+  'Practicar pádel': [
+    'objeto, la pala y la pelota en el suelo de la pista → salió una pista vacía, sin pala',
+    'detalle, la cara de la pala con sus agujeros → salió una zona en penumbra con un cristal',
+    'hombros, la pala en la mano al golpear → salió un torso naranja y ningún objeto',
+    'y una cuarta con otra escena del mismo encuadre → igual',
+    'LA FORMA DEL FALLO: el modelo pinta el SITIO (una pista acristalada) y se',
+    'salta el objeto, lo pongas donde lo pongas. No es cómo se mira: es que esa',
+    'cosa no existe para él. Se queda con su foto de Commons.',
+  ],
+}

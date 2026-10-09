@@ -793,6 +793,26 @@ contener lo que su encuadre pedía.** «Practicar pádel» salió cuatro veces s
 pala. Eso no lo caza un contador, ni una alarma, ni una regla: solo se ve
 mirando la imagen, y por eso las tandas van de cuarenta y se miran.
 
+## Cuando ni la persona ni el objeto cuentan el gooal
+
+Hay un tercer camino, y se encontró porque cuatro fotos salieron CORRECTAS y no
+decían su gooal: una espalda con camiseta oscura al borde de una pasarela,
+alguien en el agua al atardecer. Se veía la persona y no se veía lo que
+distingue ese gooal de otro parecido — una espalda es cualquiera, y alguien en
+el agua se está bañando.
+
+> **Cuando ni el objeto solo ni la persona sola cuentan el gooal, el sujeto es
+> EL ELEMENTO QUE LO HACE ESE GOOAL**, en primer plano, y la persona entra de
+> contexto.
+
+En el puenting ese elemento es la cuerda saliendo de unos tobillos, no el que
+salta. En una travesía a nado es la DISTANCIA —que no se vea la orilla—, no la
+brazada.
+
+La señal para reconocer cuándo toca: **¿esta foto valdría igual para otro gooal
+parecido?** Si una foto de «nadar una travesía» serviría para «bañarte en una
+cala», lo que falta no es mejor ejecución, es el elemento que los separa.
+
 ## Dos fallos no son un prompt malo: es el encuadre equivocado
 
 Sale de generar fotos del catálogo, y vale para cualquier cosa que se intente
@@ -815,22 +835,30 @@ de las tres, porque ninguna es un problema de escena.
 Es pariente de «cada heurística nueva arregla unos casos y rompe otros»: a la
 segunda vuelta, lo que hay que cambiar es de herramienta, no de ajuste.
 
-### Y tres fallos con TRES encuadres distintos dicen otra cosa
+### Y dos fallos con DOS encuadres distintos dicen otra cosa
 
 La cuenta no es la misma y la conclusión tampoco:
 
 > **Dos fallos con el MISMO encuadre**: el encuadre está mal para ese gooal. Se
 > le cambia el encuadre.
 >
-> **Tres fallos con TRES encuadres distintos**: el que no existe es el SUJETO.
-> El modelo no sabe hacer esa cosa, y cambiar la mirada no la va a traer. Hay
-> que cambiar el sujeto, no la manera de mirarlo.
+> **Dos fallos con DOS encuadres DISTINTOS**: el que no existe es el SUJETO. El
+> modelo no sabe hacer esa cosa, y cambiar la mirada no la va a traer. Se anota
+> en `NO_SABE_HACERLO` (en `scripts/fotos-ia/decisiones.mjs`) y se le busca
+> foto en Commons, en vez de probar un tercer encuadre.
+
+El umbral es dos y no tres a propósito, y el número salió de pagarlo: el pádel
+costó CUATRO intentos y cuatro encuadres. Lo que hay que conseguir es que se
+note al segundo.
 
 «Practicar pádel» lo demostró: objeto (una pala en el suelo), detalle (la cara
-de la pala), hombros (la pala en la mano). Las tres veces salió una pista sin
-pala. Cuando la tercera mirada falla, deja de ser un problema de encuadre y la
-pregunta pasa a ser otra: **¿qué otra cosa cuenta este gooal?** — o si lo que
-toca es dejarle su foto de Commons y no generarlo.
+de la pala), hombros (la pala en la mano), y una cuarta. Las cuatro veces salió
+una pista sin pala.
+
+**Lo que hace útil esa lista no son los nombres: es poder reconocer LA FORMA
+DEL FALLO la próxima vez**, así que cada entrada lleva escrito qué pasó en cada
+intento. La del pádel: el modelo pinta el SITIO y se salta el objeto, lo
+pongas donde lo pongas.
 
 ## Un fallo con forma conocida nunca está solo
 

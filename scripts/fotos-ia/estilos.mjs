@@ -149,6 +149,23 @@ export const CALIDAD = 'medium'
 // maratón al amanecer a contraluz dice «maratón» en medio segundo, y la
 // silueta ni siquiera necesita cara.
 //
+// ── Y EL TERCER CAMINO, QUE NO ES NI UNA COSA NI OTRA ─────
+//
+// Cuatro fotos salieron correctas y no decían su gooal: una espalda con
+// camiseta oscura al borde de una pasarela, alguien en el agua al atardecer.
+// Se veía la persona y NO SE VEÍA lo que distingue ese gooal de otro
+// parecido — una espalda es cualquiera, y alguien en el agua se está
+// bañando.
+//
+//     Cuando ni el objeto solo ni la persona sola cuentan el gooal, el
+//     sujeto es EL ELEMENTO QUE LO HACE ESE GOOAL, en primer plano, y la
+//     persona entra de contexto.
+//
+// En el puenting ese elemento es la cuerda saliendo de unos tobillos, no el
+// que salta. En una travesía a nado es la DISTANCIA —que no se vea la
+// orilla—, no la brazada. Es un tercer camino y vale para más casos que
+// esos cuatro: sirve siempre que dos gooals distintos darían la misma foto.
+//
 // Y no por variedad, que sería un motivo estético. Es por lo que la app es:
 // **una lista de deseos trata de lo que va a hacer QUIEN MIRA.** Un sitio vacío
 // le invita a entrar; la espalda de un desconocido ya le está ocupando el
@@ -251,78 +268,16 @@ const ESCENA_DECIDIDA = Object.fromEntries(
     .map(([titulo, [, escena]]) => [titulo, escena]),
 )
 
-const ENCUADRE_DE = {
-  ...ENCUADRE_DECIDIDO,
-  // ── La familia «Practicar X», decidida una a una ────────
-  //
-  // 'espaldas' está PROHIBIDO aquí: eran 16 de los 39 que caían ahí, y la
-  // espalda de un desconocido practicando pádel es exactamente lo que no deja
-  // sitio a quien mira. Y NO se sustituye por otro valor por defecto, que
-  // sería el mismo error con otro nombre: cada deporte tiene su objeto propio
-  // y ahí está la variedad — una pala en el suelo de la pista no se parece a
-  // una tabla clavada en la arena ni a la huella de un neumático en el barro.
-  //
-  // Dos se quedan con persona a propósito, y es por lo mismo: en esquí y en
-  // vela LA VISTA ES EL DEPORTE, así que se mira desde sus ojos.
-  "Practicar CrossFit": "objeto",
-  "Practicar golf": "objeto",
-  "Practicar pádel": "hombros",
-  "Practicar tenis": "objeto",
-  "Practicar hípica": "objeto",
-  "Practicar surf": "objeto",
-  "Practicar windsurf": "objeto",
-  "Practicar kitesurf": "objeto",
-  "Practicar wakeboard": "objeto",
-  "Practicar paddle surf": "objeto",
-  "Practicar snowboard": "objeto",
-  "Practicar esquí de travesía": "objeto",
-  "Practicar escalada en roca": "objeto",
-  "Practicar escalada en hielo": "detalle",
-  "Practicar motocross": "detalle",
-  "Practicar patinaje sobre hielo": "detalle",
-  "Practicar escalada en rocódromo": "lugar_vacio",
-  "Practicar esquí": "primera_persona",
-  "Practicar vela": "primera_persona",
-
-  'Montar tu propia empresa': 'hombros',
-  'Practicar esquí': 'casco',
-  'Probar el fugu': 'hombros',
-  'Cantar en un karaoke': 'contraluz',
-  'Saltar en paracaídas': 'casco',
-  'Caminar sobre un glaciar en Islandia': 'espaldas',
-  'Dormir en una cabaña sin electricidad': 'espaldas',
-  'Correr la Marató de Barcelona': 'espaldas',
-  'Bañarte en la piscina del Marina Bay Sands': 'espaldas',
-  'Flotar en el mar Muerto': 'espaldas',
-  'Pasar un día en Ferrari Land': 'contraluz',
-  // Las escenas de objeto: lo que se ve son unas manos sosteniendo algo, así
-  // que la cabeza va fuera del encuadre.
-  // El birrete solo lo dice entero: las manos sobraban.
-  'Doctorarte': 'objeto',
-  'Probar el pulpo vivo': 'plato',
-  'Hacer un voluntariado en el extranjero': 'hombros',
-  'Terminar una carrera universitaria': 'hombros',
-  'Sacarte el título de buceo Open Water': 'contraluz',
-  // Una cata no es un plato: con el encuadre cenital de gastronomía salió una
-  // cena de pub, con salchichas y puré al lado de las copas. El encuadre por
-  // defecto de una categoría no vale cuando el gooal no es lo típico de esa
-  // categoría.
-  'Hacer una cata de whisky en una destilería': 'hombros',
-  // Mirar un eclipse pide cara y gafas: con 'hombros' pasaba lo mismo que con
-  // comer. De espaldas, mirando al cielo, sí se puede cumplir.
-  'Ver un eclipse solar total': 'espaldas',
-  // Estas dos eran 'hombros' y son de ANTES de la regla de no poner a nadie
-  // cuando no hace falta. El control negativo las cazó: un examen aprobado y un
-  // libro publicado se cuentan enteros sin una persona delante, y así el que
-  // mira se pone él. Sus escenas también se han quedado sin las manos.
-  'Sacarte el C1 de inglés': 'objeto',
-  'Publicar un libro': 'objeto',
-  'Terminar un máster': 'espaldas',
-  'Vivir un año en otro país': 'espaldas',
-  // Aquí SÍ hacen falta las manos, y por una razón: el cinturón doblado y
-  // quieto no dice que te lo hayas ganado; atarlo sí.
-  'Sacarte el cinturón negro': 'manos',
-}
+/**
+ * El encuadre de cada gooal: TODO sale de decisiones.mjs y de ningún otro
+ * sitio. Aquí no se escribe ninguno.
+ *
+ * Hubo un ENCUADRE_DE propio en este fichero y era una segunda fuente de
+ * verdad: cuando un título estaba en los dos, ganaba este sin decir nada. Lo
+ * cazó el contador del reparto por casualidad, porque los números no
+ * cuadraban — que es la peor manera de enterarse.
+ */
+const ENCUADRE_DE = ENCUADRE_DECIDIDO
 
 // ── QUIÉN SALE EN LA FOTO, por turno y no al azar ──────────
 //

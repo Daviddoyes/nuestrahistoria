@@ -14,6 +14,8 @@
 // Cuatro fallos de la misma familia en una semana dicen que el formato es el
 // problema, no el cuidado. Así que aquí no hay ni una barra invertida: listas
 // de palabras normales, y la comparación la hace código que se lee.
+
+import { NO_SABE_HACERLO } from './decisiones.mjs'
 //
 // ── Y POR QUÉ AQUÍ NO SE QUITAN LAS TILDES ────────────────
 //
@@ -113,6 +115,11 @@ export function tieneNombrePropio(titulo) {
  */
 export function destinoDe(gooal) {
   const t = gooal.titulo
+  // Lo que el modelo no sabe hacer se queda con su Commons, aunque por lo
+  // demás le tocara IA. Ver NO_SABE_HACERLO en decisiones.mjs.
+  if (NO_SABE_HACERLO[t]) {
+    return { destino: 'commons', porque: 'el modelo no sabe hacer este sujeto: ver NO_SABE_HACERLO' }
+  }
   if (contiene(t, ES_UN_ACONTECIMIENTO)) {
     return { destino: 'ia', porque: 'es un acontecimiento, no un sitio que reconocer' }
   }
