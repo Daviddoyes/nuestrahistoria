@@ -144,6 +144,23 @@ export const CALIDAD = 'medium'
 // recurso cuando nada encajaba. Dos caminos distintos al mismo sitio, y por eso
 // medio catálogo iba a ser la misma foto. Esos tres valores por defecto ya no
 // existen.
+// ══ LA PRUEBA DE LA TARJETA ═══════════════════════════════
+//
+// Antes de dar por bueno un encuadre nuevo, o una foto:
+//
+//     Un encuadre vale si a 144 px se distingue UNA SOLA FORMA CON
+//     CONTRASTE. Y se juzga sobre la tarjeta montada, CON el degradado y
+//     el título encima, no sobre la imagen desnuda.
+//
+// 144 px es la tarjeta cuadrada de Explorar en una pantalla de 320. A
+// pantalla completa todo parece bien, y esa no es la pregunta.
+//
+// Lo que esto descartó, mirando doce pruebas: una textura monocroma (una
+// pared de sal gris es una mancha), un encuadre que pide una figura
+// diminuta, y la luz de noche sin una lámpara dentro del cuadro.
+//
+// Y lo que hace falta para pasarla no es belleza: la gorgonia roja de las
+// Medes se lee a 144 px porque es UNA forma roja sobre fondo oscuro.
 const ENCUADRES = {
   espaldas: 'La persona está DE ESPALDAS a la cámara, se le ve la nuca y los hombros, nunca la cara.',
   hombros: 'El encuadre está RECORTADO POR LOS HOMBROS: se ven las manos, los brazos y el torso, y la cabeza queda fuera del encuadre por arriba.',
@@ -162,7 +179,19 @@ const ENCUADRES = {
   lugar_vacio: 'El lugar donde pasa el gooal, COMPLETAMENTE VACÍO de gente. NO HAY NINGUNA PERSONA, ni de lejos.',
   primera_persona: 'La cámara está DONDE ESTARÍAN LOS OJOS de quien lo vive: se ve lo que ve. De su cuerpo no se ve nada, o como mucho las manos en primer plano por el borde de abajo.',
   manos: 'Se ven ÚNICAMENTE LAS MANOS haciendo la acción, desde cerca. Ni cara, ni cabeza, ni torso, ni hombros.',
-  silueta_lejana: 'Una figura humana DIMINUTA dentro de un paisaje grande: ocupa menos de una décima del alto de la foto y no se le distingue ningún rasgo. Está para dar escala, no es el sujeto.',
+  // RETIRADO el 10-10-2026: existió "silueta_lejana", una figura diminuta
+  // dentro de un paisaje grande. Lo tumbaron DOS razones independientes, y
+  // por eso no se intentó arreglar:
+  //
+  //   1. El modelo no hace pequeño a su protagonista. Las dos pruebas
+  //      fallaron: en «Correr un maratón» metió la cara de una señora
+  //      ocupando media foto, y en «Escalar una aguja de Montserrat» una
+  //      cara iluminada ocupando un tercio.
+  //   2. Y aunque obedeciera: una figura de menos de una décima del alto,
+  //      en una tarjeta de 144 px, NO SE VE. El encuadre es incompatible
+  //      con el tamaño al que se mira.
+  //
+  // Sus 14 gooals están repartidos uno a uno en decisiones.mjs.
 }
 
 /**
@@ -181,7 +210,7 @@ const ENCUADRES = {
  *              si no vuelven a ser siempre las mismas manos.
  *   NADIE      no hay nadie → no se nombra a ninguna persona, ni de refilón.
  */
-const CUERPO = new Set(['espaldas', 'hombros', 'contraluz', 'casco', 'silueta_lejana'])
+const CUERPO = new Set(['espaldas', 'hombros', 'contraluz', 'casco'])
 const SOLO_MANOS = new Set(['manos', 'plato'])
 
 // El encuadre de cada gooal. Lo elijo yo mirando qué tiene sentido en esa
@@ -317,6 +346,11 @@ const PROHIBIDO = [
   'Formato vertical.',
   'El sujeto va centrado y con aire a los lados, porque la imagen se recorta por los lados al mostrarse.',
   'Sin bordes, sin marco, sin collage: una sola escena que llena todo el encuadre.',
+  // EL TERCIO INFERIOR ES DEL TÍTULO. Sobre la tarjeta va un degradado
+  // oscuro y encima el nombre del gooal, así que lo que caiga ahí abajo se
+  // pierde. Pasó con «Sacarte el cinturón negro»: la imagen era correcta y
+  // el cinturón, que es el asunto, quedaba tapado por su propio título.
+  'EL ASUNTO DE LA FOTO VA EN LOS DOS TERCIOS DE ARRIBA del encuadre: el tercio inferior se tapa después con un texto, así que ahí abajo no puede estar lo importante.',
 ].join(' ')
 
 // ── CAMBIO 3 · Los abstractos llevan la escena ESCRITA ─────
@@ -586,7 +620,9 @@ const LUCES = {
   "amanecer": "Luz de AMANECER, rasante y tibia, con sombras largas.",
   "mediodía duro": "Luz de MEDIODÍA, dura y vertical, con sombras cortas y marcadas y mucho contraste.",
   "tarde larga": "Luz de TARDE LARGA, baja y cálida, poco antes de ponerse el sol.",
-  "noche": "De NOCHE, con luz artificial puntual y negros profundos alrededor.",
+  // Siempre con una fuente de luz DENTRO del cuadro: sin ella, a tamaño
+  // de tarjeta es un rectángulo negro, y «Correr un ultratrail» lo demostró.
+  "noche": "De NOCHE, y con una FUENTE DE LUZ VISIBLE DENTRO DEL ENCUADRE (una lámpara, un frontal, un escaparate, una hoguera) que ilumine el sujeto. Negros profundos alrededor, pero el sujeto claramente iluminado.",
   "interior": "EN INTERIOR, con luz que entra por una ventana o de lámparas, sin cielo.",
   "día nublado": "Día NUBLADO y plano, con luz difusa y sin sombras marcadas.",
 }

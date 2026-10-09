@@ -163,8 +163,10 @@ const PALABRA_VER = [
 const EMPIEZA_MANOS = ['cocinar', 'amasar', 'hacer pan', 'tallar', 'moldear', 'pintar', 'dibujar', 'escribir', 'tejer', 'coser', 'plantar', 'sembrar']
 const PALABRA_MANOS = ['cerámica', 'alfarería', 'torno', 'caligrafía', 'origami', 'sushi', 'cóctel', 'pasta fresca']
 
-/** e) Hace falta un cuerpo, y la escala del paisaje es parte del gooal. */
-const PALABRA_SILUETA = ['cumbre', 'cima', 'travesía', 'trek', 'duna', 'desierto', 'glaciar', 'cañón', 'acantilado', 'dosmil', 'tresmil', 'cuatromil']
+// La regla e) se retiró con el encuadre al que llevaba: daba
+// 'silueta_lejana' a cumbres, travesías y desiertos, y ese encuadre ya no
+// existe (la razón, en ENCUADRES de estilos.mjs). Sus gooals están
+// decididos uno a uno en decisiones.mjs.
 
 /**
  * El encuadre que le toca a una categoría CUANDO YA SE HA DECIDIDO que el gooal
@@ -200,7 +202,6 @@ export function clasificar(gooal) {
   if (empiezaPor(t, EMPIEZA_LUGAR) || contiene(t, PALABRA_LUGAR)) return { encuadre: 'lugar_vacio', por: 'b' }
   if (empiezaPor(t, EMPIEZA_VER) || contiene(t, PALABRA_VER)) return { encuadre: 'primera_persona', por: 'c' }
   if (empiezaPor(t, EMPIEZA_MANOS) || contiene(t, PALABRA_MANOS)) return { encuadre: 'manos', por: 'd' }
-  if (contiene(t, PALABRA_SILUETA)) return { encuadre: 'silueta_lejana', por: 'e' }
   const porCategoria = POR_CATEGORIA[gooal.categoria]
   if (porCategoria) return { encuadre: porCategoria, por: 'categoria' }
   return { encuadre: null, por: 'sin-decidir' }
@@ -225,8 +226,11 @@ export const CONTROL = [
   { titulo: 'Ver un amanecer desde la montaña', categoria: 'naturaleza', encuadre: 'primera_persona' },
   { titulo: 'Hacer cerámica en un torno', categoria: 'vida', encuadre: 'manos' },
   { titulo: 'Cocinar una paella a leña', categoria: 'gastronomia', encuadre: 'manos' },
-  { titulo: 'Hacer cumbre en un dosmil', categoria: 'deporte', encuadre: 'silueta_lejana' },
-  { titulo: 'Cruzar un desierto en camello', categoria: 'viajes', encuadre: 'silueta_lejana' },
+  // Los dos de 'silueta_lejana' se cambian con el encuadre: el dosmil está
+  // decidido a mano, y el otro comprueba que una decisión escrita gana a
+  // cualquier regla.
+  { titulo: 'Hacer cumbre en un dosmil', categoria: 'deporte', encuadre: 'objeto' },
+  { titulo: 'Probar el fugu', categoria: 'gastronomia', encuadre: 'hombros' },
   { titulo: 'Comerte un escorpión', categoria: 'gastronomia', encuadre: 'plato' },
   { titulo: 'Ir a un concierto de tu grupo favorito', categoria: 'eventos', encuadre: 'contraluz' },
   { titulo: 'Aprender a tocar un instrumento', categoria: 'vida', encuadre: 'hombros' },
