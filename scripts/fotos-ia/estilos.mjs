@@ -43,6 +43,72 @@
 // Y falla por el lado bueno: al ser la imagen MÁS ANCHA que la tarjeta, el
 // `object-fit: cover` recorta POR LOS LADOS y no por arriba y abajo. Por eso
 // todas las plantillas piden el sujeto centrado y con aire a los lados.
+export const CON_SITIO_RECONOCIBLE = new Set([
+  "Bañarte en la cala de Sa Tuna",
+  "Bañarte en la piscina del Marina Bay Sands",
+  "Bañarte en los gorgs de la Garrotxa",
+  "Bañarte en una playa de arena negra de Santorini",
+  "Bucear en las islas Medes",
+  "Bucear en Raja Ampat",
+  "Caminar sobre un glaciar en Islandia",
+  "Comer arroz en el Delta del Ebro",
+  "Comer en el mercado de Toyosu",
+  "Comer gambas de Palamós",
+  "Comer suquet de peix en la Costa Brava",
+  "Correr la Mitja de Granollers",
+  "Correr la Ultra Pirineu",
+  "Correr un encierro de San Fermín",
+  "Dormir en el desierto de Wadi Rum",
+  "Dormir en un bungalow sobre el agua en Bora Bora",
+  "Dormir en un bungalow sobre el agua en Maldivas",
+  "Escalar en Siurana",
+  "Escalar una aguja de Montserrat",
+  "Flotar en el mar Muerto",
+  "Hacer barranquismo en la Noguera",
+  "Hacer el Camí dels Bons Homes",
+  "Hacer el Camino de Santiago desde Montserrat",
+  "Hacer la ferrata de Boixadera dels Bancs",
+  "Hacer la ferrata de Les Baumes",
+  "Hacer la ferrata del Salt del Grill",
+  "Hacer la Matagalls-Montserrat",
+  "Hacer la ruta de las nueve ermitas del Montsant",
+  "Hacer la Travessia del Port de Barcelona nadando",
+  "Hacer la Vía Verde del Carrilet de Olot a Girona",
+  "Hacer los Carros de Foc",
+  "Hacer paddle surf en el cabo de Creus",
+  "Hacer rafting por el Noguera Pallaresa",
+  "Hacer un safari por el desierto de Dubái",
+  "Jugar al Holi en India",
+  "Mojarte en el Songkran",
+  "Navegar entre los islotes de El Nido",
+  "Navegar por el Amazonas",
+  "Navegar por el delta del Ebro",
+  "Navegar por el río Li en Guilin",
+  "Navegar por la bahía de Ha Long",
+  "Pasar un día en Ferrari Land",
+  "Pasar un día en PortAventura",
+  "Recorrer el Camí de Ronda entero",
+  "Recorrer el GR-11 por el Pirineo catalán",
+  "Recorrer el Parc Natural del Montseny",
+  "Recorrer la Tarragona romana",
+  "Recorrer la Vía Dolorosa",
+  "Recorrer las islas Feroe",
+  "Recorrer las murallas de Dubrovnik",
+  "Recorrer las murallas de Montblanc",
+  "Recorrer las Torres del Paine",
+  "Recorrer los canales de Ámsterdam en barco",
+  "Recorrer los túneles de Cu Chi",
+  "Recorrer un mercado flotante de Tailandia",
+  "Saltar en puenting en Queenstown",
+  "Subir en bici a la Rabassa",
+  "Subir en bici al Alpe d'Huez",
+  "Subir en bici al Angliru",
+  "Subir en bici al Mont Ventoux",
+  "Subir en bici al Port del Cantó",
+  "Volar en globo sobre la Capadocia",
+  "Volar en globo sobre los volcanes de la Garrotxa"
+])
+
 export const TAMANO = '1024x1536'
 export const MODELO = 'gpt-image-1'
 export const CALIDAD = 'medium'
@@ -295,6 +361,88 @@ export const ESTILOS = {
   },
 }
 
+// ── CUANDO VARIOS GOOALS COMPARTEN ACCIÓN ─────────────────
+//
+// Cinco puertos de montaña en bici, tres ferratas, seis navegaciones. Con la
+// regla del encuadre cerrado —sin el sitio reconocible— las cinco fotos de
+// puerto salen casi iguales. Y cinco imágenes gemelas seguidas en Descubrir no
+// se leen como «la misma acción»: se leen como un error de duplicado.
+//
+// La variación NO va en el sitio. Meter el Angliru reconocible rompería la
+// regla que justifica el encuadre cerrado. **Va en el MOMENTO de la acción**:
+// mismo estilo, mismo tratamiento, distinta foto.
+//
+// Cada gooal recibe el momento que le toca por su posición dentro de su grupo,
+// igual que las personas: por turno y no al azar.
+const MOMENTOS = {
+  'puertos en bici': [
+    'Visto DESDE DETRÁS y muy cerca: el manillar, los brazos y la rampa subiendo delante.',
+    'Visto DE PERFIL en una curva de herradura, con la bici inclinada en el giro.',
+    'Visto DESDE ARRIBA, con las lazadas de la carretera pequeñas allá abajo.',
+    'Bajo la LLUVIA, con el asfalto mojado y la rueda levantando agua.',
+    'AL AMANECER y a CONTRALUZ, la silueta recortada contra el sol bajo.',
+  ],
+  'ferratas': [
+    'Visto DESDE ARRIBA, mirando hacia abajo al cable y a las manos que lo agarran.',
+    'Visto DE PERFIL, cruzando un puente de cable tendido en el vacío.',
+    'MUY CERCA de las manos con el mosquetón en la línea de vida.',
+  ],
+  'navegar': [
+    'Visto DESDE LA PROA, con el agua abriéndose delante.',
+    'Visto DESDE DENTRO de la embarcación, sobre el hombro de quien gobierna.',
+    'Visto DESDE ARRIBA, la estela de la barca sobre el agua.',
+    'AL ATARDECER y a CONTRALUZ, la silueta de la barca contra el agua encendida.',
+    'MUY CERCA del agua, a ras de superficie.',
+    'CON NIEBLA baja sobre el agua.',
+  ],
+  'parejas': [
+    'Visto DE CERCA y en pleno gesto.',
+    'Visto DESDE ARRIBA, con la escena pequeña y mucho aire alrededor.',
+  ],
+  'comer un plato local': [
+    'Con el plato recién servido y los cubiertos todavía quietos.',
+    'A media comida, el plato ya empezado.',
+    'Con las manos partiendo o sirviendo una ración.',
+    'Con el vapor todavía saliendo del plato.',
+  ],
+  'carreras a pie': [
+    'DESDE DETRÁS del grupo, viendo la carretera abrirse.',
+    'DE PERFIL y muy cerca, las piernas en pleno zancada.',
+    'DE NOCHE, con los frontales encendidos en fila.',
+  ],
+}
+
+// Qué gooals forman cada grupo, en el orden en que se reparten los momentos.
+const GRUPOS = {
+  'puertos en bici': ['Subir en bici al Angliru', 'Subir en bici al Mont Ventoux',
+    "Subir en bici al Alpe d'Huez", 'Subir en bici a la Rabassa', 'Subir en bici al Port del Cantó'],
+  'ferratas': ['Hacer la ferrata de Boixadera dels Bancs', 'Hacer la ferrata de Les Baumes',
+    'Hacer la ferrata del Salt del Grill'],
+  'navegar': ['Navegar por el Amazonas', 'Navegar por la bahía de Ha Long',
+    'Navegar entre los islotes de El Nido', 'Navegar por el río Li en Guilin',
+    'Navegar por el delta del Ebro', 'Navegar por los fiordos noruegos'],
+  'parejas': ['Dormir en un bungalow sobre el agua en Bora Bora', 'Dormir en un bungalow sobre el agua en Maldivas',
+    'Volar en globo sobre la Capadocia', 'Volar en globo sobre los volcanes de la Garrotxa',
+    'Pasar un día en PortAventura', 'Pasar un día en Ferrari Land',
+    'Recorrer las murallas de Dubrovnik', 'Recorrer las murallas de Montblanc',
+    'Terminar un Ironman', 'Terminar un medio Ironman'],
+  'comer un plato local': ['Comer gambas de Palamós', 'Comer suquet de peix en la Costa Brava',
+    'Comer arroz en el Delta del Ebro', 'Comer en el mercado de Toyosu'],
+  'carreras a pie': ['Correr la Mitja de Granollers', 'Correr la Ultra Pirineu', 'Hacer la Matagalls-Montserrat'],
+}
+
+// 'parejas' va de dos en dos: cada pareja empieza por el primer momento.
+const momentoDe = titulo => {
+  for (const [grupo, lista] of Object.entries(GRUPOS)) {
+    const i = lista.indexOf(titulo)
+    if (i < 0) continue
+    const m = MOMENTOS[grupo]
+    return grupo === 'parejas' ? m[i % 2] : m[i % m.length]
+  }
+  return null
+}
+
+
 /**
  * El prompt de un gooal en un estilo. Se arma por partes para que se vea de
  * dónde sale cada trozo: la escena, el contexto, el encuadre de la cara, lo
@@ -320,6 +468,18 @@ export function construirPrompt(gooal, clave, indice = 0) {
 
   const encuadre = ENCUADRE_DE[gooal.titulo] ?? ENCUADRE_POR_CATEGORIA[gooal.categoria] ?? 'espaldas'
 
+  // ── EL ENCUADRE CERRADO, para los que llevan un sitio reconocible ──
+  //
+  // Si el título nombra un sitio que alguien podría reconocer —el Pedraforca,
+  // Wadi Rum, el Angliru—, la foto generada NO puede enseñarlo: sería una
+  // montaña parecida pero falsa. Se cierra el encuadre sobre la acción y el
+  // sitio se queda fuera.
+  //
+  // Lo que NO cuenta como sitio: Michelin, Ironman, Hyrox, el C1, el Open
+  // Water. Son marcas, niveles y certificaciones, y nadie mira una foto y dice
+  // «ese no es el Ironman».
+  const cerrado = CON_SITIO_RECONOCIBLE.has(gooal.titulo)
+
   // Si tiene escena escrita, manda ella. Si no, la acción del título.
   const escena = ESCENAS[gooal.titulo]
   if (escena) {
@@ -333,7 +493,11 @@ export function construirPrompt(gooal, clave, indice = 0) {
     partes.push(encuadre === 'plato'
       ? 'EL SUJETO ES LA COMIDA en sí, en el plato, tal como se sirve.'
       : 'EL SUJETO ES LA ACCIÓN, no el lugar ni el objeto: se tiene que ver a alguien haciéndolo.')
-    if (gooal.ambito === 'lugar' && (gooal.ciudad || gooal.pais)) {
+    // El lugar se nombra SOLO si no vamos a cerrar el encuadre. Pedir las dos
+    // cosas —«que se note el entorno» y «que no se vea el lugar»— es el mismo
+    // choque de instrucciones que ya enseñó caras comiendo: no da error, se
+    // incumple en silencio y decide el modelo.
+    if (!cerrado && gooal.ambito === 'lugar' && (gooal.ciudad || gooal.pais)) {
       const donde = [gooal.ciudad, gooal.pais].filter(Boolean).join(', ')
       partes.push(`Ocurre en ${donde}, y eso se nota en el entorno, pero el entorno es contexto y no el tema.`)
     }
@@ -355,6 +519,14 @@ export function construirPrompt(gooal, clave, indice = 0) {
   // manos sosteniendo algo.
   partes.push(ENCUADRES[encuadre])
 
+  if (cerrado) {
+    partes.push('ENCUADRE CERRADO sobre la acción: la cámara está MUY CERCA y solo entran el gesto, las manos, el equipo y el terreno inmediato.')
+    partes.push('NO se ve el lugar: ni el horizonte, ni la silueta de la montaña, ni el edificio, ni nada que permita reconocer dónde es. Fondo desenfocado o fuera de cuadro.')
+  }
+
+  const momento = momentoDe(gooal.titulo)
+  if (momento) partes.push(momento)
+
   partes.push(PROHIBIDO)
   partes.push(COMUNES)
   partes.push(estilo.bloque)
@@ -363,6 +535,8 @@ export function construirPrompt(gooal, clave, indice = 0) {
 }
 
 /** El encuadre que le toca a un gooal, para poder enseñarlo en la hoja. */
+export { momentoDe }
+
 export const encuadreDe = gooal =>
   ENCUADRE_DE[gooal.titulo] ?? ENCUADRE_POR_CATEGORIA[gooal.categoria] ?? 'espaldas'
 

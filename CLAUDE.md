@@ -725,6 +725,52 @@ puede comprobar no se declara roto, pero tampoco bueno.** Sale en una lista
 aparte —«no se han podido comprobar»— y el guion termina con error igualmente,
 para que no pase en verde algo que nadie ha podido mirar.
 
+### Un sitio reconocible, no un nombre propio
+
+Al decidir qué gooals pueden llevar foto generada, la pregunta **no** es si el
+título lleva un nombre propio: es **si lleva un sitio que alguien podría
+reconocer**.
+
+La regla mecánica —buscar palabras con mayúscula— marcó 70 de 73, y siete eran
+falsos positivos: **Michelin, Ironman, medio Ironman, Hyrox, el C1 de inglés, el
+Open Water y «un GR»**. Son marcas, pruebas con nombre, niveles y
+certificaciones. Nadie mira una foto y dice «ese no es el Ironman»; sí dice «ese
+no es el Pedraforca».
+
+> Lo que obliga a cerrar el encuadre es que **la imagen pueda reclamar ser un
+> sitio concreto y no serlo**. Una marca no se reclama: se lleva puesta o no
+> sale. Un sitio sí.
+
+Y el corolario, que es el de siempre en este repo: la regla de las mayúsculas
+sirve para traer candidatos, no para decidir. Aquí se pasó de ancho siete veces
+de setenta.
+
+### Cuando varios gooals comparten acción, cambia el encuadre, nunca el lugar
+
+Cinco puertos de montaña en bici, tres ferratas, seis navegaciones, cuatro
+platos locales. Con el encuadre cerrado —sin el sitio reconocible— las cinco
+fotos de puerto salen casi iguales. Y eso tiene un coste que no es estético:
+
+> **Cinco imágenes gemelas seguidas no se leen como «la misma acción»: se leen
+> como un error de duplicado.** El catálogo parece roto, no coherente.
+
+La tentación es diferenciarlas enseñando el sitio —el Angliru reconocible, el
+Ventoux pelado—, y eso **rompe la regla que justificaba el encuadre cerrado**. La
+variación va en otro sitio:
+
+> **Mismo estilo, mismo tratamiento, distinto MOMENTO de la acción.** Uno desde
+> detrás con el manillar y la rampa; uno de perfil en una curva de herradura;
+> uno desde arriba con las lazadas abajo; uno con lluvia; uno al amanecer a
+> contraluz.
+
+Está montado en `scripts/fotos-ia/estilos.mjs` como grupos: cada gooal recibe el
+momento que le toca **por su posición dentro de su grupo**, igual que el reparto
+de quién sale en la foto. Por turno y no al azar, que es lo único que garantiza
+que no se repitan.
+
+Se va a repetir con las ferratas, las cimas, los GR y los mercados: cuando se
+añadan gooals a un grupo, se les añade su momento.
+
 ## Una escena describe lo que hay; un encuadre dice qué entra en la foto
 
 Son dos cosas distintas y confundirlas costó tres fotos con cara.
