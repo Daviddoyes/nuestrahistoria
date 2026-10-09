@@ -771,6 +771,43 @@ que no se repitan.
 Se va a repetir con las ferratas, las cimas, los GR y los mercados: cuando se
 añadan gooals a un grupo, se les añade su momento.
 
+## Prohibir no sustituye a describir
+
+Tercera vez esta semana, y las dos anteriores están anotadas por separado más
+arriba. Puestas juntas se ve que son una sola:
+
+> **Cuando la imagen canónica de algo CONTIENE lo prohibido, repetir la
+> prohibición no funciona: pelea con el sujeto, y el sujeto gana.** Hay que
+> escribir otra escena, una que no pida ese elemento.
+
+Los cinco casos, que son el mismo:
+
+| lo que se pedía | lo prohibido que salía igual | por qué |
+|---|---|---|
+| la piscina del Marina Bay Sands | el edificio | **la piscina famosa ES el edificio** |
+| flotar en el mar Muerto | un periódico | la foto canónica es leyendo el periódico |
+| un día en Ferrari Land | el escudo de Ferrari | el parque se llama como la marca |
+| sacarse el C1 de inglés | una hoja llena de texto | **un examen ES texto** |
+| correr un 10K | el dorsal con el número | un dorsal sin número no es un dorsal |
+
+Y el sexto, que es la misma forma con otra cara: «la cabeza fuera del encuadre»
+contra **comer**. No se puede enseñar a alguien comiéndose un escorpión sin
+boca, así que el modelo enseñó la cara entera en diez de cuarenta y nueve.
+
+La diferencia entre que funcione y que no:
+
+- **No funciona**: insistir. «NI UNA LETRA», «ningún logotipo», «no se ve el
+  lugar». La instrucción está, y pierde.
+- **Funciona**: cambiar la escena. El borde infinito de la piscina con la ciudad
+  desenfocada. Flotando con las rodillas fuera **y sin sostener nada**. El rizo
+  de la montaña rusa en silueta contra el cielo. La hoja de examen **vuelta del
+  revés**. Corredores de espaldas al amanecer **sin petos**. El plato visto
+  desde arriba, con las manos y sin persona.
+
+La señal para detectarlo antes de generar, que es lo que ahorra la vuelta:
+**imagínate la foto de catálogo de ese gooal. Si lo prohibido está dentro de
+ella, no lo prohíbas: describe otra foto.**
+
 ## Una escena describe lo que hay; un encuadre dice qué entra en la foto
 
 Son dos cosas distintas y confundirlas costó tres fotos con cara.
@@ -1098,4 +1135,18 @@ sigue; una nota pendiente espera a alguien.
   Família generada sería una basílica parecida pero falsa. Lo que se hará, poco
   a poco: David marca las de Commons que no le valen según las vaya viendo, y
   **esas se regeneran una a una**. Decidido el 8-10-2026.
+- **LAS FOTOS DEL CATÁLOGO, LO QUE QUEDA Y EN QUÉ ORDEN.** Decidido el
+  9-10-2026, y el orden importa:
+  1. terminar las hojas de Commons de los 137 de «estar»
+  2. **el panel, con los campos de autor y licencia** (lleva parado desde el
+     5-10 y es lo que bloquea todo lo demás)
+  3. `supabase/fase3z.sql`, que se pega en cuanto el panel esté
+  4. el guion que sube, leyendo `scripts/fotos-definitivas.json` — y que
+     **FALLE** si encuentra un gooal con imagen que no esté declarado ahí, en
+     vez de tirar de carpeta
+  5. subir
+
+  > **Nada entra en la base antes del 3.** Las 137 fotos pueden esperar en
+  > ficheros; lo que no puede es entrar una sin crédito y que luego haya que
+  > buscarla.
 - No hay tests.
