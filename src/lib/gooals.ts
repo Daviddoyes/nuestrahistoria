@@ -1,6 +1,7 @@
 // Constantes compartidas del catálogo de gooals v2. Vive fuera de actions.ts
 // porque ese módulo es 'use server' y allí todo lo exportado debe ser async.
 
+import { CATEGORIA_COLOR, CATEGORIA_SOMBRA } from './estilo'
 import { Award, Dumbbell, Landmark, Mountain, Ticket, UtensilsCrossed, type LucideIcon } from 'lucide-react'
 
 /**
@@ -47,24 +48,20 @@ export const CATEGORIA_ICONO: Record<CategoriaGooal, LucideIcon> = {
 /** Grosor del trazo de los iconos de categoría: más fino que el 2 de lucide, a juego con Poppins. */
 export const TRAZO_ICONO_CATEGORIA = 1.75
 
-export const CATEGORIA_COLOR: Record<CategoriaGooal, string> = {
-  viajes: '#38BDF8',
-  naturaleza: '#84CC16',
-  eventos: '#EC4899',
-  deporte: '#FF6B4A',
-  gastronomia: '#F59E0B',
-  vida: '#A855F7',
-}
 
-/** Fondo de las cards sin imagen: degradado del color de su categoría. */
-export const CATEGORIA_GRADIENTE: Record<CategoriaGooal, string> = {
-  viajes: 'linear-gradient(145deg, #0C4A6E 0%, #38BDF8 100%)',
-  naturaleza: 'linear-gradient(145deg, #365314 0%, #84CC16 100%)',
-  eventos: 'linear-gradient(145deg, #831843 0%, #EC4899 100%)',
-  deporte: 'linear-gradient(145deg, #7F2418 0%, #FF6B4A 100%)',
-  gastronomia: 'linear-gradient(145deg, #78350F 0%, #F59E0B 100%)',
-  vida: 'linear-gradient(145deg, #4C1D95 0%, #A855F7 100%)',
-}
+/**
+ * Los colores de categoría viven en `src/lib/estilo.ts`, que es el único sitio
+ * donde se escribe un color. Se reexportan desde aquí porque media app los
+ * importa de este módulo y porque, de dominio, pertenecen a la categoría: lo
+ * que no puede haber es DOS definiciones, que es lo que había a punto de pasar.
+ */
+export { CATEGORIA_COLOR, CATEGORIA_SOMBRA } from './estilo'
+
+/** Fondo de las cards sin imagen: degradado del color de su categoría.
+ *  Se CONSTRUYE a partir del color, para que cambiar uno cambie los dos. */
+export const CATEGORIA_GRADIENTE: Record<CategoriaGooal, string> = Object.fromEntries(
+  CATEGORIAS.map(c => [c, 'linear-gradient(145deg, ' + CATEGORIA_SOMBRA[c] + ' 0%, ' + CATEGORIA_COLOR[c] + ' 100%)']),
+) as Record<CategoriaGooal, string>
 
 /**
  * Cuántos gooals conquistados hay en cada categoría, con las seis siempre
