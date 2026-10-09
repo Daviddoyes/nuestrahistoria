@@ -134,6 +134,21 @@ export const CALIDAD = 'medium'
 //     Si el gooal se puede contar SIN una persona,
 //     se cuenta SIN una persona.
 //
+// ── LA EXCEPCIÓN, QUE SE ENCONTRÓ MIRANDO ─────────────────
+//
+//     Si el gooal ES la acción y no hay objeto ni lugar que la cuente
+//     —correr, saltar, escalar, nadar, bailar—, entonces la persona es la
+//     respuesta correcta y lleva encuadre humano.
+//
+// Salió de tres pruebas que no estaban mal hechas y no decían el gooal: una
+// manta térmica dorada, una roca de conglomerado y agua vista desde arriba.
+// Maratón, escalada y puenting son acción, y al quitar la persona se quitó
+// también lo que había que contar.
+//
+// **Lo que estaba mal nunca fue la persona: era la persona POR DEFECTO.** Un
+// maratón al amanecer a contraluz dice «maratón» en medio segundo, y la
+// silueta ni siquiera necesita cara.
+//
 // Y no por variedad, que sería un motivo estético. Es por lo que la app es:
 // **una lista de deseos trata de lo que va a hacer QUIEN MIRA.** Un sitio vacío
 // le invita a entrar; la espalda de un desconocido ya le está ocupando el
@@ -174,8 +189,16 @@ const ENCUADRES = {
   casco: 'La persona lleva CASCO Y GAFAS que le tapan la cara por completo, y además está en pleno movimiento.',
 
   // ── Los seis SIN persona, que son los que hay que preferir ──
-  objeto: 'En la foto NO HAY NINGUNA PERSONA. Se ve solo el objeto que cuenta el gooal, en su sitio real, como si quien lo usa acabara de irse.',
-  detalle: 'Primerísimo plano de UNA sola textura o UNA sola pieza, tan cerca que el resto de la escena no se ve. NO HAY NINGUNA PERSONA.',
+  // Y QUE LLENE AL MENOS LA MITAD DEL ALTO. «Practicar pádel» falló dos
+  // veces igual: la escena pedía una pala y una pelota en el suelo, y el
+  // modelo pintó la pista. Si el objeto es pequeño dentro del cuadro, el
+  // sujeto pasa a ser el sitio sin que nadie lo haya pedido.
+  objeto: 'En la foto NO HAY NINGUNA PERSONA. Se ve solo el objeto que cuenta el gooal, en su sitio real, como si quien lo usa acabara de irse. EL OBJETO OCUPA AL MENOS LA MITAD DEL ALTO del encuadre: es el sujeto, no un detalle del decorado.',
+  // SOLO SI EL ASUNTO TIENE SILUETA. Medido en doce pruebas: la moneda de
+  // la Fontana y la gorgonia de las Medes se leen a 144 px porque tienen
+  // forma; la pared de sal de Cardona y la roca de Montserrat no, porque
+  // son TEXTURA, y una textura a ese tamaño es una mancha.
+  detalle: 'Primerísimo plano de UNA sola pieza con silueta reconocible, tan cerca que el resto de la escena no se ve, y recortada con claridad contra un fondo que contrasta. NO HAY NINGUNA PERSONA.',
   lugar_vacio: 'El lugar donde pasa el gooal, COMPLETAMENTE VACÍO de gente. NO HAY NINGUNA PERSONA, ni de lejos.',
   primera_persona: 'La cámara está DONDE ESTARÍAN LOS OJOS de quien lo vive: se ve lo que ve. De su cuerpo no se ve nada, o como mucho las manos en primer plano por el borde de abajo.',
   manos: 'Se ven ÚNICAMENTE LAS MANOS haciendo la acción, desde cerca. Ni cara, ni cabeza, ni torso, ni hombros.',
@@ -622,7 +645,11 @@ const LUCES = {
   "tarde larga": "Luz de TARDE LARGA, baja y cálida, poco antes de ponerse el sol.",
   // Siempre con una fuente de luz DENTRO del cuadro: sin ella, a tamaño
   // de tarjeta es un rectángulo negro, y «Correr un ultratrail» lo demostró.
-  "noche": "De NOCHE, y con una FUENTE DE LUZ VISIBLE DENTRO DEL ENCUADRE (una lámpara, un frontal, un escaparate, una hoguera) que ilumine el sujeto. Negros profundos alrededor, pero el sujeto claramente iluminado.",
+  // RETIRADA el 10-10-2026, como silueta_lejana y por lo mismo: no pasa la
+  // prueba de la tarjeta. Se intentó salvarla pidiendo una fuente de luz
+  // dentro del cuadro y «Correr un ultratrail» volvió a salir negro al 90 %
+  // a 179 px. Lo nocturno de verdad se cuenta con "interior", que tiene luz
+  // propia y sí se lee.
   "interior": "EN INTERIOR, con luz que entra por una ventana o de lámparas, sin cielo.",
   "día nublado": "Día NUBLADO y plano, con luz difusa y sin sombras marcadas.",
 }

@@ -769,6 +769,28 @@ Y lo bueno de ponerlos: los datos de prueba hacen aparecer también lo de al
 lado. El post que se insertó para la línea del muro enseñó, de paso, que el
 texto sale bien con el nombre y el gooal, cosa que nadie había visto nunca.
 
+## Dos fallos no son un prompt malo: es el encuadre equivocado
+
+Sale de generar fotos del catálogo, y vale para cualquier cosa que se intente
+dos veces de la misma manera.
+
+«Bajar a la montaña de sal de Cardona», «Practicar pádel» y «Correr un
+ultratrail» fallaron DOS veces cada uno, las dos con el mismo encuadre y con la
+escena reescrita en medio. La segunda vez la tentación es volver a afinar la
+escena, porque es lo barato. Es lo que no hay que hacer:
+
+> **Un gooal que falla dos veces con el mismo encuadre no se vuelve a intentar
+> con ese encuadre. Se le cambia el encuadre.**
+
+Lo que dice el segundo fallo no es «esta escena estaba mal escrita»: es que a
+ese sujeto no le va esa manera de mirarlo. La sal es textura y no tiene
+silueta; una pala en el suelo de una pista grande deja de ser el sujeto; una
+noche cerrada no se ve en una tarjeta. Reescribir la escena no arregla ninguna
+de las tres, porque ninguna es un problema de escena.
+
+Es pariente de «cada heurística nueva arregla unos casos y rompe otros»: a la
+segunda vuelta, lo que hay que cambiar es de herramienta, no de ajuste.
+
 ## Un fallo con forma conocida nunca está solo
 
 Al arreglar algo, la pregunta no es «¿ya está?», es **«¿dónde más está esto
