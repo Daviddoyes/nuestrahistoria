@@ -18,7 +18,17 @@
 // corrige se escribe a mano en ENCUADRE_DE, que manda sobre todo esto.
 import { writeFileSync } from 'node:fs'
 import { createClient } from '@supabase/supabase-js'
-import { encuadreDe, clasificarEncuadre, ENCUADRE_DE, construirPrompt } from './estilos.mjs'
+import { encuadreDe, porQueEncuadre, ENCUADRE_DE, construirPrompt } from './estilos.mjs'
+import { destinoDe, comprobarControl } from './reparto-reglas.mjs'
+
+// ══ EL CONTROL, ANTES DE NADA ═════════════════════════════
+//
+// Quince títulos con el encuadre que deben dar. Si falla uno, aquí se acaba:
+// **un reparto que sale con las reglas rotas es peor que ninguno, porque
+// parece un resultado.** Esto es lo que habría cazado en el primer segundo que
+// todas las reglas estaban muertas y todo caía en 'espaldas'.
+console.log('Control: ' + comprobarControl(encuadreDe) + ' de 15 titulos dan el encuadre que deben.')
+
 
 const s = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } })
 
@@ -36,41 +46,6 @@ async function leerTodo(pedir) {
   }
 }
 
-// ── NOMBRE PROPIO O TIPO DE SITIO ─────────────────────────
-//
-// La división del 10-10-2026: si el gooal nombra un sitio CONCRETO (la Sagrada
-// Família, el Coliseo) se queda en Commons, porque la IA no acierta un edificio
-// real y lo deforma. Si nombra un TIPO de sitio (un faro, un castillo) va a IA:
-// no tiene que acertar ningún faro, solo tiene que hacer un faro.
-//
-// Se reconoce por las mayúsculas de dentro del título, que es la regla que ya
-// se midió aquí: marcó 70 de 73 y se pasó de ancho siete veces. Esos siete son
-// esta lista, y son todos del mismo tipo: marcas, pruebas con nombre, niveles y
-// certificaciones. **Nadie mira una foto y dice «ese no es el Ironman»; sí dice
-// «ese no es el Pedraforca».**
-const NO_SON_SITIOS = [
-  'Michelin', 'Ironman', 'Hyrox', 'C1', 'B2', 'Open Water', 'GR', 'PR',
-  'Erasmus', 'Mundial', 'Navidad', 'Nochevieja', 'Semana Santa', 'San Juan',
-  'Año Nuevo', 'Carnaval', 'Halloween', 'Reyes', 'Tour', 'Grand Slam',
-]
-
-/** Las palabras que, en minúscula, son un TIPO de sitio y no uno concreto. */
-const MESES = /^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)$/i
-
-function nombraUnSitioConcreto(titulo) {
-  // Se quita la primera palabra: siempre va en mayúscula por ser el principio.
-  const palabras = titulo.split(/\s+/).slice(1)
-  for (const cruda of palabras) {
-    const p = cruda.replace(/[«».,:;()¿?¡!]/g, '')
-    if (p.length < 2) continue
-    if (!/^[A-ZÁÉÍÓÚÑÀÈÌÒÙÇ]/.test(p)) continue
-    if (MESES.test(p)) continue
-    if (NO_SON_SITIOS.some(n => n.toLowerCase() === p.toLowerCase() || titulo.includes(n))) continue
-    return true
-  }
-  return false
-}
-
 // ── La frase de escena que saldría ────────────────────────
 // Del prompt entero interesa solo el trozo que describe la escena, que es lo
 // que hay que juzgar. El estilo y lo prohibido son iguales para todos.
@@ -85,14 +60,15 @@ const filas = await leerTodo((d, h) => s.from('gooals_v2')
   .eq('activo', true).eq('estado', 'verificado').order('titulo').range(d, h))
 
 const todo = filas.map((g, i) => {
-  const concreto = nombraUnSitioConcreto(g.titulo)
+  const { destino, porque } = destinoDe(g)
   return {
     ...g,
     indice: i,
-    destino: concreto ? 'commons' : 'ia',
+    destino,
+    porque,
     encuadre: encuadreDe(g),
+    por: porQueEncuadre(g),
     aMano: Boolean(ENCUADRE_DE[g.titulo]),
-    propuesto: clasificarEncuadre(g),
   }
 })
 
@@ -122,8 +98,27 @@ for (const g of aIA) (porEncuadre[g.encuadre] ??= []).push(g)
 const orden = Object.entries(porEncuadre).sort((a, b) => b[1].length - a[1].length)
 for (const [nombre, lista] of orden) {
   const pct = (lista.length / aIA.length) * 100
+  const porDescarte = lista.filter(g => g.por === 'ultimo-recurso').length
   console.log(`  ${nombre.padEnd(17)} ${String(lista.length).padStart(4)}   ${pct.toFixed(1).padStart(5)} %` +
+    (porDescarte ? `   (${porDescarte} por descarte)` : '') +
     (pct > 20 ? '   <- pasa del 20 %, mira su lista' : ''))
+}
+
+// ── LA ALARMA, que es la otra mitad del control ───────────
+//
+// No mira si un encuadre sale mucho: mira si sale mucho SIN QUE NINGUNA REGLA
+// HAYA CASADO. Un encuadre al 40 % porque se ha decidido caso por caso está
+// bien; al 40 % por descarte es la firma de que las reglas no están
+// funcionando, que es exactamente lo que pasó con el  y nadie vio.
+const porDescarte = aIA.filter(g => g.por === 'ultimo-recurso')
+const pctDescarte = (porDescarte.length / aIA.length) * 100
+if (pctDescarte > 30) {
+  console.log(`
+  AVISO: el ${pctDescarte.toFixed(1)} % llega a su encuadre POR DESCARTE, sin que ninguna`)
+  console.log('  regla haya casado. Por encima del 30 % eso no es un reparto, es una regla rota.')
+} else {
+  console.log(`
+  (por descarte llega el ${pctDescarte.toFixed(1)} %, por debajo del 30 % de la alarma)`)
 }
 
 // ── c) Lo que costaría ────────────────────────────────────

@@ -43,6 +43,8 @@
 // Y falla por el lado bueno: al ser la imagen MÁS ANCHA que la tarjeta, el
 // `object-fit: cover` recorta POR LOS LADOS y no por arriba y abajo. Por eso
 // todas las plantillas piden el sujeto centrado y con aire a los lados.
+import { clasificar } from './reparto-reglas.mjs'
+
 export const CON_SITIO_RECONOCIBLE = new Set([
   "Bañarte en la cala de Sa Tuna",
   "Bañarte en la piscina del Marina Bay Sands",
@@ -186,6 +188,37 @@ const SOLO_MANOS = new Set(['manos', 'plato'])
 // come se le recorta por los hombros porque lo que importa son las manos y el
 // plato.
 const ENCUADRE_DE = {
+  // ── La familia «Practicar X», decidida una a una ────────
+  //
+  // 'espaldas' está PROHIBIDO aquí: eran 16 de los 39 que caían ahí, y la
+  // espalda de un desconocido practicando pádel es exactamente lo que no deja
+  // sitio a quien mira. Y NO se sustituye por otro valor por defecto, que
+  // sería el mismo error con otro nombre: cada deporte tiene su objeto propio
+  // y ahí está la variedad — una pala en el suelo de la pista no se parece a
+  // una tabla clavada en la arena ni a la huella de un neumático en el barro.
+  //
+  // Dos se quedan con persona a propósito, y es por lo mismo: en esquí y en
+  // vela LA VISTA ES EL DEPORTE, así que se mira desde sus ojos.
+  "Practicar CrossFit": "objeto",
+  "Practicar golf": "objeto",
+  "Practicar pádel": "objeto",
+  "Practicar tenis": "objeto",
+  "Practicar hípica": "objeto",
+  "Practicar surf": "objeto",
+  "Practicar windsurf": "objeto",
+  "Practicar kitesurf": "objeto",
+  "Practicar wakeboard": "objeto",
+  "Practicar paddle surf": "objeto",
+  "Practicar snowboard": "objeto",
+  "Practicar esquí de travesía": "objeto",
+  "Practicar escalada en roca": "objeto",
+  "Practicar escalada en hielo": "detalle",
+  "Practicar motocross": "detalle",
+  "Practicar patinaje sobre hielo": "detalle",
+  "Practicar escalada en rocódromo": "lugar_vacio",
+  "Practicar esquí": "primera_persona",
+  "Practicar vela": "primera_persona",
+
   'Montar tu propia empresa': 'hombros',
   'Practicar esquí': 'casco',
   'Probar el fugu': 'hombros',
@@ -212,8 +245,12 @@ const ENCUADRE_DE = {
   // Mirar un eclipse pide cara y gafas: con 'hombros' pasaba lo mismo que con
   // comer. De espaldas, mirando al cielo, sí se puede cumplir.
   'Ver un eclipse solar total': 'espaldas',
-  'Sacarte el C1 de inglés': 'hombros',
-  'Publicar un libro': 'hombros',
+  // Estas dos eran 'hombros' y son de ANTES de la regla de no poner a nadie
+  // cuando no hace falta. El control negativo las cazó: un examen aprobado y un
+  // libro publicado se cuentan enteros sin una persona delante, y así el que
+  // mira se pone él. Sus escenas también se han quedado sin las manos.
+  'Sacarte el C1 de inglés': 'objeto',
+  'Publicar un libro': 'objeto',
   'Terminar un máster': 'espaldas',
   'Vivir un año en otro país': 'espaldas',
   'Sacarte el cinturón negro': 'espaldas',
@@ -232,62 +269,6 @@ const ENCUADRE_POR_CATEGORIA = {
   gastronomia: 'plato',
   eventos: 'contraluz',
   vida: 'hombros',
-}
-
-// ── Las palabras con las que se reconoce cada caso ─────────
-//
-// Esto NO decide: propone. En este repo eso está escrito y pagado — una regla
-// sobre títulos acierta la mayoría y falla de maneras raras, así que lo que
-// sale de aquí es un reparto que hay que MIRAR, y lo que se mira y se corrige
-// se escribe a mano arriba, en ENCUADRE_DE, que manda sobre todo esto.
-
-/** a) Hay un OBJETO que ES el gooal: el diploma, el sello, el dorsal. */
-const DE_OBJETO = [
-  /^sacarte? (el|la|un|una) /i, /^sacarse /i, /^obtener /i, /^conseguir (el|la|un|una) (título|carné|carnet|diploma|medalla)/i,
-  /^publicar /i, /^doctorarte$/i, /^terminar (una carrera universitaria|un máster|un doctorado)/i,
-  /\b(carné|carnet|diploma|título|certificado|medalla|trofeo|pasaporte|sello)\b/i,
-]
-
-/** b) El gooal es ESTAR en un sitio, y el sitio es un TIPO, no un nombre. */
-const DE_LUGAR = [
-  /^(visitar|entrar en|pasear por|recorrer|dormir en|alojarte en|pasar (una noche|un día) en|bañarte en|subir a)\b/i,
-  /\b(faro|castillo|mirador|monasterio|catedral|bodega|mercado|balneario|termas|refugio|cabaña|mezquita|templo|ruinas|cueva|palacio|museo|jardín botánico|invernadero)\b/i,
-]
-
-/** c) El gooal es VER algo: lo que importa es lo que ven sus ojos. */
-const DE_VER = [
-  /^(ver|contemplar|mirar|presenciar|asistir a|observar)\b/i,
-  /\b(amanecer|atardecer|puesta de sol|aurora boreal|auroras|eclipse|vía láctea|estrellas|lluvia de estrellas)\b/i,
-]
-
-/** d) Se hace con las manos y se reconoce por ellas. */
-const DE_MANOS = [
-  /^(cocinar|amasar|hacer pan|tallar|moldear|pintar|dibujar|escribir|tejer|coser|plantar|sembrar|cultivar|montar|reparar|arreglar)\b/i,
-  /\b(cerámica|alfarería|torno|caligrafía|origami|sushi|paella a leña|pasta fresca|cóctel)\b/i,
-]
-
-/**
- * e) Necesita un cuerpo para entenderse, y además la escala del paisaje es
- * parte del gooal: una figura diminuta dentro de algo grande.
- */
-const DE_SILUETA = [
-  /\b(cumbre|cima|travesía|trek|camino de|ruta de|duna|desierto|glaciar|cañón|valle|acantilado)\b/i,
-]
-
-/** El orden a→f, literal. La primera que se cumple, gana. */
-function clasificarEncuadre(gooal) {
-  const t = gooal.titulo
-  const alguna = lista => lista.some(r => r.test(t))
-
-  if (alguna(DE_OBJETO)) return 'objeto'          // a
-  if (alguna(DE_LUGAR)) return 'lugar_vacio'      // b
-  if (alguna(DE_VER)) return 'primera_persona'    // c
-  if (alguna(DE_MANOS)) return 'manos'            // d
-  // e) hace falta un cuerpo: el que encaje con lo que es ese gooal
-  if (alguna(DE_SILUETA)) return 'silueta_lejana'
-  const porCategoria = ENCUADRE_POR_CATEGORIA[gooal.categoria]
-  if (porCategoria) return porCategoria
-  return 'espaldas'                                // f, y solo aquí
 }
 
 // ── QUIÉN SALE EN LA FOTO, por turno y no al azar ──────────
@@ -364,12 +345,34 @@ const PROHIBIDO = [
 // eran falsos positivos (los «desierto», donde el desierto es el sitio y no una
 // negación). Los tres de verdad llevan su escena aquí abajo.
 export const ESCENAS = {
+  // Las de «Practicar X»: el objeto de cada deporte, escrito uno a uno. Sin
+  // esto, un encuadre sin persona se queda sin sujeto y lo elige el modelo.
+  "Practicar CrossFit": "Una barra olímpica cargada de discos, apoyada en el suelo de goma de un box, con el polvo de magnesio alrededor y las anillas colgando al fondo, desenfocadas.",
+  "Practicar golf": "Una bola blanca sobre el tee, recién colocada en la hierba cortada al ras, con la cabeza del palo detrás y el green perdiéndose desenfocado.",
+  "Practicar pádel": "Una pala y una pelota en el suelo de la pista, junto a la pared de cristal, con la luz de la tarde entrando en diagonal.",
+  "Practicar tenis": "Una raqueta apoyada en la red y una pelota amarilla parada sobre la tierra batida, con la marca de la línea blanca al lado.",
+  "Practicar hípica": "Una silla de montar de cuero y unas riendas colgadas de la valla de madera de un picadero de arena.",
+  "Practicar surf": "Una tabla de surf clavada en la arena mojada al borde del agua, con la cera marcada y la quilla a la vista.",
+  "Practicar windsurf": "Una vela de windsurf montada y apoyada en la orilla, con la tabla al lado y el agua picada detrás.",
+  "Practicar kitesurf": "Una cometa de kitesurf desinflada sobre la arena al final del día, con las líneas recogidas y la tabla encima.",
+  "Practicar wakeboard": "El mango y la cuerda de arrastre flotando en el agua quieta, con la estela todavía marcada detrás.",
+  "Practicar paddle surf": "Un remo apoyado en diagonal sobre una tabla de paddle surf, flotando en agua lisa como un espejo.",
+  "Practicar snowboard": "Una tabla de snowboard clavada de pie en la nieve virgen, con las fijaciones abiertas y la montaña desenfocada detrás.",
+  "Practicar esquí de travesía": "Dos esquís de travesía clavados en la nieve con las pieles de foca todavía puestas, y los bastones cruzados al lado.",
+  "Practicar escalada en roca": "Unos pies de gato gastados y una bolsa de magnesio abierta, al pie de una vía, sobre la roca.",
+  "Practicar escalada en hielo": "Primerísimo plano de la punta de un piolet clavada en hielo azul, con las esquirlas saltadas alrededor.",
+  "Practicar motocross": "Primerísimo plano del surco que ha dejado un neumático de tacos en el barro mojado, con las salpicaduras al lado.",
+  "Practicar patinaje sobre hielo": "Primerísimo plano de las marcas curvas que dejan las cuchillas sobre el hielo recién pulido.",
+  "Practicar escalada en rocódromo": "Un muro de rocódromo lleno de presas de colores, visto de frente y COMPLETAMENTE VACÍO, con las colchonetas abajo.",
+  "Practicar esquí": "Las puntas de dos esquís asomando por abajo del encuadre y la pendiente abriéndose delante, nieve y pinos, sin nadie más.",
+  "Practicar vela": "La proa de un velero escorado y el mar abierto delante, visto desde la bañera, con la escota tensa entrando por un lado.",
+
   'Montar tu propia empresa':
     'Dos manos abriendo la persiana metálica de un local pequeño a primera hora, con cajas de cartón aún sin abrir dentro.',
   // La versión anterior decía «un examen terminado» y salió con la hoja llena
   // de texto impreso: un examen ES texto. Se le da la vuelta a la hoja.
   'Sacarte el C1 de inglés':
-    'Unas manos dejando el bolígrafo sobre una hoja de examen YA VUELTA DEL REVÉS sobre el pupitre, de modo que solo se ve el dorso en blanco del papel, sin una sola letra. Aula vacía junto a una ventana, luz de tarde.',
+    'Una hoja de examen VUELTA DEL REVÉS sobre un pupitre, de modo que solo se ve el dorso en blanco del papel, sin una sola letra, con un bolígrafo encima. El aula está vacía, junto a una ventana, con luz de tarde. NO HAY NINGUNA PERSONA.',
 
   // ── Tres que reclamaban su sitio o metían una marca ──────
   // El encuadre cerrado no bastó: el modelo metió el edificio, el escudo de la
@@ -383,7 +386,7 @@ export const ESCENAS = {
   'Pasar un día en Ferrari Land':
     'El rizo rojo de una montaña rusa visto desde abajo contra el cielo, con un vagón pasando por lo alto y los brazos de la gente levantados. Ni un logotipo, ni un escudo, ni un emblema, ni una marca en ninguna parte.',
   'Publicar un libro':
-    'Unas manos sosteniendo un libro recién impreso, cerrado y sin nada escrito en la cubierta, sobre una mesa de madera.',
+    'Un libro recién impreso, cerrado y sin nada escrito en la cubierta, sobre una mesa de madera junto a una ventana. NO HAY NINGUNA PERSONA.',
   'Terminar un máster':
     'Alguien de espaldas bajando la escalinata de piedra de una facultad con una carpeta bajo el brazo.',
   'Vivir un año en otro país':
@@ -693,10 +696,14 @@ export { momentoDe }
  * Ya no hay un tercer escalón por categoría: era el que mandaba el 78 % del
  * catálogo a 'espaldas' sin que nadie hubiera mirado ni un título.
  */
-export const encuadreDe = gooal => ENCUADRE_DE[gooal.titulo] ?? clasificarEncuadre(gooal)
+export const encuadreDe = gooal => ENCUADRE_DE[gooal.titulo] ?? clasificar(gooal).encuadre
 
 /** Para poder contar y repasar el reparto desde fuera. */
-export { ENCUADRES, CUERPO, SOLO_MANOS, ENCUADRE_DE, clasificarEncuadre }
+export { ENCUADRES, CUERPO, SOLO_MANOS, ENCUADRE_DE }
+
+/** Por qué regla salió ese encuadre: 'mano' si está escrito, o la letra a→f. */
+export const porQueEncuadre = gooal =>
+  ENCUADRE_DE[gooal.titulo] ? 'mano' : clasificar(gooal).por
 
 // Una pista corta por categoría: lo que esa categoría suele necesitar para que
 // la escena no salga genérica. No describe el gooal — eso lo hace el título.
