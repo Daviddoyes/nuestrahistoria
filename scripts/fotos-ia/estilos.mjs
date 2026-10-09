@@ -256,21 +256,6 @@ const ENCUADRE_DE = {
   'Sacarte el cinturón negro': 'espaldas',
 }
 
-/**
- * El encuadre que le toca a una categoría CUANDO YA SE HA DECIDIDO que el gooal
- * necesita un cuerpo humano (el paso e del orden de abajo).
- *
- * **Deporte, naturaleza y viajes ya NO están aquí.** Tenían 'espaldas' y eran
- * las tres categorías más grandes: 421 gooals de 541 entraban por aquí a la
- * misma foto. Un valor por defecto que cubre el 78 % del catálogo no es un
- * valor por defecto, es la decisión.
- */
-const ENCUADRE_POR_CATEGORIA = {
-  gastronomia: 'plato',
-  eventos: 'contraluz',
-  vida: 'hombros',
-}
-
 // ── QUIÉN SALE EN LA FOTO, por turno y no al azar ──────────
 //
 // Las 16 de la segunda ronda eran hombres. Las ocho escenas, las dos vueltas,
