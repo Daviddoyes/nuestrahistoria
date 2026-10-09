@@ -793,6 +793,37 @@ contener lo que su encuadre pedía.** «Practicar pádel» salió cuatro veces s
 pala. Eso no lo caza un contador, ni una alarma, ni una regla: solo se ve
 mirando la imagen, y por eso las tandas van de cuarenta y se miran.
 
+## Un encuadre definido por resta lo decide el modelo
+
+La idea que une todo lo que ha ido cayendo de las fotos generadas, y vale para
+cualquier instrucción que se le dé a un modelo:
+
+> **Todo encuadre tiene que nombrar algo que ESTÉ en la foto, no solo lo que
+> falta.** Un encuadre definido por resta deja al modelo eligiendo qué poner, y
+> elige lo cómodo.
+
+Los que han aguantado dicen lo que SÍ se ve: el objeto, la pieza en primer
+plano, el plato y las manos, la silueta contra la luz, el casco y las gafas.
+Los que han ido cayendo dicen lo que NO se ve: la espalda (= no se ve la cara),
+los hombros sin objeto (= no se ve la cabeza), la figura diminuta (= no se
+distingue nada), la noche (= no se ve casi nada).
+
+Repasados los nueve con ese criterio el 10-10-2026, no lo cumplen tres:
+
+| encuadre | qué nombra | ¿cumple? |
+|---|---|---|
+| objeto, detalle, plato, manos, casco, contraluz | el objeto, la pieza, el plato, las manos, el casco, la silueta y su luz | sí |
+| primera_persona | el punto de vista, pero ninguna cosa | a medias |
+| hombros | manos, brazos y torso… y la cabeza fuera | a medias, y por eso se le añadió la condición del objeto |
+| espaldas | la nuca y los hombros; su contenido real es «no se ve la cara» | **no** |
+| lugar_vacio | «el lugar, vacío»: no dice qué se ve de ese lugar | **no** |
+
+Y encaja con lo medido: **los que no cumplen son justo los que han fallado**.
+El arreglo de los tres ya tiene forma conocida, porque se aplicó tres veces:
+«hombros solo con un objeto en el cuadro», «noche solo con una luz dentro del
+cuadro», «objeto llenando medio cuadro». Siempre es lo mismo — **obligar a que
+la instrucción nombre una cosa presente**.
+
 ## Cuando ni la persona ni el objeto cuentan el gooal
 
 Hay un tercer camino, y se encontró porque cuatro fotos salieron CORRECTAS y no

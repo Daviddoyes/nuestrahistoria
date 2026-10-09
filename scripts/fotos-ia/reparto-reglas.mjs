@@ -237,7 +237,7 @@ export const CONTROL = [
   // decidido a mano, y el otro comprueba que una decisión escrita gana a
   // cualquier regla.
   { titulo: 'Hacer cumbre en un dosmil', categoria: 'deporte', encuadre: 'objeto' },
-  { titulo: 'Probar el fugu', categoria: 'gastronomia', encuadre: 'hombros' },
+  { titulo: 'Probar el fugu', categoria: 'gastronomia', encuadre: 'plato' },
   { titulo: 'Comerte un escorpión', categoria: 'gastronomia', encuadre: 'plato' },
   { titulo: 'Ir a un concierto de tu grupo favorito', categoria: 'eventos', encuadre: 'contraluz' },
   { titulo: 'Aprender a tocar un instrumento', categoria: 'vida', encuadre: 'hombros' },

@@ -20,7 +20,7 @@ import { writeFileSync } from 'node:fs'
 import { createClient } from '@supabase/supabase-js'
 import { encuadreDe, porQueEncuadre, ENCUADRE_DE, construirPrompt } from './estilos.mjs'
 import { destinoDe, comprobarControl, CONTROL } from './reparto-reglas.mjs'
-import { CAMARA, DECIDIDOS } from './decisiones.mjs'
+import { CAMARA, DECIDIDOS, ELEMENTO } from './decisiones.mjs'
 
 // ══ EL CONTROL, ANTES DE NADA ═════════════════════════════
 //
@@ -125,71 +125,69 @@ if (pctDescarte > 30) {
 // ── c) Lo que costaría ────────────────────────────────────
 // ── EL SEGUNDO EJE, CONTADO ───────────────────────────────
 //
-// El eje que nadie cuenta es el que se degrada: variábamos QUÉ se ve y
-// dejábamos sin tocar CÓMO se mira. Dentro de una misma familia de encuadre,
-// ningún par ángulo+luz puede repetirse más de tres veces.
+// El eje que nadie cuenta es el que se degrada. Pero el tope ya no puede ser
+// el mismo para todos, porque cinco encuadres FIJAN uno de los dos ejes en su
+// propio texto y solo dejan el otro libre (ver EJE_QUE_FIJA en estilos.mjs).
+//
+//   · Con los DOS ejes libres: ningún par ángulo+luz más de tres veces. Hay
+//     25 combinaciones, así que tres es exigible.
+//   · Con UNO libre: hay cinco valores y nada más, así que pedir tres sería
+//     imposible con 24 gooals. Lo que se mira es que ninguno se lleve más
+//     del 40 %: que la luz esté repartida, no que no se repita.
 console.log('')
 console.log('── CÓMO SE MIRA, dentro de cada encuadre ──')
 let pasados = 0
 let sinCamara = 0
 for (const [nombre, lista] of orden) {
-  const pares = {}
-  for (const g of lista) {
+  const conCamara = lista.filter(g => CAMARA[g.titulo])
+  if (conCamara.length === 0) { sinCamara += lista.length; continue }
+  sinCamara += lista.length - conCamara.length
+  const libres = conCamara[0] && CAMARA[conCamara[0].titulo]
+  const unSoloEje = libres && (libres[0] === null || libres[1] === null)
+  const clave = g => {
     const c = CAMARA[g.titulo]
-    if (!c) { sinCamara++; continue }
-    const par = c[0] + ' + ' + c[1]
-    pares[par] = (pares[par] ?? 0) + 1
+    return unSoloEje ? (c[0] ?? c[1]) : c[0] + ' + ' + c[1]
   }
-  const repes = Object.entries(pares).filter(([, n]) => n > 3)
-  const conCamara = Object.values(pares).reduce((a, b) => a + b, 0)
-  if (conCamara === 0) continue
-  console.log(`  ${nombre.padEnd(17)} ${conCamara} decididos, ${Object.keys(pares).length} pares distintos` +
-    (repes.length ? '   <- SE PASAN DEL TOPE DE 3:' : ''))
+  const cuenta = {}
+  for (const g of conCamara) cuenta[clave(g)] = (cuenta[clave(g)] ?? 0) + 1
+  const tope = unSoloEje ? Math.max(3, Math.ceil(conCamara.length * 0.4)) : 3
+  const repes = Object.entries(cuenta).filter(([, n]) => n > tope)
+  console.log(`  ${nombre.padEnd(17)} ${conCamara.length} decididos, ${Object.keys(cuenta).length} ${unSoloEje ? "valores" : "pares"} distintos (tope ${tope})` +
+    (repes.length ? '   <- SE PASAN:' : ''))
   for (const [par, n] of repes) { pasados++; console.log(`        ${par}  x${n}`) }
 }
 console.log(pasados === 0
-  ? '  ningún par ángulo+luz se repite más de tres veces dentro de su encuadre'
-  : `  ${pasados} par(es) por encima del tope. Cámbialos.`)
+  ? '  nada se repite por encima de su tope dentro de su encuadre'
+  : `  ${pasados} por encima del tope. Cámbialos.`)
 console.log(`  (${sinCamara} de los ${aIA.length} no llevan cámara decidida: los eligió una regla, no una persona)`)
-// ── ESCENAS GEMELAS ───────────────────────────────────────
+// ── ESCENAS GEMELAS, POR ELEMENTO ─────────────────────────
 //
-// El contador de ángulo+luz NO caza esto, y por eso hace falta otro: dos
-// escenas pueden describir LA MISMA IMAGEN sin compartir ni ángulo ni luz.
-// Pasó con «Correr la Cursa dels Bombers» y «Correr un maratón»: las dos
-// eran siluetas de corredores en una avenida contra el sol bajo, con
-// cámaras distintas.
+// Comparar la prosa no caza dos fotos que son la misma con palabras
+// distintas: «Ir a la Nit del Foc» y «Ir a la Patum de Berga» son las dos
+// una silueta contra el fuego y no comparten casi ninguna palabra.
 //
-// Esto NO decide: avisa. Compara las palabras con contenido de las escenas
-// de un mismo encuadre y saca las parejas que se parecen demasiado, para
-// mirarlas. Como todo lo que compara textos en este repo, trae candidatas.
+// Así que se compara el ELEMENTO decidido (ver ELEMENTO en decisiones.mjs).
+// Dos gooals con el MISMO encuadre y el MISMO elemento son candidatos a ser
+// la misma foto. Esto no decide: saca la pareja para mirarla.
 console.log('')
-console.log('── ESCENAS QUE PUEDEN SER LA MISMA FOTO ──')
-const VACIAS = new Set(['de', 'del', 'la', 'las', 'el', 'los', 'un', 'una', 'unos', 'unas', 'y', 'en', 'con', 'sin', 'por', 'al', 'a', 'que', 'se', 'su', 'sus', 'sobre', 'entre', 'desde', 'hasta', 'como', 'lo', 'le', 'no', 'ni', 'o', 'es', 'está', 'the'])
-const contenido = texto => new Set(
-  texto.toLowerCase().replace(/[.,:;«»()]/g, ' ').split(/\s+/).filter(p => p.length > 3 && !VACIAS.has(p)))
-
-const porEncuadre2 = {}
+console.log('── MISMO ENCUADRE Y MISMO ELEMENTO ──')
+const porPar = {}
+let sinElemento = 0
 for (const g of aIA) {
-  const dec = DECIDIDOS[g.titulo]
-  if (!dec || !dec[1]) continue
-  ;(porEncuadre2[g.encuadre] ??= []).push({ titulo: g.titulo, palabras: contenido(dec[1]) })
+  const el = ELEMENTO[g.titulo]
+  if (!el) { sinElemento++; continue }
+  const clave = g.encuadre + ' · ' + el
+  ;(porPar[clave] ??= []).push(g.titulo)
 }
-let gemelas = 0
-for (const [nombre, lista] of Object.entries(porEncuadre2)) {
-  for (let i = 0; i < lista.length; i++) {
-    for (let j = i + 1; j < lista.length; j++) {
-      const a = lista[i].palabras, b = lista[j].palabras
-      const comunes = [...a].filter(p => b.has(p)).length
-      const parecido = comunes / Math.min(a.size, b.size)
-      if (parecido < 0.5) continue
-      gemelas++
-      console.log(`  ${nombre}: ${Math.round(parecido * 100)} % de palabras en común`)
-      console.log(`      ${lista[i].titulo}`)
-      console.log(`      ${lista[j].titulo}`)
-    }
-  }
+const gemelas = Object.entries(porPar).filter(([, l]) => l.length > 1)
+for (const [clave, titulos] of gemelas) {
+  console.log(`  ${clave}`)
+  for (const t of titulos) console.log(`      ${t}`)
 }
-if (gemelas === 0) console.log('  ninguna pareja de escenas se parece lo bastante como para mirarla')
+console.log(gemelas.length === 0
+  ? '  ninguna pareja comparte encuadre y elemento'
+  : `  ${gemelas.length} grupo(s) a mirar.`)
+console.log(`  (${sinElemento} de los ${aIA.length} no tienen elemento decidido: su escena la pone el título)`)
 console.log('\n── LO QUE COSTARÍA GENERARLOS ──')
 const aGenerar = yaIA.length + sinNada.length
 console.log(`  a rehacer + sin nada: ${aGenerar} imágenes x ${EURO_POR_IMAGEN} $ = ${(aGenerar * EURO_POR_IMAGEN).toFixed(2)} $`)

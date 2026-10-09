@@ -250,6 +250,35 @@ const ENCUADRES = {
  *              si no vuelven a ser siempre las mismas manos.
  *   NADIE      no hay nadie → no se nombra a ninguna persona, ni de refilón.
  */
+/**
+ * QUÉ EJES FIJA YA CADA ENCUADRE, y por lo tanto cuáles NO puede recibir.
+ *
+ * Cinco de los nueve traen puesto un eje en su propio texto. Si el eje de
+ * cámara le pone otro, el prompt dice dos cosas distintas sobre lo mismo en
+ * dos frases seguidas, y gana una en silencio. Pasó tal cual con «Comer en
+ * un hawker centre»:
+ *
+ *     «Encuadre cenital sobre la mesa... La cámara mira hacia abajo.
+ *      La cámara está A LA ALTURA DE LOS OJOS de quien estuviera de pie.»
+ *
+ * Medido sobre las cuarenta de la tanda del 10-10, cruzando el choque con
+ * el veredicto de mirarlas una a una:
+ *
+ *     sin choque: 7 funcionan, 4 dudosas, 0 fallan
+ *     con choque: 3 funcionan, 5 dudosas, 4 fallan
+ *
+ * **Las cuatro que fallan tienen choque, y ninguna sin choque falla.** No
+ * es que el choque lo estropee siempre —tres con choque salieron bien—, es
+ * que nunca ayuda y a veces rompe. Por eso esto no avisa: falla.
+ */
+const EJE_QUE_FIJA = {
+  plato: 'angulo',            // «encuadre cenital... la cámara mira hacia abajo»
+  primera_persona: 'angulo',  // «la cámara está donde estarían los ojos»
+  detalle: 'angulo',          // «tan cerca que el resto no se ve»
+  manos: 'angulo',            // «desde cerca»
+  contraluz: 'luz',           // «a contraluz»: la luz viene de detrás, y eso ES la luz
+}
+
 const CUERPO = new Set(['espaldas', 'hombros', 'contraluz', 'casco'])
 const SOLO_MANOS = new Set(['manos', 'plato'])
 
@@ -729,8 +758,22 @@ export function construirPrompt(gooal, clave, indice = 0) {
   // objeto cambie. Solo lo llevan los gooals que lo tienen DECIDIDO.
   const camara = CAMARA[gooal.titulo]
   if (camara) {
-    partes.push(ANGULOS[camara[0]] ?? "")
-    partes.push(LUCES[camara[1]] ?? "")
+    // EL CANDADO. No avisa: para. Un encuadre que ya fija un eje no puede
+    // recibir otro, porque entonces el prompt se contradice y decide el
+    // modelo. Es el mismo candado que el del encuadre cerrado.
+    const fija = EJE_QUE_FIJA[encuadre]
+    if (fija === 'angulo' && camara[0]) {
+      throw new Error(
+        `EJES QUE CHOCAN en «${gooal.titulo}»: el encuadre ${encuadre} ya fija el ángulo, ` +
+        `y la cámara le pone «${camara[0]}». Deja el ángulo en null para este gooal.`)
+    }
+    if (fija === 'luz' && camara[1]) {
+      throw new Error(
+        `EJES QUE CHOCAN en «${gooal.titulo}»: el encuadre ${encuadre} ya fija la luz, ` +
+        `y la cámara le pone «${camara[1]}». Deja la luz en null para este gooal.`)
+    }
+    if (camara[0]) partes.push(ANGULOS[camara[0]] ?? "")
+    if (camara[1]) partes.push(LUCES[camara[1]] ?? "")
   }
 
   // El momento SOLO donde hay cuerpo: varios nombran brazos, manos o un
