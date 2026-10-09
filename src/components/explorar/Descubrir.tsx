@@ -317,9 +317,6 @@ export default function Descubrir({ onCompletado, onCambio }: Props) {
         </Boton>
       </div>
 
-      <p style={{ textAlign: 'center', fontSize: 11, color: '#55605C', padding: '8px 0 2px' }}>
-        Quedan {quedan} de {total}
-      </p>
     </div>
   )
 }
