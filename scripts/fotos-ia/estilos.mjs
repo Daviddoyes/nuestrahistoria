@@ -88,6 +88,11 @@ const ENCUADRE_DE = {
   'Hacer un voluntariado en el extranjero': 'hombros',
   'Terminar una carrera universitaria': 'hombros',
   'Sacarte el título de buceo Open Water': 'contraluz',
+  // Una cata no es un plato: con el encuadre cenital de gastronomía salió una
+  // cena de pub, con salchichas y puré al lado de las copas. El encuadre por
+  // defecto de una categoría no vale cuando el gooal no es lo típico de esa
+  // categoría.
+  'Hacer una cata de whisky en una destilería': 'hombros',
   // Mirar un eclipse pide cara y gafas: con 'hombros' pasaba lo mismo que con
   // comer. De espaldas, mirando al cielo, sí se puede cumplir.
   'Ver un eclipse solar total': 'espaldas',
@@ -219,6 +224,9 @@ export const ESCENAS = {
     'Alguien de espaldas empujando un carro de maletas por una terminal de aeropuerto casi vacía.',
   'Hacer un voluntariado en el extranjero':
     'Varias manos pasándose cajas en fila, al aire libre, sin que se vea ninguna cara.',
+
+  'Hacer una cata de whisky en una destilería':
+    'Tres copas de cata alineadas sobre una barrica, con las manos de alguien levantando una a la altura de la nariz. Detrás, la nave de una destilería con las barricas apiladas. NO hay comida de ninguna clase en la escena.',
 
   // ── Los tres que niegan algo ────────────────────────────
   'Dormir en una cabaña sin electricidad':

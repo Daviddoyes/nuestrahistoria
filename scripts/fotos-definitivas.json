@@ -1,0 +1,513 @@
+{
+ "_comentario": [
+  "QUÉ IMAGEN LLEVA CADA GOOAL, decidido y escrito. Una entrada por gooal.",
+  "",
+  "El guion que sube las fotos LEE ESTE FICHERO y no mira carpetas. Las",
+  "imágenes generadas viven repartidas en varias tandas porque dentro del",
+  "proyecto no se borra nada, y resolver cuál es la buena \"por la más",
+  "reciente\" sería una regla implícita: se rompe el día que alguien regenere",
+  "una vieja para probar algo, y nadie se entera.",
+  "",
+  "Cada entrada se escribe EN EL MOMENTO EN QUE SE APRUEBA esa imagen, no al",
+  "final. Si un gooal no está aquí, no tiene foto decidida: eso no es un",
+  "olvido, es el estado.",
+  "",
+  "fuente ia      -> fichero (el PNG) y prompt (el .txt de al lado)",
+  "fuente commons -> fichero_commons, original, autor, licencia, pagina"
+ ],
+ "gooals": {
+  "Bailar salsa": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-bailar-salsa-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-bailar-salsa-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Bailar tango": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-bailar-tango-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-bailar-tango-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Bucear a más de 30 metros": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-bucear-a-mas-de-30-metros-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-bucear-a-mas-de-30-metros-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Cantar en un karaoke": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-cantar-en-un-karaoke-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-cantar-en-un-karaoke-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Comerte una tarántula": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-rehechas/A-comerte-una-tarantula-1.png",
+   "prompt": "Claude outputs/tanda-rehechas/A-comerte-una-tarantula-1.txt",
+   "tanda": "tanda-rehechas"
+  },
+  "Comerte un escorpión": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-rehechas/A-comerte-un-escorpion-1.png",
+   "prompt": "Claude outputs/tanda-rehechas/A-comerte-un-escorpion-1.txt",
+   "tanda": "tanda-rehechas"
+  },
+  "Correr un 10K": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-rehechas/A-correr-un-10k-1.png",
+   "prompt": "Claude outputs/tanda-rehechas/A-correr-un-10k-1.txt",
+   "tanda": "tanda-rehechas"
+  },
+  "Correr una media maratón": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-correr-una-media-maraton-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-correr-una-media-maraton-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Correr un maratón": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-correr-un-maraton-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-correr-un-maraton-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Dar una charla ante más de cien personas": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-dar-una-charla-ante-mas-de-cien-personas-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-dar-una-charla-ante-mas-de-cien-personas-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Doctorarte": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-rehechas-2/A-doctorarte-1.png",
+   "prompt": "Claude outputs/tanda-rehechas-2/A-doctorarte-1.txt",
+   "tanda": "tanda-rehechas-2"
+  },
+  "Donar médula": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-donar-medula-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-donar-medula-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Dormir una noche en un refugio de montaña": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-dormir-una-noche-en-un-refugio-de-montana-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-dormir-una-noche-en-un-refugio-de-montana-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Dormir en una cabaña sin electricidad": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-dormir-en-una-cabana-sin-electricidad-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-dormir-en-una-cabana-sin-electricidad-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Hacer cumbre en un cuatromil": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-hacer-cumbre-en-un-cuatromil-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-hacer-cumbre-en-un-cuatromil-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Hacer un voluntariado en el extranjero": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-rehechas-2/A-hacer-un-voluntariado-en-el-extranjero-1.png",
+   "prompt": "Claude outputs/tanda-rehechas-2/A-hacer-un-voluntariado-en-el-extranjero-1.txt",
+   "tanda": "tanda-rehechas-2"
+  },
+  "Hacer cumbre en un dosmil": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-hacer-cumbre-en-un-dosmil-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-hacer-cumbre-en-un-dosmil-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Hacer una cata de whisky en una destilería": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-whisky/A-hacer-una-cata-de-whisky-en-una-destileria-1.png",
+   "prompt": "Claude outputs/tanda-whisky/A-hacer-una-cata-de-whisky-en-una-destileria-1.txt",
+   "tanda": "tanda-whisky"
+  },
+  "Hacer una travesía de varios días en montaña": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-hacer-una-travesia-de-varios-dias-en-monta-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-hacer-una-travesia-de-varios-dias-en-monta-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Hacer una ruta en moto de varios días": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-hacer-una-ruta-en-moto-de-varios-dias-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-hacer-una-ruta-en-moto-de-varios-dias-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Hacer una vía ferrata": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-hacer-una-via-ferrata-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-hacer-una-via-ferrata-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Montar tu propia empresa": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-montar-tu-propia-empresa-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-montar-tu-propia-empresa-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Hacerte un tatuaje": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-hacerte-un-tatuaje-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-hacerte-un-tatuaje-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Mudarte a otro continente": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-mudarte-a-otro-continente-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-mudarte-a-otro-continente-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Pilotar una avioneta": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-pilotar-una-avioneta-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-pilotar-una-avioneta-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Pilotar un kart": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-pilotar-un-kart-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-pilotar-un-kart-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Practicar patinaje sobre hielo": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-practicar-patinaje-sobre-hielo-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-practicar-patinaje-sobre-hielo-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Practicar esquí": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-practicar-esqui-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-practicar-esqui-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Practicar snowboard": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-practicar-snowboard-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-practicar-snowboard-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Practicar vela": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-practicar-vela-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-practicar-vela-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Probar el cuy": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-rehechas/A-probar-el-cuy-1.png",
+   "prompt": "Claude outputs/tanda-rehechas/A-probar-el-cuy-1.txt",
+   "tanda": "tanda-rehechas"
+  },
+  "Probar el fugu": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-rehechas/A-probar-el-fugu-1.png",
+   "prompt": "Claude outputs/tanda-rehechas/A-probar-el-fugu-1.txt",
+   "tanda": "tanda-rehechas"
+  },
+  "Probar el huevo de cien años": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-rehechas/A-probar-el-huevo-de-cien-anos-1.png",
+   "prompt": "Claude outputs/tanda-rehechas/A-probar-el-huevo-de-cien-anos-1.txt",
+   "tanda": "tanda-rehechas"
+  },
+  "Probar el pulpo vivo": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-rehechas-2/A-probar-el-pulpo-vivo-1.png",
+   "prompt": "Claude outputs/tanda-rehechas-2/A-probar-el-pulpo-vivo-1.txt",
+   "tanda": "tanda-rehechas-2"
+  },
+  "Probar las hormigas culonas": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-rehechas/A-probar-las-hormigas-culonas-1.png",
+   "prompt": "Claude outputs/tanda-rehechas/A-probar-las-hormigas-culonas-1.txt",
+   "tanda": "tanda-rehechas"
+  },
+  "Probar los saltamontes fritos": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-rehechas/A-probar-los-saltamontes-fritos-1.png",
+   "prompt": "Claude outputs/tanda-rehechas/A-probar-los-saltamontes-fritos-1.txt",
+   "tanda": "tanda-rehechas"
+  },
+  "Publicar un libro": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-publicar-un-libro-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-publicar-un-libro-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Sacarte el carnet de moto": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-sacarte-el-carnet-de-moto-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-sacarte-el-carnet-de-moto-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Sacarte el cinturón negro": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-sacarte-el-cinturon-negro-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-sacarte-el-cinturon-negro-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Sacarte el título de patrón de embarcaciones": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-sacarte-el-titulo-de-patron-de-embarcacion-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-sacarte-el-titulo-de-patron-de-embarcacion-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Sacarte la licencia de piloto": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-sacarte-la-licencia-de-piloto-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-sacarte-la-licencia-de-piloto-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Saltar en paracaídas": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-saltar-en-paracaidas-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-saltar-en-paracaidas-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Saltar en puenting": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-saltar-en-puenting-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-saltar-en-puenting-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Subir un puerto de primera categoría en bici": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-subir-un-puerto-de-primera-categoria-en-bi-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-subir-un-puerto-de-primera-categoria-en-bi-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Terminar un máster": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-terminar-un-master-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-terminar-un-master-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Tocar un instrumento delante de público": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-tocar-un-instrumento-delante-de-publico-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-tocar-un-instrumento-delante-de-publico-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Ver un eclipse solar total": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-rehechas-2/A-ver-un-eclipse-solar-total-1.png",
+   "prompt": "Claude outputs/tanda-rehechas-2/A-ver-un-eclipse-solar-total-1.txt",
+   "tanda": "tanda-rehechas-2"
+  },
+  "Ver una velada de boxeo por un título mundial": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-ver-una-velada-de-boxeo-por-un-titulo-mund-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-ver-una-velada-de-boxeo-por-un-titulo-mund-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Vivir un año en otro país": {
+   "fuente": "ia",
+   "aprobado": "2026-10-09",
+   "fichero": "Claude outputs/tanda-sin-sitio/A-vivir-un-ano-en-otro-pais-1.png",
+   "prompt": "Claude outputs/tanda-sin-sitio/A-vivir-un-ano-en-otro-pais-1.txt",
+   "tanda": "tanda-sin-sitio"
+  },
+  "Bajar a la montaña de sal de Cardona": {
+   "fuente": "commons",
+   "aprobado": "2026-10-09",
+   "fichero_commons": "Muntanya de Sal de Cardona, entrada a la mina.JPG",
+   "original": "https://upload.wikimedia.org/wikipedia/commons/f/fd/Muntanya_de_Sal_de_Cardona%2C_entrada_a_la_mina.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "autor": "DagafeSQV",
+   "licencia": "CC BY-SA 3.0",
+   "pagina": "https://commons.wikimedia.org/wiki/File:Muntanya_de_Sal_de_Cardona,_entrada_a_la_mina.JPG",
+   "candidata": 3
+  },
+  "Bajar al cráter del volcán Santa Margarida": {
+   "fuente": "commons",
+   "aprobado": "2026-10-09",
+   "fichero_commons": "Volcà_de_Santa_Margarida.jpg",
+   "original": "https://upload.wikimedia.org/wikipedia/commons/c/c0/Volc%C3%A0_de_Santa_Margarida.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "autor": "Carquinyol from Badalona, Catalunya",
+   "licencia": "CC BY-SA 2.0",
+   "pagina": "https://commons.wikimedia.org/wiki/File:Volc%C3%A0_de_Santa_Margarida.jpg",
+   "candidata": 2
+  },
+  "Bañarte en Bondi Beach": {
+   "fuente": "commons",
+   "aprobado": "2026-10-09",
+   "fichero_commons": "(1)Bondi Beach005.jpg",
+   "original": "https://upload.wikimedia.org/wikipedia/commons/c/c3/%281%29Bondi_Beach005.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "autor": "Sardaka",
+   "licencia": "CC BY-SA 4.0",
+   "pagina": "https://commons.wikimedia.org/wiki/File:(1)Bondi_Beach005.jpg",
+   "candidata": 3
+  },
+  "Bañarte en Cala Estreta": {
+   "fuente": "commons",
+   "aprobado": "2026-10-09",
+   "fichero_commons": "Geology of Cala Estreta, Artà, Mallorca 06.jpg",
+   "original": "https://upload.wikimedia.org/wikipedia/commons/4/44/Geology_of_Cala_Estreta%2C_Art%C3%A0%2C_Mallorca_06.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "autor": "Graeme Churchard",
+   "licencia": "CC BY 2.0",
+   "pagina": "https://commons.wikimedia.org/wiki/File:Geology_of_Cala_Estreta,_Art%C3%A0,_Mallorca_06.jpg",
+   "candidata": 4
+  },
+  "Bañarte en los Baños Széchenyi": {
+   "fuente": "commons",
+   "aprobado": "2026-10-09",
+   "fichero_commons": "Széchenyi Thermal Bath.jpg",
+   "original": "https://upload.wikimedia.org/wikipedia/commons/9/90/Sz%C3%A9chenyi_Thermal_Bath.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "autor": "miketnorton",
+   "licencia": "CC BY 2.0",
+   "pagina": "https://commons.wikimedia.org/wiki/File:Sz%C3%A9chenyi_Thermal_Bath.jpg",
+   "candidata": 3
+  },
+  "Bañarte en Santa Monica": {
+   "fuente": "commons",
+   "aprobado": "2026-10-09",
+   "fichero_commons": "Santa Monica Pier (June 2026).jpg",
+   "original": "https://upload.wikimedia.org/wikipedia/commons/0/08/Santa_Monica_Pier_%28June_2026%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "autor": "Busition",
+   "licencia": "CC BY 4.0",
+   "pagina": "https://commons.wikimedia.org/wiki/File:Santa_Monica_Pier_(June_2026).jpg",
+   "candidata": 3
+  },
+  "Bañarte en South Beach": {
+   "fuente": "commons",
+   "aprobado": "2026-10-09",
+   "fichero_commons": "Miamimetroarea.jpg",
+   "original": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Miamimetroarea.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "autor": "Miamiboyz (talk)",
+   "licencia": "Public domain",
+   "pagina": "https://commons.wikimedia.org/wiki/File:Miamimetroarea.jpg",
+   "candidata": 2
+  },
+  "Cruzar el cruce de Shibuya": {
+   "fuente": "commons",
+   "aprobado": "2026-10-09",
+   "fichero_commons": "Tokyo_Shibuya_Scramble_Crossing_2018-10-09.jpg",
+   "original": "https://upload.wikimedia.org/wikipedia/commons/c/c5/Tokyo_Shibuya_Scramble_Crossing_2018-10-09.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "autor": "Benh LIEU SONG (Flickr)",
+   "licencia": "CC BY-SA 2.0",
+   "pagina": "https://commons.wikimedia.org/wiki/File:Tokyo_Shibuya_Scramble_Crossing_2018-10-09.jpg",
+   "candidata": 2
+  },
+  "Cruzar el pantano de Sau cuando baja el agua": {
+   "fuente": "commons",
+   "aprobado": "2026-10-09",
+   "fichero_commons": "SantRomaSau_IPA-24833_0759.jpg",
+   "original": "https://upload.wikimedia.org/wikipedia/commons/0/02/SantRomaSau_IPA-24833_0759.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "autor": "Amadalvarez",
+   "licencia": "CC BY-SA 3.0",
+   "pagina": "https://commons.wikimedia.org/wiki/File:SantRomaSau_IPA-24833_0759.jpg",
+   "candidata": 1
+  },
+  "Cruzar el paso de cebra de Abbey Road": {
+   "fuente": "commons",
+   "aprobado": "2026-10-09",
+   "fichero_commons": "Abbey_Road_London.JPG",
+   "original": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Abbey_Road_London.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "autor": "WillMcC at English Wikipedia",
+   "licencia": "CC BY-SA 3.0",
+   "pagina": "https://commons.wikimedia.org/wiki/File:Abbey_Road_London.JPG",
+   "candidata": 1
+  },
+  "Cruzar el puente colgante de Capilano": {
+   "fuente": "commons",
+   "aprobado": "2026-10-09",
+   "fichero_commons": "Capilano_Suspension_Bridge,_Vancouver,_Canada_(July_2016)_1.jpg",
+   "original": "https://upload.wikimedia.org/wikipedia/commons/6/64/Capilano_Suspension_Bridge%2C_Vancouver%2C_Canada_%28July_2016%29_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "autor": "Markus Säynevirta",
+   "licencia": "CC BY-SA 4.0",
+   "pagina": "https://commons.wikimedia.org/wiki/File:Capilano_Suspension_Bridge,_Vancouver,_Canada_(July_2016)_1.jpg",
+   "candidata": 1
+  },
+  "Cruzar el puente de Brooklyn": {
+   "fuente": "commons",
+   "aprobado": "2026-10-09",
+   "fichero_commons": "LOC_Brooklyn_Bridge_and_East_River_7.png",
+   "original": "https://upload.wikimedia.org/wikipedia/commons/3/31/LOC_Brooklyn_Bridge_and_East_River_7.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "autor": "Jet Lowe",
+   "licencia": "Public domain",
+   "pagina": "https://commons.wikimedia.org/wiki/File:LOC_Brooklyn_Bridge_and_East_River_7.png",
+   "candidata": 1
+  },
+  "Cruzar el Puente de las Cadenas": {
+   "fuente": "commons",
+   "aprobado": "2026-10-09",
+   "fichero_commons": "Lánchíd_(17._számú_műemlék)_23.jpg",
+   "original": "https://upload.wikimedia.org/wikipedia/commons/5/5b/L%C3%A1nch%C3%ADd_%2817._sz%C3%A1m%C3%BA_m%C5%B1eml%C3%A9k%29_23.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "autor": "hunszabi",
+   "licencia": "CC BY-SA 2.5 hu",
+   "pagina": "https://commons.wikimedia.org/wiki/File:L%C3%A1nch%C3%ADd_(17._sz%C3%A1m%C3%BA_m%C5%B1eml%C3%A9k)_23.jpg",
+   "candidata": 1
+  },
+  "Hacer el Camino de Santiago": {
+   "fuente": "commons",
+   "aprobado": "2026-10-09",
+   "fichero_commons": "Camino de Santiago trail in Esteribar, Navarre, Spain.jpg",
+   "original": "https://upload.wikimedia.org/wikipedia/commons/5/54/Camino_de_Santiago_trail_in_Esteribar%2C_Navarre%2C_Spain.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "autor": "Hayden Soloviev",
+   "licencia": "CC BY 4.0",
+   "pagina": "https://commons.wikimedia.org/wiki/File:Camino_de_Santiago_trail_in_Esteribar,_Navarre,_Spain.jpg",
+   "candidata": 1
+  },
+  "Hacer la ferrata de Baumes Corcades": {
+   "fuente": "commons",
+   "aprobado": "2026-10-09",
+   "fichero_commons": "Vía_ferrata_Olmo-Urquiza.jpg",
+   "original": "https://upload.wikimedia.org/wikipedia/commons/c/c5/V%C3%ADa_ferrata_Olmo-Urquiza.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "autor": "Vrakob at Spanish Wikipedia",
+   "licencia": "CC BY-SA 3.0",
+   "pagina": "https://commons.wikimedia.org/wiki/File:V%C3%ADa_ferrata_Olmo-Urquiza.jpg",
+   "candidata": 1
+  }
+ }
+}
