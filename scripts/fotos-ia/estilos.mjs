@@ -119,8 +119,28 @@ export const CALIDAD = 'medium'
 // perfil bien iluminadas en karaoke, empresa y maratón. El modelo obedecía la
 // prohibición pero no tenía ningún encuadre que poner en su lugar.
 //
-// Así que ya no se prohíbe una cara: se PIDE un encuadre concreto, de estos
-// cuatro y ninguno más. Cada gooal lleva el suyo escrito.
+// Así que ya no se prohíbe una cara: se PIDE un encuadre concreto, y cada gooal
+// lleva el suyo.
+//
+// ══ LA REGLA DE FONDO, Y ES LA RAZÓN DE TODO LO DEMÁS ═════
+//
+// La pregunta estaba mal planteada. Era «cómo enseño a una persona sin
+// enseñarle la cara», y de ahí salieron cinco encuadres que son cinco maneras
+// de esconder una cara. La pregunta correcta es otra:
+//
+//     Si el gooal se puede contar SIN una persona,
+//     se cuenta SIN una persona.
+//
+// Y no por variedad, que sería un motivo estético. Es por lo que la app es:
+// **una lista de deseos trata de lo que va a hacer QUIEN MIRA.** Un sitio vacío
+// le invita a entrar; la espalda de un desconocido ya le está ocupando el
+// sitio. La foto tiene que dejarle hueco.
+//
+// Lo que esto corrigió, medido: 'espaldas' era el valor por defecto de deporte,
+// naturaleza y viajes —las tres categorías más grandes— Y ADEMÁS el último
+// recurso cuando nada encajaba. Dos caminos distintos al mismo sitio, y por eso
+// medio catálogo iba a ser la misma foto. Esos tres valores por defecto ya no
+// existen.
 const ENCUADRES = {
   espaldas: 'La persona está DE ESPALDAS a la cámara, se le ve la nuca y los hombros, nunca la cara.',
   hombros: 'El encuadre está RECORTADO POR LOS HOMBROS: se ven las manos, los brazos y el torso, y la cabeza queda fuera del encuadre por arriba.',
@@ -132,7 +152,34 @@ const ENCUADRES = {
   plato: 'Encuadre cenital sobre la mesa: se ven el plato y las manos de quien va a comer, y NADIE MÁS — ni cabeza, ni cara, ni torso, ni boca. La cámara mira hacia abajo.',
   contraluz: 'La persona está A CONTRALUZ y sale como una SILUETA oscura y limpia contra la luz: no se le distingue ni un rasgo de la cara.',
   casco: 'La persona lleva CASCO Y GAFAS que le tapan la cara por completo, y además está en pleno movimiento.',
+
+  // ── Los seis SIN persona, que son los que hay que preferir ──
+  objeto: 'En la foto NO HAY NINGUNA PERSONA. Se ve solo el objeto que cuenta el gooal, en su sitio real, como si quien lo usa acabara de irse.',
+  detalle: 'Primerísimo plano de UNA sola textura o UNA sola pieza, tan cerca que el resto de la escena no se ve. NO HAY NINGUNA PERSONA.',
+  lugar_vacio: 'El lugar donde pasa el gooal, COMPLETAMENTE VACÍO de gente, con luz de primera hora. NO HAY NINGUNA PERSONA, ni de lejos.',
+  primera_persona: 'La cámara está DONDE ESTARÍAN LOS OJOS de quien lo vive: se ve lo que ve. De su cuerpo no se ve nada, o como mucho las manos en primer plano por el borde de abajo.',
+  manos: 'Se ven ÚNICAMENTE LAS MANOS haciendo la acción, desde cerca. Ni cara, ni cabeza, ni torso, ni hombros.',
+  silueta_lejana: 'Una figura humana DIMINUTA dentro de un paisaje grande: ocupa menos de una décima del alto de la foto y no se le distingue ningún rasgo. Está para dar escala, no es el sujeto.',
 }
+
+/**
+ * QUÉ ENCUADRES LLEVAN PERSONA. No es documentación: lo usa el prompt.
+ *
+ * Seis de los once NO tienen a nadie. Si la rotación de quién sale («una mujer
+ * de unos 30») se le cuela al prompt de una pista de atletismo vacía, **va a
+ * aparecer una mujer en la pista y no va a dar ningún error**: es exactamente
+ * lo que pasó con 'comer' y 'hombros', una regla que choca con el sujeto no
+ * falla, se incumple en silencio.
+ *
+ * Tres grupos, porque hay un término medio:
+ *
+ *   CUERPO     se ve una persona entera o media → lleva la frase completa.
+ *   SOLO_MANOS se ven manos y nada más → la rotación describe LAS MANOS, que
+ *              si no vuelven a ser siempre las mismas manos.
+ *   NADIE      no hay nadie → no se nombra a ninguna persona, ni de refilón.
+ */
+const CUERPO = new Set(['espaldas', 'hombros', 'contraluz', 'casco', 'silueta_lejana'])
+const SOLO_MANOS = new Set(['manos', 'plato'])
 
 // El encuadre de cada gooal. Lo elijo yo mirando qué tiene sentido en esa
 // escena: a un esquiador se le pone casco porque lo lleva de verdad, y a quien
@@ -172,15 +219,75 @@ const ENCUADRE_DE = {
   'Sacarte el cinturón negro': 'espaldas',
 }
 
-// Y para los 500 y pico que no tienen el suyo escrito, el que mejor le va a su
-// categoría. Es un valor por defecto, no una regla: el mapa de arriba manda.
+/**
+ * El encuadre que le toca a una categoría CUANDO YA SE HA DECIDIDO que el gooal
+ * necesita un cuerpo humano (el paso e del orden de abajo).
+ *
+ * **Deporte, naturaleza y viajes ya NO están aquí.** Tenían 'espaldas' y eran
+ * las tres categorías más grandes: 421 gooals de 541 entraban por aquí a la
+ * misma foto. Un valor por defecto que cubre el 78 % del catálogo no es un
+ * valor por defecto, es la decisión.
+ */
 const ENCUADRE_POR_CATEGORIA = {
-  deporte: 'espaldas',
   gastronomia: 'plato',
-  naturaleza: 'espaldas',
-  viajes: 'espaldas',
   eventos: 'contraluz',
   vida: 'hombros',
+}
+
+// ── Las palabras con las que se reconoce cada caso ─────────
+//
+// Esto NO decide: propone. En este repo eso está escrito y pagado — una regla
+// sobre títulos acierta la mayoría y falla de maneras raras, así que lo que
+// sale de aquí es un reparto que hay que MIRAR, y lo que se mira y se corrige
+// se escribe a mano arriba, en ENCUADRE_DE, que manda sobre todo esto.
+
+/** a) Hay un OBJETO que ES el gooal: el diploma, el sello, el dorsal. */
+const DE_OBJETO = [
+  /^sacarte? (el|la|un|una) /i, /^sacarse /i, /^obtener /i, /^conseguir (el|la|un|una) (título|carné|carnet|diploma|medalla)/i,
+  /^publicar /i, /^doctorarte$/i, /^terminar (una carrera universitaria|un máster|un doctorado)/i,
+  /\b(carné|carnet|diploma|título|certificado|medalla|trofeo|pasaporte|sello)\b/i,
+]
+
+/** b) El gooal es ESTAR en un sitio, y el sitio es un TIPO, no un nombre. */
+const DE_LUGAR = [
+  /^(visitar|entrar en|pasear por|recorrer|dormir en|alojarte en|pasar (una noche|un día) en|bañarte en|subir a)\b/i,
+  /\b(faro|castillo|mirador|monasterio|catedral|bodega|mercado|balneario|termas|refugio|cabaña|mezquita|templo|ruinas|cueva|palacio|museo|jardín botánico|invernadero)\b/i,
+]
+
+/** c) El gooal es VER algo: lo que importa es lo que ven sus ojos. */
+const DE_VER = [
+  /^(ver|contemplar|mirar|presenciar|asistir a|observar)\b/i,
+  /\b(amanecer|atardecer|puesta de sol|aurora boreal|auroras|eclipse|vía láctea|estrellas|lluvia de estrellas)\b/i,
+]
+
+/** d) Se hace con las manos y se reconoce por ellas. */
+const DE_MANOS = [
+  /^(cocinar|amasar|hacer pan|tallar|moldear|pintar|dibujar|escribir|tejer|coser|plantar|sembrar|cultivar|montar|reparar|arreglar)\b/i,
+  /\b(cerámica|alfarería|torno|caligrafía|origami|sushi|paella a leña|pasta fresca|cóctel)\b/i,
+]
+
+/**
+ * e) Necesita un cuerpo para entenderse, y además la escala del paisaje es
+ * parte del gooal: una figura diminuta dentro de algo grande.
+ */
+const DE_SILUETA = [
+  /\b(cumbre|cima|travesía|trek|camino de|ruta de|duna|desierto|glaciar|cañón|valle|acantilado)\b/i,
+]
+
+/** El orden a→f, literal. La primera que se cumple, gana. */
+function clasificarEncuadre(gooal) {
+  const t = gooal.titulo
+  const alguna = lista => lista.some(r => r.test(t))
+
+  if (alguna(DE_OBJETO)) return 'objeto'          // a
+  if (alguna(DE_LUGAR)) return 'lugar_vacio'      // b
+  if (alguna(DE_VER)) return 'primera_persona'    // c
+  if (alguna(DE_MANOS)) return 'manos'            // d
+  // e) hace falta un cuerpo: el que encaje con lo que es ese gooal
+  if (alguna(DE_SILUETA)) return 'silueta_lejana'
+  const porCategoria = ENCUADRE_POR_CATEGORIA[gooal.categoria]
+  if (porCategoria) return porCategoria
+  return 'espaldas'                                // f, y solo aquí
 }
 
 // ── QUIÉN SALE EN LA FOTO, por turno y no al azar ──────────
@@ -476,14 +583,27 @@ export function construirPrompt(gooal, clave, indice = 0) {
 
   const partes = []
 
-  // Quién sale, por turno. El índice es la posición del gooal en la lista que
-  // se está generando, ordenada por título: así el reparto es el mismo cada vez
-  // que se lance y no depende de la suerte del modelo.
-  const persona = PERSONAS[indice % PERSONAS.length]
-  partes.push('Quien aparece en la foto es ' + persona +
-    (gooal.categoria === 'deporte' ? '.' : ', ' + CUERPO_CORRIENTE))
+  const encuadre = encuadreDe(gooal)
 
-  const encuadre = ENCUADRE_DE[gooal.titulo] ?? ENCUADRE_POR_CATEGORIA[gooal.categoria] ?? 'espaldas'
+  // ── QUIÉN SALE, Y SOLO SI SALE ALGUIEN ──────────────────
+  //
+  // Por turno y no al azar: el índice es la posición del gooal en la lista
+  // ordenada por título, así el reparto es exacto y no depende de la suerte.
+  //
+  // Y SOLO en los encuadres que llevan a alguien. Seis de los once no tienen
+  // persona, y meterle «una mujer de unos 30» al prompt de una pista de
+  // atletismo vacía **pondría una mujer en la pista sin dar ningún error**:
+  // una instrucción que choca con el sujeto no falla, se incumple en silencio.
+  // Es el mismo fallo que enseñó caras comiendo.
+  const persona = PERSONAS[indice % PERSONAS.length]
+  if (CUERPO.has(encuadre)) {
+    partes.push('Quien aparece en la foto es ' + persona +
+      (gooal.categoria === 'deporte' ? '.' : ', ' + CUERPO_CORRIENTE))
+  } else if (SOLO_MANOS.has(encuadre)) {
+    // Se ven manos y nada más, pero son las manos de alguien: sin esto vuelven
+    // a ser siempre las mismas manos, que es el problema de origen.
+    partes.push('Las manos que se ven son de ' + persona + '.')
+  }
 
   // ── EL ENCUADRE CERRADO, para los que llevan un sitio reconocible ──
   //
@@ -507,8 +627,15 @@ export function construirPrompt(gooal, clave, indice = 0) {
     // Con el encuadre del plato NO se pide ver a nadie: pedir las dos cosas es
     // el mismo choque que enseñaba caras comiendo. Una regla que contradice al
     // sujeto no da error, se incumple en silencio.
-    partes.push(encuadre === 'plato'
-      ? 'EL SUJETO ES LA COMIDA en sí, en el plato, tal como se sirve.'
+    // Pedir «que se vea a alguien haciéndolo» con un encuadre SIN persona es
+    // el mismo choque de siempre, así que cada grupo pide lo suyo.
+    partes.push(
+      encuadre === 'plato' ? 'EL SUJETO ES LA COMIDA en sí, en el plato, tal como se sirve.'
+      : encuadre === 'objeto' ? 'EL SUJETO ES EL OBJETO en sí, y no hay nadie en la foto.'
+      : encuadre === 'detalle' ? 'EL SUJETO ES LA TEXTURA o la pieza, de muy cerca, y no hay nadie en la foto.'
+      : encuadre === 'lugar_vacio' ? 'EL SUJETO ES EL SITIO, vacío, esperando a que alguien llegue.'
+      : encuadre === 'primera_persona' ? 'EL SUJETO ES LO QUE SE VE desde los ojos de quien lo vive.'
+      : encuadre === 'manos' ? 'EL SUJETO ES EL GESTO DE LAS MANOS haciéndolo.'
       : 'EL SUJETO ES LA ACCIÓN, no el lugar ni el objeto: se tiene que ver a alguien haciéndolo.')
     // El lugar se nombra SOLO si no vamos a cerrar el encuadre. Pedir las dos
     // cosas —«que se note el entorno» y «que no se vea el lugar»— es el mismo
@@ -518,7 +645,9 @@ export function construirPrompt(gooal, clave, indice = 0) {
       const donde = [gooal.ciudad, gooal.pais].filter(Boolean).join(', ')
       partes.push(`Ocurre en ${donde}, y eso se nota en el entorno, pero el entorno es contexto y no el tema.`)
     }
-    partes.push(encuadre === 'plato' ? '' : (CONTEXTO_CATEGORIA[gooal.categoria] ?? ''))
+    // El contexto de categoría habla de «una persona dentro que da la medida» y
+    // cosas así: no se le pone a los encuadres que no llevan a nadie.
+    partes.push(CUERPO.has(encuadre) ? (CONTEXTO_CATEGORIA[gooal.categoria] ?? '') : '')
   }
 
   // EL ENCUADRE VA SIEMPRE.
@@ -554,8 +683,20 @@ export function construirPrompt(gooal, clave, indice = 0) {
 /** El encuadre que le toca a un gooal, para poder enseñarlo en la hoja. */
 export { momentoDe }
 
-export const encuadreDe = gooal =>
-  ENCUADRE_DE[gooal.titulo] ?? ENCUADRE_POR_CATEGORIA[gooal.categoria] ?? 'espaldas'
+/**
+ * El encuadre de un gooal. Dos escalones y nada más:
+ *
+ *   1. Lo que está escrito a mano para ESE gooal, que es una decisión tomada
+ *      mirándolo. Manda siempre.
+ *   2. El orden a→f, que propone.
+ *
+ * Ya no hay un tercer escalón por categoría: era el que mandaba el 78 % del
+ * catálogo a 'espaldas' sin que nadie hubiera mirado ni un título.
+ */
+export const encuadreDe = gooal => ENCUADRE_DE[gooal.titulo] ?? clasificarEncuadre(gooal)
+
+/** Para poder contar y repasar el reparto desde fuera. */
+export { ENCUADRES, CUERPO, SOLO_MANOS, ENCUADRE_DE, clasificarEncuadre }
 
 // Una pista corta por categoría: lo que esa categoría suele necesitar para que
 // la escena no salga genérica. No describe el gooal — eso lo hace el título.
