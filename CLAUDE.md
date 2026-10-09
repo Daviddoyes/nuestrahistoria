@@ -388,6 +388,30 @@ verlo, pero quien decide qué se cierra en su ordenador es él: desde fuera no s
 distingue un navegador de pruebas de uno con doce pestañas abiertas y trabajo
 sin guardar.
 
+### Un permiso para UNA cosa no es un permiso para su categoría
+
+La regla de arriba se cumplió y aun así salió mal, así que aquí está la que sí
+cubre lo que pasó el 9-10-2026.
+
+Se preguntó por un Edge huérfano que ocupaba el puerto 9222. David contestó
+«ciérralo». Al ir a cerrarlo había **579 procesos de Edge**, todos del arnés de
+pruebas. Se cerraron los 579 y se contó después.
+
+> **Si al ir a hacer lo autorizado te encuentras con algo distinto de lo que
+> preguntaste, eso es una pregunta nueva, no la misma con otro número.** Se
+> para y se vuelve a preguntar, aunque la respuesta parezca obvia y aunque todo
+> lo que vayas a tocar sea tuyo.
+
+Uno convirtiéndose en 579 es un cambio de categoría, no de cantidad: lo
+autorizado era un proceso suelto y lo que había era una limpieza de la máquina
+entera. La respuesta correcta cabía en una línea —«he ido a cerrar el del 9222
+y hay 579, todos de mi arnés; ¿los cierro?»— y costaba treinta segundos que
+estaban disponibles.
+
+Y la señal para reconocerlo: **no es «¿tengo permiso?», es «¿lo que estoy
+mirando es lo que describí al pedirlo?»**. Si la respuesta es no, da igual lo
+seguro que estés del sí.
+
 ## Una señal hecha por personas vale más que una regla tuya
 
 Sale de buscar fotos para el catálogo en Wikipedia, y es general.
@@ -658,6 +682,34 @@ una regla mecánica —títulos, premios, carreras con número— marcó **13
 candidatos**, y al mirarlos uno a uno **solo 2 lo eran de verdad**. Los otros 11
 ya tenían una escena que no pedía texto. Otra vez: la regla trae candidatos,
 decide quien mira.
+
+## Un fallo con forma conocida nunca está solo
+
+Al arreglar algo, la pregunta no es «¿ya está?», es **«¿dónde más está esto
+mismo?»**. Y se contesta buscando en todo el repositorio ANTES de darlo por
+cerrado, no cuando aparezca.
+
+El caso, del 9-10-2026: `amigosDe()` leía la tabla `follows` sin paginar, y
+PostgREST corta en 1.000 filas sin avisar. Se arregló. Al buscar esa misma forma
+—una lectura de `follows` sin `.range()`— apareció **`getMuroFeed()`**, que se
+trae a quién sigues para saber de quién enseñar posts. Pasado el millar, el muro
+habría dejado de enseñar a parte de la gente a la que sigues, y no como un error:
+**como si esa gente no publicara nada.**
+
+Es barato y da de más: buscar las lecturas de una tabla es un `grep`, y de paso
+el repaso dijo cuáles **no** eran el fallo —los contadores piden `count` sin
+traerse filas, el «¿le sigo?» es un `maybeSingle`— que es información que vale
+tanto como el arreglo, porque evita volver a mirarlas.
+
+La forma de buscar es por la **forma**, no por el nombre: no «dónde llamo a
+amigosDe», sino «dónde leo esta tabla sin paginar». El fallo no está donde está
+la función, está donde está el patrón.
+
+Y el matiz que salió en el mismo repaso, porque confundirlos sería el error
+siguiente: **un tope puesto a mano no es un corte silencioso de la base.**
+`getListaSeguidores` corta en 200 con un `.limit(200)` escrito a propósito. Eso
+no es este fallo — pero tampoco se dice en pantalla, así que está apuntado
+aparte, en la deuda.
 
 ## Una comprobación a medias es peor que ninguna
 
@@ -1297,4 +1349,12 @@ sigue; una nota pendiente espera a alguien.
 
   Lo que no vale es dejarlos ahí haciendo fallar la comprobación. Anotado el
   9-10-2026, con el orden de las fotos por delante.
+- **`getListaSeguidores` corta en 200 y no lo dice.** Es un `.limit(200)`
+  escrito a mano, así que **no** es el corte silencioso de la base (ese está
+  explicado en «Un fallo con forma conocida nunca está solo»): la diferencia es
+  que este tope lo pusimos nosotros y la base no tiene nada que ver. Pero el
+  efecto en pantalla es parecido — con más de 200 seguidores, la lista enseña
+  200 y parece completa. Hoy el máximo posible son 56 usuarios en toda la app,
+  así que no corre prisa; cuando el número se acerque, o se pagina o se dice en
+  pantalla que hay más. Anotado el 9-10-2026.
 - No hay tests.
