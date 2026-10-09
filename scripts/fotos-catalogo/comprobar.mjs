@@ -35,7 +35,7 @@ const s = createClient(url, clave, { auth: { persistSession: false } })
 const filas = []
 for (let d = 0; ; d += 1000) {
   const { data, error } = await s.from('gooals_v2')
-    .select('id, titulo, ciudad, pais, estado, imagen_url, foto_autor, foto_licencia, foto_origen')
+    .select('id, titulo, ciudad, pais, estado, imagen_url, foto_fuente, foto_autor, foto_licencia, foto_origen, foto_prompt')
     .order('id').range(d, d + 999)
   if (error) throw new Error(error.message)
   filas.push(...data)
@@ -53,12 +53,38 @@ console.log('  con imagen_url   :', conFoto.length)
 console.log('  con foto_autor   :', conAutor.length)
 console.log('  con foto_licencia:', conLicencia.length)
 console.log('  con foto_origen  :', conOrigen.length)
+ console.log('  de Commons       :', filas.filter(f => f.foto_fuente === 'commons').length)
+ console.log('  generadas con IA :', filas.filter(f => f.foto_fuente === 'ia').length)
+ console.log('  con foto y SIN fuente:', filas.filter(f => tiene(f.imagen_url) && !f.foto_fuente).length)
 
-// Las cuatro tienen que ir siempre juntas: una foto sin autor no se puede usar,
-// y un crédito sin foto es basura.
+// EL CRÉDITO DEPENDE DE LA FUENTE, y esta comprobación lo sabía mal.
+//
+// Hasta el 9-10-2026 aquí ponía «las cuatro tienen que ir siempre juntas», que
+// era verdad cuando todas las fotos venían de Commons. Desde que hay imágenes
+// generadas deja de serlo: una generada NO tiene autor ni licencia —escribir
+// «Generada con IA» en foto_autor sería llamar autor a lo que no lo es— y en
+// cambio necesita el prompt.
+//
+// Se cambia el mismo día que cambió la base, y no un rato después: una prueba
+// que afirma lo contrario de lo que ya es cierto pasa en rojo, hace perder una
+// tarde, y la siguiente vez ya no la mira nadie. Es la misma regla que está en
+// CLAUDE.md, en «Una razón escrita caduca».
+//
+// La verdad de esto vive en dos sitios más y los tres tienen que coincidir:
+// la restricción gooals_v2_foto_con_autor (supabase/fase3z.sql) y
+// src/lib/foto-credito.ts, que usan el panel y la API.
 const aMedias = filas.filter(f => {
-  const n = [f.imagen_url, f.foto_autor, f.foto_licencia, f.foto_origen].filter(tiene).length
-  return n > 0 && n < 4
+  if (!tiene(f.imagen_url)) {
+    // Sin foto no debería haber crédito suelto.
+    return tiene(f.foto_autor) || tiene(f.foto_licencia) || tiene(f.foto_prompt)
+  }
+  if (f.foto_fuente === 'commons') {
+    return !tiene(f.foto_autor) || !tiene(f.foto_licencia) || !tiene(f.foto_origen) || tiene(f.foto_prompt)
+  }
+  if (f.foto_fuente === 'ia') {
+    return !tiene(f.foto_prompt) || tiene(f.foto_autor) || tiene(f.foto_licencia)
+  }
+  return true   // con foto y sin fuente: eso no debería existir
 })
 console.log('\nfilas con las cuatro columnas a medias:', aMedias.length)
 for (const f of aMedias.slice(0, 20)) {
@@ -67,6 +93,8 @@ for (const f of aMedias.slice(0, 20)) {
     tiene(f.foto_autor) ? 'autor' : 'SIN autor',
     tiene(f.foto_licencia) ? 'licencia' : 'SIN licencia',
     tiene(f.foto_origen) ? 'origen' : 'SIN origen',
+    'fuente ' + (f.foto_fuente ?? '(ninguna)'),
+    tiene(f.foto_prompt) ? 'prompt' : 'SIN prompt',
   ].join(' · '))
 }
 

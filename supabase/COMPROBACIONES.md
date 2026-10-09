@@ -3,6 +3,40 @@
 Lo que se midió, cuándo, y el resultado. Está aquí porque un número dicho en una
 conversación se pierde, y luego nadie sabe si aquello llegó a comprobarse.
 
+## Las fotos del catálogo, desde fuera · 9-10-2026 · **509 de 509**
+
+El día que el catálogo pasó de 275 fotos a **507 gooals con foto**, de 541
+publicados.
+
+```bash
+node --env-file=.env.local scripts/fotos-catalogo/comprobar.mjs
+```
+
+| | |
+|---|---|
+| gooals con imagen | **509** (incluidas 2 filas retiradas que conservan la suya) |
+| de Wikimedia Commons | 387 |
+| generadas con IA | 122 |
+| con foto y **sin fuente** | **0** |
+| con el crédito a medias | **0** |
+| apuntando fuera de nuestro almacén | 0 |
+| **fotos que llegan, pedidas sin ninguna clave** | **509 de 509** |
+| reintentos que hicieron falta | **0** |
+| peso total | 94,2 MB · media 189 KB |
+
+El crédito se comprueba **según la fuente**, no «las cuatro columnas siempre»:
+de Commons exige autor, licencia y página; generada exige el prompt y prohíbe
+autor y licencia. La misma regla está en la base
+(`gooals_v2_foto_con_autor`, `supabase/fase3z.sql`) y en
+`src/lib/foto-credito.ts`, que usan el panel y la API. Los tres sitios tienen
+que decir lo mismo.
+
+> **Cero reintentos sobre una tanda del doble de tamaño.** El módulo
+> `scripts/lib/frenos.mjs` no tuvo que frenar ni una vez: las 509 peticiones
+> pasaron a la primera. Cuando el mismo guion pidió 277 el 8-10 hubo cuatro
+> frenos, así que el ritmo lento que se añadió aquel día es lo que sobra hoy y
+> no al revés — no se toca.
+
 ## Las dos cerraduras, desde fuera · 8-10-2026 · **23 de 23**
 
 Después de aplicar `supabase/fase3y.sql`, que echó la **segunda cerradura**: los

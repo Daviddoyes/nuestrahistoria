@@ -771,6 +771,36 @@ que no se repitan.
 Se va a repetir con las ferratas, las cimas, los GR y los mercados: cuando se
 añadan gooals a un grupo, se les añade su momento.
 
+## No deduzcas «esto ya está hecho» de un efecto que produce un paso posterior
+
+La más sutil de la semana, y por poco cuesta 70 MB de basura en el cubo.
+
+El guion que sube las fotos va en dos pasos separados a propósito: **(2)** subir
+al cubo, que es reversible, y **(3)** escribir en el catálogo, que toca lo que
+ve la gente. Y para poder pararse y seguir, antes de subir cada imagen miraba
+si ya estaba hecha… **mirando `imagen_url` de la fila**.
+
+Esa columna la escribe el paso 3.
+
+Así que entre el paso 2 y el 3 el guion **no tenía forma de saber lo que acababa
+de hacer**. Relanzarlo ahí en medio —que es exactamente lo que hice para
+reintentar la única que había fallado— habría vuelto a subir las 231, y con
+**nombre nuevo cada una**, porque el nombre no se reutiliza nunca y con razón:
+el cubo sirve con caché de un año. 70 MB duplicados, **sin que fallara nada**.
+
+> **Un proceso en varios pasos anota su progreso en el paso que lo produce, no
+> lo infiere de un efecto posterior.** Si para saber si hiciste A tienes que
+> mirar algo que escribe B, entonces entre A y B eres amnésico — y ese hueco
+> es justo donde se reanuda un proceso que se cortó.
+
+El arreglo: cada subida se anota en `scripts/fotos-definitivas.json` como
+`subida_como` **en cuanto ocurre**, no al final. Si se corta a la mitad, lo
+hecho queda escrito. La memoria de lo hecho vive donde vive la verdad.
+
+La señal para detectarlo en cualquier guion con pasos: **mira de dónde sale el
+«ya está hecho» de cada paso y comprueba que lo escribe ESE paso.** Si lo
+escribe otro, hay un hueco.
+
 ## No indexes por un campo que no es único
 
 El guion que sube las fotos construía un índice de todo el catálogo con
