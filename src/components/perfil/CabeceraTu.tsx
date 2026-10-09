@@ -16,7 +16,21 @@ type Props = {
   intereses: CategoriaGooal[]
   /** El día uno es el único botón de la pantalla, y lleva al buscador. */
   onBuscar: () => void
+  /** "Amigos" abre las dos listas: quién te sigue y a quién sigues. */
+  onAmigos: () => void
 }
+
+/**
+ * El día uno es no haber conseguido NADA todavía.
+ *
+ * Se mide por los gooals conseguidos y no por los puntos aunque hoy den lo
+ * mismo: los puntos son una consecuencia, y el día que haya puntos por otra
+ * cosa —una racha, invitar a alguien— seguiría siendo el día uno de verdad.
+ *
+ * Vive aquí y se exporta porque la pantalla entera cambia con esto, no solo la
+ * cabecera: abajo, en vez de la lista vacía, van gooals para empezar.
+ */
+export const esDiaUno = (conseguidos: number) => conseguidos === 0
 
 /**
  * La parte de arriba de TU perfil: el titular, el universo y las tres cifras.
@@ -37,12 +51,10 @@ type Props = {
  * @usuario, seguidores) sigue siendo la que hace falta.
  */
 export default function CabeceraTu({
-  usuario, conseguidos, pendientes, amigos, puntos, conteos, intereses, onBuscar,
+  usuario, conseguidos, pendientes, amigos, puntos, conteos, intereses, onBuscar, onAmigos,
 }: Props) {
   const progreso = progresoNivel(puntos)
-  // Los puntos solo salen de los gooals conseguidos, así que sin ninguno no hay
-  // nivel que contar: ese es el día uno, y no hace falta preguntarlo dos veces.
-  const diaUno = conseguidos === 0
+  const diaUno = esDiaUno(conseguidos)
   const sabemosAlgoDeEl = intereses.length > 0 && pendientes > 0
 
   const titular = !diaUno ? progreso.actual.nombre
@@ -101,39 +113,57 @@ export default function CabeceraTu({
         }}
       >
         {([
-          ['Conseguidos', conseguidos],
-          ['Pendientes', pendientes],
-          ['Amigos', amigos],
-        ] as const).map(([texto, valor], i) => (
-          <div
-            key={texto}
-            style={{
-              flex: 1, display: 'flex', flexDirection: 'column',
-              alignItems: 'center', justifyContent: 'center', gap: 3,
-              ...(i > 0 ? { borderLeft: `1px solid ${SUPERFICIE.linea}` } : {}),
-            }}
-          >
-            <span
-              className="fuente-titular"
-              style={{
-                fontSize: 20, fontWeight: PESO.fuerte, letterSpacing: '-.03em', lineHeight: 1,
-                // El día uno, los pendientes en verde para que se mire ahí... pero
-                // solo si hay alguno. Un cero en verde llama la atención hacia
-                // algo que no existe, y eso se vio en la captura de la cuenta
-                // sin intereses: tres ceros y uno de ellos iluminado.
-                color: diaUno && texto === 'Pendientes' && valor > 0 ? MARCA.aurora : MARCA.sand,
-              }}
-            >
-              {valor}
-            </span>
-            <span style={{
-              fontSize: TEXTO.micro, textTransform: 'uppercase', letterSpacing: '.075em',
-              textIndent: '.075em', color: MARCA.stone, fontWeight: 500,
-            }}>
-              {texto}
-            </span>
-          </div>
-        ))}
+          ['Conseguidos', conseguidos, null],
+          ['Pendientes', pendientes, null],
+          // Amigos se toca y abre las dos listas. El número es uno —amigo es
+          // seguirse los dos— pero detrás hay dos listas, y si esta puerta no
+          // estuviera no habría ninguna otra forma de llegar a ellas.
+          ['Amigos', amigos, onAmigos],
+        ] as const).map(([texto, valor, alPulsar], i) => {
+          const dentro = (
+            <>
+              <span
+                className="fuente-titular"
+                style={{
+                  fontSize: 20, fontWeight: PESO.fuerte, letterSpacing: '-.03em', lineHeight: 1,
+                  // El día uno, los pendientes en verde para que se mire ahí... pero
+                  // solo si hay alguno. Un cero en verde llama la atención hacia
+                  // algo que no existe, y eso se vio en la captura de la cuenta
+                  // sin intereses: tres ceros y uno de ellos iluminado.
+                  color: diaUno && texto === 'Pendientes' && valor > 0 ? MARCA.aurora : MARCA.sand,
+                }}
+              >
+                {valor}
+              </span>
+              <span style={{
+                fontSize: TEXTO.micro, textTransform: 'uppercase', letterSpacing: '.075em',
+                textIndent: '.075em', color: MARCA.stone, fontWeight: 500,
+              }}>
+                {texto}
+              </span>
+            </>
+          )
+
+          const estilo: React.CSSProperties = {
+            flex: 1, display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center', gap: 3,
+            ...(i > 0 ? { borderLeft: `1px solid ${SUPERFICIE.linea}` } : {}),
+          }
+
+          return alPulsar
+            ? (
+              <button
+                key={texto}
+                onClick={alPulsar}
+                aria-label="Ver seguidores y seguidos"
+                className="transition-colors active:bg-[#1C201E]"
+                style={estilo}
+              >
+                {dentro}
+              </button>
+            )
+            : <div key={texto} style={estilo}>{dentro}</div>
+        })}
       </div>
 
       {/* ── El día uno, lo que de verdad desatasca ───────── */}

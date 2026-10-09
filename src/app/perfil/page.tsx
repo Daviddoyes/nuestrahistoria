@@ -6,6 +6,7 @@ import { ArrowLeft, Search, Settings } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import {
   getPerfil, seguirUsuario, dejarDeSeguir, getGooalDeLista, getMisEstadosGooals,
+  getSugerencias, getGooalV2,
 } from '@/lib/actions'
 import { progresoNivel } from '@/lib/niveles'
 import AppShell, { PantallaCargando, EstadoVacio } from '@/components/AppShell'
@@ -17,7 +18,8 @@ import GooalV2DetailModal from '@/components/GooalV2DetailModal'
 import CelebracionPuntos from '@/components/CelebracionPuntos'
 import type { ResultadoCompletado } from '@/components/AnadirFotoModal'
 import CabeceraPerfil from '@/components/perfil/CabeceraPerfil'
-import CabeceraTu from '@/components/perfil/CabeceraTu'
+import CabeceraTu, { esDiaUno } from '@/components/perfil/CabeceraTu'
+import ParaEmpezar from '@/components/perfil/ParaEmpezar'
 import TarjetaCifras from '@/components/perfil/TarjetaCifras'
 import PastillasCategorias from '@/components/perfil/PastillasCategorias'
 import PestanasPerfil, { type PestanaPerfil } from '@/components/perfil/PestanasPerfil'
@@ -25,7 +27,7 @@ import ListaPerfil from '@/components/perfil/ListaPerfil'
 import FiltroEnComun from '@/components/perfil/FiltroEnComun'
 import { ProveedorFotosPrivadas } from '@/components/FotosPrivadas'
 import AjustesSheet from '@/components/perfil/AjustesSheet'
-import type { EstadoUserGooal, GooalV2, LineaPerfil, PerfilCompleto, VisibilidadFoto } from '@/types/gooals'
+import type { EstadoUserGooal, GooalResumen, GooalV2, LineaPerfil, PerfilCompleto, VisibilidadFoto } from '@/types/gooals'
 
 export default function PerfilPage() {
   // useSearchParams obliga a un límite de Suspense para poder prerenderizar.
@@ -66,6 +68,12 @@ function PerfilContenido() {
   const [ficha, setFicha] = useState<FichaAbierta | null>(null)
   const [abriendo, setAbriendo] = useState(false)
   const [celebracion, setCelebracion] = useState<ResultadoCompletado | null>(null)
+  /**
+   * Los dos gooals del día uno. Se piden APARTE y después de pintar el perfil:
+   * solo hacen falta cuando no has conseguido nada, y hacer esperar a la
+   * pantalla entera por ellos sería pagarlos también los demás días.
+   */
+  const [paraEmpezar, setParaEmpezar] = useState<GooalResumen[]>([])
 
   /**
    * MIS estados, que no son los de la persona del perfil. La ficha ofrece
@@ -106,6 +114,42 @@ function PerfilContenido() {
   }, [username, router])
 
   useEffect(() => { cargar() }, [cargar])
+
+  const esMiDiaUno = Boolean(perfil?.esPropio) && esDiaUno(perfil?.conseguidos.length ?? 0)
+
+  useEffect(() => {
+    // Sin vaciar al salir: esto solo se pinta el día uno, así que lo que quede
+    // guardado no lo ve nadie, y tocar el estado aquí dispara una cascada.
+    if (!esMiDiaUno) return
+    let vivo = true
+    getSugerencias()
+      .then(s => {
+        if (!vivo) return
+        // Con foto primero: una tarjeta de 104 px es sobre todo una imagen, y
+        // dos rectángulos de color seguidos no invitan a nada. Si no hubiera
+        // dos con foto, se completan con las que haya.
+        const conFoto = s.gooals.filter(g => g.imagen_url)
+        const resto = s.gooals.filter(g => !g.imagen_url)
+        setParaEmpezar([...conFoto, ...resto].slice(0, 2))
+      })
+      .catch(e => console.error('[perfil:paraEmpezar]', e))
+    return () => { vivo = false }
+  }, [esMiDiaUno])
+
+  const abrirSugerido = async (g: GooalResumen) => {
+    if (abriendo) return
+    setAbriendo(true)
+    try {
+      const completo = await getGooalV2(g.id)
+      if (completo) setFicha({ gooal: completo, logro: null })
+      else setError('Este gooal ya no está disponible.')
+    } catch (e) {
+      console.error('[perfil:sugerido]', e)
+      setError('No hemos podido abrir este gooal. Inténtalo de nuevo.')
+    } finally {
+      setAbriendo(false)
+    }
+  }
 
   const handleSeguir = async () => {
     if (!perfil) return
@@ -262,6 +306,7 @@ function PerfilContenido() {
               conteos={perfil.porCategoria}
               intereses={perfil.intereses ?? []}
               onBuscar={() => router.push('/explorar')}
+              onAmigos={() => setLista('seguidores')}
             />
           ) : (
             <CabeceraPerfil
@@ -302,43 +347,55 @@ function PerfilContenido() {
             </>
           )}
 
-          <div style={{ marginTop: 20 }}>
-            <PestanasPerfil activa={pestana} onCambiar={cambiarPestana} />
-          </div>
+          {/* El día uno, aquí abajo no va la lista: va por dónde empezar.
+              Lo que había era media pantalla diciendo "aún no has conseguido
+              ningún gooal", que es lo contrario de una bienvenida. */}
+          {esMiDiaUno ? (
+            <div style={{ marginTop: 18 }}>
+              <ParaEmpezar gooals={paraEmpezar} onAbrir={abrirSugerido} />
+            </div>
+          ) : (
+            <>
+            <div style={{ marginTop: 20 }}>
+              <PestanasPerfil activa={pestana} onCambiar={cambiarPestana} />
+            </div>
 
-          {/* La misma pantalla en el perfil propio y en el ajeno. La única
-              diferencia es esta pastilla, y se quita ella sola cuando no hay nada
-              en común, que con pocos usuarios es casi siempre. */}
-          <FiltroEnComun
-            activo={soloEnComun}
-            total={lineas.length}
-            enComun={cuantasEnComun}
-            onCambiar={setSoloEnComun}
-          />
+            {/* La misma pantalla en el perfil propio y en el ajeno. La única
+                diferencia es esta pastilla, y se quita ella sola cuando no hay nada
+                en común, que con pocos usuarios es casi siempre. */}
+            <FiltroEnComun
+              activo={soloEnComun}
+              total={lineas.length}
+              enComun={cuantasEnComun}
+              onCambiar={setSoloEnComun}
+            />
 
-          <div role="tabpanel" style={{ paddingTop: 12 }}>
-            {lineas.length === 0 ? (
-              pestana === 'conseguidos' ? (
-                <EstadoVacio
-                  titulo={perfil.esPropio ? 'Aún no has conseguido ningún gooal.' : 'Todavía no ha conseguido ningún gooal.'}
-                  texto={perfil.esPropio ? 'Elige uno y ve a por él.' : undefined}
-                  /* Sin botón en TU perfil: arriba, a dos dedos, ya hay uno que
-                     lleva al mismo sitio ("Busca algo que ya hayas hecho"). Dos
-                     botones distintos a la misma pantalla no son dos opciones,
-                     son una duda. */
-                  accion={undefined}
-                />
+            <div role="tabpanel" style={{ paddingTop: 12 }}>
+              {lineas.length === 0 ? (
+                pestana === 'conseguidos' ? (
+                  <EstadoVacio
+                    titulo={perfil.esPropio ? 'Aún no has conseguido ningún gooal.' : 'Todavía no ha conseguido ningún gooal.'}
+                    texto={perfil.esPropio ? 'Elige uno y ve a por él.' : undefined}
+                    /* Sin botón en TU perfil: arriba, a dos dedos, ya hay uno que
+                       lleva al mismo sitio ("Busca algo que ya hayas hecho"). Dos
+                       botones distintos a la misma pantalla no son dos opciones,
+                       son una duda. */
+                    accion={undefined}
+                  />
+                ) : (
+                  <EstadoVacio
+                    titulo={perfil.esPropio ? 'Tu lista de pendientes está vacía.' : 'No tiene gooals pendientes.'}
+                    texto={perfil.esPropio ? 'Añade los que quieras vivir desde Explorar.' : undefined}
+                    accion={perfil.esPropio ? botonExplorar : undefined}
+                  />
+                )
               ) : (
-                <EstadoVacio
-                  titulo={perfil.esPropio ? 'Tu lista de pendientes está vacía.' : 'No tiene gooals pendientes.'}
-                  texto={perfil.esPropio ? 'Añade los que quieras vivir desde Explorar.' : undefined}
-                  accion={perfil.esPropio ? botonExplorar : undefined}
-                />
-              )
-            ) : (
-              <ListaPerfil lineas={visibles} onAbrir={abrirLinea} />
-            )}
-          </div>
+                <ListaPerfil lineas={visibles} onAbrir={abrirLinea} />
+              )}
+            </div>
+            </>
+          )}
+
         </div>
       </AppShell>
 
@@ -347,6 +404,7 @@ function PerfilContenido() {
         <ListaUsuariosModal
           userId={perfil.usuario.id}
           tipo={lista}
+          cuantos={{ seguidores: perfil.seguidores, siguiendo: perfil.siguiendo }}
           onClose={() => setLista(null)}
           onUsuarioClick={irAPerfil}
         />

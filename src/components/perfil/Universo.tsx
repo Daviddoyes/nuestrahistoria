@@ -137,7 +137,9 @@ export default function Universo({ conteos, intereses, foto, nombre, porcentajeN
       >
         {/* 6 px por dentro: es el hueco que deja respirar al aro. */}
         <div style={{ position: 'absolute', inset: 6 }}>
-          <Avatar nombre={nombre} foto={foto} size={NUCLEO - 12} />
+          {/* neutro: ver Avatar. Un disco verde aquí tapa el aro del nivel, que
+              es del mismo verde y va dibujado justo encima. */}
+          <Avatar nombre={nombre} foto={foto} size={NUCLEO - 12} neutro />
         </div>
         <svg viewBox="0 0 100 100" aria-hidden style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
           {/* La pista siempre, también el día uno: es lo que dice que hay un

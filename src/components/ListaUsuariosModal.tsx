@@ -7,27 +7,49 @@ import { calcularNivel } from '@/lib/niveles'
 import Avatar from './Avatar'
 import type { UsuarioMini } from '@/types/gooals'
 
+type Tipo = 'seguidores' | 'siguiendo'
+
 type Props = {
   userId: string
-  tipo: 'seguidores' | 'siguiendo'
+  /** Por cuál de las dos se abre. Dentro se puede cambiar sin cerrar. */
+  tipo: Tipo
+  /** Para el número de cada pestaña. Sin ellos se pintan sin número. */
+  cuantos?: Record<Tipo, number>
   onClose: () => void
   onUsuarioClick: (username: string | null) => void
 }
 
-export default function ListaUsuariosModal({ userId, tipo, onClose, onUsuarioClick }: Props) {
-  const [usuarios, setUsuarios] = useState<UsuarioMini[] | null>(null)
+/**
+ * Las dos listas de gente, en un panel con dos pestañas.
+ *
+ * Son dos y no una porque **seguir no es ser amigo**: aquí uno puede seguir a
+ * alguien que no le sigue. El número que se enseña en el perfil es uno solo
+ * —los amigos, que es seguirse los dos—, pero detrás hay dos listas distintas y
+ * las dos tienen que poder abrirse.
+ */
+export default function ListaUsuariosModal({ userId, tipo, cuantos, onClose, onUsuarioClick }: Props) {
+  const [pestana, setPestana] = useState<Tipo>(tipo)
+  /**
+   * La lista cargada Y de qué pestaña es. Las dos cosas juntas y no en dos
+   * estados: así, al cambiar de pestaña, lo ya cargado deja de valer sin tener
+   * que vaciarlo a mano, que es lo que obligaba a tocar el estado dentro del
+   * efecto y disparaba renderizados en cascada.
+   */
+  const [cargado, setCargado] = useState<{ tipo: Tipo; usuarios: UsuarioMini[] } | null>(null)
   const [error, setError] = useState('')
+
+  const usuarios = cargado && cargado.tipo === pestana ? cargado.usuarios : null
 
   useEffect(() => {
     let vivo = true
-    getListaSeguidores(userId, tipo)
-      .then(lista => { if (vivo) setUsuarios(lista) })
+    getListaSeguidores(userId, pestana)
+      .then(lista => { if (vivo) setCargado({ tipo: pestana, usuarios: lista }) })
       .catch(e => {
         console.error('[ListaUsuariosModal]', e)
-        if (vivo) { setError('No hemos podido cargar la lista.'); setUsuarios([]) }
+        if (vivo) { setError('No hemos podido cargar la lista.'); setCargado({ tipo: pestana, usuarios: [] }) }
       })
     return () => { vivo = false }
-  }, [userId, tipo])
+  }, [userId, pestana])
 
   return (
     <div
@@ -40,7 +62,24 @@ export default function ListaUsuariosModal({ userId, tipo, onClose, onUsuarioCli
         </div>
 
         <div className="px-5 py-3 flex items-center justify-between border-b border-[#2A2E2C] flex-shrink-0">
-          <h2 className="fuente-titular font-semibold text-[#FFFFFF] text-base capitalize">{tipo}</h2>
+          <div role="tablist" style={{ display: 'flex', gap: 18 }}>
+            {(['seguidores', 'siguiendo'] as const).map(t => (
+              <button
+                key={t}
+                role="tab"
+                aria-selected={pestana === t}
+                onClick={() => setPestana(t)}
+                className="fuente-titular transition-colors"
+                style={{
+                  fontSize: 16, fontWeight: 600, textTransform: 'capitalize', padding: '2px 0',
+                  color: pestana === t ? '#FFFFFF' : '#7A8A85',
+                  borderBottom: `2px solid ${pestana === t ? '#00D1A7' : 'transparent'}`,
+                }}
+              >
+                {t}{cuantos ? ` ${cuantos[t]}` : ''}
+              </button>
+            ))}
+          </div>
           <button
             onClick={onClose}
             aria-label="Cerrar"
@@ -62,7 +101,7 @@ export default function ListaUsuariosModal({ userId, tipo, onClose, onUsuarioCli
             <p className="text-sm text-[#FF5252] px-2 py-6 text-center">{error}</p>
           ) : usuarios.length === 0 ? (
             <p className="text-sm text-[#7A8A85] px-2 py-10 text-center">
-              {tipo === 'seguidores' ? 'Todavía no le sigue nadie.' : 'Todavía no sigue a nadie.'}
+              {pestana === 'seguidores' ? 'Todavía no le sigue nadie.' : 'Todavía no sigue a nadie.'}
             </p>
           ) : (
             usuarios.map(u => {
