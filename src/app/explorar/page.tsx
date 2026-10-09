@@ -261,7 +261,11 @@ function ExplorarContenido() {
                 disabled={buscandoCerca}
                 className="active:bg-[#1E2120] transition-colors disabled:opacity-60"
                 style={{
-                  position: 'absolute', left: 12, bottom: 12, zIndex: 1000,
+                  // ARRIBA, no abajo. Abajo lo tapaba el banner de "instala
+                  // GooALS", que se cuela entre el mapa y la barra: el botón
+                  // estaba en la pantalla y no se veía. A la derecha porque a
+                  // la izquierda están el + y el - del zoom.
+                  position: 'absolute', right: 12, top: 12, zIndex: 1000,
                   display: 'flex', alignItems: 'center', gap: 8, minHeight: 44, padding: '0 14px',
                   borderRadius: 999, background: '#161817', border: '1px solid #2A2E2C',
                   color: '#FFFFFF', fontSize: 13, fontWeight: 600,
@@ -275,9 +279,10 @@ function ExplorarContenido() {
             ) : (
               <div
                 style={{
-                  position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 1000,
-                  padding: '10px 0 12px',
-                  background: 'linear-gradient(to top, #0B0B0B 60%, rgba(11,11,11,0))',
+                  // También arriba, por lo mismo que el botón.
+                  position: 'absolute', left: 0, right: 0, top: 0, zIndex: 1000,
+                  padding: '10px 0 14px',
+                  background: 'linear-gradient(to bottom, #0B0B0B 55%, rgba(11,11,11,0))',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 20px 8px' }}>
@@ -311,7 +316,7 @@ function ExplorarContenido() {
               <p
                 role="alert"
                 className="text-sm text-[#FF5252] bg-[#161817] border border-[rgba(255,82,82,0.35)] px-3 py-2 rounded-lg"
-                style={{ position: 'absolute', left: 12, right: 12, bottom: 64, zIndex: 1000 }}
+                style={{ position: 'absolute', left: 12, right: 12, top: 64, zIndex: 1000 }}
               >
                 {errorCerca}
               </p>
