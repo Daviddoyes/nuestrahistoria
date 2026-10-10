@@ -1065,6 +1065,41 @@ mismo: para arreglar una cosa se sacó de la foto la que decía cuál era.
 Es hermana de «una mejora en el total puede esconder un empeoramiento»: allí se
 trata de mirar las que cambian, y aquí de saber QUÉ mirar en ellas.
 
+### Regenerar no es editar
+
+Y la causa de las cinco, dicha de una vez:
+
+> **Regenerar no corrige una foto: pide otra distinta.** Por eso la escena
+> tiene que DESCRIBIR LA FOTO ENTERA, incluido lo que ya estaba bien. Una
+> escena escrita como corrección —«que se vea el agua», «que la jaima suba»—
+> se lleva por delante todo lo que no menciona.
+
+Literalmente eso: se pidió el agua y se perdió el bungalow; se pidió la jaima
+arriba y se perdieron las dunas. La escena no es una lista de cambios respecto
+de la foto anterior, porque el modelo no ha visto la foto anterior.
+
+### Mirar GRANDE antes de condenar
+
+La que habría ahorrado la tanda entera, y de las cinco que se rehicieron por
+nada, **cinco volvieron a la vieja**:
+
+> **Antes de regenerar una foto marcada como fallo, mírala GRANDE.** La prueba
+> de la tarjeta dice si funciona EN LA TARJETA; no dice si la foto es mala. Una
+> foto buena mal leída en miniatura es un falso negativo, y regenerarla destruye
+> trabajo bueno.
+
+Y lo que se hace en su lugar cuando el diagnóstico es ese:
+
+> Si una foto se ve bien grande y mal pequeña, el problema es **de encuadre o de
+> contraste, no de escena**: se arregla recortando o subiendo la luz, no pidiendo
+> otra foto.
+
+Las cinco, vistas grandes, estaban bien: la jaima de Wadi Rum es grande y
+central, la del Sáhara tiene mejor luz que su sustituta, el graderío del Madison
+dice «pabellón grande» y al castell se le ven los pisos y las figuritas — parecía
+una antena **solo en una miniatura**. Lo llamamos fallo los dos, con las mismas
+palabras, leyendo la misma miniatura.
+
 ### Y el interior no se lee en una tarjeta
 
 De los cinco de arriba, dos empeoraron por la misma causa de fondo: se contaron
@@ -1150,6 +1185,32 @@ reparto pasó de 259 a 162.
 Y la señal, que es la de siempre en este repo: **una escritura que no da error
 no es una escritura correcta.** Lo que confirma que fue a su sitio es un número
 medido después, no que el guion dijera «97 escritas».
+
+### Un número que hay que leer no es una comprobación: es una nota
+
+Porque lo de arriba lo cazó la suerte. El reparto imprimía «genéricos → van a
+IA: 259», pasó a imprimir 162, y por casualidad alguien lo estaba mirando. Si
+esa línea hubiera estado veinte líneas más abajo, las 97 se habrían quedado
+marcadas como imposibles hasta que alguien echara de menos sus fotos.
+
+> **Después de cualquier edición en lote, el guion AFIRMA sus invariantes y
+> FALLA si no se cumplen.** No las imprime: las afirma.
+
+Lo que quedó puesto, en `reparto.mjs` y contra `CUANTOS` y `RENDIDOS` de
+`decisiones.mjs`:
+
+1. **Cada mapa tiene los que dice tener.** Es lo que convierte el fallo en
+   imposible de pasar por alto: una escritura en el mapa equivocado mueve DOS
+   cuentas a la vez. Añadir algo a propósito cuesta subir un número.
+2. **`NO_SABE_HACERLO` lleva exactamente los nombres declarados en `RENDIDOS`.**
+   Rendirse con un gooal es una decisión, nunca un efecto secundario.
+3. **Ninguna clave inventada**: todas tienen que ser gooals publicados, que caza
+   una errata en un título — que es lo mismo que no haber escrito nada.
+4. **Y los 259 prompts se construyen**, no los veinte de una muestra. Un candado
+   probado solo en una muestra es media comprobación.
+
+Está probado metiendo un cebo: con una entrada falsa en `NO_SABE_HACERLO`, el
+guion para y nombra las dos invariantes rotas.
 
 ## Una regla que el estado actual no puede cumplir es un bloqueo, no una regla
 

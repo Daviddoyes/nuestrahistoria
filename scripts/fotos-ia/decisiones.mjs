@@ -431,21 +431,21 @@ export const DECIDIDOS = {
     "Desde la cuneta, el pelotón subiendo un puerto con paredes de nieve apilada a los dos lados de la carretera."],
   // ── Los grupos de dos y tres, con su asunto propio ─────
   "Ver un partido en el Madison Square Garden": [null,
-    "Desde el fondo y muy arriba, una grada circular que sube casi en vertical y se cierra sobre una pista de baloncesto pequeña de parqué claro, con las líneas y la zona pintadas bien visibles al fondo."],
+    "Desde el fondo, una grada circular que sube casi en vertical alrededor de una pista pequeña, cerrándose sobre ella."],
   "Ver una final de la NBA": [null,
     "Desde la grada, confeti dorado cayendo sobre un parqué de madera recién encerado y reflejándose en él."],
   "Comer en un restaurante con dos estrellas Michelin": [null,
     "Una campana de cristal levantándose sobre un plato y el humo aromático escapando por debajo en una nube."],
   "Dormir en el desierto de Wadi Rum": [null,
-    "Desde dentro de una jaima, alfombras de lana y cojines bajos llenando la parte de abajo y, por la abertura grande que ocupa casi todo el encuadre, una pared de arenisca roja y vertical a plena luz."],
+    "Una jaima negra de pelo de cabra montada al pie de una pared de arenisca roja y vertical, sin nadie."],
   "Dormir en una jaima en el Sáhara": [null,
-    "Una jaima baja plantada en lo alto de una duna, ocupando la mitad de arriba del encuadre y recortada entera contra el cielo, con los vientos tensos clavados en la arena ondulada."],
+    "Una jaima baja plantada en el valle entre dunas de arena fina y ondulada, con las crestas marcadas por el viento."],
   "Dormir en el refugio de Amitges": [null,
     "Un refugio de piedra con el tejado de pizarra al borde de un lago de alta montaña, con la pared rocosa reflejada en el agua."],
   "Dormir una noche en un refugio de montaña": [null,
     "Una litera corrida de madera en un dormitorio común, con las mantas de cuadros dobladas en cada plaza y nadie dentro."],
   "Dormir en un bungalow sobre el agua en Bora Bora": [null,
-    "La escalera de madera de una terraza bajando directamente a un agua turquesa y transparente que llena casi todo el encuadre, con el suelo de arena claro viéndose por debajo."],
+    "Un bungalow de techo de hoja sobre agua turquesa, con una montaña verde y puntiaguda levantándose al fondo."],
   "Dormir en un bungalow sobre el agua en Maldivas": [null,
     "Una hilera larga de bungalows sobre pilotes unidos por una pasarela de madera completamente recta, sobre agua lisa."],
   "Ir a la Festa Major de Vilafranca": [null,
@@ -460,8 +460,8 @@ export const DECIDIDOS = {
     "Un huevo abierto por la punta, en primerísimo plano y llenando el encuadre, con el pato a medio formar asomando por la abertura y el caldo brillando en el borde."],
   "Probar el huevo de cien años": ["detalle",
     "Media docena de mitades de huevo de cien años muy de cerca, la yema verde oscuro y cremosa y la clara ámbar translúcida casi negra, llenando todo el encuadre."],
-  "Probar el cuy": ["detalle",
-    "Un cuy asado entero y dorado, de cuerpo entero y de perfil, llenando el encuadre sobre una fuente, con las patas estiradas y la piel crujiente."],
+  "Probar el cuy": ["plato",
+    "Un cuy asado entero, dorado y abierto, sobre una fuente de cerámica vista desde arriba, con las patas estiradas, unas patatas y maíz al lado, y unas manos entrando por el borde del encuadre para servirlo."],
   "Probar la carne de cocodrilo": [null,
     "Filetes blancos de carne en una parrilla, con las marcas negras del hierro bien marcadas y el humo subiendo."],
   "Ver un partido del Mundial de rugby": [null,
@@ -473,7 +473,7 @@ export const DECIDIDOS = {
   "Comer en un restaurante con una estrella Michelin": [null,
     "Un plato hondo y blanco sobre el que una jarrita vierte un hilo de salsa oscura en el momento de servir."],
   "Formar parte de un castell": [null,
-    "Una torre humana vista desde justo debajo, LLENANDO el encuadre a lo ancho, con los pisos de camisas claras y fajas bien separados subiendo uno sobre otro hacia el cielo."],
+    "Una torre humana vista desde justo debajo, subiendo en vertical hacia el cielo y perdiéndose de tamaño hacia arriba."],
   "Ir al Carnaval de Río": [null,
     "Un tocado de plumas enorme visto desde abajo, abriéndose contra las luces como un abanico."],
   "Ver un partido de la NBA": [null,
@@ -988,7 +988,7 @@ export const ELEMENTO = {
   "Ver un lanzamiento de un cohete": "cohete despegando",
   "Ver un partido de la NBA": "parqué y aro de lado",
   "Ver una final de la NBA": "confeti dorado en el parqué",
-  "Ver un partido en el Madison Square Garden": "grada circular sobre la pista",
+  "Ver un partido en el Madison Square Garden": "grada circular muy vertical",
   "Ver un partido del Mundial de fútbol": "banderas de muchos países",
   "Ver un partido en el Camp Nou": "grada de tres anillos",
   "Ver un partido en el Muro Amarillo de Dortmund": "grada de pie amarilla",
@@ -1009,7 +1009,7 @@ export const ELEMENTO = {
   "Beber en una carpa del Oktoberfest": "carpa iluminada",
   "Cantar en un karaoke": "pantalla y micrófono",
   "Correr un encierro de San Fermín": "calle estrecha con toros",
-  "Formar parte de un castell": "pisos de la torre desde abajo",
+  "Formar parte de un castell": "torre humana desde abajo",
   "Ir a la Festa Major de Vilafranca": "gegants entre balcones",
   "Ir a la Feria de Abril": "caseta iluminada",
   "Ir a la Festa dels Raiers": "río y troncos",
@@ -1091,11 +1091,11 @@ export const ELEMENTO = {
   "Sacarte el título de patrón de embarcaciones": "timón",
   "Sacarte la licencia de piloto": "mandos de vuelo",
   "Ver una velada de boxeo por un título mundial": "guantes de boxeo",
-  "Dormir en el desierto de Wadi Rum": "interior de jaima con alfombras",
-  "Dormir en una jaima en el Sáhara": "jaima en lo alto de una duna",
+  "Dormir en el desierto de Wadi Rum": "jaima entre arenisca roja",
+  "Dormir en una jaima en el Sáhara": "jaima entre dunas",
   "Dormir en el refugio de Amitges": "refugio junto a un lago",
   "Dormir una noche en un refugio de montaña": "litera con mantas dobladas",
-  "Dormir en un bungalow sobre el agua en Bora Bora": "escalera bajando al agua",
+  "Dormir en un bungalow sobre el agua en Bora Bora": "bungalow con montaña detrás",
   "Dormir en un bungalow sobre el agua en Maldivas": "hilera de bungalows con pasarela",
   "Hacer una cata de vinos en una bodega": "bodega de barricas",
   "Pasar un día en PortAventura": "montaña rusa",
@@ -1232,7 +1232,7 @@ export const PRIMER_PLANO = {
   "Bañarte en los Baños Széchenyi": "agua",
   "Bañarte en Santa Monica": "una pasarela o un puente",
   "Bucear en Raja Ampat": "agua",
-  "Dormir en el desierto de Wadi Rum": "un interior cerrado",
+  "Dormir en el desierto de Wadi Rum": "una construcción pequeña y aislada",
   "Dormir en el refugio de Amitges": "una construcción pequeña y aislada",
   "Dormir en un bungalow sobre el agua en Bora Bora": "una construcción pequeña y aislada",
   "Dormir en un bungalow sobre el agua en Maldivas": "una hilera que se repite",
@@ -1277,3 +1277,36 @@ export const PRIMER_PLANO = {
   "Ver un eclipse solar total": "cielo abierto",
   "Vivir un año en otro país": "una fachada o una escalinata",
 }
+
+/**
+ * CUÁNTOS HAY EN CADA MAPA, DECLARADO A MANO.
+ *
+ * Esto no es documentación: es un cable trampa, y lo comprueba `reparto.mjs`.
+ *
+ * El 10-10-2026 un guion escribió 97 cámaras DENTRO de NO_SABE_HACERLO —el
+ * mapa de «el modelo no sabe dibujar esto»— porque acotó el bloque hasta el
+ * export equivocado. No falló nada. Dejó 97 gooals marcados como imposibles y
+ * mandados a Commons, y lo único que lo delató fue que un número impreso pasó
+ * de 259 a 162 y por suerte alguien lo estaba mirando.
+ *
+ * Un número que hay que leer no es una comprobación: es una nota. Estos sí lo
+ * son, porque una escritura en el mapa que no toca mueve DOS cuentas a la vez
+ * y el guion para.
+ *
+ * Al añadir algo a propósito, se sube el número de aquí. Es el único sitio.
+ */
+export const CUANTOS = {
+  DECIDIDOS: 217,
+  CAMARA: 260,
+  ELEMENTO: 259,
+  PRIMER_PLANO: 140,
+  NO_SABE_HACERLO: 1,
+  APROBADAS: 6,
+}
+
+/**
+ * Y QUIÉN está en NO_SABE_HACERLO, por su nombre. Es una lista corta y a mano
+ * a propósito: entrar aquí significa renunciar a generarle foto, así que no
+ * puede pasar por descuido ni por un guion.
+ */
+export const RENDIDOS = ['Practicar pádel']

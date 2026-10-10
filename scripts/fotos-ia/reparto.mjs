@@ -20,7 +20,10 @@ import { writeFileSync } from 'node:fs'
 import { createClient } from '@supabase/supabase-js'
 import { encuadreDe, porQueEncuadre, ENCUADRE_DE, construirPrompt } from './estilos.mjs'
 import { destinoDe, comprobarControl, CONTROL } from './reparto-reglas.mjs'
-import { CAMARA, DECIDIDOS, ELEMENTO, PRIMER_PLANO } from './decisiones.mjs'
+import {
+  CAMARA, DECIDIDOS, ELEMENTO, PRIMER_PLANO,
+  NO_SABE_HACERLO, APROBADAS, CUANTOS, RENDIDOS,
+} from './decisiones.mjs'
 
 // ══ EL CONTROL, ANTES DE NADA ═════════════════════════════
 //
@@ -253,6 +256,48 @@ const azar = (lista, n, semilla) => {
 const dudosas = aIA.filter(g =>
   g.encuadre === 'espaldas' && /\b(ver|hacer|probar|pasar|vivir|aprender)\b/i.test(g.titulo),
 ).slice(0, 5)
+
+// ── LAS INVARIANTES, AFIRMADAS ────────────────────────────
+//
+// Un número impreso no es una comprobación: es una nota, y solo sirve si
+// alguien lo está mirando. Estas AFIRMAN y paran.
+{
+  const mapas = { DECIDIDOS, CAMARA, ELEMENTO, PRIMER_PLANO, NO_SABE_HACERLO, APROBADAS }
+  const fallos = []
+
+  // 1. Cada mapa tiene los que dice tener. Una escritura en el mapa
+  //    equivocado mueve DOS cuentas y cae aquí, que es lo que no pasó el
+  //    10-10-2026 con las 97 cámaras dentro de NO_SABE_HACERLO.
+  for (const [nombre, mapa] of Object.entries(mapas)) {
+    const hay = mapa instanceof Set ? mapa.size : Object.keys(mapa).length
+    if (hay !== CUANTOS[nombre]) {
+      fallos.push(`${nombre} tiene ${hay} y CUANTOS dice ${CUANTOS[nombre]}. ` +
+        'Si el cambio es a propósito, sube el número en decisiones.mjs; si no, mira dónde ha ido a parar lo que escribiste.')
+    }
+  }
+
+  // 2. Rendirse con un gooal es una decisión, nunca un efecto secundario:
+  //    NO_SABE_HACERLO lleva exactamente los que están escritos por su nombre.
+  const rendidos = Object.keys(NO_SABE_HACERLO).sort()
+  if (rendidos.join('|') !== [...RENDIDOS].sort().join('|')) {
+    fallos.push(`NO_SABE_HACERLO lleva [${rendidos.join(', ')}] y RENDIDOS dice [${RENDIDOS.join(', ')}].`)
+  }
+
+  // 3. Y ninguna clave inventada: todas son gooals publicados. Caza una
+  //    errata de título, que es lo mismo que no haber escrito nada.
+  const publicados = new Set(filas.map(g => g.titulo))
+  for (const [nombre, mapa] of Object.entries(mapas)) {
+    const fuera = (mapa instanceof Set ? [...mapa] : Object.keys(mapa)).filter(t => !publicados.has(t))
+    if (fuera.length) fallos.push(`${nombre} tiene ${fuera.length} clave(s) que no están publicadas: ${fuera.join(' | ')}`)
+  }
+
+  if (fallos.length) {
+    console.error('\nPARA, las invariantes no se cumplen:')
+    for (const f of fallos) console.error('  · ' + f)
+    process.exit(1)
+  }
+  console.log('\nLos seis mapas cuadran con lo declarado y ninguna clave está inventada.')
+}
 
 // ── LOS 259 PROMPTS, CONSTRUIDOS DE VERDAD ────────────────
 //
