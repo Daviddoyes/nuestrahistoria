@@ -1322,6 +1322,42 @@ La señal para detectarlo antes de generar, que es lo que ahorra la vuelta:
 **imagínate la foto de catálogo de ese gooal. Si lo prohibido está dentro de
 ella, no lo prohíbas: describe otra foto.**
 
+## Un encuadre que nombra un sujeto se lo impone a la escena
+
+Lo más útil que ha salido de las composiciones, y explica de golpe cuatro
+fallos de cuatro.
+
+Se reescribieron cuatro escenas de `contraluz` para que el asunto dejara de ser
+la masa de gente: un bombo de chirigota, una hilera de jarras de cerveza negra,
+las mesas corridas de una carpa, un bosque de piernas a ras de suelo. **No
+apareció ninguna de las cuatro cosas.** Las cuatro salieron lo mismo: una
+cabeza o un torso en silueta contra una mancha de luz.
+
+La causa está en el propio encuadre, escrita: «**LA PERSONA** está A CONTRALUZ
+y sale como una SILUETA». El encuadre no dice solo cómo se mira — **nombra al
+sujeto**. Y cuando la escena nombra otro, hay dos instrucciones sobre lo mismo
+y gana el encuadre, en silencio, como siempre.
+
+> **Un encuadre que nombra una persona impone una persona.** Si el asunto de la
+> escena es un objeto, el encuadre tiene que ser uno de los que NO nombran a
+> nadie (`objeto`, `detalle`, `lugar_vacio`, `plato`). Cambiar la escena no
+> basta: hay que cambiar el encuadre.
+
+La prueba por el otro lado, del mismo día: «Ir al Aplec del Caragol de Lleida»
+tenía el mismo problema —mesas largas a contraluz— y se le cambió el encuadre a
+`objeto` con una llauna de caracoles. Salió a la primera y es de las mejores de
+la tanda.
+
+Y lo que esto explica hacia atrás: **el grupo «contraluz · una multitud de
+cuerpos» no era una casualidad de escenas parecidas.** Era el encuadre
+fabricándolas. Cualquier fiesta que caiga en `contraluz` va a acabar siendo una
+persona en silueta contra una luz, por mucho que su elemento y su primer plano
+digan otra cosa.
+
+Los seis encuadres que nombran persona —`espaldas`, `hombros`, `contraluz`,
+`casco`, `manos`, `primera_persona`— son los que hay que mirar con esta regla
+delante. Los cuatro que no la nombran aceptan cualquier asunto.
+
 ## Una escena describe lo que hay; un encuadre dice qué entra en la foto
 
 Son dos cosas distintas y confundirlas costó tres fotos con cara.
