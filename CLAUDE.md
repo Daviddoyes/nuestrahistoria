@@ -1031,6 +1031,51 @@ que no se repitan.
 Se va a repetir con las ferratas, las cimas, los GR y los mercados: cuando se
 añadan gooals a un grupo, se les añade su momento.
 
+### Lo distintivo sustituye al encuadre común, no al significado
+
+Y su reverso, que costó cinco fotos al día siguiente.
+
+Una foto de catálogo contesta DOS preguntas: **de qué TIPO de cosa es** y
+**CUÁL de ellas es**. Al quitar lo repetido de un grupo, lo que se quita suele
+contestar la primera. Monza se quedó sin la pista y pasó a parecer unas
+ruinas; Silverstone, un aeródromo; Spa, una carretera. Ninguna decía «Gran
+Premio».
+
+> Al diferenciar, **lo distintivo entra en lugar del encuadre común, no en
+> lugar de lo que dice qué es.** El peralte de Monza se cuenta CON los coches
+> pasando por debajo; el puesto del mercado, CON el mostrador y el gentío
+> detrás; el escorpión, EN un plato y con palillos.
+
+Y lo mismo arreglando un defecto, que es la misma trampa con otra cara. El
+10-10-2026 se rehicieron doce fotos y **cinco salieron peor**, las cinco por lo
+mismo: para arreglar una cosa se sacó de la foto la que decía cuál era.
+
+| se quería arreglar | y se perdió |
+|---|---|
+| que se viera el agua de Bora Bora | el bungalow: quedó agua con unos palos |
+| subir la jaima del Sáhara fuera del tercio del título | las dunas: quedó una tienda contra un cielo gris |
+| que el Madison enseñara la pista | la luz: la pista se fue al tercio que tapa el texto |
+| que el cuy llenara el cuadro | el plato y las manos: parece un roedor vivo |
+| contar Wadi Rum por dentro | todo: un interior oscuro no se lee a 179 px |
+
+> **Antes de cambiar una foto para arreglarle un defecto, escribe qué es lo que
+> HOY dice cuál es ese gooal, y compruébalo en la nueva.** Si ya no está, no
+> has arreglado la foto: la has cambiado por otra.
+
+Es hermana de «una mejora en el total puede esconder un empeoramiento»: allí se
+trata de mirar las que cambian, y aquí de saber QUÉ mirar en ellas.
+
+### Y el interior no se lee en una tarjeta
+
+De los cinco de arriba, dos empeoraron por la misma causa de fondo: se contaron
+**desde dentro**. Un interior no tiene silueta y casi no tiene luz, y a 179 px
+eso es una mancha marrón. Es exactamente lo que ya tumbó la luz «noche» y el
+encuadre «silueta_lejana», y vuelve a aparecer disfrazado de escena.
+
+> Una tarjeta pequeña necesita **una forma recortada contra un fondo que
+> contrasta**. Un interior no la da casi nunca. Si la escena que se te ocurre
+> empieza por «desde dentro de…», busca otra.
+
 ## No deduzcas «esto ya está hecho» de un efecto que produce un paso posterior
 
 La más sutil de la semana, y por poco cuesta 70 MB de basura en el cubo.
@@ -1081,6 +1126,30 @@ Ahora el índice se construye solo con lo publicado, y si un título saliera dos
 veces *publicado* el guion se detiene y los nombra. Lo mismo vale para
 `gooals_v2.titulo` en cualquier otro sitio: es el campo por el que da la gana
 indexar, y es el que no se puede.
+
+### El límite de un bloque no es el siguiente que te interesa: es el siguiente
+
+Cinco veces el mismo fallo en `scripts/fotos-ia/decisiones.mjs`, y la quinta
+fue la peor. El fichero tiene **cinco mapas con las mismas claves** —los
+títulos de los gooals—, así que cualquier búsqueda que no diga en cuál da con
+el que no es.
+
+Las cuatro primeras veces se buscaba en todo el fichero. La quinta ya acotaba
+—«desde `export const CAMARA` hasta `export const ELEMENTO`»— y aun así falló,
+porque **entre esos dos hay otros dos exports**: 97 líneas de cámaras se
+escribieron dentro de `NO_SABE_HACERLO`, el mapa de «el modelo no sabe dibujar
+esto». No dio ningún error. Dejó 97 gooals marcados como imposibles y los
+mandó a Commons, y lo único que lo delató fue un número que no cuadraba: el
+reparto pasó de 259 a 162.
+
+> **Para acotar un bloque, el límite es EL SIGUIENTE del mismo tipo, sea cual
+> sea** — `d.indexOf('\nexport ', desde + 1)` —, nunca el que tú sabes que
+> viene después. Nombrar al siguiente es una suposición sobre el orden del
+> fichero, y el orden cambia.
+
+Y la señal, que es la de siempre en este repo: **una escritura que no da error
+no es una escritura correcta.** Lo que confirma que fue a su sitio es un número
+medido después, no que el guion dijera «97 escritas».
 
 ## Una regla que el estado actual no puede cumplir es un bloqueo, no una regla
 

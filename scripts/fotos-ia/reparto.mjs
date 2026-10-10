@@ -20,7 +20,7 @@ import { writeFileSync } from 'node:fs'
 import { createClient } from '@supabase/supabase-js'
 import { encuadreDe, porQueEncuadre, ENCUADRE_DE, construirPrompt } from './estilos.mjs'
 import { destinoDe, comprobarControl, CONTROL } from './reparto-reglas.mjs'
-import { CAMARA, DECIDIDOS, ELEMENTO } from './decisiones.mjs'
+import { CAMARA, DECIDIDOS, ELEMENTO, PRIMER_PLANO } from './decisiones.mjs'
 
 // ══ EL CONTROL, ANTES DE NADA ═════════════════════════════
 //
@@ -188,6 +188,41 @@ console.log(gemelas.length === 0
   ? '  ninguna pareja comparte encuadre y elemento'
   : `  ${gemelas.length} grupo(s) a mirar.`)
 console.log(`  (${sinElemento} de los ${aIA.length} no tienen elemento decidido: su escena la pone el título)`)
+
+// ── MISMO ENCUADRE Y MISMA COMPOSICIÓN ────────────────────
+//
+// Comparar el elemento no caza dos fotos que son la misma composición con
+// cosas distintas dentro: Vilafranca («base apretada de la torre») y Cádiz
+// («coro con sombreros iguales») salieron las dos una cabeza oscura de
+// espaldas contra una masa de gente.
+//
+// Solo se mira donde la composición es LIBRE. Donde la fija el encuadre, dos
+// gooals comparten primer plano a propósito y marcarlo sería ruido.
+const COMPOSICION_FIJA = new Set(['plato', 'manos', 'detalle', 'casco', 'objeto', 'hombros'])
+console.log('\n── MISMO ENCUADRE Y MISMO PRIMER PLANO ──')
+const libres = aIA.filter(g => !COMPOSICION_FIJA.has(g.encuadre))
+
+// LO QUE NO SE PUEDE COMPROBAR NO SE DA POR BUENO. Un gooal de encuadre libre
+// sin primer plano decidido deja la comprobación a medias justo donde sirve,
+// así que para el guion en vez de pasar en verde.
+const sinPrimerPlano = libres.filter(g => !PRIMER_PLANO[g.titulo])
+if (sinPrimerPlano.length) {
+  console.error(`  PARA: ${sinPrimerPlano.length} de encuadre libre no tienen primer plano decidido:`)
+  for (const g of sinPrimerPlano) console.error(`      ${g.encuadre.padEnd(16)} ${g.titulo}`)
+  process.exit(1)
+}
+
+const porComposicion = {}
+for (const g of libres) (porComposicion[g.encuadre + ' · ' + PRIMER_PLANO[g.titulo]] ??= []).push(g.titulo)
+const mismaComposicion = Object.entries(porComposicion).filter(([, l]) => l.length > 1)
+for (const [clave, titulos] of mismaComposicion) {
+  console.log(`  ${clave}   (${titulos.length})`)
+  for (const t of titulos) console.log(`      ${t}`)
+}
+console.log(mismaComposicion.length === 0
+  ? '  ninguna pareja comparte encuadre y composición'
+  : `  ${mismaComposicion.length} grupo(s) a mirar, sobre ${libres.length} de composición libre.`)
+
 console.log('\n── LO QUE COSTARÍA GENERARLOS ──')
 const aGenerar = yaIA.length + sinNada.length
 console.log(`  a rehacer + sin nada: ${aGenerar} imágenes x ${EURO_POR_IMAGEN} $ = ${(aGenerar * EURO_POR_IMAGEN).toFixed(2)} $`)
@@ -218,6 +253,27 @@ const azar = (lista, n, semilla) => {
 const dudosas = aIA.filter(g =>
   g.encuadre === 'espaldas' && /\b(ver|hacer|probar|pasar|vivir|aprender)\b/i.test(g.titulo),
 ).slice(0, 5)
+
+// ── LOS 259 PROMPTS, CONSTRUIDOS DE VERDAD ────────────────
+//
+// Los candados de estilos.mjs (ejes que chocan, falta de luz) solo saltan al
+// CONSTRUIR el prompt, y aquí solo se construían los veinte de la muestra.
+// El 10-10-2026, al mover dos carnavales de 'contraluz' a 'detalle', sus
+// cámaras se quedaron con un ángulo que 'detalle' ya fija: el reparto pasó en
+// verde y lo habría cazado el guion de generar, con las imágenes pagándose.
+//
+// Construirlos todos cuesta milisegundos y no gasta un céntimo. Un candado
+// que solo se prueba en una muestra es media comprobación.
+const rotos = []
+for (const g of aIA) {
+  try { construirPrompt(g, 'A', 0) } catch (e) { rotos.push(`${g.titulo}: ${e.message}`) }
+}
+if (rotos.length) {
+  console.error(`\nPARA: ${rotos.length} de los ${aIA.length} no se pueden construir:`)
+  for (const r of rotos) console.error('  ' + r)
+  process.exit(1)
+}
+console.log(`\nLos ${aIA.length} prompts se construyen sin chocar.`)
 
 const muestra = [
   ...dudosas.map(g => ({ ...g, porque: 'de las que más dudas dan' })),

@@ -201,7 +201,16 @@ const ENCUADRES = {
   // el modelo resolvió el choque enseñando la cara entera. Así que a la comida
   // se le da un encuadre que SÍ puede cumplir: el plato y las manos, visto
   // desde arriba, sin persona.
-  plato: 'Encuadre cenital sobre la mesa: se ven el plato y las manos de quien va a comer, y NADIE MÁS — ni cabeza, ni cara, ni torso, ni boca. La cámara mira hacia abajo.',
+  // Y AUN ASÍ SALIÓ UN TORSO. «Comer gambas de Palamós» (10-10-2026) tenía un
+  // tronco detrás del plato, con piel a los dos lados, teniendo escrito «ni
+  // torso» con todas las letras. Otra vez lo mismo: prohibir no sustituye a
+  // describir, y «las manos DE QUIEN VA A COMER» invoca a alguien entero que
+  // el modelo dibuja aunque le digas que no.
+  //
+  // El arreglo no es insistir: es una composición en la que el torso NO CABE.
+  // Unas manos cortadas por la muñeca entrando por el borde del cuadro no
+  // tienen dónde llevar un cuerpo pegado.
+  plato: 'Encuadre cenital, la cámara justo encima y mirando a plomo: llenan el cuadro el plato y la mesa. Si hay manos, ENTRAN POR EL BORDE del encuadre y están CORTADAS POR LA MUÑECA, nada más. No cabe en la foto ni una cabeza, ni una cara, ni un torso, ni una boca.',
   contraluz: 'La persona está A CONTRALUZ y sale como una SILUETA oscura y limpia contra la luz: no se le distingue ni un rasgo de la cara.',
   casco: 'La persona lleva CASCO Y GAFAS que le tapan la cara por completo, y además está en pleno movimiento.',
 
@@ -757,11 +766,37 @@ export function construirPrompt(gooal, clave, indice = 0) {
   // fotos de objeto con la misma cámara son 47 fotos iguales aunque el
   // objeto cambie. Solo lo llevan los gooals que lo tienen DECIDIDO.
   const camara = CAMARA[gooal.titulo]
+
+  // ── EL CANDADO DE LA LUZ ────────────────────────────────
+  //
+  // Antes, un gooal sin cámara decidida se construía IGUAL: sin línea de
+  // ángulo y sin línea de luz. No fallaba nada. Y eso es exactamente el
+  // fallo que se repite en este repo — una ausencia leída como un estado
+  // válido, igual que el descarte de 'espaldas' o un rechazo de OpenAI
+  // contado como «sin foto».
+  //
+  // Lo que decide entonces es el modelo, y elige siempre lo mismo: penumbra.
+  // Medido el 10-10-2026 sobre 25 imágenes: las 21 sin cámara salieron
+  // oscuras y cinco de ellas eran un rectángulo negro a 179 px; las cuatro
+  // que sí tenían luz escrita fueron las cuatro que se leían.
+  //
+  // Así que no se rellena la lista y ya: se cierra la puerta. Un eje que el
+  // encuadre no fija y que nadie ha decidido PARA el guion. El gooal que
+  // entre mañana no puede volver a salir en penumbra por olvido.
+  const fija = EJE_QUE_FIJA[encuadre]
+  for (const [i, eje, nombre] of [[0, 'angulo', 'ángulo'], [1, 'luz', 'luz']]) {
+    if (fija === eje) continue           // lo pone el propio encuadre
+    if (camara && camara[i]) continue    // está decidido
+    throw new Error(
+      `SIN ${nombre.toUpperCase()} en «${gooal.titulo}»: el encuadre ${encuadre} no fija ` +
+      `${eje === 'angulo' ? 'el ángulo' : 'la luz'}, así que hay que decidirlo en CAMARA ` +
+      `(decisiones.mjs). Sin esto el prompt sale sin esa línea y la pone el modelo.`)
+  }
+
   if (camara) {
     // EL CANDADO. No avisa: para. Un encuadre que ya fija un eje no puede
     // recibir otro, porque entonces el prompt se contradice y decide el
     // modelo. Es el mismo candado que el del encuadre cerrado.
-    const fija = EJE_QUE_FIJA[encuadre]
     if (fija === 'angulo' && camara[0]) {
       throw new Error(
         `EJES QUE CHOCAN en «${gooal.titulo}»: el encuadre ${encuadre} ya fija el ángulo, ` +
