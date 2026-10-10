@@ -66,14 +66,14 @@ export const DECIDIDOS = {
     'Un camino de tierra cruzando un hayedo de noche, iluminado solo por la luna, con la niebla entre los troncos y ninguna persona.'],
   'Hacer la ruta de las nueve ermitas del Montsant': ['lugar_vacio',
     'Una ermita pequeña de piedra seca en una ladera de monte bajo, con la puerta de madera cerrada y nadie alrededor.'],
-  'Hacer la Vía Verde del Carrilet de Olot a Girona': ['lugar_vacio',
-    'Una vía verde de tierra apisonada entre plataneros, entrando en un túnel antiguo de piedra, completamente vacía.'],
+  "Hacer la Vía Verde del Carrilet de Olot a Girona": ['lugar_vacio',
+    "La boca de un túnel de vía de tren reconvertido, con el arco de piedra labrada y el firme de tierra compacta saliendo de él, entre taludes de vegetación y sin nadie."],
   'Hacer los Carros de Foc': ['objeto',
     'Una mochila pequeña y dos bastones de montaña apoyados en la puerta de madera de un refugio de alta montaña.'],
   'Hacer la Travessia del Port de Barcelona nadando': ['primera_persona',
     'Desde dentro del agua y a ras de superficie, mirando hacia delante: una hilera de boyas naranjas perdiéndose hacia el fondo del puerto y NINGUNA ORILLA cerca. Lo que cuenta la foto es la distancia que queda, no la brazada.'],
-  'Hacer paddle surf en el cabo de Creus': ['lugar_vacio',
-    'Una cala de roca desnuda con el agua lisa como un espejo, sin una sola persona.'],
+  "Hacer paddle surf en el cabo de Creus": ['lugar_vacio',
+    "Una tabla de paddle surf sola sobre un agua lisa como un espejo, con el remo apoyado encima, en una cala de roca desnuda y retorcida, sin nadie."],
   'Hacer un safari en el Masái Mara': ['primera_persona',
     'Desde el asiento de un todoterreno abierto: la sabana dorada delante y una manada de elefantes cruzando a media distancia.'],
   'Hacer un safari en el Serengeti': ['detalle',
@@ -87,8 +87,8 @@ export const DECIDIDOS = {
 
   'Bañarte en Bondi Beach': ['lugar_vacio',
     "Una hilera de tablas de surf clavadas de pie en la arena mojada, con la espuma llegando hasta ellas y la playa vacía detrás."],
-  'Bañarte en Cala Estreta': ['primera_persona',
-    'Desde el borde de una roca, mirando a plomo el agua turquesa y los guijarros del fondo, justo antes de entrar.'],
+  "Bañarte en Cala Estreta": ['primera_persona',
+    "Desde el borde de una plataforma de roca caliza que ocupa todo el primer término, el agua turquesa justo debajo, tan transparente que se ven los guijarros redondos del fondo y la sombra de la roca dentro del agua."],
   'Bañarte en la cala de Sa Tuna': ['objeto',
     'Dos barcas de madera varadas en una orilla de guijarros, con el agua quieta lamiendo el casco pintado.'],
   'Bañarte en la Laguna Azul': ['detalle',
@@ -116,8 +116,8 @@ export const DECIDIDOS = {
     'Desde la proa de una barca de madera con balancines, el mar turquesa abriéndose entre paredes de roca que salen del agua.'],
   'Navegar por el Amazonas': ['detalle',
     'Primerísimo plano del agua marrón del río partiéndose en la proa, con la selva verde desenfocada detrás.'],
-  'Navegar por el delta del Ebro': ['lugar_vacio',
-    'Un embarcadero de madera con una barca amarrada en agua quieta entre carrizo, al atardecer, sin nadie.'],
+  "Navegar por el delta del Ebro": ['lugar_vacio',
+    "Una barca de fondo plano amarrada al borde de un canal entre arrozales inundados que llegan hasta el horizonte, con el agua quieta reflejando el cielo y ni una casa a la vista."],
   'Navegar por el delta del Okavango': ['objeto',
     'Una pértiga larga apoyada en una canoa estrecha de madera, varada entre juncos, con el agua clara debajo.'],
   'Navegar por el río Chao Phraya': ['detalle',
@@ -133,11 +133,12 @@ export const DECIDIDOS = {
 
   // ══ CORRER (7) · el dorsal, las zapatillas, el recorrido ══
 
-  'Correr un 10K': ['espaldas', null],   // decidido y con escena escrita desde el 8-10
+  "Correr un 10K": ['espaldas',
+    "Un corredor de espaldas por un paseo marítimo de baldosa al amanecer, con la barandilla y el mar a un lado y el paseo completamente vacío por delante."],   // decidido y con escena escrita desde el 8-10
   'Correr la Cursa dels Bombers': ['espaldas',
     'Una masa compacta de corredores vista desde arriba, llenando la calzada de lado a lado entre los edificios, todos de espaldas y sin un solo dorsal con número.'],
-  'Correr la Mitja de Granollers': ['espaldas',
-    'Un corredor de espaldas subiendo una cuesta de calle adoquinada entre edificios, visto desde abajo, en plena zancada y con camiseta lisa sin dorsal.'],
+  "Correr la Mitja de Granollers": ['espaldas',
+    "Un corredor de espaldas por una calle estrecha de pueblo entre casas bajas de dos plantas, con vecinos mirando desde las aceras y los balcones justo encima."],
   'Correr la Ultra Pirineu': ['contraluz',
     'La silueta de un corredor con bastones avanzando por una cresta pelada de montaña, recortada contra el cielo del atardecer.'],
   'Correr un maratón': ['contraluz',
@@ -172,8 +173,8 @@ export const DECIDIDOS = {
     'Primerísimo plano del asfalto gris y la grava blanca del arcén en una cima pelada, con el viento levantando polvo.'],
   'Subir en bici a la Rabassa': ['objeto',
     'Una bicicleta de carretera apoyada en un mojón de piedra al borde de una carretera de montaña, con niebla detrás.'],
-  'Subir en bici al Port del Cantó': ['lugar_vacio',
-    'Un túnel corto de montaña con la salida iluminada al fondo y la carretera subiendo hacia ella, vacía.'],
+  "Subir en bici al Port del Cantó": ['lugar_vacio',
+    "Una carretera de montaña estrecha trazando una lazada cerrada sobre un barranco, con el quitamiedos oxidado siguiendo la curva y las laderas de pino detrás, sin un coche."],
   'Subir un puerto de primera categoría en bici': ['detalle',
     'Primerísimo plano del piñón más grande de una bicicleta con la cadena tensada encima y los radios desenfocados.'],
 
@@ -304,7 +305,8 @@ export const DECIDIDOS = {
   "Saltar en paracaídas": ["casco", null],
   "Caminar sobre un glaciar en Islandia": ["espaldas", null],
   "Dormir en una cabaña sin electricidad": ["espaldas", null],
-  "Correr la Marató de Barcelona": ["espaldas", null],
+  "Correr la Marató de Barcelona": ["espaldas",
+    "Un corredor de espaldas por el centro de una avenida ancha de ciudad cortada al tráfico, con vallas metálicas y público a los dos lados y la calzada vacía perdiéndose recta hacia el fondo."],
   "Bañarte en la piscina del Marina Bay Sands": ["espaldas", null],
   "Flotar en el mar Muerto": ["espaldas", null],
   "Pasar un día en Ferrari Land": ["contraluz", null],
@@ -341,7 +343,8 @@ export const DECIDIDOS = {
   "Practicar patinaje sobre hielo": ["detalle", null],
   "Practicar escalada en rocódromo": ["lugar_vacio", null],
   "Practicar esquí": ["primera_persona", null],
-  "Practicar vela": ["primera_persona", null],
+  "Practicar vela": ["primera_persona",
+    "Desde la cubierta de un velero escorado, la vela mayor blanca tensa llenando media foto por un lado y, por debajo de la baranda inclinada, el mar azul oscuro pasando rápido con espuma."],
   "Actuar en un escenario": ['hombros',
     'Encuadre recortado por los hombros: el torso de alguien frente a un micrófono de pie en un escenario, con los focos encendidos detrás y el cuerpo recortándose en ellos.'],
   "Conducir un coche de carreras en circuito": ['hombros',
@@ -414,7 +417,7 @@ export const DECIDIDOS = {
   "Ver un partido en el Muro Amarillo de Dortmund": [null,
     "Desde el césped, una grada entera de pie, sin asientos, completamente amarilla y vertical, llenando el encuadre."],
   "Ver una final de la Champions League": [null,
-    "Desde la grada, una lluvia de confeti plateado cayendo sobre el círculo central de un campo iluminado de noche."],
+    "Desde la grada, el momento del trofeo: una copa de plata grande levantada entre muchas manos en el centro del campo, con las serpentinas plateadas cayendo alrededor y el césped lleno de papeles."],
   "Ver un partido en el Arthur Ashe del US Open": [null,
     "Desde la grada, una pista de tenis de superficie azul intenso, con un techo corredizo metálico medio abierto por encima."],
   "Ver un partido en la Philippe-Chatrier de Roland Garros": [null,
@@ -460,8 +463,8 @@ export const DECIDIDOS = {
     "Un huevo abierto por la punta, en primerísimo plano y llenando el encuadre, con el pato a medio formar asomando por la abertura y el caldo brillando en el borde."],
   "Probar el huevo de cien años": ["detalle",
     "Media docena de mitades de huevo de cien años muy de cerca, la yema verde oscuro y cremosa y la clara ámbar translúcida casi negra, llenando todo el encuadre."],
-  "Probar el cuy": ["plato",
-    "Un cuy asado entero, dorado y abierto, sobre una fuente de cerámica vista desde arriba, con las patas estiradas, unas patatas y maíz al lado, y unas manos entrando por el borde del encuadre para servirlo."],
+  "Probar el cuy": [null,
+    "Un animal pequeño asado entero y abierto sobre una fuente, dorado y con las patas estiradas."],
   "Probar la carne de cocodrilo": [null,
     "Filetes blancos de carne en una parrilla, con las marcas negras del hierro bien marcadas y el humo subiendo."],
   "Ver un partido del Mundial de rugby": [null,
@@ -496,6 +499,12 @@ export const DECIDIDOS = {
     "Un escorpión entero servido en un plato pequeño de porcelana, con la cola curvada hacia arriba y el aguijón bien visible, y unos palillos apoyados en el borde."],
   "Comerte una tarántula": [null,
     "Una tarántula frita entera servida en un plato de papel, con las ocho patas peludas abiertas y una cuña de lima al lado."],
+  "Beber en una carpa del Oktoberfest": [null,
+    "Una hilera larguísima de mesas corridas de madera dentro de una carpa, vistas a contraluz contra los focos del fondo, con la gente en silueta sentada hombro con hombro a los dos lados y jarras altas por toda la mesa."],
+  "Ir a la Feria de Abril": [null,
+    "Faroles de papel rojos y blancos colgados en hileras cruzadas sobre una calle de albero, encendidos y recortados contra el cielo oscuro, con las siluetas de la gente paseando debajo."],
+  "Ver los fuegos de Nochevieja en Sídney": [null,
+    "Desde la orilla, el arco de hierro de un puente enorme sobre el agua con cascadas de fuegos artificiales cayendo desde su barandilla, y la bahía negra reflejándolo todo."],
 }
 
 /**
@@ -792,6 +801,30 @@ export const APROBADAS = new Set([
   'Hacer una vía ferrata',                // manos
   'Lanzar una moneda en la Fontana di Trevi', // detalle, a la segunda
   'Sacarte el cinturón negro',            // manos, a la segunda
+
+  // ── La vuelta del 10-10-2026, decididas una a una mirándolas GRANDES ──
+  //
+  // Importa saber de qué carpeta sale cada una, porque de seis de ellas hay
+  // dos versiones y la buena no es la última: «mirar grande antes de
+  // condenar» hizo volver a cinco a su foto anterior.
+  //
+  // De "Claude outputs/doce/" — la vuelta nueva, que mejora:
+  'Comer gambas de Palamós',              // plato, sin el torso de antes
+  'Ir al Carnaval de Sitges',             // detalle: el contraluz se comía las lentejuelas
+  'Ir al Carnaval de Santa Cruz de Tenerife', // detalle, por lo mismo
+  'Probar el huevo de cien años',         // detalle: en 'plato' no se distinguía del balut
+  'Probar el balut',                      // detalle, por lo mismo
+  'Ir a la Festa Major de Vilafranca',    // gegants: era la misma foto que el castell
+  //
+  // De "Claude outputs/pequenos/" — LA VIEJA SE QUEDA. Se rehicieron y
+  // salieron peor, porque una escena escrita como corrección se lleva por
+  // delante lo que no menciona:
+  'Dormir en un bungalow sobre el agua en Bora Bora',
+  'Dormir en el desierto de Wadi Rum',
+  'Dormir en una jaima en el Sáhara',
+  'Ver un partido en el Madison Square Garden',
+  'Formar parte de un castell',
+  'Probar el cuy',                        // y por ella se corrigió la regla de 'plato'
 ])
 
 /**
@@ -862,7 +895,7 @@ export const ELEMENTO = {
   "Hacer el Camí dels Bons Homes": "sendero hacia un collado",
   "Hacer la Matagalls-Montserrat": "camino en hayedo",
   "Hacer la ruta de las nueve ermitas del Montsant": "edificio pequeño",
-  "Hacer la Vía Verde del Carrilet de Olot a Girona": "túnel de vía verde",
+  "Hacer la Vía Verde del Carrilet de Olot a Girona": "boca de túnel de piedra",
   "Hacer los Carros de Foc": "puerta de refugio",
   "Recorrer el carril bici más largo del mundo": "carril recto al horizonte",
   "Recorrer el Freedom Trail": "línea de ladrillo",
@@ -870,7 +903,7 @@ export const ELEMENTO = {
   "Hacer una travesía de varios días en montaña": "tienda en collado",
   "Hacer la Travessia del Port de Barcelona nadando": "boyas",
   "Nadar en aguas abiertas una travesía": "boyas",
-  "Hacer paddle surf en el cabo de Creus": "agua en calma",
+  "Hacer paddle surf en el cabo de Creus": "tabla y remo sobre el agua",
   "Hacer un safari en el Masái Mara": "sabana con animales",
   "Hacer un safari en el Serengeti": "lomo de cebra",
   "Hacer un safari por el desierto de Dubái": "todoterreno en duna",
@@ -880,14 +913,14 @@ export const ELEMENTO = {
   "Subir en bici al Alpe d'Huez": "lazadas encadenadas",
   "Subir en bici al Mont Ventoux": "asfalto",
   "Subir en bici a la Rabassa": "bici en mojón",
-  "Subir en bici al Port del Cantó": "túnel de carretera con salida iluminada",
+  "Subir en bici al Port del Cantó": "lazada sobre barranco",
   "Subir un puerto de primera categoría en bici": "pieza de bicicleta",
   "Montar en skateboard": "monopatín",
   "Pilotar un kart": "kart en el pit lane",
   "Dar una vuelta al Nürburgring": "carretera vacía",
   "Conducir un coche de carreras en circuito": "volante",
   "Bañarte en Bondi Beach": "tablas clavadas en la arena",
-  "Bañarte en Cala Estreta": "agua en calma",
+  "Bañarte en Cala Estreta": "borde de roca sobre agua clara",
   "Bañarte en la cala de Sa Tuna": "barcas varadas",
   "Bañarte en la Laguna Azul": "agua termal",
   "Bañarte en la playa de Copacabana": "paseo urbano",
@@ -900,7 +933,7 @@ export const ELEMENTO = {
   "Navegar el Bósforo en barco": "cabo o amarre",
   "Navegar entre los islotes de El Nido": "islotes de roca",
   "Navegar por el Amazonas": "agua del río en la proa",
-  "Navegar por el delta del Ebro": "embarcación",
+  "Navegar por el delta del Ebro": "barca entre arrozales",
   "Navegar por el delta del Okavango": "canoa con pértiga",
   "Navegar por el río Chao Phraya": "estela en el agua",
   "Navegar por el río Li en Guilin": "montes en niebla",
@@ -908,12 +941,12 @@ export const ELEMENTO = {
   "Navegar por los fiordos noruegos": "pared de fiordo",
   "Navegar por Milford Sound": "cascada",
   "Correr la Cursa dels Bombers": "masa de gente",
-  "Correr la Mitja de Granollers": "calle urbana",
+  "Correr la Mitja de Granollers": "calle estrecha de pueblo",
   "Correr la Ultra Pirineu": "cresta de montaña",
   "Correr un maratón": "avenida",
   "Correr un ultratrail": "sendero",
   "Correr una media maratón": "reloj deportivo",
-  "Correr un 10K": "carretera vacía",
+  "Correr un 10K": "paseo marítimo vacío",
   "Montar en el London Eye": "ciudad desde el aire",
   "Montar en el Star Ferry": "mobiliario de transporte",
   "Montar en el tranvía 28 de Lisboa": "interior de tranvía de madera",
@@ -973,10 +1006,10 @@ export const ELEMENTO = {
   // justo donde están las parejas evidentes: cuatro fuegos, cinco mercados,
   // ocho circuitos, cuatro escenarios de concierto.
   "Practicar esquí": "pendiente nevada",
-  "Practicar vela": "mar desde cubierta",
+  "Practicar vela": "vela tensa desde cubierta",
   "Ver el festival de globos de Albuquerque": "globos en el aire",
   "Ver la Nochevieja en Times Square": "calle urbana iluminada",
-  "Ver los fuegos de Nochevieja en Sídney": "fuegos artificiales",
+  "Ver los fuegos de Nochevieja en Sídney": "puente con cascada de fuegos",
   "Ver un Gran Premio de Fórmula 1": "semáforo de salida",
   "Ver un Gran Premio de MotoGP": "moto tumbada en curva",
   "Ver un Gran Premio en Montmeló": "curva lenta de 180 grados",
@@ -992,7 +1025,7 @@ export const ELEMENTO = {
   "Ver un partido del Mundial de fútbol": "banderas de muchos países",
   "Ver un partido en el Camp Nou": "grada de tres anillos",
   "Ver un partido en el Muro Amarillo de Dortmund": "grada de pie amarilla",
-  "Ver una final de la Champions League": "confeti sobre el césped",
+  "Ver una final de la Champions League": "copa levantada entre manos",
   "Ver un partido del Mundial de rugby": "melé cerrada",
   "Ver un partido del Seis Naciones": "postes en H con el balón",
   "Ver un partido en el Arthur Ashe del US Open": "pista azul bajo techo corredizo",
@@ -1006,12 +1039,12 @@ export const ELEMENTO = {
   "Ver una etapa del Rally Dakar": "coche en pista de tierra",
   "Ver una procesión de la Semana Santa de Sevilla": "procesión en calle estrecha",
   "Ver una regata de la Copa América de vela": "veleros en regata",
-  "Beber en una carpa del Oktoberfest": "carpa iluminada",
+  "Beber en una carpa del Oktoberfest": "mesas corridas dentro de la carpa",
   "Cantar en un karaoke": "pantalla y micrófono",
   "Correr un encierro de San Fermín": "calle estrecha con toros",
   "Formar parte de un castell": "torre humana desde abajo",
   "Ir a la Festa Major de Vilafranca": "gegants entre balcones",
-  "Ir a la Feria de Abril": "caseta iluminada",
+  "Ir a la Feria de Abril": "faroles colgados sobre el albero",
   "Ir a la Festa dels Raiers": "río y troncos",
   "Ir a la Festa Major de Gràcia": "calle engalanada",
   "Ir a la Fira de Santa Llúcia": "mercado de Navidad",
@@ -1102,7 +1135,7 @@ export const ELEMENTO = {
   "Practicar escalada en rocódromo": "muro de presas",
   "Bañarte en la piscina del Marina Bay Sands": "piscina infinita",
   "Caminar sobre un glaciar en Islandia": "nieve o hielo",
-  "Correr la Marató de Barcelona": "avenida",
+  "Correr la Marató de Barcelona": "avenida ancha entre vallas",
   "Dormir en una cabaña sin electricidad": "interior con vela",
   "Flotar en el mar Muerto": "agua densa",
   "Terminar un máster": "escalinata",
@@ -1137,7 +1170,7 @@ export const ELEMENTO = {
  */
 export const PRIMER_PLANO = {
   "Bailar salsa": "una o dos siluetas de persona",
-  "Beber en una carpa del Oktoberfest": "una construcción pequeña y aislada",
+  "Beber en una carpa del Oktoberfest": "una hilera que se repite",
   "Cantar en un karaoke": "un objeto suelto",
   "Correr la Ultra Pirineu": "una o dos siluetas de persona",
   "Correr un encierro de San Fermín": "un animal",
@@ -1145,7 +1178,7 @@ export const PRIMER_PLANO = {
   "Dar una charla ante más de cien personas": "una o dos siluetas de persona",
   "Escalar una aguja de Montserrat": "roca o pared",
   "Formar parte de un castell": "una multitud de cuerpos",
-  "Ir a la Feria de Abril": "una construcción pequeña y aislada",
+  "Ir a la Feria de Abril": "luces o haces",
   "Ir a la Festa dels Raiers": "agua",
   "Ir a la Festa Major de Gràcia": "tela o traje",
   "Ir a la Festa Major de Vilafranca": "una estructura grande y alta",
@@ -1174,7 +1207,7 @@ export const PRIMER_PLANO = {
   "Sacarte el título de buceo Open Water": "una o dos siluetas de persona",
   "Soltar un farolillo en el Yi Peng": "partículas en el aire",
   "Tirar tomates en La Tomatina": "una multitud de cuerpos",
-  "Bañarte en Cala Estreta": "agua",
+  "Bañarte en Cala Estreta": "roca o pared",
   "Bucear a más de 30 metros": "agua",
   "Dar una vuelta al Nürburgring": "una superficie de suelo o pista",
   "Hacer barranquismo en la Noguera": "roca o pared",
@@ -1189,11 +1222,11 @@ export const PRIMER_PLANO = {
   "Navegar por los fiordos noruegos": "roca o pared",
   "Pilotar una avioneta": "un vehículo o embarcación",
   "Practicar esquí": "nieve o hielo",
-  "Practicar vela": "agua",
+  "Practicar vela": "un vehículo o embarcación",
   "Subir en bici al Angliru": "una superficie de suelo o pista",
   "Ver el festival de globos de Albuquerque": "cielo abierto",
   "Ver la Nochevieja en Times Square": "luces o haces",
-  "Ver los fuegos de Nochevieja en Sídney": "luces o haces",
+  "Ver los fuegos de Nochevieja en Sídney": "una estructura grande y alta",
   "Ver un Gran Premio de Fórmula 1": "un vehículo o embarcación",
   "Ver un Gran Premio de MotoGP": "un vehículo o embarcación",
   "Ver un Gran Premio en Montmeló": "un vehículo o embarcación",
@@ -1219,7 +1252,7 @@ export const PRIMER_PLANO = {
   "Ver una etapa del Rally Dakar": "un vehículo o embarcación",
   "Ver una etapa del Tour de Francia": "una superficie de suelo o pista",
   "Ver una final de Grand Slam de tenis": "un objeto suelto",
-  "Ver una final de la Champions League": "partículas en el aire",
+  "Ver una final de la Champions League": "un objeto suelto",
   "Ver una final de la NBA": "partículas en el aire",
   "Ver una procesión de la Semana Santa de Sevilla": "una multitud de cuerpos",
   "Ver una regata de la Copa América de vela": "un vehículo o embarcación",
@@ -1244,8 +1277,8 @@ export const PRIMER_PLANO = {
   "Hacer la ferrata del Salt del Grill": "roca o pared",
   "Hacer la Matagalls-Montserrat": "un camino o sendero",
   "Hacer la ruta de las nueve ermitas del Montsant": "una construcción pequeña y aislada",
-  "Hacer la Vía Verde del Carrilet de Olot a Girona": "un túnel o un hueco",
-  "Hacer paddle surf en el cabo de Creus": "agua",
+  "Hacer la Vía Verde del Carrilet de Olot a Girona": "una fachada o una escalinata",
+  "Hacer paddle surf en el cabo de Creus": "un objeto suelto",
   "Hacer una cata de vinos en una bodega": "un interior cerrado",
   "Hacer una travesía de varios días en montaña": "una construcción pequeña y aislada",
   "Jugar en el Old Course de St Andrews": "terreno natural",
@@ -1253,7 +1286,7 @@ export const PRIMER_PLANO = {
   "Llegar al campo base del Everest": "una construcción pequeña y aislada",
   "Montar en el tranvía 28 de Lisboa": "un interior cerrado",
   "Nadar en aguas abiertas una travesía": "agua",
-  "Navegar por el delta del Ebro": "una pasarela o un puente",
+  "Navegar por el delta del Ebro": "un vehículo o embarcación",
   "Pasar un día en PortAventura": "una estructura grande y alta",
   "Perderte en los zocos de Marrakech": "un objeto suelto",
   "Pisar la Antártida": "nieve o hielo",
@@ -1262,13 +1295,13 @@ export const PRIMER_PLANO = {
   "Salir por el Temple Bar": "un interior cerrado",
   "Saltar en puenting en Queenstown": "una pasarela o un puente",
   "Subir en bici al Alpe d'Huez": "un camino o sendero",
-  "Subir en bici al Port del Cantó": "un túnel o un hueco",
+  "Subir en bici al Port del Cantó": "un camino o sendero",
   "Terminar un triatlón olímpico": "una hilera que se repite",
   "Bañarte en la piscina del Marina Bay Sands": "agua",
   "Caminar sobre un glaciar en Islandia": "nieve o hielo",
   "Correr la Cursa dels Bombers": "una multitud de cuerpos",
   "Correr la Marató de Barcelona": "una superficie de suelo o pista",
-  "Correr la Mitja de Granollers": "una superficie de suelo o pista",
+  "Correr la Mitja de Granollers": "una fachada o una escalinata",
   "Correr un 10K": "una superficie de suelo o pista",
   "Correr un ultratrail": "un camino o sendero",
   "Dormir en una cabaña sin electricidad": "un objeto suelto",
@@ -1296,12 +1329,12 @@ export const PRIMER_PLANO = {
  * Al añadir algo a propósito, se sube el número de aquí. Es el único sitio.
  */
 export const CUANTOS = {
-  DECIDIDOS: 217,
+  DECIDIDOS: 220,
   CAMARA: 260,
   ELEMENTO: 259,
   PRIMER_PLANO: 140,
   NO_SABE_HACERLO: 1,
-  APROBADAS: 6,
+  APROBADAS: 18,
 }
 
 /**

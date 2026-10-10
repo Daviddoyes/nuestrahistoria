@@ -202,15 +202,23 @@ const ENCUADRES = {
   // se le da un encuadre que SÍ puede cumplir: el plato y las manos, visto
   // desde arriba, sin persona.
   // Y AUN ASÍ SALIÓ UN TORSO. «Comer gambas de Palamós» (10-10-2026) tenía un
-  // tronco detrás del plato, con piel a los dos lados, teniendo escrito «ni
-  // torso» con todas las letras. Otra vez lo mismo: prohibir no sustituye a
-  // describir, y «las manos DE QUIEN VA A COMER» invoca a alguien entero que
-  // el modelo dibuja aunque le digas que no.
+  // tronco desnudo detrás del plato, con piel a los dos lados, teniendo
+  // escrito «ni torso» con todas las letras. Otra vez lo mismo: prohibir no
+  // sustituye a describir, y «las manos DE QUIEN VA A COMER» invoca a alguien
+  // entero que el modelo dibuja aunque le digas que no. Por eso ahora la
+  // composición es una en la que no cabe: manos cortadas por la muñeca que
+  // entran por el borde del cuadro.
   //
-  // El arreglo no es insistir: es una composición en la que el torso NO CABE.
-  // Unas manos cortadas por la muñeca entrando por el borde del cuadro no
-  // tienen dónde llevar un cuerpo pegado.
-  plato: 'Encuadre cenital, la cámara justo encima y mirando a plomo: llenan el cuadro el plato y la mesa. Si hay manos, ENTRAN POR EL BORDE del encuadre y están CORTADAS POR LA MUÑECA, nada más. No cabe en la foto ni una cabeza, ni una cara, ni un torso, ni una boca.',
+  // PERO «NI TORSO» ERA MÁS ESTRICTO QUE SU PROPIO PROPÓSITO. Lo que esta
+  // regla protege es LA CARA; el «ni torso» era un apretón para que el modelo
+  // no se deslizara hacia ella, y de rebote condenaba fotos buenas: la del
+  // cuy —unas manos con cuchillo y tenedor y un cuerpo VESTIDO detrás— se
+  // entiende al instante y no enseña a nadie.
+  //
+  // Así que la línea está donde de verdad estaba: ni cara, ni piel desnuda que
+  // se convierta en el asunto. Un cuerpo vestido de contexto detrás del plato
+  // no rompe nada. Las gambas seguirían siendo un fallo, que es como debe ser.
+  plato: 'Encuadre cenital, la cámara justo encima y mirando a plomo: llenan el cuadro el plato y la mesa, que son el asunto. Si hay manos, ENTRAN POR EL BORDE del encuadre y están CORTADAS POR LA MUÑECA. NO SE VE NINGUNA CARA, ni boca, ni ningún trozo de piel desnuda que llame la atención: si detrás del plato asoma alguien, va vestido y queda en penumbra, de contexto.',
   contraluz: 'La persona está A CONTRALUZ y sale como una SILUETA oscura y limpia contra la luz: no se le distingue ni un rasgo de la cara.',
   casco: 'La persona lleva CASCO Y GAFAS que le tapan la cara por completo, y además está en pleno movimiento.',
 
