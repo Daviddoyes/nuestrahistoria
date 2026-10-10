@@ -1322,6 +1322,39 @@ La señal para detectarlo antes de generar, que es lo que ahorra la vuelta:
 **imagínate la foto de catálogo de ese gooal. Si lo prohibido está dentro de
 ella, no lo prohíbas: describe otra foto.**
 
+## Los encuadres son DOS COSAS DISTINTAS, y confundirlas no da error
+
+Esta es la raíz de la que cuelga todo lo de abajo.
+
+> **Cuatro encuadres son una MANERA DE MIRAR**: `objeto`, `detalle`,
+> `lugar_vacio`, `primera_persona`. No dicen qué sale; lo decide la escena.
+>
+> **Seis nombran al SUJETO**: `contraluz`, `espaldas`, `hombros`, `casco`,
+> `manos`, `plato`. En estos el sujeto ya está decidido, y la escena solo puede
+> poner el dónde, el cuándo y lo que hay alrededor. Si la escena nombra otro
+> sujeto, gana el encuadre y la escena no sale, **sin dar ningún error**.
+>
+> **Si un gooal necesita otro sujeto, lo que hay que cambiar es el ENCUADRE, no
+> la escena.**
+
+### Y el matiz, que es lo que separa los que funcionan de los que no
+
+Dentro de los seis que nombran sujeto, una escena SÍ puede llevar un objeto
+delante — con una condición medida:
+
+> El objeto funciona cuando **alguien lo lleva puesto o lo sostiene**, porque
+> entonces la persona sigue estando y el objeto es lo que se ve de ella: el
+> tocado de plumas de Río, la horca de fuego del correfoc, la guitarra
+> levantada de Canet Rock.
+>
+> Falla cuando el objeto **está solo**: un bombo en una silla, unas jarras en
+> una barra, unas mesas vacías, una ladera de tiendas. Ahí no hay nadie que
+> pueda ser la silueta, así que el modelo pone a alguien y el objeto desaparece.
+
+Los tres que fallaron eran los tres de objeto solo. El de Río, que es de los
+mejores del catálogo, es de objeto puesto. No es una regla de estilo: es que
+sin persona el encuadre no se puede cumplir.
+
 ## Un encuadre que nombra un sujeto se lo impone a la escena
 
 Lo más útil que ha salido de las composiciones, y explica de golpe cuatro

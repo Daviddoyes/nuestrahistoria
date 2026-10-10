@@ -299,6 +299,51 @@ const EJE_QUE_FIJA = {
 const CUERPO = new Set(['espaldas', 'hombros', 'contraluz', 'casco'])
 const SOLO_MANOS = new Set(['manos', 'plato'])
 
+// ── LOS SEIS QUE NOMBRAN AL SUJETO ────────────────────────
+//
+// Cuatro encuadres son una MANERA DE MIRAR (objeto, detalle, lugar_vacio,
+// primera_persona): no dicen qué sale. Estos seis NOMBRAN AL SUJETO, y en
+// ellos la escena solo puede poner el dónde, el cuándo y lo que hay
+// alrededor. Si nombra otro sujeto, gana el encuadre y la escena no sale.
+//
+// Las palabras son con las que cada uno nombra lo suyo. Van con tilde y se
+// comparan tal cual: quitar acentos deja «marato» y «maraton», que siguen
+// siendo distintas.
+const SUJETO_DEL_ENCUADRE = {
+  contraluz: ['silueta', 'persona', 'alguien', 'gente', 'figura', 'corredor', 'cabeza', 'público', 'multitud', 'coro', 'pareja', 'humana', 'piernas', 'manos', 'brazos'],
+  espaldas: ['de espaldas', 'nuca', 'hombros', 'alguien', 'corredor', 'persona'],
+  hombros: ['torso', 'brazo', 'manos', 'hombros'],
+  casco: ['casco'],
+  manos: ['manos', 'dedos', 'muñeca'],
+  plato: ['plato', 'fuente', 'cuenco', 'bandeja', 'llauna', 'mostrador', 'barra', 'cazuela', 'huevera', 'mesa', 'parrilla', 'cucurucho'],
+}
+
+// Lo que se mira son las primeras palabras, que es donde va el asunto de la
+// frase. «Un bombo… y detrás las siluetas del coro» menciona siluetas y aun
+// así el asunto es el bombo: por eso no vale buscar en toda la escena.
+const CABEZA_DE_ESCENA = 70
+
+/**
+ * UN OBJETO DELANTE, PERO PUESTO O SOSTENIDO.
+ *
+ * Dentro de los seis, una escena puede empezar por un objeto si alguien LO
+ * LLEVA: entonces la persona sigue ahí y el objeto es lo que se ve de ella.
+ * Medido el 10-10-2026: el tocado de Río y la horca del correfoc funcionan;
+ * el bombo en una silla, las jarras en una barra y las mesas vacías fallaron
+ * los tres, porque sin nadie el encuadre no se puede cumplir.
+ *
+ * Es una lista a mano a propósito. Una regla automática no sabe si algo se
+ * lleva puesto, y aquí ya sabemos lo que cuesta una heurística de más.
+ */
+export const OBJETO_LLEVADO = new Set([
+  // COMPROBADAS: la foto existe y funciona, con la gente dentro de la escena.
+  'Ir a la Feria de Abril',              // los faroles arriba, las siluetas debajo
+  'Ir a la Festa Major de Vilafranca',  // los gegants los lleva alguien
+  'Ir al Carnaval de Río',        // el tocado va puesto
+  'Ir al correfoc de la Mercè',   // la horca va en las manos
+  'Ir al Canet Rock',             // la guitarra, levantada en alto
+])
+
 // El encuadre de cada gooal. Lo elijo yo mirando qué tiene sentido en esa
 // escena: a un esquiador se le pone casco porque lo lleva de verdad, y a quien
 // come se le recorta por los hombros porque lo que importa son las manos y el
@@ -817,6 +862,33 @@ export function construirPrompt(gooal, clave, indice = 0) {
     }
     if (camara[0]) partes.push(ANGULOS[camara[0]] ?? "")
     if (camara[1]) partes.push(LUCES[camara[1]] ?? "")
+  }
+
+  // ── EL CANDADO DEL SUJETO ───────────────────────────────
+  //
+  // Tercer candado, y de la misma familia que el de los ejes y el de la luz:
+  // dos instrucciones sobre lo mismo, una gana y nadie se entera.
+  //
+  // En los seis encuadres que nombran al sujeto, una escena cuyo asunto es
+  // otra cosa NO SALE. Medido con cuatro de cuatro el 10-10-2026: el bombo de
+  // Cádiz, las jarras de Dublín, las mesas del Oktoberfest y las piernas del
+  // maratón salieron las cuatro iguales —una silueta contra una mancha de
+  // luz— y de los objetos no quedó nada.
+  //
+  // La salida no es reescribir la escena: es CAMBIAR EL ENCUADRE a uno de los
+  // cuatro que no nombran sujeto. Lo demostró el Aplec, que salió bien a la
+  // primera en cuanto pasó a 'objeto'.
+  const suyas = SUJETO_DEL_ENCUADRE[encuadre]
+  if (suyas && escena && !OBJETO_LLEVADO.has(gooal.titulo)) {
+    const cabeza = escena.slice(0, CABEZA_DE_ESCENA).toLowerCase()
+    if (!suyas.some(p => cabeza.includes(p))) {
+      throw new Error(
+        `SUJETO QUE CHOCA en «${gooal.titulo}»: el encuadre ${encuadre} nombra su propio sujeto ` +
+        `y la escena empieza por otro («${escena.slice(0, 48)}…»). Con este encuadre esa escena no sale. ` +
+        `O pasa a ser contexto, o el gooal se lleva a un encuadre que no nombre sujeto ` +
+        `(objeto, detalle, lugar_vacio, primera_persona). Si el objeto va PUESTO o SOSTENIDO, ` +
+        `añádelo a OBJETO_LLEVADO en estilos.mjs, que esa es la excepción medida.`)
+    }
   }
 
   // El momento SOLO donde hay cuerpo: varios nombran brazos, manos o un
