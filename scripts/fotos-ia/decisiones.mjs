@@ -72,8 +72,8 @@ export const DECIDIDOS = {
     'Una mochila pequeña y dos bastones de montaña apoyados en la puerta de madera de un refugio de alta montaña.'],
   'Hacer la Travessia del Port de Barcelona nadando': ['primera_persona',
     'Desde dentro del agua y a ras de superficie, mirando hacia delante: una hilera de boyas naranjas perdiéndose hacia el fondo del puerto y NINGUNA ORILLA cerca. Lo que cuenta la foto es la distancia que queda, no la brazada.'],
-  "Hacer paddle surf en el cabo de Creus": ['lugar_vacio',
-    "Una tabla de paddle surf blanca cruzada en diagonal y ocupando media foto, flotando sobre un agua turquesa lisa como un espejo con el remo encima, y detrás la roca retorcida de una cala, sin nadie."],
+  "Hacer paddle surf en el cabo de Creus": ["objeto",
+    "Una tabla de paddle surf blanca y su remo, varadas sobre una losa de roca al borde del agua y ocupando casi todo el encuadre, con una cala de roca retorcida detrás."],
   'Hacer un safari en el Masái Mara': ['primera_persona',
     'Desde el asiento de un todoterreno abierto: la sabana dorada delante y una manada de elefantes cruzando a media distancia.'],
   'Hacer un safari en el Serengeti': ['detalle',
@@ -141,8 +141,8 @@ export const DECIDIDOS = {
     "Un corredor de espaldas por una calle estrecha de pueblo entre casas bajas de dos plantas, con vecinos mirando desde las aceras y los balcones justo encima."],
   'Correr la Ultra Pirineu': ['contraluz',
     'La silueta de un corredor con bastones avanzando por una cresta pelada de montaña, recortada contra el cielo del atardecer.'],
-  "Correr un maratón": ['contraluz',
-    "Una masa densa de corredores en silueta llenando una avenida de lado a lado y hasta el fondo, vista de frente contra el sol bajo que se cuela entre ellos."],
+  "Correr un maratón": ["primera_persona",
+    "Desde dentro del grupo, las espaldas y los hombros de los corredores de delante llenando todo el encuadre y repitiéndose hasta el fondo de una avenida ancha."],
   'Correr un ultratrail': ['espaldas',
     'Un corredor de espaldas con mochila ligera subiendo un sendero de montaña entre niebla, visto desde detrás.'],
   'Correr una media maratón': ['hombros',
@@ -445,8 +445,8 @@ export const DECIDIDOS = {
     "Una jaima negra de pelo de cabra montada al pie de una pared de arenisca roja y vertical, sin nadie."],
   "Dormir en una jaima en el Sáhara": [null,
     "Una jaima baja plantada en el valle entre dunas de arena fina y ondulada, con las crestas marcadas por el viento."],
-  "Dormir en el refugio de Amitges": [null,
-    "Un par de botas de montaña y dos bastones apoyados contra un muro de piedra seca iluminado de lleno por el sol de la tarde, ocupando los dos tercios de arriba del encuadre, y detrás, desenfocado y claro, el agua de un lago de alta montaña."],
+  "Dormir en el refugio de Amitges": ["objeto",
+    "Un par de botas de montaña gastadas, puestas una junto a otra y llenando el encuadre, sobre el poyo de piedra de un refugio, con el agua de un lago desenfocada detrás."],
   "Dormir una noche en un refugio de montaña": [null,
     "Una litera corrida de madera en un dormitorio común, con las mantas de cuadros dobladas en cada plaza y nadie dentro."],
   "Dormir en un bungalow sobre el agua en Bora Bora": [null,
@@ -544,7 +544,7 @@ export const CAMARA = {
   "Hacer la Vía Verde del Carrilet de Olot a Girona": ["a ras de suelo", "día nublado"],
   "Hacer los Carros de Foc": ["a la altura de los ojos", "amanecer"],
   "Hacer la Travessia del Port de Barcelona nadando": [null, "tarde larga"],
-  "Hacer paddle surf en el cabo de Creus": ["a la altura de los ojos", "amanecer"],
+  "Hacer paddle surf en el cabo de Creus": ["a ras de suelo", "amanecer"],
   "Hacer un safari en el Masái Mara": [null, "tarde larga"],
   "Hacer un safari en el Serengeti": [null, "mediodía duro"],
   "Hacer una marcha cicloturista de montaña": ["a ras de suelo", "tarde larga"],
@@ -574,7 +574,7 @@ export const CAMARA = {
   "Correr la Cursa dels Bombers": ["cenital", "mediodía duro"],
   "Correr la Mitja de Granollers": ["contrapicado", "tarde larga"],
   "Correr la Ultra Pirineu": ["contrapicado", null],
-  "Correr un maratón": ["a ras de suelo", null],
+  "Correr un maratón": [null, "amanecer"],
   "Correr un ultratrail": ["a la altura de los ojos", "día nublado"],
   "Correr una media maratón": ["desde muy cerca", "mediodía duro"],
   "Montar en el London Eye": [null, "tarde larga"],
@@ -860,6 +860,16 @@ export const NO_SABE_HACERLO = {
     'LA FORMA DEL FALLO: el modelo pinta el SITIO (una pista acristalada) y se',
     'salta el objeto, lo pongas donde lo pongas. No es cómo se mira: es que esa',
     'cosa no existe para él. Se queda con su foto de Commons.',
+    'CLASE: el modelo no sabe hacerlo. Se descubrió probando, y no había otra.',
+  ],
+  'Ir al Carnaval de Cádiz': [
+    'contraluz, el coro apretado cantando en una esquina → una cabeza oscura contra una masa, igual que otras cinco fiestas',
+    'contraluz, el bombo de chirigota delante y el coro detrás → el bombo no salió: el encuadre nombra persona y gana él',
+    'objeto, el bombo apoyado en una silla en una plaza → se lee «una silla», no se lee «chirigota»',
+    'CLASE: NO PODEMOS HACERLO NOSOTROS. Y esta es la diferencia que importa:',
+    'una chirigota se reconoce por CARAS DE GENTE DISFRAZADA CANTANDO, y las',
+    'caras las prohíben nuestras propias reglas. No es que el modelo no sepa: es',
+    'que lo que haría falta está vetado de antemano. Se queda con Commons.',
   ],
 }
 
@@ -909,7 +919,7 @@ export const ELEMENTO = {
   "Hacer una travesía de varios días en montaña": "saco y esterilla en la hierba",
   "Hacer la Travessia del Port de Barcelona nadando": "boyas",
   "Nadar en aguas abiertas una travesía": "boyas",
-  "Hacer paddle surf en el cabo de Creus": "tabla y remo sobre el agua",
+  "Hacer paddle surf en el cabo de Creus": "tabla y remo varados",
   "Hacer un safari en el Masái Mara": "sabana con animales",
   "Hacer un safari en el Serengeti": "lomo de cebra",
   "Hacer un safari por el desierto de Dubái": "todoterreno en duna",
@@ -949,7 +959,7 @@ export const ELEMENTO = {
   "Correr la Cursa dels Bombers": "masa de gente",
   "Correr la Mitja de Granollers": "calle estrecha de pueblo",
   "Correr la Ultra Pirineu": "cresta de montaña",
-  "Correr un maratón": "masa de corredores de lado a lado",
+  "Correr un maratón": "espaldas de los de delante",
   "Correr un ultratrail": "sendero",
   "Correr una media maratón": "reloj deportivo",
   "Correr un 10K": "paseo marítimo vacío",
@@ -1132,7 +1142,7 @@ export const ELEMENTO = {
   "Ver una velada de boxeo por un título mundial": "guantes de boxeo",
   "Dormir en el desierto de Wadi Rum": "jaima entre arenisca roja",
   "Dormir en una jaima en el Sáhara": "jaima entre dunas",
-  "Dormir en el refugio de Amitges": "botas contra un muro de piedra",
+  "Dormir en el refugio de Amitges": "botas sobre el poyo de piedra",
   "Dormir una noche en un refugio de montaña": "litera con mantas dobladas",
   "Dormir en un bungalow sobre el agua en Bora Bora": "bungalow con montaña detrás",
   "Dormir en un bungalow sobre el agua en Maldivas": "hilera de bungalows con pasarela",
@@ -1272,7 +1282,7 @@ export const PRIMER_PLANO = {
   "Bañarte en Santa Monica": "una pasarela o un puente",
   "Bucear en Raja Ampat": "agua",
   "Dormir en el desierto de Wadi Rum": "una construcción pequeña y aislada",
-  "Dormir en el refugio de Amitges": "un objeto suelto",
+
   "Dormir en un bungalow sobre el agua en Bora Bora": "una construcción pequeña y aislada",
   "Dormir en un bungalow sobre el agua en Maldivas": "una hilera que se repite",
   "Dormir en una jaima en el Sáhara": "una construcción pequeña y aislada",
@@ -1284,7 +1294,7 @@ export const PRIMER_PLANO = {
   "Hacer la Matagalls-Montserrat": "un camino o sendero",
   "Hacer la ruta de las nueve ermitas del Montsant": "una fachada o una escalinata",
   "Hacer la Vía Verde del Carrilet de Olot a Girona": "una fachada o una escalinata",
-  "Hacer paddle surf en el cabo de Creus": "un objeto suelto",
+
   "Hacer una cata de vinos en una bodega": "un interior cerrado",
   "Hacer una travesía de varios días en montaña": "un objeto suelto",
   "Jugar en el Old Course de St Andrews": "terreno natural",
@@ -1339,14 +1349,29 @@ export const CUANTOS = {
   DECIDIDOS: 222,
   CAMARA: 260,
   ELEMENTO: 259,
-  PRIMER_PLANO: 137,
-  NO_SABE_HACERLO: 1,
+  PRIMER_PLANO: 135,
+  NO_SABE_HACERLO: 2,
   APROBADAS: 18,
 }
 
 /**
+ * DOS CLASES DE RENDICIÓN, Y LA SEGUNDA SE VE SIN GASTAR NADA.
+ *
+ * · EL MODELO NO SABE HACERLO (el pádel): no dibuja una pala reconocible,
+ *   la pongas donde la pongas. Esto SOLO se descubre probando, y el umbral
+ *   está en dos encuadres distintos.
+ *
+ * · NO PODEMOS HACERLO NOSOTROS (Cádiz): el gooal se reconoce por caras de
+ *   gente disfrazada o por un desfile, y las caras las prohíben nuestras
+ *   propias reglas. Esto NO hay que descubrirlo probando: SE VE LEYENDO EL
+ *   TÍTULO. Gastar intentos en uno de estos es gastarlos en algo que ya
+ *   sabíamos imposible.
+ *
+ * La segunda clase predice, y por eso vale la pena mirarla antes de cada
+ * tanda: dos minutos de lectura ahorran nueve imágenes.
+ *
  * Y QUIÉN está en NO_SABE_HACERLO, por su nombre. Es una lista corta y a mano
  * a propósito: entrar aquí significa renunciar a generarle foto, así que no
  * puede pasar por descuido ni por un guion.
  */
-export const RENDIDOS = ['Practicar pádel']
+export const RENDIDOS = ['Practicar pádel', 'Ir al Carnaval de Cádiz']

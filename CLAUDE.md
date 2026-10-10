@@ -1355,6 +1355,48 @@ Los tres que fallaron eran los tres de objeto solo. El de Río, que es de los
 mejores del catálogo, es de objeto puesto. No es una regla de estilo: es que
 sin persona el encuadre no se puede cumplir.
 
+**Y su alcance, que si no se sobreaplica:** esto vale **en las fiestas y las
+multitudes**, no en general. La bici apoyada en el mojón, la boya sola, el
+buzón de cima y la moneda de la Fontana están solos y funcionan. Lo que cambia
+en una multitud es que **un objeto quieto no tiene dónde destacar**: hay
+cincuenta cuerpos moviéndose alrededor y el ojo —y el modelo— se van con ellos.
+
+## Dos clases de rendición, y la segunda se ve sin gastar nada
+
+Entrar en `NO_SABE_HACERLO` es renunciar a generarle foto a un gooal. Hay dos
+motivos y **no se descubren igual**:
+
+> · **El modelo no sabe hacerlo** (el pádel): no dibuja una pala reconocible,
+>   la pongas donde la pongas. Esto SOLO se descubre probando, y el umbral está
+>   en dos encuadres distintos.
+>
+> · **No podemos hacerlo nosotros** (el Carnaval de Cádiz): el gooal se
+>   reconoce por caras de gente disfrazada, y las caras las prohíben nuestras
+>   propias reglas. **Esto no hay que descubrirlo probando: se ve leyendo el
+>   título.**
+
+La segunda clase predice, y por eso se mira antes de cada tanda: dos minutos de
+lectura ahorran nueve imágenes. Cádiz costó tres intentos y los tres estaban
+perdidos de antemano.
+
+### Y el filo, que es más fino de lo que parece: ¿el disfraz TAPA la cara?
+
+Al buscar más casos con la forma de Cádiz salieron nueve candidatos por palabra
+—carnaval, desfile, procesión, festival— y **solo uno lo era**. Lo que los
+separa no es que haya gente disfrazada:
+
+> **El disfraz que TAPA o SUSTITUYE la cara se puede fotografiar**: el capirote
+> de un nazareno, la máscara veneciana, el tocado de plumas de Río, la cola
+> bordada de Tenerife. Ahí el objeto ES el reconocimiento, y la cara sobra.
+>
+> **El que NECESITA la cara, no**: una chirigota se reconoce por la expresión
+> de quien canta y por el maquillaje encima de la cara. Sin cara no queda nada
+> que fotografiar.
+
+La Semana Santa de Sevilla parecía el caso más claro de imposible —una
+procesión es gente— y es justo al revés: el capirote tapa la cara entera, así
+que una hilera de capirotes con velas dice Semana Santa sin enseñar a nadie.
+
 ## Un encuadre que nombra un sujeto se lo impone a la escena
 
 Lo más útil que ha salido de las composiciones, y explica de golpe cuatro
