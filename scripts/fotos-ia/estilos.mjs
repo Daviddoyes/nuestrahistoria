@@ -593,6 +593,32 @@ export const ESTILOS = {
       'Nada de aspecto de banco de imágenes: ni ropa nueva, ni escenario ordenado, ni gente posando.',
     ].join(' '),
   },
+  // ── 'L', EL MISMO PERO CON LUZ ────────────────────────
+  //
+  // Existe para una prueba: seis que YA funcionan, regeneradas cambiando solo
+  // esto. Si ganan, se cambia el estilo base y las que falten nacen bien; si
+  // no, sabremos que la penumbra la ponemos nosotros en las escenas.
+  //
+  // Lo que cambia, y nada más:
+  //   · una luz principal Y UN RELLENO suave, en vez de una sola fuente
+  //   · las sombras se abren: se ve lo que hay dentro de ellas
+  //   · y se dice para qué, que es lo que el modelo no puede adivinar: esto
+  //     se mira en un cuadrado de 179 px
+  L: {
+    nombre: 'Editorial con luz',
+    resumen: 'El mismo editorial, pero que se vea a tamaño de tarjeta.',
+    bloque: [
+      'Fotografía editorial de revista de viajes.',
+      'LUZ: una fuente principal direccional Y UN RELLENO SUAVE que abre las sombras, de modo que dentro de las sombras todavía se ve lo que hay. Nada queda en negro.',
+      'EL ASUNTO ESTÁ CLARAMENTE ILUMINADO y se distingue del fondo. La imagen se va a mirar en un cuadrado pequeño, así que tiene que leerse de un vistazo.',
+      'LA TEMPERATURA DE COLOR LA PONE LA ESCENA y no se fuerza: la nieve y el hielo salen fríos y azulados, el interior de noche sale cálido. Nada de dar un tono dorado a lo que no lo tiene.',
+      'Saturación contenida, sin HDR, sin ese brillo parejo de foto de postal o de folleto, y sin aspecto de estudio.',
+      'Grano fino de película y profundidad de campo de objetivo rápido.',
+      'Un instante que está ocurriendo, no una pose: nadie mira a cámara.',
+      'La escena transmite ganas de hacerlo: es un buen momento, no un momento duro ni solitario.',
+      'Nada de aspecto de banco de imágenes: ni ropa nueva, ni escenario ordenado, ni gente posando.',
+    ].join(' '),
+  },
   B: {
     nombre: 'Ilustración plana',
     resumen: 'Formas grandes, pocos colores, la paleta de la marca.',
