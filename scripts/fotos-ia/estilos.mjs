@@ -218,6 +218,12 @@ const ENCUADRES = {
   // Así que la línea está donde de verdad estaba: ni cara, ni piel desnuda que
   // se convierta en el asunto. Un cuerpo vestido de contexto detrás del plato
   // no rompe nada. Las gambas seguirían siendo un fallo, que es como debe ser.
+  // El «Si hay manos…» de aquí abajo PARECE la misma coletilla opcional que se
+  // quitó de primera_persona, y no lo es. Allí se OFRECÍA un elemento que
+  // nadie necesitaba; aquí se LIMITA uno que la escena ya suele pedir —comer
+  // se cuenta con manos, y las del cuy y las del suquet son lo que dice que
+  // alguien se lo va a comer—. Ofrecer de más es una trampa; poner una
+  // barandilla a lo que va a venir igualmente, no.
   plato: 'Encuadre cenital, la cámara justo encima y mirando a plomo: llenan el cuadro el plato y la mesa, que son el asunto. Si hay manos, ENTRAN POR EL BORDE del encuadre y están CORTADAS POR LA MUÑECA. NO SE VE NINGUNA CARA, ni boca, ni ningún trozo de piel desnuda que llame la atención: si detrás del plato asoma alguien, va vestido y queda en penumbra, de contexto.',
   contraluz: 'La persona está A CONTRALUZ y sale como una SILUETA oscura y limpia contra la luz: no se le distingue ni un rasgo de la cara.',
   casco: 'La persona lleva CASCO Y GAFAS que le tapan la cara por completo, y además está en pleno movimiento.',
@@ -234,7 +240,16 @@ const ENCUADRES = {
   // son TEXTURA, y una textura a ese tamaño es una mancha.
   detalle: 'Primerísimo plano de UNA sola pieza con silueta reconocible, tan cerca que el resto de la escena no se ve, y recortada con claridad contra un fondo que contrasta. NO HAY NINGUNA PERSONA.',
   lugar_vacio: 'El lugar donde pasa el gooal, COMPLETAMENTE VACÍO de gente. NO HAY NINGUNA PERSONA, ni de lejos.',
-  primera_persona: 'La cámara está DONDE ESTARÍAN LOS OJOS de quien lo vive: se ve lo que ve. De su cuerpo no se ve nada, o como mucho las manos en primer plano por el borde de abajo.',
+  // QUITADA el 11-10-2026 la coletilla «o como mucho las manos en primer plano
+  // por el borde de abajo». Era opcional, así que nunca hacía falta, y cuando
+  // el modelo la tomaba salían unas manos sueltas en el canto inferior que a
+  // 179 px no se leen como manos: se leen como un defecto. Se midió al
+  // comparar las dos versiones del Mundial de rugby y del Seis Naciones — las
+  // dos que perdieron eran justo las que las llevaban.
+  //
+  // Un elemento opcional que solo puede empeorar no es una opción, es una
+  // trampa: el modelo la va a tomar la mitad de las veces y nadie la pidió.
+  primera_persona: 'La cámara está DONDE ESTARÍAN LOS OJOS de quien lo vive: se ve lo que ve. DE SU CUERPO NO SE VE NADA: ni manos, ni brazos, ni pies.',
   manos: 'Se ven ÚNICAMENTE LAS MANOS haciendo la acción, desde cerca. Ni cara, ni cabeza, ni torso, ni hombros.',
   // RETIRADO el 10-10-2026: existió "silueta_lejana", una figura diminuta
   // dentro de un paisaje grande. Lo tumbaron DOS razones independientes, y

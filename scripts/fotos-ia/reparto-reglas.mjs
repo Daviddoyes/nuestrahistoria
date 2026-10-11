@@ -131,7 +131,65 @@ export function tieneNombrePropio(titulo) {
  */
 export const LA_FOTO_ENSENA_EL_SITIO = new Set([
   'Bañarte en la piscina del Marina Bay Sands',  // decidido el 11-10-2026, tras dos intentos
+
+  // ── LOS DIECISÉIS DEL REPASO del 11-10-2026 ──
+  //
+  // Se le pasó la pregunta a los 257 que iban a IA: de los 162 que nombran un
+  // sitio en el título, éstos son los del tipo Marina Bay. Y luego el filtro
+  // que importa: si ya tienen foto aprobada QUE FUNCIONA, se quedan — mover
+  // una foto buena para cumplir una regla es poner la regla por encima del
+  // criterio, y el criterio es que se entienda de qué gooal es. Solo salvó a
+  // uno, el Madison Square Garden, que está aprobado.
+  //
+  // Doce de estos dieciséis YA TIENEN su foto de Commons: moverlos no cambia
+  // ninguna foto, solo los saca de la cola de regeneración. Los otros cuatro
+  // llevan una de IA y habrá que buscarles una en Commons.
+
+  // Estadios y pistas con nombre: un graderío genérico no es el Camp Nou, y
+  // un aficionado lo nota. El Madison ya costó dos intentos para acabar
+  // siendo «un pabellón».
+  'Ver un partido en el Camp Nou',
+  'Ver un partido en el Muro Amarillo de Dortmund',
+  'Ver un partido en el Arthur Ashe del US Open',
+  'Ver un partido en la Philippe-Chatrier de Roland Garros',
+  'Ver un partido en la pista central de Wimbledon',
+
+  // Agua y paisaje que son famosos por su forma exacta.
+  'Bañarte en la Laguna Azul',
+  'Bañarte en las terrazas de Pamukkale',
+  'Bañarte en los Baños Széchenyi',
+  'Navegar por la bahía de Ha Long',            // hoy lleva una de IA
+  'Navegar por el río Li en Guilin',            // hoy lleva una de IA
+  'Navegar por Milford Sound',
+
+  // Singulares: o es ese o no es nada.
+  'Montar en el London Eye',
+  'Jugar en el Old Course de St Andrews',
+  'Volar en globo sobre la Capadocia',          // hoy lleva una de IA
+  'Volar en globo sobre Luxor',
+  'Recorrer el Freedom Trail',
 ])
+
+/**
+ * Y LOS OCHO QUE NO SE MUEVEN, que es la parte útil de esta decisión.
+ *
+ * Son los cinco circuitos (Mónaco, Indianápolis, Monza, Silverstone, Spa),
+ * Montmeló, el Mont Ventoux y Times Square. Todos nombran un sitio real y
+ * todos funcionan hoy con foto generada.
+ *
+ * EL CRITERIO, que vale más que la decisión:
+ *
+ *   Lo que decide NO es si el sitio tiene nombre, sino si la gente lo
+ *   reconocería lo bastante como para notar que NO es ese.
+ *
+ * El Camp Nou sí: un aficionado sabe cómo es y vería que no lo es. El peralte
+ * de Monza no: nadie lo tiene en la cabeza, así que una curva peraltada entre
+ * árboles pasa por Monza sin que nadie la cace. Times Square funciona desde
+ * ayer con unos rascacielos y luz de colores, y tampoco hay quien lo discuta.
+ *
+ * O sea: la regla no protege la exactitud, protege el reconocimiento. Donde
+ * no hay nadie que pueda reconocerlo, no hay nada que proteger.
+ */
 
 export function destinoDe(gooal) {
   // Antes que nada: si la foto tiene que enseñar ese sitio, no hay encuadre
