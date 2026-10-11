@@ -298,7 +298,8 @@ export const DECIDIDOS = {
   // sitio; sus escenas siguen en ESCENAS, que es texto del prompt.
   //
   // Las que van con null ya tienen su escena escrita en ESCENAS.
-  "Montar tu propia empresa": ["hombros", null],
+  "Montar tu propia empresa": ["hombros",
+    "Encuadre recortado por los hombros: las manos y los brazos de alguien levantando desde abajo la persiana metálica de un local por primera vez, con la cabeza fuera del encuadre."],
   "Probar el fugu": ['plato',
     'Un plato redondo con láminas finísimas de pescado crudo dispuestas en flor, casi transparentes sobre la porcelana.'],
   "Cantar en un karaoke": ["manos",
@@ -312,11 +313,14 @@ export const DECIDIDOS = {
     "Un corredor de espaldas por el centro de una avenida ancha de ciudad cortada al tráfico, con vallas metálicas y público a los dos lados y la calzada vacía perdiéndose recta hacia el fondo."],
   "Bañarte en la piscina del Marina Bay Sands": ["lugar_vacio",
     "El borde infinito de una piscina en lo alto de un edificio, con el agua lamiendo el canto y derramándose, y la ciudad entera desenfocada muchísimo más abajo al otro lado, sin nadie."],
-  "Flotar en el mar Muerto": ["espaldas", null],
+  "Flotar en el mar Muerto": ["espaldas",
+    "La nuca de alguien flotando boca arriba en un agua densa y verdosa, con las rodillas asomando por delante y costras de sal blanca alrededor, sin sostener nada."],
   "Pasar un día en Ferrari Land": ["objeto",
     "El rizo completo de una montaña rusa roja recortado contra el cielo, visto desde justo debajo, con la estructura de vigas sosteniéndolo."],
-  "Doctorarte": ["objeto", null],
-  "Probar el pulpo vivo": ["plato", null],
+  "Doctorarte": ["objeto",
+    "Un bonete negro de cuatro picos con la borla dorada cayendo por un lado, apoyado de canto sobre una mesa de madera oscura y llenando el encuadre."],
+  "Probar el pulpo vivo": ["plato",
+    "Un plato blanco con trozos de tentáculo de pulpo aún moviéndose, con las ventosas abiertas y brillantes, visto desde arriba y llenando el encuadre."],
   "Hacer un voluntariado en el extranjero": ['manos',
     'Solo las manos de dos personas pasándose una caja de cartón abierta con ayuda dentro, de cerca.'],
   "Terminar una carrera universitaria": ["objeto",
@@ -340,14 +344,17 @@ export const DECIDIDOS = {
   "Practicar kitesurf": ["objeto", null],
   "Practicar wakeboard": ["objeto", null],
   "Practicar paddle surf": ["objeto", null],
-  "Practicar snowboard": ["objeto", null],
+  "Practicar snowboard": ["objeto",
+    "Una tabla de snowboard clavada de pie en la nieve con las dos fijaciones abiertas hacia arriba, ocupando casi todo el alto del encuadre, con la ladera detrás."],
   "Practicar esquí de travesía": ["objeto", null],
   "Practicar escalada en roca": ["objeto", null],
   "Practicar escalada en hielo": ["detalle", null],
   "Practicar motocross": ["detalle", null],
-  "Practicar patinaje sobre hielo": ["detalle", null],
+  "Practicar patinaje sobre hielo": ["detalle",
+    "Primerísimo plano de los surcos curvos y profundos que deja una cuchilla de patín sobre hielo pulido, con el hielo blanco levantado en el borde de cada surco."],
   "Practicar escalada en rocódromo": ["lugar_vacio", null],
-  "Practicar esquí": ["primera_persona", null],
+  "Practicar esquí": ["primera_persona",
+    "Desde los ojos de quien esquía: las puntas de los dos esquís abriéndose en uve sobre una pendiente de nieve recién pisada que cae hacia el valle."],
   "Practicar vela": ["primera_persona",
     "Desde la cubierta de un velero escorado, la vela mayor blanca tensa llenando media foto por un lado y, por debajo de la baranda inclinada, el mar azul oscuro pasando rápido con espuma."],
   "Actuar en un escenario": ['hombros',
@@ -383,8 +390,8 @@ export const DECIDIDOS = {
     "Desde la grada, coches de carreras entrando en fila en una curva lenta de 180 grados, con anchas trampas de grava marrón a los lados y montañas secas y peladas al fondo."],
   "Ver una carrera en el circuito de Mónaco": [null,
     "Desde la grada, un coche de carreras pasando pegado a un quitamiedos metálico al borde del agua, con yates blancos amarrados justo detrás."],
-  "Ver una carrera en Indianápolis": [null,
-    "Desde la grada, una franja ancha de ladrillo rojo gastado cruzando el asfalto de lado a lado del encuadre, con coches de Fórmula Indy pasando por encima de ella a toda velocidad."],
+  "Ver una carrera en Indianápolis": ["detalle",
+    "Primerísimo plano de una franja de ladrillo rojo gastado cruzando el asfalto de lado a lado y llenando el encuadre, con un monoplaza pasando por encima desenfocado por la velocidad."],
   "Ver una carrera en Monza": [null,
     "Desde la grada, una curva de hormigón muy peraltada y abandonada entre árboles, con los coches de carreras pasando a toda velocidad por la pista nueva justo por debajo."],
   "Ver una carrera en Silverstone": [null,
@@ -532,6 +539,12 @@ export const DECIDIDOS = {
     "Una tabla de madera clara con cuatro cortes gruesos de atún crudo de rojos distintos puestos en fila, vista desde arriba y llenando el encuadre, sin nadie alrededor."],
   "Comer suquet de peix en la Costa Brava": [null,
     "Una cazuela de barro con guiso de pescado y patatas en un caldo naranja, vista desde arriba, con un trozo de pan apoyado en el borde."],
+  "Jugar al Holi en India": [null,
+    "Siluetas de gente con las manos en alto lanzando nubes de polvo de color rosa y amarillo que llenan todo el aire a contraluz."],
+  "Mojarte en el Songkran": [null,
+    "Siluetas de gente empapada recibiendo un arco de agua lanzada que cruza el encuadre entero brillando a contraluz."],
+  "Pasar un día en PortAventura": [null,
+    "La estructura de vigas de madera cruzadas de una montaña rusa llenando el encuadre, con el raíl subiendo en diagonal y sin nadie."],
 }
 
 /**
@@ -934,6 +947,28 @@ export const APROBADAS = new Set([
   "Comerte un escorpión",
   "Ir a la Festa dels Raiers",
   "Correr un encierro de San Fermín",
+  //
+  // ══ LAS TANDAS DE 21 Y DE 7, CERRADAS TARDE el 11-10-2026 ══
+  //
+  // Se quedaron sin declarar y se vio al montar la tanda siguiente: cinco de
+  // ellas estaban a punto de regenerarse. Poner el guardián no bastaba —
+  // cerrar cada tanda es la otra mitad de la regla.
+  //
+  // De "Claude outputs/veintiuna/" (11):
+  "Hacer la ruta de las nueve ermitas del Montsant",
+  "Llegar al campo base del Everest",
+  "Correr la Marató de Barcelona",
+  "Ir a la Feria de Abril",
+  "Hacer la Vía Verde del Carrilet de Olot a Girona",
+  "Subir en bici al Port del Cantó",
+  "Ver una final de la Champions League",
+  "Navegar por el delta del Ebro",
+  "Bañarte en Cala Estreta",
+  "Practicar vela",
+  "Ir al Aplec del Caragol de Lleida",
+  //
+  // De "Claude outputs/siete/" (1):
+  "Hacer una travesía de varios días en montaña",
 ])
 
 /**
@@ -1124,7 +1159,7 @@ export const ELEMENTO = {
   // es esto, porque sin elemento el detector de gemelas no las ve — y son
   // justo donde están las parejas evidentes: cuatro fuegos, cinco mercados,
   // ocho circuitos, cuatro escenarios de concierto.
-  "Practicar esquí": "pendiente nevada",
+  "Practicar esquí": "puntas de los esquís sobre la nieve",
   "Practicar vela": "vela tensa desde cubierta",
   "Ver el festival de globos de Albuquerque": "globos en el aire",
   "Ver la Nochevieja en Times Square": "rascacielos con confeti cayendo",
@@ -1133,7 +1168,7 @@ export const ELEMENTO = {
   "Ver un Gran Premio de MotoGP": "moto tumbada en curva",
   "Ver un Gran Premio en Montmeló": "curva lenta de 180 grados",
   "Ver una carrera en el circuito de Mónaco": "quitamiedos junto a los yates",
-  "Ver una carrera en Indianápolis": "franja de ladrillo",
+  "Ver una carrera en Indianápolis": "franja de ladrillo de cerca",
   "Ver una carrera en Monza": "curva peraltada entre árboles",
   "Ver una carrera en Silverstone": "pista llana con hangares",
   "Ver una carrera en Spa-Francorchamps": "subida ciega entre bosque",
@@ -1185,8 +1220,8 @@ export const ELEMENTO = {
   "Ir al Carnaval de Venecia": "máscara veneciana",
   "Ir al Festival de Cine de Sitges": "máscara de látex de criatura",
   "Ir al Saint Patrick's Day de Dublín": "jarras de cerveza negra",
-  "Jugar al Holi en India": "polvo de colores",
-  "Mojarte en el Songkran": "agua lanzada",
+  "Jugar al Holi en India": "polvo de colores en el aire",
+  "Mojarte en el Songkran": "arco de agua a contraluz",
   "Pasar un día en Ferrari Land": "rizo de montaña rusa",
   "Sacarte el título de buceo Open Water": "silueta bajo el agua",
   "Soltar un farolillo en el Yi Peng": "farolillos en el cielo",
@@ -1204,7 +1239,7 @@ export const ELEMENTO = {
   "Comer en un restaurante con dos estrellas Michelin": "campana levantándose con humo",
   "Comer en un restaurante con una estrella Michelin": "salsa vertida al servir",
   "Comer gambas de Palamós": "gambas enteras en fila",
-  "Probar el pulpo vivo": "marisco",
+  "Probar el pulpo vivo": "tentáculos con ventosas",
   "Comer suquet de peix en la Costa Brava": "guiso de pescado",
   "Comer un pastel de Belém": "dulce",
   "Comer una pizza napolitana en Nápoles": "pizza",
@@ -1224,7 +1259,7 @@ export const ELEMENTO = {
   "Probar el haggis": "embutido",
   "Probar el surströmming": "pescado en conserva",
   "Tomar una cerveza en el Guinness Storehouse": "cerveza",
-  "Doctorarte": "birrete",
+  "Doctorarte": "bonete de cuatro picos",
   "Practicar CrossFit": "barra y discos",
   "Practicar escalada en roca": "calzado deportivo",
   "Practicar esquí de travesía": "esquís",
@@ -1232,7 +1267,7 @@ export const ELEMENTO = {
   "Practicar hípica": "silla de montar",
   "Practicar kitesurf": "cometa",
   "Practicar paddle surf": "tabla y remo",
-  "Practicar snowboard": "tabla en la nieve",
+  "Practicar snowboard": "tabla clavada en la nieve",
   "Practicar surf": "tabla en la arena",
   "Practicar tenis": "raqueta y pelota",
   "Practicar wakeboard": "cuerda de arrastre",
@@ -1250,18 +1285,18 @@ export const ELEMENTO = {
   "Dormir en un bungalow sobre el agua en Bora Bora": "bungalow con montaña detrás",
   "Dormir en un bungalow sobre el agua en Maldivas": "hilera de bungalows con pasarela",
   "Hacer una cata de vinos en una bodega": "bodega de barricas",
-  "Pasar un día en PortAventura": "montaña rusa",
+  "Pasar un día en PortAventura": "entramado de madera de la montaña rusa",
   "Practicar escalada en rocódromo": "muro de presas",
   "Bañarte en la piscina del Marina Bay Sands": "borde infinito sobre la ciudad",
   "Caminar sobre un glaciar en Islandia": "nieve o hielo",
   "Correr la Marató de Barcelona": "avenida ancha entre vallas",
   "Dormir en una cabaña sin electricidad": "vela sobre mesa de madera",
-  "Flotar en el mar Muerto": "agua densa",
+  "Flotar en el mar Muerto": "nuca y rodillas sobre agua densa",
   "Terminar un máster": "escalinata",
   "Ver un eclipse solar total": "cielo con eclipse",
   "Practicar escalada en hielo": "piolet",
   "Practicar motocross": "barro",
-  "Practicar patinaje sobre hielo": "hielo rayado",
+  "Practicar patinaje sobre hielo": "surcos de cuchilla en el hielo",
   "Sacarte el cinturón negro": "cinturón",
   "Saltar en paracaídas": "paracaídas",
 }
@@ -1361,7 +1396,7 @@ export const PRIMER_PLANO = {
   "Ver un partido en la Philippe-Chatrier de Roland Garros": "una superficie de suelo o pista",
   "Ver un partido en la pista central de Wimbledon": "una superficie de suelo o pista",
   "Ver una carrera en el circuito de Mónaco": "un vehículo o embarcación",
-  "Ver una carrera en Indianápolis": "un vehículo o embarcación",
+
   "Ver una carrera en Monza": "una estructura grande y alta",
   "Ver una carrera en Silverstone": "un vehículo o embarcación",
   "Ver una carrera en Spa-Francorchamps": "una superficie de suelo o pista",
@@ -1449,12 +1484,12 @@ export const PRIMER_PLANO = {
  * Al añadir algo a propósito, se sube el número de aquí. Es el único sitio.
  */
 export const CUANTOS = {
-  DECIDIDOS: 231,
+  DECIDIDOS: 234,
   CAMARA: 260,
   ELEMENTO: 259,
-  PRIMER_PLANO: 129,
+  PRIMER_PLANO: 128,
   NO_SABE_HACERLO: 2,
-  APROBADAS: 65,
+  APROBADAS: 77,
 }
 
 /**

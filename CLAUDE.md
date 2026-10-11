@@ -1414,6 +1414,16 @@ y el agujero se repetiría cuatro o cinco veces. Son dos cosas:
 2. **Y la tanda no se cierra hasta escribirlas**, diciendo de qué carpeta sale
    cada una: cuando de un gooal hay dos versiones, la buena no es la última.
 
+**Y el segundo paso es el que de verdad falta**, porque el primero solo se
+puede cumplir si el segundo se hace. Al día siguiente de poner el guardián, al
+montar la tanda siguiente aparecieron **cinco gooals con foto buena sin
+declarar** —de las tandas de 21 y de 7, que tampoco se habían cerrado— y dos
+estaban a punto de regenerarse. El guardián no falló otra vez: **seguía sin
+tener qué proteger**.
+
+> Poner el guardián no arregla nada por sí solo. Un guardián que mira una lista
+> que nadie rellena es un guardián mirando una lista vacía.
+
 ## Una prueba de un mecanismo de seguridad no puede hacer el daño del que protege
 
 El mismo día, probando ese guardián: se lanzó el generador contra **la lista
