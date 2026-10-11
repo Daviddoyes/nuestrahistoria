@@ -1573,6 +1573,31 @@ La regla práctica:
 Lo mismo valía ya para `scripts/lib/paises-iso.mjs`, que nació igual: de una
 tabla copiada que estaba incompleta en un sitio y completa en otro.
 
+### Y el corte de red, que estaba escrito y no estaba en el código
+
+La lista de «ahora no» de aquí arriba dice, con todas las letras, «y un corte
+de red». El 11-10-2026 una tanda de cuarenta se murió en la imagen 14 con un
+`ECONNRESET`, y las trece ya hechas se quedaron **sin ningún registro**.
+
+Dos fallos a la vez, y los dos ya tenían su lección escrita en este fichero:
+
+1. **`fetch` no devuelve un estado cuando se cae la conexión: LANZA.** El
+   `throw` se escapaba del bucle de reintentos, que solo miraba lo que la
+   función devolvía. El texto decía «un corte de red es un ahora no» y el
+   código no lo sabía — otra vez la lección en el fichero y no en el módulo.
+   Ahora `scripts/lib/frenos.mjs` atrapa el throw y lo clasifica, y **lo que no
+   es de red se vuelve a lanzar**: un fallo del propio código reintentado a
+   ciegas es ruido que tapa el error de verdad.
+2. **El registro se escribía al final.** Trece imágenes en disco que ningún
+   fichero sabía que existían, justo lo que advierte «un proceso en varios
+   pasos anota su progreso en el paso que lo produce». Ahora `tanda.json` se
+   reescribe después de cada imagen.
+
+> Y la forma del fallo, que es la que hay que reconocer: **lo que mata un
+> proceso largo casi nunca es lo que estabas probando.** Los candados, el
+> guardián y los frenos de 429 funcionaron todos; lo que no existía era el
+> caso aburrido —se cayó la red— y se llevó por delante media tanda.
+
 ### Y el matiz que costó una hora: un 429 no siempre es un freno
 
 OpenAI devuelve **429 también cuando la cuenta se queda sin saldo**. El mismo

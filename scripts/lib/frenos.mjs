@@ -32,6 +32,28 @@ export const ESPERAS = [10000, 30000, 60000, 120000]
  */
 export const esFreno = estado => estado === 429 || estado >= 500
 
+/**
+ * Y UN CORTE DE RED TAMBIÉN ES UN «AHORA NO».
+ *
+ * `fetch` no devuelve un estado cuando se cae la conexión: LANZA. Estos son
+ * los códigos de red que no dicen nada de lo que pediste —la petición no llegó
+ * o no volvió—, así que se espera y se reinsiste igual que con un 429.
+ *
+ * Lo que NO esté aquí se vuelve a lanzar: un fallo del propio código
+ * reintentado a ciegas es ruido que tapa el error de verdad.
+ */
+const CODIGOS_DE_RED = new Set([
+  'ECONNRESET', 'ECONNREFUSED', 'ETIMEDOUT', 'ENOTFOUND', 'EAI_AGAIN',
+  'EPIPE', 'ENETUNREACH', 'EHOSTUNREACH', 'UND_ERR_SOCKET', 'UND_ERR_CONNECT_TIMEOUT',
+])
+export const esCorteDeRed = e => {
+  if (!e) return false
+  const codigo = e.cause?.code ?? e.code
+  if (codigo && CODIGOS_DE_RED.has(codigo)) return true
+  const m = String(e.message ?? '')
+  return m.includes('fetch failed') || m.includes('terminated') || m.includes('socket hang up')
+}
+
 // ── PERO UN 429 NO SIEMPRE ES UN FRENO ────────────────────
 //
 // OpenAI devuelve 429 también cuando la cuenta se queda SIN SALDO
@@ -82,7 +104,23 @@ export function crearFrenos({ esperas = ESPERAS, ritmoMaximo = 20000, paso = 400
       let ultimo = null
       for (let intento = 0; intento <= esperas.length; intento++) {
         if (intento) await dormir(esperas[intento - 1])
-        const r = await hacer(intento)
+        let r
+        try {
+          r = await hacer(intento)
+        } catch (e) {
+          // UN CORTE DE RED ES UN «AHORA NO», y hasta el 11-10-2026 no lo era
+          // aquí: `fetch` LANZA con ECONNRESET en vez de devolver un estado,
+          // el throw se escapaba de este bucle y mataba el guion entero. Pasó
+          // en la imagen 14 de una tanda de 40, y las 13 hechas se quedaron
+          // sin registro porque el guion no llegó a escribirlo.
+          //
+          // La lección ya estaba escrita en CLAUDE.md —«un corte de red» entre
+          // los «ahora no»— y el código no la tenía. Por eso va AQUÍ, en el
+          // módulo que comparten todos: un texto no se aplica solo al guion
+          // siguiente, un módulo sí.
+          if (!esCorteDeRed(e)) throw e   // lo que no es red no se reintenta a ciegas
+          r = { freno: 'corte de red (' + (e.cause?.code ?? e.code ?? e.message) + ')' }
+        }
         if (r && r.freno) {
           ultimo = r.freno
           frenazos++

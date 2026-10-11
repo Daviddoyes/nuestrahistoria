@@ -66,6 +66,10 @@ const hechas = []
 const rechazadas = []
 const falladas = []
 
+/** Deja el registro al día en cuanto pasa algo, no cuando acaba el bucle. */
+const anotar = () => writeFileSync(`${carpeta}/tanda.json`,
+  JSON.stringify({ hechas, rechazadas, falladas }, null, 1), 'utf8')
+
 for (const [i, gooal] of gooals.entries()) {
   const encuadre = encuadreDe(gooal)
   const prompt = construirPrompt(gooal, 'A', i)
@@ -112,10 +116,14 @@ for (const [i, gooal] of gooals.entries()) {
   writeFileSync(fichero, Buffer.from(r.datos.data[0].b64_json, 'base64'))
   hechas.push({ ...gooal, encuadre, fichero, prompt })
   console.log('   ' + fichero)
+  // EL REGISTRO SE ESCRIBE AQUÍ, no al final. Hasta el 11-10-2026 se escribía
+  // al terminar el bucle, y una tanda de 40 se cortó en la 14: las 13 hechas
+  // quedaron en disco SIN NINGÚN REGISTRO, así que ni las hojas ni nada
+  // sabían que existían. La memoria de lo hecho vive donde ocurre lo hecho.
+  anotar()
 }
 
-writeFileSync(`${carpeta}/tanda.json`,
-  JSON.stringify({ hechas, rechazadas, falladas }, null, 1), 'utf8')
+anotar()
 
 console.log(`\n── LA TANDA ──`)
 console.log(`  hechas:     ${hechas.length} de ${gooals.length}`)
