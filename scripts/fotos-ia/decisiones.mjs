@@ -384,7 +384,7 @@ export const DECIDIDOS = {
   "Ver una carrera en el circuito de Mónaco": [null,
     "Desde la grada, un coche de carreras pasando pegado a un quitamiedos metálico al borde del agua, con yates blancos amarrados justo detrás."],
   "Ver una carrera en Indianápolis": [null,
-    "Desde la grada, coches de carreras cruzando en fila una franja estrecha de ladrillo rojo encajada en el asfalto de la meta de un óvalo."],
+    "Desde la grada, una franja ancha de ladrillo rojo gastado cruzando el asfalto de lado a lado del encuadre, con coches de Fórmula Indy pasando por encima de ella a toda velocidad."],
   "Ver una carrera en Monza": [null,
     "Desde la grada, una curva de hormigón muy peraltada y abandonada entre árboles, con los coches de carreras pasando a toda velocidad por la pista nueva justo por debajo."],
   "Ver una carrera en Silverstone": [null,
@@ -889,6 +889,51 @@ export const APROBADAS = new Set([
   // Gana la de "Claude outputs/cuarenta-nuevas/":
   'Ver un partido del Mundial de rugby', // la melé con los postes y el campo; la vieja tenía manos sueltas
   'Ver un partido del Seis Naciones',    // el balón pasando el travesaño, que es lo que cuenta el gooal
+  //
+  // ══ LA TANDA DE CUARENTA, CERRADA el 11-10-2026 ══
+  //
+  // Dos fuera y por motivos distintos: el Marina Bay se va a Commons —esa
+  // foto tiene que enseñar ESE sitio— e Indianápolis falla y se reescribe.
+  // La final de la NBA se queda con su versión vieja, ya declarada arriba.
+  //
+  // De "Claude outputs/cuarenta-nuevas/" (23):
+  "Ir al Burning Man",
+  "Ir al Glastonbury",
+  "Ir al Saint Patrick's Day de Dublín",
+  "Montar en un coche clásico por La Habana",
+  "Ver un Gran Premio de Fórmula 1",
+  "Ver un Gran Premio de MotoGP",
+  "Ver un partido del Mundial de fútbol",
+  "Ver una etapa de la Volta a Catalunya",
+  "Ver una etapa del Rally Dakar",
+  "Bailar salsa",
+  "Bailar tango",
+  "Bañarte en la cala de Sa Tuna",
+  "Bañarte en los gorgs de la Garrotxa",
+  "Bañarte en una playa de arena negra de Santorini",
+  "Bucear a más de 30 metros",
+  "Caminar sobre un glaciar en Islandia",
+  "Comer arroz en el Delta del Ebro",
+  "Comer suquet de peix en la Costa Brava",
+  "Comerte una tarántula",
+  "Correr la Mitja de Granollers",
+  "Correr la Ultra Pirineu",
+  "Correr un 10K",
+  "Correr una media maratón",
+  //
+  // De "Claude outputs/doce-b/" (7), la vuelta que arregló las flojas:
+  "Ir al Festival de Cine de Sitges",
+  "Cantar en un karaoke",
+  "Ver la Nochevieja en Times Square",
+  "Ver los fuegos de Nochevieja en Sídney",
+  "Bucear en Raja Ampat",
+  "Ver una final de Grand Slam de tenis",
+  "Comer en el mercado de Toyosu",
+  //
+  // De "Claude outputs/tres-c/" (3), las del segundo fallo con encuadre nuevo:
+  "Comerte un escorpión",
+  "Ir a la Festa dels Raiers",
+  "Correr un encierro de San Fermín",
 ])
 
 /**
@@ -1409,7 +1454,7 @@ export const CUANTOS = {
   ELEMENTO: 259,
   PRIMER_PLANO: 129,
   NO_SABE_HACERLO: 2,
-  APROBADAS: 32,
+  APROBADAS: 65,
 }
 
 /**

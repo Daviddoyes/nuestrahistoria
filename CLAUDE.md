@@ -1361,6 +1361,37 @@ buzón de cima y la moneda de la Fontana están solos y funcionan. Lo que cambia
 en una multitud es que **un objeto quieto no tiene dónde destacar**: hay
 cincuenta cuerpos moviéndose alrededor y el ojo —y el modelo— se van con ellos.
 
+## Si dos comparten primer plano, el fondo no los diferencia
+
+A 179 px el fondo casi no se ve. Parece obvio escrito y no lo fue al hacerlo:
+
+> **Si dos gooals comparten primer plano, diferenciarlos por el fondo NO es
+> diferenciarlos.** La diferencia tiene que estar en lo que ocupa el cuadro.
+
+Las cinco de correr —la Mitja, un 10K, un maratón, la Ultra Pirineu y una media
+maratón— se diferenciaron con cuidado: avenida ancha con vallas, calle estrecha
+de pueblo, paseo marítimo al amanecer, cresta de montaña. Las diferencias son
+reales **y están todas en el fondo**. El primer plano es el mismo en las cinco:
+una espalda de corredor.
+
+Una a una funcionan. Juntas en una lista van a leerse como la misma foto cinco
+veces, que es el fallo del duplicado que ya costó los 39 grupos.
+
+### Y su hermana: dos elementos distintos pueden dar la misma foto
+
+El detector de gemelas compara el ELEMENTO, y «Comerte un escorpión» (cola con
+aguijón) y «Comerte una tarántula» (patas peludas) tienen elementos distintos.
+Salieron la misma foto: unas manos, un plato blanco y un bicho oscuro.
+
+> **Dentro de un encuadre que ya fija casi todo el cuadro, dos elementos
+> distintos no bastan para que sean dos fotos.** El encuadre pone las manos, el
+> plato y el ángulo; lo que queda para el elemento es demasiado pequeño para
+> distinguirse a tamaño de tarjeta.
+
+Es la misma razón por la que `PRIMER_PLANO` solo existe en los cuatro encuadres
+de composición libre — y el aviso de que en los otros seis el detector no puede
+avisar de nada, así que ahí decide quien mira.
+
 ## Aprobar y apuntar son UNA acción, no dos
 
 > **Una foto aprobada en el chat y no escrita en `APROBADAS` NO ESTÁ APROBADA.**
@@ -1855,4 +1886,22 @@ sigue; una nota pendiente espera a alguien.
   los que son. No tiene fecha, tiene condición: **cuando se toque la carga del
   perfil, esto se mira el mismo día.** Vive en `cruzar()`, dentro de
   `src/components/perfil/EnComun.tsx`. Anotado el 9-10-2026.
+- **CUATRO GOOALS SE MOVIERON A COMMONS Y TODAVÍA LLEVAN UNA FOTO DE IA.** Son
+  `Navegar por la bahía de Ha Long`, `Navegar por el río Li en Guilin`,
+  `Volar en globo sobre la Capadocia` y `Ver un partido en el Camp Nou`. El
+  11-10-2026 entraron en `LA_FOTO_ENSENA_EL_SITIO` porque su foto tiene que
+  enseñar ESE sitio, pero la que tienen hoy es generada. **Hay que buscarles
+  una en Commons**, que es trabajo pendiente y no un apunte: hasta entonces el
+  catálogo enseña una bahía de Ha Long que no es la bahía de Ha Long. Los otros
+  doce de esa lista ya tenían su foto de Commons y no hay nada que hacer con
+  ellos.
+- **REVISIÓN PENDIENTE: LA FAMILIA DE CORRER, VIÉNDOLAS TODAS A LA VEZ.** La
+  Mitja de Granollers, un 10K, un maratón, la Ultra Pirineu y una media maratón
+  funcionan una a una, y las cinco tienen **el mismo primer plano**: una
+  espalda de corredor. Lo que las separa —la avenida, la calle de pueblo, el
+  paseo marítimo, la cresta— está todo en el fondo, y a 179 px el fondo casi no
+  se ve (ver «Si dos comparten primer plano, el fondo no los diferencia»).
+  Se mira cuando estén las cinco tandas y se pueda ver el catálogo junto, y
+  entonces se decide cuántas espaldas aguanta esa lista. No se tocan antes:
+  hoy no hay con qué comparar. Anotado el 11-10-2026.
 - No hay tests.
