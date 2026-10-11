@@ -314,7 +314,7 @@ const SUJETO_DEL_ENCUADRE = {
   espaldas: ['de espaldas', 'nuca', 'hombros', 'alguien', 'corredor', 'persona'],
   hombros: ['torso', 'brazo', 'manos', 'hombros'],
   casco: ['casco'],
-  manos: ['manos', 'dedos', 'muñeca'],
+  manos: ['manos', 'mano', 'dedos', 'muñeca'],
   plato: ['plato', 'fuente', 'cuenco', 'bandeja', 'llauna', 'mostrador', 'barra', 'cazuela', 'huevera', 'mesa', 'parrilla', 'cucurucho', 'paella', 'tabla', 'sartén', 'olla'],
 }
 

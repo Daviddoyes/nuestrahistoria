@@ -20,6 +20,7 @@
 //   falladas    cualquier otra cosa (red, saldo, un 500)
 import { mkdirSync, writeFileSync, readFileSync } from 'node:fs'
 import { construirPrompt, encuadreDe, TAMANO, MODELO, CALIDAD } from './estilos.mjs'
+import { APROBADAS } from './decisiones.mjs'
 import { crearFrenos, esFreno, CODIGOS_DEFINITIVOS } from '../lib/frenos.mjs'
 
 const CLAVE = process.env.OPENAI_API_KEY
@@ -33,6 +34,28 @@ if (!carpeta || !lista) {
 }
 
 const gooals = JSON.parse(readFileSync(lista, 'utf8'))
+
+// ── NO SE REGENERA LO APROBADO ────────────────────────────
+//
+// Esta comprobación vivía en los guiones sueltos que montaban cada lista, y
+// eso es lo mismo que no tenerla: el 11-10-2026 se colaron cuatro aprobadas en
+// una tanda de cuarenta porque la lista se montó por otro camino.
+//
+// Es la lección del módulo compartido: un texto no se aplica solo al guion
+// siguiente; una comprobación DENTRO del que gasta el dinero, sí. Aquí es
+// donde se paga, así que aquí es donde se mira.
+//
+// Y con una salida a propósito, porque rehacer una aprobada es legítimo si se
+// decide: --rehacer-aprobadas lo permite y lo dice por pantalla.
+const rehacerAprobadas = process.argv.includes('--rehacer-aprobadas')
+const yaAprobadas = gooals.filter(g => APROBADAS.has(g.titulo))
+if (yaAprobadas.length && !rehacerAprobadas) {
+  console.error('PARA: ' + yaAprobadas.length + ' de la lista ya están APROBADAS y se perdería la foto buena:')
+  for (const g of yaAprobadas) console.error('   ' + g.titulo)
+  console.error('Si quieres rehacerlas igualmente, pasa --rehacer-aprobadas.')
+  process.exit(1)
+}
+if (yaAprobadas.length) console.log('OJO: rehaciendo ' + yaAprobadas.length + ' que estaban aprobadas, porque lo has pedido.')
 mkdirSync(carpeta, { recursive: true })
 
 const frenos = crearFrenos({
