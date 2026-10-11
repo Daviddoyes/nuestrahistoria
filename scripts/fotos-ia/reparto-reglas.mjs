@@ -113,7 +113,33 @@ export function tieneNombrePropio(titulo) {
  * A dónde va la foto de este gooal, y por qué.
  * Devuelve { destino: 'commons' | 'ia', porque: '...' }
  */
+/**
+ * LA FOTO TIENE QUE ENSEÑAR ESE SITIO, aunque el verbo no sea de ver.
+ *
+ * La división entre Commons y la IA mira el VERBO: «ver», «visitar» y «pasear»
+ * mandan a Commons, y «bañarse», «comer» o «dormir» a IA, porque ahí el sitio
+ * suele ser una sede intercambiable.
+ *
+ * Pero hay excepciones, y el 11-10-2026 una costó dos intentos: «Bañarte en la
+ * piscina del Marina Bay Sands». El verbo es bañarse, así que fue a IA — y una
+ * piscina infinita genérica NO ES ESE GOOAL. Esa piscina es famosa por ser ESA,
+ * igual que la Alhambra, y ninguna foto generada va a serlo.
+ *
+ * La pregunta que decide, que es la del principio: **¿esta foto tiene que
+ * enseñar ese sitio para que el gooal se reconozca?** Si sí, va a Commons
+ * aunque el verbo diga otra cosa.
+ */
+export const LA_FOTO_ENSENA_EL_SITIO = new Set([
+  'Bañarte en la piscina del Marina Bay Sands',  // decidido el 11-10-2026, tras dos intentos
+])
+
 export function destinoDe(gooal) {
+  // Antes que nada: si la foto tiene que enseñar ese sitio, no hay encuadre
+  // que lo arregle. Esto se mira ANTES que el verbo, porque es justo el caso
+  // en que el verbo engaña.
+  if (LA_FOTO_ENSENA_EL_SITIO.has(gooal.titulo)) {
+    return { destino: 'commons', porque: 'la foto tiene que enseñar ESE sitio para que se reconozca' }
+  }
   const t = gooal.titulo
   // Lo que el modelo no sabe hacer se queda con su Commons, aunque por lo
   // demás le tocara IA. Ver NO_SABE_HACERLO en decisiones.mjs.
@@ -238,7 +264,11 @@ export const CONTROL = [
   // cualquier regla.
   { titulo: 'Hacer cumbre en un dosmil', categoria: 'deporte', encuadre: 'objeto' },
   { titulo: 'Probar el fugu', categoria: 'gastronomia', encuadre: 'plato' },
-  { titulo: 'Comerte un escorpión', categoria: 'gastronomia', encuadre: 'plato' },
+  // CAMBIADO el 11-10-2026, y a propósito: era 'plato' y falló DOS veces ahí,
+  // las dos con brazos y sin que se viera el bicho. Por la regla de los dos
+  // fallos se le cambió el encuadre a 'detalle'. El control se actualiza con
+  // la decisión; si no, avisa de algo que ya sabemos y se deja de mirar.
+  { titulo: 'Comerte un escorpión', categoria: 'gastronomia', encuadre: 'detalle' },
   { titulo: 'Ir a un concierto de tu grupo favorito', categoria: 'eventos', encuadre: 'contraluz' },
   { titulo: 'Aprender a tocar un instrumento', categoria: 'vida', encuadre: 'hombros' },
   // Los dos que cazaron defectos de verdad, y se quedan de guardia:

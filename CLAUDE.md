@@ -1361,6 +1361,46 @@ buzón de cima y la moneda de la Fontana están solos y funcionan. Lo que cambia
 en una multitud es que **un objeto quieto no tiene dónde destacar**: hay
 cincuenta cuerpos moviéndose alrededor y el ojo —y el modelo— se van con ellos.
 
+## Aprobar y apuntar son UNA acción, no dos
+
+> **Una foto aprobada en el chat y no escrita en `APROBADAS` NO ESTÁ APROBADA.**
+> Si una tanda se cierra sin escribir sus aprobadas, la tanda no está cerrada.
+
+El 11-10-2026 una tanda de cuarenta regeneró **cuatro fotos que ya estaban
+buenas**. El guardián no falló: comprueba `APROBADAS`, y esos títulos no
+estaban. De las 25 de la tanda anterior, **trece** se habían dado por buenas en
+una conversación y ninguna se escribió. Una conversación no es un sitio donde
+releer nada — es la misma forma que «una nota pendiente sin sitio donde
+releerla no es un plan».
+
+Y el arreglo no puede ser acordarse mejor, porque quedan cuatro o cinco tandas
+y el agujero se repetiría cuatro o cinco veces. Son dos cosas:
+
+1. **La comprobación vive DENTRO del guion que gasta el dinero**, no en el que
+   monta la lista. `generar.mjs` para si un título de la tanda está en
+   `APROBADAS`, antes de llamar a la API, con `--rehacer-aprobadas` para
+   cuando rehacerla sea una decisión.
+2. **Y la tanda no se cierra hasta escribirlas**, diciendo de qué carpeta sale
+   cada una: cuando de un gooal hay dos versiones, la buena no es la última.
+
+## Una prueba de un mecanismo de seguridad no puede hacer el daño del que protege
+
+El mismo día, probando ese guardián: se lanzó el generador contra **la lista
+real de las cuarenta** para ver si paraba. No paró —ninguna estaba aprobada,
+que era lo correcto— y empezó a generar. Dos imágenes y 0,13 € tirados por una
+prueba.
+
+> **El cebo no es «una lista parecida a la de verdad»: es una lista que, aunque
+> el guardián falle entero, no gaste nada.** Títulos falsos, no títulos reales.
+
+Es general y vale para todo lo que se monte aquí: una prueba de un freno se
+hace con un coche de cartón. Si el montaje de la prueba puede causar el daño,
+la prueba es el daño.
+
+Y su hermana, ya escrita más arriba: **el montaje de la prueba también se
+comprueba.** Un cebo que no se inserta deja una prueba que pasa sin mirar nada;
+un cebo que sí es real deja una prueba que puede costar dinero.
+
 ## Dos clases de rendición, y la segunda se ve sin gastar nada
 
 Entrar en `NO_SABE_HACERLO` es renunciar a generarle foto a un gooal. Hay dos

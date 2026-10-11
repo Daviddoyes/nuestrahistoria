@@ -500,8 +500,8 @@ export const DECIDIDOS = {
     "El mostrador de un puesto de comida callejera con un cazo grande de latón lleno de caldo de caracoles sobre el fuego, con el gentío de la plaza desenfocado detrás."],
   "Comer en un hawker centre de Singapur": [null,
     "El mostrador de un puesto de comida con una bandeja metálica de compartimentos, arroz blanco en uno y tres guisos en los otros, con las mesas llenas desenfocadas detrás."],
-  "Comerte un escorpión": [null,
-    "Un escorpión entero servido en un plato pequeño de porcelana blanca sobre un mantel de lino, con la cola curvada hacia arriba y el aguijón bien visible, unos palillos apoyados en el borde y NADIE alrededor."],
+  "Comerte un escorpión": ["detalle",
+    "Primerísimo plano de un escorpión entero frito, con la cola curvada hacia arriba y el aguijón afilado, recortado contra un fondo oscuro y liso."],
   "Comerte una tarántula": [null,
     "Una tarántula frita entera servida en un plato de papel, con las ocho patas peludas abiertas y una cuña de lima al lado."],
   "Beber en una carpa del Oktoberfest": ["lugar_vacio",
@@ -518,10 +518,10 @@ export const DECIDIDOS = {
     "Una máscara veneciana blanca de nariz larga, con el dorado del borde y una pluma, llenando el encuadre de cerca y recortada contra la piedra oscura de un soportal."],
   "Ir al Festival de Cine de Sitges": ["detalle",
     "Una máscara de látex de criatura, con la piel rugosa y los colmillos, llenando el encuadre de cerca y recortada contra el negro del fondo."],
-  "Ir a la Festa dels Raiers": [null,
-    "Dos siluetas de raiers de pie manejando las pértigas sobre un rai de troncos atados que ocupa casi todo el encuadre, bajando por un río que brilla a contraluz."],
-  "Correr un encierro de San Fermín": [null,
-    "Siluetas de gente corriendo en tropel justo por delante de los cuernos de un toro negro que llena el centro del encuadre, por una calle estrecha de adoquines."],
+  "Ir a la Festa dels Raiers": ["objeto",
+    "Un rai de troncos de madera atados con cuerda, amarrado al borde de un río de montaña y ocupando casi todo el encuadre, con las pértigas apoyadas encima."],
+  "Correr un encierro de San Fermín": ["detalle",
+    "Primerísimo plano de la cabeza y los cuernos de un toro negro en plena carrera, con la calle estrecha de adoquines desenfocada detrás."],
   "Ver la Nochevieja en Times Square": ["primera_persona",
     "Desde el medio de la calle y mirando hacia arriba, los rascacielos cerrándose sobre un trozo de cielo negro, con las fachadas cubiertas de luz de colores y confeti blanco cayendo entre ellos."],
   "Ver una etapa del Rally Dakar": [null,
@@ -674,7 +674,7 @@ export const CAMARA = {
   // Su encuadre lo eligió una regla, así que no habían pasado por aquí. Sin
   // esto, las 8 de plato saldrían con el mismo ángulo y la misma luz, que es
   // justo el problema que este eje existe para evitar, en una tanda de 40.
-  "Comerte un escorpión": [null, "interior"],
+  "Comerte un escorpión": [null, "mediodía duro"],
   "Comerte una tarántula": [null, "mediodía duro"],
   "Hacer una calçotada en Valls": [null, "tarde larga"],
   "Comer en un hawker centre de Singapur": [null, "interior"],
@@ -716,8 +716,8 @@ export const CAMARA = {
   "Pilotar una avioneta": [null, "día nublado"],
   "Probar el fugu": [null, "interior"],
   "Cantar en un karaoke": [null, "interior"],
-  "Correr un encierro de San Fermín": ["a ras de suelo", null],
-  "Ir a la Festa dels Raiers": ["a ras de suelo", null],
+  "Correr un encierro de San Fermín": [null, "amanecer"],
+  "Ir a la Festa dels Raiers": ["a ras de suelo", "tarde larga"],
   "Ir a la Festa Major de Gràcia": ["contrapicado", null],
   "Ir a la Festa Major de Vilafranca": ["contrapicado", null],
   "Ir a la Fira de Santa Llúcia": ["a la altura de los ojos", null],
@@ -852,6 +852,43 @@ export const APROBADAS = new Set([
   'Ver un partido en el Madison Square Garden',
   'Formar parte de un castell',
   'Probar el cuy',                        // y por ella se corrigió la regla de 'plato'
+// ── LAS TRECE DE LA TANDA DE 25, declaradas el 11-10-2026 ──
+  //
+  // Se dieron por buenas en una conversación y nunca se escribieron, así que
+  // el guardián no las protegía: cuatro volvieron a generarse por accidente
+  // en la tanda de cuarenta. Aprobar y apuntar son UNA acción.
+  //
+  // De "Claude outputs/pequenos/":
+  'Bañarte en Bondi Beach',               // las tablas clavadas en la arena
+  'Ver un partido de la NBA',             // el aro de perfil sobre el parqué
+  'Comer en un restaurante con dos estrellas Michelin',  // la campana con humo
+  'Dormir una noche en un refugio de montaña',           // la litera de madera
+  'Dormir en un bungalow sobre el agua en Maldivas',     // la hilera con pasarela
+  'Ir al Carnaval de Río',                // el tocado de plumas desde abajo
+  'Probar la carne de cocodrilo',         // los filetes en la parrilla
+  //
+  // De "Claude outputs/tres/", el segundo encuadre que sí funcionó:
+  'Dormir en el refugio de Amitges',      // las botas sobre el poyo de piedra
+  'Hacer paddle surf en el cabo de Creus',// la tabla y el remo varados
+  'Correr un maratón',                    // la masa de espaldas desde dentro
+  //
+  // ── LAS CUATRO QUE SE REGENERARON POR ACCIDENTE, decididas mirándolas ──
+  //
+  // De cada una había dos versiones y alguien tenía que decir cuál gana. En
+  // dos gana la vieja y en dos la nueva, así que «la buena no es la última»
+  // se cumple en los dos sentidos.
+  //
+  // Y el patrón de las dos que pierden: las dos llevan UNAS MANOS SUELTAS en
+  // el borde de abajo, de la cláusula de primera_persona. A 179 px eso no se
+  // lee como unas manos: se lee como un defecto.
+  //
+  // Gana la de "Claude outputs/pequenos/":
+  'Comer en un restaurante con una estrella Michelin',  // el plato entero y el hilo de salsa; la nueva lo corta
+  'Ver una final de la NBA',             // el confeti sobre el parqué que lo refleja; la nueva, sobre negro
+  //
+  // Gana la de "Claude outputs/cuarenta-nuevas/":
+  'Ver un partido del Mundial de rugby', // la melé con los postes y el campo; la vieja tenía manos sueltas
+  'Ver un partido del Seis Naciones',    // el balón pasando el travesaño, que es lo que cuenta el gooal
 ])
 
 /**
@@ -1078,11 +1115,11 @@ export const ELEMENTO = {
   "Ver una regata de la Copa América de vela": "veleros en regata",
   "Beber en una carpa del Oktoberfest": "mesas corridas vacías",
   "Cantar en un karaoke": "mano con el micrófono",
-  "Correr un encierro de San Fermín": "toro corriendo entre la gente",
+  "Correr un encierro de San Fermín": "cuernos del toro de cerca",
   "Formar parte de un castell": "torre humana desde abajo",
   "Ir a la Festa Major de Vilafranca": "gegants entre balcones",
   "Ir a la Feria de Abril": "faroles colgados sobre el albero",
-  "Ir a la Festa dels Raiers": "rai de troncos con los raiers",
+  "Ir a la Festa dels Raiers": "rai de troncos amarrado",
   "Ir a la Festa Major de Gràcia": "calle engalanada",
   "Ir a la Fira de Santa Llúcia": "mercado de Navidad",
   "Ir a la Nit del Foc de las Fallas": "gente mirando el monumento arder",
@@ -1210,13 +1247,13 @@ export const PRIMER_PLANO = {
   "Beber en una carpa del Oktoberfest": "una hilera que se repite",
 
   "Correr la Ultra Pirineu": "una o dos siluetas de persona",
-  "Correr un encierro de San Fermín": "un animal",
+
   "Correr un maratón": "una multitud de cuerpos",
   "Dar una charla ante más de cien personas": "una o dos siluetas de persona",
   "Escalar una aguja de Montserrat": "roca o pared",
   "Formar parte de un castell": "una multitud de cuerpos",
   "Ir a la Feria de Abril": "luces o haces",
-  "Ir a la Festa dels Raiers": "agua",
+
   "Ir a la Festa Major de Gràcia": "tela o traje",
   "Ir a la Festa Major de Vilafranca": "una estructura grande y alta",
   "Ir a la Fira de Santa Llúcia": "una hilera que se repite",
@@ -1370,9 +1407,9 @@ export const CUANTOS = {
   DECIDIDOS: 231,
   CAMARA: 260,
   ELEMENTO: 259,
-  PRIMER_PLANO: 131,
+  PRIMER_PLANO: 129,
   NO_SABE_HACERLO: 2,
-  APROBADAS: 18,
+  APROBADAS: 32,
 }
 
 /**

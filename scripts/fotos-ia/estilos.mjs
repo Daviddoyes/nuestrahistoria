@@ -878,6 +878,19 @@ export function construirPrompt(gooal, clave, indice = 0) {
   // La salida no es reescribir la escena: es CAMBIAR EL ENCUADRE a uno de los
   // cuatro que no nombran sujeto. Lo demostró el Aplec, que salió bien a la
   // primera en cuanto pasó a 'objeto'.
+  //
+  // ── LO QUE ESTE CANDADO NO CAZA, Y ESTÁ COMPROBADO ──
+  //
+  // Caza que la escena EMPIECE por otro sujeto. NO caza que la escena tenga
+  // DOS: «Alguien de espaldas corriendo con un toro negro justo detrás»
+  // nombra lo suyo en la primera palabra, así que pasa limpio — probado con
+  // un cebo el 11-10-2026 y construye el prompt entero.
+  //
+  // Y no se arregla con otra regla: saber que un toro detrás de una espalda
+  // es un segundo sujeto es un juicio, y en este repo cada heurística que ha
+  // sustituido un juicio ha roto tantos casos como ha arreglado. Queda
+  // escrito aquí para que nadie lea este candado como si fuera completo —
+  // que es exactamente lo que hace peligrosa una comprobación a medias.
   const suyas = SUJETO_DEL_ENCUADRE[encuadre]
   if (suyas && escena && !OBJETO_LLEVADO.has(gooal.titulo)) {
     const cabeza = escena.slice(0, CABEZA_DE_ESCENA).toLowerCase()
