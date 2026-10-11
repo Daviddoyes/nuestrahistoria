@@ -18,7 +18,7 @@
 //   rechazadas  el filtro dijo que no, CON SU MOTIVO. No se reintenta sola:
 //               una escena rechazada hay que REESCRIBIRLA, repetirla da igual.
 //   falladas    cualquier otra cosa (red, saldo, un 500)
-import { mkdirSync, writeFileSync, readFileSync } from 'node:fs'
+import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'node:fs'
 import { construirPrompt, encuadreDe, TAMANO, MODELO, CALIDAD } from './estilos.mjs'
 import { APROBADAS } from './decisiones.mjs'
 import { crearFrenos, esFreno, CODIGOS_DEFINITIVOS } from '../lib/frenos.mjs'
@@ -75,6 +75,21 @@ for (const [i, gooal] of gooals.entries()) {
   const prompt = construirPrompt(gooal, 'A', i)
   console.log(`\n${i + 1}/${gooals.length}  ${gooal.titulo}  [${encuadre}]`)
 
+  // ── RELANZAR LA MISMA LISTA NO REHACE LO HECHO ──────────
+  //
+  // El fichero se llama por la POSICIÓN en la lista, así que relanzar el guion
+  // con «lo que falta» sobrescribía lo de antes. Ha obligado a inventarse una
+  // carpeta nueva tres veces en dos días —la segunda copia es la señal de que
+  // falta código, no paciencia—, así que ahora la lista se relanza ENTERA y lo
+  // que ya está se salta.
+  const yaEsta = `${carpeta}/${String(i + 1).padStart(2, '0')}-${encuadre}.png`
+  if (existsSync(yaEsta)) {
+    hechas.push({ ...gooal, encuadre, fichero: yaEsta, prompt })
+    console.log('   ya estaba, se salta')
+    anotar()
+    continue
+  }
+
   await frenos.antesDePedir()
   const r = await frenos.intentar(async () => {
     const res = await fetch('https://api.openai.com/v1/images/generations', {
@@ -114,6 +129,7 @@ for (const [i, gooal] of gooals.entries()) {
 
   const fichero = `${carpeta}/${String(i + 1).padStart(2, '0')}-${encuadre}.png`
   writeFileSync(fichero, Buffer.from(r.datos.data[0].b64_json, 'base64'))
+  // (el fichero ya se ha podido saltar arriba si existía: ver `yaEsta`)
   hechas.push({ ...gooal, encuadre, fichero, prompt })
   console.log('   ' + fichero)
   // EL REGISTRO SE ESCRIBE AQUÍ, no al final. Hasta el 11-10-2026 se escribía
