@@ -310,12 +310,12 @@ const SOLO_MANOS = new Set(['manos', 'plato'])
 // comparan tal cual: quitar acentos deja «marato» y «maraton», que siguen
 // siendo distintas.
 const SUJETO_DEL_ENCUADRE = {
-  contraluz: ['silueta', 'persona', 'alguien', 'gente', 'figura', 'corredor', 'cabeza', 'público', 'multitud', 'coro', 'pareja', 'humana', 'piernas', 'manos', 'brazos'],
+  contraluz: ['silueta', 'persona', 'alguien', 'gente', 'figura', 'corredor', 'cabeza', 'público', 'multitud', 'coro', 'pareja', 'humana', 'piernas', 'manos', 'brazos', 'criatura', 'enmascarado', 'nazareno'],
   espaldas: ['de espaldas', 'nuca', 'hombros', 'alguien', 'corredor', 'persona'],
   hombros: ['torso', 'brazo', 'manos', 'hombros'],
   casco: ['casco'],
   manos: ['manos', 'dedos', 'muñeca'],
-  plato: ['plato', 'fuente', 'cuenco', 'bandeja', 'llauna', 'mostrador', 'barra', 'cazuela', 'huevera', 'mesa', 'parrilla', 'cucurucho'],
+  plato: ['plato', 'fuente', 'cuenco', 'bandeja', 'llauna', 'mostrador', 'barra', 'cazuela', 'huevera', 'mesa', 'parrilla', 'cucurucho', 'paella', 'tabla', 'sartén', 'olla'],
 }
 
 // Lo que se mira son las primeras palabras, que es donde va el asunto de la
