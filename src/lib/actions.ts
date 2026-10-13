@@ -892,73 +892,177 @@ export async function conseguirSinFoto(gooalId: string): Promise<{
 }
 
 /**
- * Quita de la lista un gooal pendiente, o uno conseguido que NO tenga foto.
+ * DESMARCAR: lo marqué sin querer, o resulta que no lo hice. Vuelve a pendiente.
  *
- * El motivo de que un conseguido no se pudiera quitar siempre fue que se
- * perdería la prueba. Desde que se puede conseguir sin foto, hay conseguidos sin
- * nada que perder, y un toque equivocado no puede dejarte unos puntos para
- * siempre. Los que SÍ tienen foto o vídeo siguen sin poder quitarse.
+ * Es la mitad REVERSIBLE de deshacer, y por eso no pide confirmación: no
+ * destruye nada. La fila sigue existiendo y la foto sigue enganchada a ella —
+ * un gooal se vuelve a marcar, pero un viaje no se vuelve a hacer.
  *
- * Al quitar un conseguido se recalculan los puntos: no se puede quedar con los
- * de algo que ya no tiene.
+ * ── LOS PUNTOS NO SE RESTAN, SE RECALCULAN ────────────────
+ *
+ * `sincronizarPuntos` suma `puntos_ganados` de todas las filas completadas y
+ * escribe el total. Así que basta con que esta deje de estarlo. Escribir una
+ * resta aquí sería meter justo el fallo que se quiere evitar: restaría lo que
+ * vale HOY ese gooal, y un cambio de baremo por el medio descuadraría el total
+ * para siempre (ver gooals_v2.puntos y el porqué en CLAUDE.md).
+ *
+ * Y `puntos_ganados` se pone a 0 con `completado_at` vacío: un pendiente con
+ * puntos ganados es una contradicción que alguien va a leer mal. No se pierde
+ * nada — si vuelve a conseguirlo se copian los de ese día, que es la regla.
+ *
+ * ── EL ORDEN, Y POR QUÉ NO HACE FALTA UNA TRANSACCIÓN ─────
+ *
+ * Supabase desde JS no sabe hacer varias escrituras en una transacción, y aquí
+ * no hace falta porque el daño que importaría no es permanente: si esto se
+ * corta a la mitad, los puntos se arreglan solos la próxima vez que esa
+ * persona consiga o quite cualquier cosa, porque se recalculan.
+ *
+ * Lo que sí quedaría mal para siempre es un post del muro hablando de algo que
+ * ya no está conseguido. Por eso el muro va PRIMERO: si falla lo de después,
+ * lo que queda es un gooal conseguido sin post —invisible y sin daño—, y no un
+ * post de algo que no se ha hecho.
+ */
+export async function desmarcarGooal(gooalId: string): Promise<{ success: boolean; error?: string }> {
+  const userId = await getUserId()
+  if (!userId) return { success: false, error: 'No autenticado' }
+
+  const service = createServiceRoleClient()
+
+  const { data: fila } = await service
+    .from('user_gooals')
+    .select('id, estado')
+    .eq('user_id', userId)
+    .eq('gooal_id', gooalId)
+    .maybeSingle()
+
+  if (!fila) return { success: false, error: 'Este gooal no está en tu lista.' }
+  const suya = fila as { id: string; estado: string }
+  if (suya.estado !== 'completado') {
+    return { success: false, error: 'Este gooal ya estaba pendiente.' }
+  }
+
+  // 1 · El muro. Sus likes se van solos: muro_likes borra en cascada por post.
+  const { error: errorMuro } = await service.from('muro_posts').delete().eq('user_gooal_id', suya.id)
+  if (errorMuro) {
+    console.error('[desmarcarGooal] muro_posts:', errorMuro)
+    return { success: false, error: 'No se ha podido deshacer. Inténtalo otra vez.' }
+  }
+
+  // 2 · La fila. La foto y el vídeo SE QUEDAN: la fila sigue existiendo, así
+  //     que nada queda huérfano y esa persona no pierde su recuerdo.
+  const { data: tocadas, error: errorFila } = await service
+    .from('user_gooals')
+    .update({ estado: 'pendiente', puntos_ganados: 0, completado_at: null })
+    .eq('id', suya.id)
+    .eq('user_id', userId)
+    .select('id')
+
+  if (errorFila || !tocadas || tocadas.length === 0) {
+    console.error('[desmarcarGooal] update:', errorFila)
+    return { success: false, error: 'No se ha podido deshacer. Inténtalo otra vez.' }
+  }
+
+  // 3 · Y recalcular: los puntos del perfil y cuánta gente lo ha conseguido.
+  await sincronizarPuntos(service, userId)
+  await sincronizarVecesConseguido(service, gooalId)
+
+  revalidatePath('/muro')
+  revalidatePath('/perfil')
+  revalidatePath('/inicio')
+  return { success: true }
+}
+
+/**
+ * QUITAR DE LA LISTA: ya no me interesa. Sale de mis gooals entero.
+ *
+ * Es la mitad DESTRUCTIVA, y la única de las dos que pide confirmación: se
+ * lleva por delante la fila, su post del muro y la foto que esa persona subió.
+ *
+ * ── POR QUÉ AHORA SÍ BORRA LA FOTO ────────────────────────
+ *
+ * Hasta el 13-10-2026 esto se negaba a tocar una fila con foto —llevaba un
+ * `.is('foto_url', null)` en la consulta— para no borrarle a nadie su prueba.
+ * La idea era buena y el efecto no: no había forma de quitarse de encima un
+ * gooal con foto, y la acción encima decía que sí sin haber hecho nada.
+ *
+ * Ahora quitar borra también el fichero, y lo que protege a quien se equivoca
+ * es la confirmación, que dice con todas las letras lo que se va. La razón de
+ * fondo: si la fila desaparece, ya no la apunta nadie, y un fichero en el cubo
+ * que nada enlaza es basura que no se puede ni ver ni borrar desde la app.
+ *
+ * ── EL FICHERO VA EL ÚLTIMO, Y SU FALLO SE ESCRIBE ────────
+ *
+ * Primero la base y al final el cubo: un fichero que sobra ocupa sitio y se
+ * puede limpiar después; una base mal la ve la gente. Si el borrado del
+ * fichero falla con la base ya correcta, NO se traga — se deja escrito, porque
+ * es exactamente el huérfano que algún día habrá que recoger (está en la deuda
+ * de CLAUDE.md).
  */
 export async function quitarGooal(gooalId: string): Promise<{ success: boolean; error?: string }> {
   const userId = await getUserId()
   if (!userId) return { success: false, error: 'No autenticado' }
 
   const service = createServiceRoleClient()
-  // La condición de "sin foto" va en la consulta, no en un `if`: así no hay
-  // forma de borrar una prueba llamando a esto a mano.
-  //
-  // Y EL `.select()` NO ES DECORACIÓN: dice QUÉ se borró. Hasta el 13-10-2026
-  // esto no miraba el resultado y devolvía `success: true` siempre, así que
-  // quien tenía foto pulsaba «quitar», la consulta no casaba con ninguna fila
-  // —la descarta el `.is('foto_url', null)`— y la pantalla le contestaba
-  // «Quitado de tus pendientes». No pasaba nada y se le decía que sí.
+
+  // Se lee ANTES de borrar: después de borrar la fila ya no hay forma de saber
+  // qué fichero había, y el fichero se borra al final a propósito.
+  const { data: fila } = await service
+    .from('user_gooals')
+    .select('id, foto_url, video_url')
+    .eq('user_id', userId)
+    .eq('gooal_id', gooalId)
+    .maybeSingle()
+
+  if (!fila) return { success: false, error: 'Este gooal ya no está en tu lista.' }
+  const suya = fila as { id: string; foto_url: string | null; video_url: string | null }
+
+  // 1 · El muro, por delante: un post de algo que ya no está en la lista de
+  //     nadie es lo único de esto que quedaría mal para siempre.
+  const { error: errorMuro } = await service.from('muro_posts').delete().eq('user_gooal_id', suya.id)
+  if (errorMuro) {
+    console.error('[quitarGooal] muro_posts:', errorMuro)
+    return { success: false, error: 'No se ha podido quitar. Inténtalo otra vez.' }
+  }
+
+  // 2 · La fila. El `.select()` NO es decoración: dice QUÉ se borró, y cero
+  //     filas no es un éxito silencioso (ver CLAUDE.md, «una acción que escribe
+  //     tiene que comprobar que escribió»).
   const { data: borradas, error } = await service
     .from('user_gooals')
     .delete()
+    .eq('id', suya.id)
     .eq('user_id', userId)
-    .eq('gooal_id', gooalId)
-    .in('estado', ['pendiente', 'completado'])
-    .is('foto_url', null)
-    .is('video_url', null)
     .select('id')
 
-  if (error) {
+  if (error || !borradas || borradas.length === 0) {
     console.error('[quitarGooal] delete:', error)
     return { success: false, error: 'No se ha podido quitar. Inténtalo otra vez.' }
   }
 
-  // Cero filas borradas no es un éxito silencioso: es que la fila no estaba, o
-  // que tiene una foto que esta acción no toca. Hay que mirar cuál de las dos
-  // para poder decirlo, porque «no se pudo» a secas no le dice a nadie qué
-  // hacer después.
-  if (!borradas || borradas.length === 0) {
-    const { data: fila } = await service
-      .from('user_gooals')
-      .select('foto_url, video_url')
-      .eq('user_id', userId)
-      .eq('gooal_id', gooalId)
-      .maybeSingle()
-
-    if (!fila) return { success: false, error: 'Este gooal ya no está en tu lista.' }
-    const conRecuerdo = fila as { foto_url: string | null; video_url: string | null }
-    return {
-      success: false,
-      error: conRecuerdo.foto_url || conRecuerdo.video_url
-        ? 'Este gooal tiene una foto tuya guardada, así que no se puede quitar desde aquí.'
-        : 'No se ha podido quitar. Inténtalo otra vez.',
-    }
-  }
-
-  // Quitar un conseguido baja sus puntos y el contador del gooal. Quitar un
-  // pendiente no mueve ninguno de los dos, pero recontar siempre sale más
-  // barato que acordarse de cuándo sí y cuándo no.
+  // 3 · Y recalcular. Quitar un conseguido baja sus puntos y el contador del
+  //     gooal; quitar un pendiente no mueve ninguno, pero recontar siempre sale
+  //     más barato que acordarse de cuándo sí y cuándo no.
   await sincronizarPuntos(service, userId)
   await sincronizarVecesConseguido(service, gooalId)
 
+  // 4 · El fichero, el último y fuera del camino del error: a partir de aquí la
+  //     base ya está bien y lo que quede es, como mucho, un fichero de más.
+  const guardado = suya.foto_url ?? suya.video_url
+  if (guardado) {
+    const ruta = rutaDeRecuerdo(guardado, userId, gooalId)
+    if (!ruta) {
+      console.error('[quitarGooal] HUÉRFANO: ruta no reconocida', { userId, gooalId, guardado })
+    } else {
+      const { error: errorCubo } = await service.storage.from(BUCKET_LOGROS).remove([ruta])
+      // No se traga: este es exactamente el fichero que nadie va a enlazar ya,
+      // y la única señal de que está ahí es esta línea.
+      if (errorCubo) console.error('[quitarGooal] HUÉRFANO en el cubo:', ruta, errorCubo)
+    }
+  }
+
+  revalidatePath('/muro')
   revalidatePath('/perfil')
+  revalidatePath('/inicio')
   return { success: true }
 }
 

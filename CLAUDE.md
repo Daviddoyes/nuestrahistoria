@@ -2032,4 +2032,15 @@ sigue; una nota pendiente espera a alguien.
   Se mira cuando estén las cinco tandas y se pueda ver el catálogo junto, y
   entonces se decide cuántas espaldas aguanta esa lista. No se tocan antes:
   hoy no hay con qué comparar. Anotado el 11-10-2026.
+- **NO HAY NINGUNA LIMPIEZA DEL CUBO, Y AHORA PUEDE HABER HUÉRFANOS.** En toda
+  la app no existe ni una línea que borre un fichero de `logros-privados`...
+  salvo una, desde el 13-10-2026: `quitarGooal`, que borra la foto al quitar el
+  gooal de la lista. Ese borrado va **el último y fuera del camino del error**,
+  porque la base importa más que un fichero de más; si falla con la base ya
+  correcta, **no se traga**: deja un `console.error` con «HUÉRFANO» y la ruta,
+  que es la única señal de que ese fichero está ahí.
+  **La condición, no la fecha:** cuando esos avisos empiecen a acumularse —o
+  cuando el cubo crezca más que las filas que lo apuntan— habrá que escribir la
+  limpieza, que es cruzar los objetos del cubo contra `user_gooals.foto_url` y
+  `video_url` y borrar lo que no apunte nadie. Anotado el 13-10-2026.
 - No hay tests.
