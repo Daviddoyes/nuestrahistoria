@@ -39,6 +39,13 @@ async function poner(tabla, fila) {
 }
 const quitar = (tabla, id) => sec.from(tabla).delete().eq('id', id)
 
+/**
+ * Un rechazo de verdad de la base, de los dos que importan aquí: el permiso
+ * negado y la fila que la RLS no deja escribir. Vive arriba porque lo usan los
+ * dos bloques; antes había una copia dentro del segundo.
+ */
+const denegado = e => Boolean(e) && (e.code === '42501' || /permission denied|row-level security/i.test(e.message ?? ''))
+
 let bien = 0
 let total = 0
 const comprobar = (etiqueta, cond, visto) => {
@@ -103,6 +110,47 @@ comprobar('ni en user_gooals',
 const { data: cat } = await anon.from('gooals_v2').select('id').limit(5)
 comprobar('el catálogo público sigue leyéndose', (cat ?? []).length > 0, cat?.length)
 
+// ── El catálogo se LEE, pero no se escribe ──────────────────
+//
+// Desde el 13-10-2026 `gooals_v2` tiene quitados el insert, el update y el
+// delete para `anon`, `authenticated` y PUBLIC (fase4b.sql). Antes de eso lo
+// único que lo frenaba era que esta tabla no tiene política de escritura — una
+// condición que no tiene nada que ver con los permisos, y que se abriría sola
+// el día que alguien añadiera una política por otro motivo.
+//
+// Esto lo mira DESDE FUERA, con la clave pública, que es la única forma de
+// creérselo: el esquema puede decir una cosa y la puerta estar abierta.
+//
+// No distingue CUÁL de las dos cerraduras lo paró, y es a propósito: lo que
+// hay que saber desde aquí es si entra o no entra. Qué permiso hay puesto se
+// mira en el bloque B de `supabase/fase4b.sql`, que es otra pregunta.
+const unGooalExistente = (cat ?? [])[0]?.id ?? '00000000-0000-0000-0000-000000000000'
+
+const { error: eCatIns } = await anon.from('gooals_v2')
+  .insert({ titulo: 'INTRUSO ' + Date.now(), categoria: 'vida', puntos: 1, estado: 'borrador' })
+comprobar('no se puede INSERTAR un gooal desde el navegador',
+  denegado(eCatIns), eCatIns?.code ?? 'NINGUNO')
+
+const { error: eCatUpd, data: tocadas } = await anon.from('gooals_v2')
+  .update({ titulo: 'INTRUSO' }).eq('id', unGooalExistente).select('id')
+comprobar('ni CAMBIAR el título de uno que existe',
+  denegado(eCatUpd) || (tocadas ?? []).length === 0,
+  { rechazo: eCatUpd?.code ?? 'NINGUNO', filasTocadas: (tocadas ?? []).length })
+
+const { error: eCatDel, data: borradas } = await anon.from('gooals_v2')
+  .delete().eq('id', unGooalExistente).select('id')
+comprobar('ni BORRARLO',
+  denegado(eCatDel) || (borradas ?? []).length === 0,
+  { rechazo: eCatDel?.code ?? 'NINGUNO', filasBorradas: (borradas ?? []).length })
+
+// Y el cebo de este bloque: que el gooal que se ha intentado tocar SIGA AHÍ y
+// con su título. Sin esto, un update que respondiera «0 filas» por el motivo
+// equivocado pasaría por bueno — y el daño ya estaría hecho.
+const { data: sigue } = await sec.from('gooals_v2').select('id, titulo').eq('id', unGooalExistente).maybeSingle()
+comprobar('y el gooal sigue en su sitio, con su título',
+  Boolean(sigue) && sigue.titulo !== 'INTRUSO',
+  sigue ? sigue.titulo.slice(0, 40) : 'YA NO ESTÁ')
+
 // ── b) y d) Con una cuenta de verdad ────────────────────────
 const CORREO = `prueba-rls-${Date.now()}@gooals-prueba.invalid`
 const CLAVE = `Pr${Math.random().toString(36).slice(2)}!9x`
@@ -166,7 +214,6 @@ try {
   // rechazó, el valor dice que de verdad no cambió.
   console.log('\ne) La segunda cerradura, la de las columnas:')
 
-  const denegado = e => Boolean(e) && (e.code === '42501' || /permission denied/i.test(e.message ?? ''))
   const valorDe = async col => {
     const { data } = await sec.from('profiles').select(col).eq('id', idPrueba).maybeSingle()
     return data?.[col]

@@ -364,8 +364,13 @@ order by tablename;
 
 -- Y para comprobarlo de verdad, desde fuera y no desde el esquema:
 --   node --env-file=.env.local scripts/comprobar-rls.mjs
---   → 23 de 23 (desde el 8-10-2026, que es cuando empezó a mirar también
---     los permisos por columna; antes eran 15 y se le escapaba es_admin)
+--   → 27 de 27 (desde el 13-10-2026, que es cuando empezó a probar también que
+--     el catálogo NO se puede escribir desde el navegador: insertar un gooal,
+--     cambiarle el título y borrarlo, más que el gooal tocado siga ahí)
+--
+--   Antes fueron 23 (desde el 8-10-2026, al empezar a mirar los permisos por
+--   columna) y antes 15, cuando se le escapaba es_admin. Que el número suba es
+--   lo normal; lo que no puede pasar es que baje sin que nadie lo explique.
 
 -- ═══════════════════════════════════════════════════════════
 -- LA SEGUNDA CERRADURA · los permisos de columna
