@@ -7,7 +7,7 @@ import { calcularNivel } from '@/lib/niveles'
 import {
   CATEGORIAS, categoriasDeIntereses, contarPorCategoria, normalizarCategoriaGooal, type CategoriaGooal,
 } from '@/lib/gooals'
-import { limpiarBusqueda } from '@/lib/busqueda'
+import { limpiarBusqueda, limpiarBusquedaPersonas } from '@/lib/busqueda'
 import { amigosDe, puedeVerLaFoto, VISIBILIDADES } from '@/lib/permisos'
 import { leerTodo } from '@/lib/paginar'
 import {
@@ -72,17 +72,75 @@ export async function getMyProfile(): Promise<Profile | null> {
   return profile as Profile
 }
 
-export async function searchUsers(
-  query: string
-): Promise<{ id: string; nombre: string; username: string; foto_perfil_url: string | null }[]> {
-  if (query.trim().length < 2) return []
+type ResultadoBusqueda = { id: string; nombre: string; username: string; foto_perfil_url: string | null }
+
+/** Se piden más de los que se enseñan: hay que ordenarlos antes de recortar. */
+const BUSCAR_PERSONAS_PEDIDOS = 24
+const BUSCAR_PERSONAS_ENSENADOS = 10
+
+/**
+ * Busca personas por @usuario Y POR NOMBRE.
+ *
+ * ── POR QUÉ EL NOMBRE ──────────────────────────────────────
+ *
+ * Hasta el 13-10-2026 esto miraba SOLO el username, y era el fallo de verdad:
+ * la gente busca por el nombre que sabe. Buscar «David Doyes» no encontraba a
+ * David Doyes. Y peor con los 16 usernames que se generaron solos con un
+ * sufijo al azar —`david_3b72`, `hugo_1aw6`—, que son imposibles de teclear:
+ * nadie va a escribir `_3b72`.
+ *
+ * ── UNA SOLA CONSULTA, Y SIN REPETIR A NADIE ───────────────
+ *
+ * Un `or` en vez de dos consultas: así quien coincide por las dos cosas sale
+ * una vez y no hay que cruzar nada después. El texto se limpia con la misma
+ * función que el catálogo, que además es lo que impide que una coma o un
+ * paréntesis rompan el propio filtro: en PostgREST esos caracteres son la
+ * sintaxis del `or`, no texto.
+ *
+ * ── Y LOS QUE NO TIENEN USERNAME NO SALEN ──────────────────
+ *
+ * Hay tres perfiles sin username (se quedaron a medias del onboarding). Antes
+ * no podían salir porque la consulta era sobre esa misma columna; al buscar
+ * también por nombre, SÍ saldrían, y al tocarlos el enlace sería
+ * `/perfil?u=null`. El username es la dirección de un perfil: sin él no hay a
+ * dónde ir, así que no se enseñan.
+ */
+export async function searchUsers(query: string): Promise<ResultadoBusqueda[]> {
+  const limpio = limpiarBusquedaPersonas(query)
+  if (limpio.length < 2) return []
+
   const service = createServiceRoleClient()
   const { data } = await service
     .from('profiles')
     .select('id, nombre, username, foto_perfil_url')
-    .ilike('username', `%${query.trim()}%`)
-    .limit(5)
-  return (data ?? []) as { id: string; nombre: string; username: string; foto_perfil_url: string | null }[]
+    .not('username', 'is', null)
+    .or(`username.ilike.%${limpio}%,nombre.ilike.%${limpio}%`)
+    .limit(BUSCAR_PERSONAS_PEDIDOS)
+
+  const filas = (data ?? []) as ResultadoBusqueda[]
+
+  // El orden se hace aquí y no en la consulta porque depende de CÓMO casa cada
+  // fila, y eso PostgREST no lo sabe ordenar. Son 24 filas: cuesta nada.
+  //
+  // Quien pides por su nombre exacto va primero: si tecleas el @usuario entero
+  // es que sabes a quién buscas, y verlo en tercer lugar detrás de tres
+  // «David» cualquiera es no haber encontrado nada.
+  // Para ordenar se usa lo TECLEADO, no lo escapado: «adolfo_gs» tiene que
+  // poder ser igual a su username, y el escapado lleva una barra de más.
+  const q = (query ?? '').trim().toLowerCase()
+  const peso = (u: ResultadoBusqueda) => {
+    const usuario = (u.username ?? '').toLowerCase()
+    const nombre = (u.nombre ?? '').toLowerCase()
+    if (usuario === q) return 0
+    if (usuario.startsWith(q)) return 1
+    if (nombre.startsWith(q)) return 2
+    if (usuario.includes(q)) return 3
+    return 4
+  }
+
+  return filas
+    .sort((a, b) => peso(a) - peso(b) || a.nombre.localeCompare(b.nombre, 'es'))
+    .slice(0, BUSCAR_PERSONAS_ENSENADOS)
 }
 
 // ─────────────────────────────────────────────────────────────

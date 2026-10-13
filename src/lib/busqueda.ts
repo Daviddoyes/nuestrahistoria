@@ -12,3 +12,25 @@
 export function limpiarBusqueda(texto: string | undefined): string {
   return (texto ?? '').replace(/[%_\\,()"']/g, ' ').trim()
 }
+
+/**
+ * Lo mismo, pero para buscar PERSONAS, donde el guion bajo no es un comodín:
+ * es la mitad de los @usuarios que hay.
+ *
+ * `limpiarBusqueda` se come el `_` porque en LIKE significa «un carácter
+ * cualquiera» y en un título de gooal no aporta nada. Aquí sí aporta: teclear
+ * «adolfo_gs» entero tiene que encontrar a `adolfo_gs`, y con el otro
+ * limpiador devolvía CERO resultados — el `_` se convertía en un espacio y el
+ * patrón pasaba a ser «adolfo gs», que no existe.
+ *
+ * Así que el `_` y el `%` se ESCAPAN en vez de quitarse (con `\`, que es el
+ * escape por defecto de LIKE en Postgres), y solo se van los caracteres con
+ * los que PostgREST delimita un filtro `or`: ahí una coma o un paréntesis no
+ * son texto, son sintaxis, y un paréntesis suelto rompe la consulta entera.
+ */
+export function limpiarBusquedaPersonas(texto: string | undefined): string {
+  return (texto ?? '')
+    .replace(/[\\,()"']/g, ' ')
+    .replace(/[%_]/g, c => '\\' + c)
+    .trim()
+}
