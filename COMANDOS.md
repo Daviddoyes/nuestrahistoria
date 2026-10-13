@@ -59,6 +59,21 @@ servicio, así que el contador `veces_completado` del catálogo ni se entera
 (comprobado, 0 descuadres). Si algún día esa siembra pasa a marcar gooals *por
 la app*, entonces sí haría falta.
 
+### La revisión pantalla por pantalla
+
+```bash
+npm run revision
+```
+
+Abre las pantallas en producción con una cuenta que TIENE datos —14 conseguidos
+(uno con foto propia), 7 pendientes, una amiga y un post en el muro— en dos
+móviles, el común y el corto, y guarda una captura de cada una en
+`Claude outputs/revision/`.
+
+No mide nada: las capturas son para MIRARLAS. `npm run pantallas` mide si algo
+se sale por el lado; esto es para lo otro — lo que queda tapado, lo que sale
+vacío, lo que se corta.
+
 ### ¿Salen bien las fotos reducidas?
 
 ```bash
