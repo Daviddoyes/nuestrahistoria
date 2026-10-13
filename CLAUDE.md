@@ -1995,6 +1995,32 @@ salen al buscar son avisos —cosas ya resueltas que explican por qué algo es c
 es—, no trabajo pendiente. Conviene saber distinguirlas: un aviso se lee y se
 sigue; una nota pendiente espera a alguien.
 
+## Lo que se ve FUERA de la app no usa el vocabulario de DENTRO
+
+Sale de la tarjeta que se manda por WhatsApp al compartir un gooal, y va a
+volver a pasar cada vez que algo de la app se asome a un sitio donde no hay
+app: un correo, una imagen de Stories, una página pública, un anuncio.
+
+La tarjeta decía «Difícil · 6 pts». Dentro de la app un punto significa algo
+porque hay contexto —una suma, un perfil, un marcador—; **en una tarjeta de
+WhatsApp que ve alguien que no se ha registrado, «6 pts» no dice
+absolutamente nada**. Peor: hace pensar que hay un juego de por medio, que es
+justo lo que no se quiere contar en el primer segundo.
+
+> **Puntos, niveles, «conseguido», «pendiente», «gooal»: son vocabulario
+> interno.** Fuera se cuenta lo que se entiende sin haber entrado nunca: qué
+> es, dónde es y quién te lo manda.
+
+Y el matiz, que es lo que evita pasarse de celo al revés: **la línea no está
+entre la app y el mundo, está entre antes y después del clic.** La página
+`/g/<id>` sí lleva los puntos, porque quien la está mirando ya ha pulsado el
+enlace y está leyendo qué es esto. La tarjeta no, porque se ve de pasada y sin
+haber pedido nada.
+
+La forma de detectarlo: **ante cualquier cosa que salga de la app, lee cada
+palabra como si no supieras qué es gooals.** La que necesite que te lo
+expliquen no va ahí.
+
 ## Convenciones
 
 - **El código y los comentarios, en español.** Es lo que hay en todo el repo.

@@ -47,6 +47,9 @@ export const runtime = 'nodejs'
 const LOGO_PROPORCION = 3414 / 1015
 const LOGO_ALTO = 34
 
+/** El lado del isotipo que llena el panel cuando el gooal no tiene foto. */
+const ISOTIPO_LADO = 96
+
 /**
  * LAS LETRAS DE LA TARJETA, que son las de la app y no las que le toquen.
  *
@@ -121,7 +124,11 @@ export async function GET(
   const foto = gooal.imagen_url
     ? await recortarAnclandoArriba(gooal.imagen_url, TARJETA.panelFoto, TARJETA.alto)
     : null
-  const logo = await logotipoPng(peticion.nextUrl.origin)
+  const logo = await marcaPng(peticion.nextUrl.origin, 'gooals-logotipo-oscuro.svg', LOGO_ALTO)
+  // El isotipo solo hace falta cuando no hay foto, y entonces llena el panel
+  // del degradado. Pedirlo siempre sería una conversión de más en la mayoría
+  // de las tarjetas, que sí tienen foto.
+  const isotipo = foto ? null : await marcaPng(peticion.nextUrl.origin, 'gooals-icono-negro.svg', ISOTIPO_LADO)
 
   // El tamaño del título sale de su longitud porque el hueco es fijo: 588 px
   // de ancho y tres líneas. El título más largo del catálogo tiene 57
@@ -158,19 +165,26 @@ export async function GET(
           {foto ? (
             <img src={foto} width={TARJETA.panelFoto} height={TARJETA.alto} alt="" />
           ) : (
-            // El NOMBRE de la categoría, igual que la ficha de dentro.
+            // ── SIN FOTO: EL DEGRADADO Y LA MARCA, NADA MÁS ──
             //
-            // Se probó a poner aquí su icono, que habría evitado repetir la
-            // palabra que ya está en la pastilla de al lado, y NO SE PUEDE: los
-            // iconos de lucide-react son componentes de cliente, y satori los
-            // dibuja en el servidor. El error es claro —«Attempted to call the
-            // default export (…) from the server»— pero solo sale al pedir la
-            // imagen, no al compilar. Queda escrito para que no se vuelva a
-            // intentar: copiar el trazo del icono a mano sería una segunda
-            // versión del mismo dibujo, y eso sí se separa con el tiempo.
-            <div style={{ fontSize: 58, fontWeight: 700, color: 'rgba(11,11,11,.28)', letterSpacing: '-.03em' }}>
-              {CATEGORIA_LABEL[gooal.categoria]}
-            </div>
+            // Aquí estuvo el NOMBRE de la categoría, como en la ficha de
+            // dentro, y en una tarjeta no valía por dos motivos a la vez:
+            // la pastilla de al lado ya lo dice —la misma palabra dos veces en
+            // la misma imagen— y en verde oscuro sobre verde no se leía.
+            //
+            // Queda la marca, que es lo único que ese hueco puede aportar. Va
+            // el ISOTIPO, no el logotipo: el logotipo ya está arriba a la
+            // derecha y repetirlo sería caer en lo mismo que se acaba de
+            // quitar.
+            //
+            // (Se probó también el icono de la categoría, y NO SE PUEDE: los
+            // iconos de lucide-react son componentes de cliente y satori dibuja
+            // en el servidor. El error solo sale al pedir la imagen, nunca al
+            // compilar. Copiar el trazo a mano sería una segunda versión del
+            // mismo dibujo, que es justo lo que se separa con el tiempo.)
+            isotipo && (
+              <img src={isotipo} width={ISOTIPO_LADO} height={ISOTIPO_LADO} alt="" style={{ opacity: 0.22 }} />
+            )
           )}
         </div>
 
@@ -227,18 +241,19 @@ export async function GET(
             )}
           </div>
 
-          {/* ── LAS DOS PASTILLAS, Y POR QUÉ SOLO UNA LLEVA COLOR ──
-              En la app cada dificultad tiene su color, y «deporte» y «difícil»
-              son EXACTAMENTE el mismo #FF6B4A: juntas en una tarjeta pequeña
-              se leen como una cosa repetida, no como dos datos. Aquí el color
-              lo lleva solo la categoría y la dificultad va en gris. Quien
-              recibe esto no conoce el código de colores de la app — y una
-              pastilla de color que no significa nada es ruido. */}
+          {/* ── LAS DOS PASTILLAS ───────────────────────────
+              SIN LOS PUNTOS, A PROPÓSITO. Esta imagen la ve sobre todo quien
+              NO tiene la app: «6 pts» es vocabulario de dentro, y a un
+              desconocido no le dice absolutamente nada. Los puntos sí están en
+              la página, que la ve alguien que ya ha pulsado el enlace.
+
+              Y solo la categoría lleva color: en la app cada dificultad tiene
+              el suyo, y «deporte» y «difícil» son EXACTAMENTE el mismo
+              #FF6B4A, así que juntas se leían como una cosa repetida. Quien
+              recibe esto tampoco conoce el código de colores. */}
           <div style={{ display: 'flex', gap: 12 }}>
             <Pastilla color={CATEGORIA_COLOR[gooal.categoria]}>{CATEGORIA_LABEL[gooal.categoria]}</Pastilla>
-            <Pastilla color="#C8D2CF" fondo="rgba(255,255,255,.07)">
-              {`${dificultad.label} · ${gooal.puntos} pts`}
-            </Pastilla>
+            <Pastilla color="#C8D2CF" fondo="rgba(255,255,255,.07)">{dificultad.label}</Pastilla>
           </div>
         </div>
       </div>
@@ -332,28 +347,28 @@ async function recortarAnclandoArriba(url: string, ancho: number, alto: number):
 }
 
 /**
- * El logotipo, rasterizado a PNG para que satori no tenga que interpretar el
- * SVG (que lleva transformaciones y dos grupos anidados).
+ * Una pieza de la marca, rasterizada a PNG para que satori no tenga que
+ * interpretar el SVG (que lleva transformaciones y grupos anidados).
  *
  * Se pide por HTTP al propio origen de la petición, no se lee del disco: los
  * ficheros de `public/` se SIRVEN, pero no viajan dentro de la función en
  * Vercel, así que un `readFile` funcionaría en local y fallaría al publicar.
- * Al 3× para que no se vea blando.
+ * Al 3× para que no se vea blanda.
  */
-async function logotipoPng(origen: string): Promise<string | null> {
+async function marcaPng(origen: string, fichero: string, alto: number): Promise<string | null> {
   try {
-    const respuesta = await fetch(`${origen}/marca/gooals-logotipo-oscuro.svg`)
+    const respuesta = await fetch(`${origen}/marca/${fichero}`)
     if (!respuesta.ok) {
-      console.error(`tarjeta: el logotipo respondió ${respuesta.status}`)
+      console.error(`tarjeta: ${fichero} respondió ${respuesta.status}`)
       return null
     }
     const png = await sharp(Buffer.from(await respuesta.arrayBuffer()))
-      .resize({ height: LOGO_ALTO * 3 })
+      .resize({ height: alto * 3 })
       .png()
       .toBuffer()
     return `data:image/png;base64,${png.toString('base64')}`
   } catch (e) {
-    console.error('tarjeta: el logotipo no se pudo preparar', e)
+    console.error(`tarjeta: ${fichero} no se pudo preparar`, e)
     return null
   }
 }
