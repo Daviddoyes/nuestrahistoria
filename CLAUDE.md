@@ -2021,6 +2021,40 @@ La forma de detectarlo: **ante cualquier cosa que salga de la app, lee cada
 palabra como si no supieras qué es gooals.** La que necesite que te lo
 expliquen no va ahí.
 
+## Se mide el artefacto, no la intención
+
+La lección de contar cuántas fotos del catálogo llevan una persona, el
+13-10-2026. Hubo que contarlo TRES veces y las dos primeras dieron números
+falsos, cada una por mirar un papel en vez de la cosa.
+
+| de dónde se contó | qué es eso | resultado |
+|---|---|---|
+| `DECIDIDOS`, el mapa de decisiones | lo que QUERÍAMOS que fuera cada foto | 31 %, con un 27 % de desconocido |
+| `APROBADAS`, la lista de aprobadas | lo que alguien dio por bueno alguna vez | 38 «esperando» que no existían |
+| **el prompt guardado en la base** | **lo que de verdad se le pidió al modelo** | **100 %** |
+
+> **El mapa de decisiones dice lo que queríamos; el prompt guardado dice lo que
+> pasó.** Entre los dos hay meses, tandas que se rehicieron, encuadres que
+> cambiaron de nombre y gooals que nunca llegaron a generarse.
+
+Y un **27 % de desconocido no es una respuesta**: cuando una cuenta deja fuera a
+uno de cada cuatro, lo que hay que cambiar no es el redondeo, es la fuente.
+
+La segunda equivocación es la que más enseña, porque parecía razonable: cruzar
+`APROBADAS` con la base para ver cuántas fotos tenían sustituta esperando. Dio
+38. **Eran cero**: esa lista lleva títulos cuya foto buena resultó ser de
+Commons, así que no había nada que subir. La fuente correcta era
+`fotos-definitivas.json`, que para cada gooal dice qué fichero es y —si ya se
+subió— con qué nombre. **Un fichero en disco sin `subida_como` es lo único que
+significa «pendiente».**
+
+Y el matiz que esto obliga a tener delante, porque es el que vuelve a morder:
+**los artefactos guardados son HISTÓRICOS.** Cada foto conserva el prompt del
+día que se hizo, así que buscar en ellos el texto de hoy es comparar el presente
+con el pasado: trece fotos de comida salían «sin clasificar» y eran `plato` con
+la redacción anterior. Las redacciones viejas se quedan en el buscador, con su
+fecha.
+
 ## Una comprobación tiene que saber en qué pantalla está
 
 > **Una comprobación sobre una pantalla verifica EN QUÉ RUTA ACABÓ, no solo qué
