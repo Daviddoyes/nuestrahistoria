@@ -2021,6 +2021,34 @@ La forma de detectarlo: **ante cualquier cosa que salga de la app, lee cada
 palabra como si no supieras qué es gooals.** La que necesite que te lo
 expliquen no va ahí.
 
+## Se mide desde donde corre el código
+
+Sale de intentar quitar las seis preguntas de «quién eres» de la pantalla de
+Inicio, el 13-10-2026, y es la lección más barata de aprender y la más fácil de
+repetir.
+
+Se midió que `auth.getUser()` tarda **79 ms** y `getClaims()` **1 ms**. Con eso
+se predijo una mejora en una pantalla que hacía seis llamadas. Se hizo, se
+midió otra vez y **no se movió nada**: 4,7 s antes y 4,6 s después, con una
+variación entre vueltas (±0,7 s) mayor que el cambio.
+
+Los 79 ms eran reales. Lo que no era real es dónde se midieron:
+
+> **Una medida tomada desde el sitio equivocado predice una mejora que no
+> existe.** Los 79 ms eran de un portátil en casa a Supabase. El código corre
+> en Vercel, y desde allí ese viaje es mucho más corto. **Se mide desde donde
+> corre el código.**
+
+Y la segunda mitad, que es la que convierte el error en algo útil: **seis
+llamadas en paralelo no se suman.** Las cinco acciones de Inicio salen a la vez,
+así que el ahorro era el de UNA, no el de seis. Antes de prometer que algo baja,
+hay que mirar si lo que se repite ocurre en fila o a la vez.
+
+El cambio se quedó igualmente, porque es correcto —un viaje menos en cada una
+de las ~40 peticiones de cada pantalla, y menos trabajo en el servidor—, pero
+**está escrito que no es una mejora de velocidad**, para que nadie lo cite
+mañana como si lo fuera.
+
 ## Convenciones
 
 - **El código y los comentarios, en español.** Es lo que hay en todo el repo.
@@ -2180,6 +2208,45 @@ expliquen no va ahí.
   WhatsApp los parte en dos líneas. `npm run compartir` lo dice en su primera
   línea —«uuid — fase4b.sql todavía sin pegar»— y empieza a comprobar la rama
   del código el día que esté. Anotado el 13-10-2026.
+- **LO QUE QUEDA DE VELOCIDAD SON 70 VIAJES, NO BYTES.** El 13-10-2026 la
+  rejilla de Buscar pasó de **16,2 s a 5,1 s** sirviendo las fotos al tamaño en
+  que se ven. Lo que queda ya no es peso: **Buscar hace 70 peticiones e Inicio
+  49**, y con 562 ms de latencia en 4G eso es el suelo de 4-5 segundos.
+
+  Bajarlo es arquitectura, no un ajuste: menos peticiones por pantalla, o
+  juntarlas. **No se empieza como una optimización suelta.** Y antes de tocar
+  nada, leer «Se mide desde donde corre el código», que es lo que salió de
+  intentarlo con el auth. Anotado el 13-10-2026.
+- **LOS DOS GENERADORES DE IMÁGENES SE JUNTAN EN UNO, EL DEL SERVIDOR.** Hoy
+  hay dos sistemas que dibujan lo mismo con dos vocabularios distintos: la ruta
+  de la tarjeta de WhatsApp (`/g/<x>/tarjeta`, con satori y las letras de la
+  marca en ficheros) y un canvas en el móvil (`src/lib/story-canvas.ts` y
+  `src/lib/sello.ts`, con `system-ui` y el nombre interno que `next/font` le
+  inventa a Bebas).
+
+  Se mudan al servidor, en **vertical 1080×1920**: la historia de un gooal
+  (`CompartirGooalStory`), la del perfil (`CompartirPerfilStory`) y **también
+  el sello**, que de paso cambia lo que enseña. Hoy lo más grande es «+7 pts»
+  —vocabulario de dentro, que no dice nada a quien lo ve en Instagram, y es la
+  misma regla que ya aplicamos a la tarjeta de WhatsApp—, el título va tercero
+  y pequeño, la foto encogida con márgenes y «gooals.app» gris y diminuto,
+  cuando esa pieza existe justo para que alguien entre. El orden correcto:
+
+  1. la foto de la persona, llenando
+  2. el título, grande, encima
+  3. «David lo ha conseguido», pequeño
+  4. gooals.app, legible de verdad
+  5. los puntos, fuera
+
+  **Y LA INSTRUCCIÓN QUE IMPORTA MÁS QUE EL DIBUJO:** cuando el servidor tenga
+  que decidir quién puede ver la foto privada de alguien, **se reutiliza
+  `puedeVerLaFoto` de `src/lib/permisos.ts`**. No se escribe una comprobación
+  nueva «parecida»: dos reglas de permisos ligeramente distintas es exactamente
+  cómo se filtra una foto privada sin que nadie se entere. **Si al mirarlo no
+  encaja tal cual, se PARA y se pregunta** — no se adapta por cuenta propia.
+
+  Va después de la velocidad y de la revisión pantalla por pantalla en el
+  móvil. Anotado el 13-10-2026.
 - **CIEN GOOALS GENÉRICOS, SIN SITIO.** Los que sirven a cualquiera viva donde
   viva: «Correr un 10K», «Aprender a hacer pan», «Dormir bajo las estrellas».
 
