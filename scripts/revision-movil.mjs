@@ -235,6 +235,65 @@ try {
   }
   console.log('  10-ficha-con-mi-foto')
 
+  // ── Y OTRA VUELTA CON EL BANNER PUESTO ─────────────────
+  //
+  // Desde el 13-10-2026 el banner de instalar solo sale en la SEGUNDA visita o
+  // tras el primer gooal conseguido. Un navegador recién abierto es la primera
+  // visita, así que sin esto las capturas no lo enseñarían NUNCA — y la mitad
+  // de lo que había que revisar es justo que ya no tapa nada.
+  //
+  // Es el estado vacío otra vez: lo que pasa en verde sería el caso sin banner,
+  // que es el que no importaba.
+  console.log('\n── otra vuelta, forzando que salga el banner ──')
+  await nav.ejecutar(`(() => {
+    localStorage.setItem('install-visitas', '5')
+    localStorage.removeItem('install-dismissed')
+    sessionStorage.removeItem('install-sesion-contada')
+  })()`)
+
+  const conBanner = [
+    ['02-tu', '/inicio', hayFoto],
+    ['03-descubrir', '/explorar?tab=descubrir', hayFoto],
+    ['04-buscar', '/explorar', hayFoto],
+  ]
+  for (const [n, url, listo] of conBanner) {
+    for (const m of MOVILES) {
+      await nav.tamano(m.ancho, m.alto)
+      await nav.ir(BASE + url, { espera: 0 })
+      await esperar(nav, listo)
+      await dormir(3000)
+      await nav.captura(`${CARPETA}/${n}-CON-BANNER-${m.nombre}.png`)
+    }
+    console.log('  ' + n + ' con banner')
+  }
+
+  // ── Y DONDE NO DEBE SALIR, QUE NO SALGA ────────────────
+  //
+  // Con el contador puesto a cinco: si apareciera aquí sería un fallo.
+  //
+  // SE HACE SIN SESIÓN, y esto no es un detalle: con sesión, `/` REDIRIGE a
+  // `/inicio`, así que la comprobación miraba otra pantalla y cantaba un fallo
+  // que no existía. Por eso ahora se mira también la RUTA en la que acabó, no
+  // solo lo que pone en el texto — una comprobación que no sabe en qué página
+  // está no comprueba nada.
+  await nav.limpiarSesion()
+  for (const [n, url] of [['01-portada', '/'], ['09-publica', `/g/${viajes[0].id}`]]) {
+    await nav.tamano(375, 667)
+    await nav.ir(BASE + url, { espera: 0 })
+    await esperar(nav, hayTexto(60))
+    await nav.ejecutar(`(() => {
+      localStorage.setItem('install-visitas', '5')
+      localStorage.removeItem('install-dismissed')
+      sessionStorage.removeItem('install-sesion-contada')
+    })()`)
+    await nav.ir(BASE + url, { espera: 0 })
+    await esperar(nav, hayTexto(60))
+    await dormir(2500)
+    const r = await nav.ejecutar(`({ ruta: location.pathname, sale: document.body.innerText.includes('Instala GooALS') })`)
+    console.log(`  ${n}: acabó en ${r.ruta} · ¿sale el banner? ${r.sale ? 'SÍ — ESTO ES UN FALLO' : 'no, correcto'}`)
+    await nav.captura(`${CARPETA}/${n}-CON-BANNER-375x667.png`)
+  }
+
   console.log(`\ncapturas en ${CARPETA}/`)
 } finally {
   if (nav) await nav.cerrar()
