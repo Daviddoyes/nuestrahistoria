@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect } from 'react'
 import { motivoInvalido, USERNAME_MAX } from '@/lib/username'
+import { cuandoPuedoCambiarUsername } from '@/lib/actions'
 import { X, Camera } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import Avatar from './Avatar'
@@ -61,6 +62,25 @@ export default function EditarPerfilModal({
   // null = todavía sin comprobar; true/false = lo que contestó la base.
   const [libre, setLibre] = useState<boolean | null>(null)
   const [comprobando, setComprobando] = useState(false)
+  /**
+   * Hasta cuándo NO puede cambiarlo, o null si puede ya.
+   *
+   * Se pregunta AL ABRIR y no al guardar: enterarse de que no se puede cuando
+   * ya lo has escrito es la peor forma de enterarse — has hecho el trabajo y
+   * el único premio es un error. Sabiéndolo antes, el campo ni se deja tocar.
+   */
+  const [bloqueadoHasta, setBloqueadoHasta] = useState<Date | null>(null)
+
+  useEffect(() => {
+    let vigente = true
+    cuandoPuedoCambiarUsername()
+      .then(r => { if (vigente && r.hasta) setBloqueadoHasta(new Date(r.hasta)) })
+      // Si falla, se deja sin bloquear: el disparador lo impide igual, y
+      // bloquear el campo por un fallo de red sería impedir algo que sí se
+      // puede. Más vale un error al guardar que una puerta cerrada de mentira.
+      .catch(() => {})
+    return () => { vigente = false }
+  }, [])
   const [foto, setFoto] = useState<string | null>(fotoActual)
   const [archivo, setArchivo] = useState<File | null>(null)
   const [guardando, setGuardando] = useState(false)
@@ -73,7 +93,7 @@ export default function EditarPerfilModal({
   const malFormato = cambiaElUsuario && limpio.length > 0 ? motivoInvalido(limpio) : null
 
   useEffect(() => {
-    if (!cambiaElUsuario || malFormato || !limpio) { setLibre(null); return }
+    if (bloqueadoHasta || !cambiaElUsuario || malFormato || !limpio) { setLibre(null); return }
     let vigente = true
     setComprobando(true)
     const t = setTimeout(async () => {
@@ -88,7 +108,7 @@ export default function EditarPerfilModal({
       setComprobando(false)
     }, 400)
     return () => { vigente = false; clearTimeout(t) }
-  }, [limpio, cambiaElUsuario, malFormato, supabase])
+  }, [limpio, cambiaElUsuario, malFormato, bloqueadoHasta, supabase])
 
   const handleFoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -219,6 +239,7 @@ export default function EditarPerfilModal({
                 type="text"
                 value={username}
                 onChange={e => setUsername(e.target.value.toLowerCase())}
+                disabled={Boolean(bloqueadoHasta)}
                 maxLength={USERNAME_MAX}
                 autoCapitalize="none"
                 autoCorrect="off"
@@ -230,7 +251,12 @@ export default function EditarPerfilModal({
             {/* Un aviso cada vez y en este orden: primero si no vale la forma,
                 y solo si vale se mira si está cogido. Enseñar los dos a la vez
                 hace dudar de cuál hay que arreglar. */}
-            {malFormato ? (
+            {bloqueadoHasta ? (
+              <p className="text-xs text-[#7A8A85] mt-1.5">
+                Ya lo cambiaste hace poco. Podrás volver a cambiarlo el{' '}
+                {bloqueadoHasta.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}.
+              </p>
+            ) : malFormato ? (
               <p className="text-xs text-[#FF5252] mt-1.5">{malFormato}</p>
             ) : comprobando ? (
               <p className="text-xs text-[#7A8A85] mt-1.5">Comprobando…</p>
@@ -258,6 +284,9 @@ export default function EditarPerfilModal({
             </button>
             <button
               type="submit"
+              // El bloqueo del @usuario NO bloquea el botón: el nombre y la
+              // foto se pueden cambiar igual, y además con el campo desactivado
+              // `cambiaElUsuario` ya es false.
               disabled={guardando || !nombre.trim() || Boolean(malFormato) || (cambiaElUsuario && libre === false)}
               className="flex-1 bg-[#00D1A7] active:bg-[#00B893] disabled:opacity-30 text-[#0B0B0B] py-3.5 rounded-xl transition-colors text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2"
             >

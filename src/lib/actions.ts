@@ -106,6 +106,49 @@ const BUSCAR_PERSONAS_ENSENADOS = 10
  * `/perfil?u=null`. El username es la dirección de un perfil: sin él no hay a
  * dónde ir, así que no se enseñan.
  */
+/**
+ * ¿Puede esta persona cambiarse el @usuario ahora, o tiene que esperar?
+ *
+ * Devuelve la fecha a partir de la cual podrá, o null si puede ya.
+ *
+ * ── POR QUÉ ES UNA SERVER ACTION Y NO UNA CONSULTA DEL NAVEGADOR ──
+ *
+ * `usernames_retirados` está cerrada —RLS encendida, sin políticas y sin
+ * permisos para `anon` ni `authenticated`—, que es justo lo que queremos: esa
+ * tabla es media cerradura. Así que la lee el servidor, que es quien tiene con
+ * qué.
+ *
+ * ── Y POR QUÉ SE PREGUNTA ANTES Y NO SE ESPERA AL ERROR ──
+ *
+ * El disparador ya lo impide, así que esto no protege nada: protege a la
+ * persona. Enterarse de que no puedes cambiarlo CUANDO YA LO HAS ESCRITO es la
+ * peor forma de enterarse — has hecho el trabajo y el único premio es un
+ * error. El límite se dice antes, y entonces el campo ni siquiera se deja
+ * tocar.
+ */
+export async function cuandoPuedoCambiarUsername(): Promise<{ hasta: string | null }> {
+  const userId = await getUserId()
+  if (!userId) return { hasta: null }
+
+  const service = createServiceRoleClient()
+  const { data, error } = await service
+    .from('usernames_retirados')
+    .select('retirado_at')
+    .eq('user_id', userId)
+    .order('retirado_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  // Si la consulta falla NO se dice que puede: se dice que no lo sabemos
+  // (null) y que lo decida el disparador al guardar. Un «puedes» inventado
+  // acaba en el error que esto existe para evitar.
+  if (error || !data) return { hasta: null }
+
+  const ultimo = new Date((data as { retirado_at: string }).retirado_at)
+  const hasta = new Date(ultimo.getTime() + 30 * 24 * 60 * 60 * 1000)
+  return { hasta: hasta > new Date() ? hasta.toISOString() : null }
+}
+
 export async function searchUsers(query: string): Promise<ResultadoBusqueda[]> {
   const limpio = limpiarBusquedaPersonas(query)
   if (limpio.length < 2) return []
