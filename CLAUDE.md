@@ -2225,18 +2225,47 @@ mañana como si lo fuera.
   inventa a Bebas).
 
   Se mudan al servidor, en **vertical 1080×1920**: la historia de un gooal
-  (`CompartirGooalStory`), la del perfil (`CompartirPerfilStory`) y **también
-  el sello**, que de paso cambia lo que enseña. Hoy lo más grande es «+7 pts»
-  —vocabulario de dentro, que no dice nada a quien lo ve en Instagram, y es la
-  misma regla que ya aplicamos a la tarjeta de WhatsApp—, el título va tercero
-  y pequeño, la foto encogida con márgenes y «gooals.app» gris y diminuto,
-  cuando esa pieza existe justo para que alguien entre. El orden correcto:
+  (`CompartirGooalStory`) y la del perfil (`CompartirPerfilStory`).
+
+  **EL REDISEÑO ES DE `CompartirGooalStory`, NO DEL SELLO** — se confundieron
+  una vez y conviene que no vuelva a pasar: la imagen que enseña puntos
+  gigantes con la foto encogida es esa, el sello es otra cosa (un PNG
+  transparente para pegar encima de una historia, sin foto). Hoy en
+  `CompartirGooalStory` lo más grande es «+7 pts», que es vocabulario de dentro
+  y no dice nada a quien lo ve en Instagram — la misma regla que ya aplicamos a
+  la tarjeta de WhatsApp, incumplida aquí. El orden correcto:
 
   1. la foto de la persona, llenando
   2. el título, grande, encima
   3. «David lo ha conseguido», pequeño
   4. gooals.app, legible de verdad
   5. los puntos, fuera
+
+  **Y SI NO HAY FOTO PROPIA, EL BOTÓN NO DESAPARECE: LA PIDE.** Cambia de texto
+  —«Añade una foto para compartirlo»— y lleva a subirla. Es el único momento en
+  que apetece hacerlo: acaba de conseguirlo.
+
+  Queda descartado tirar de la foto del catálogo, y el motivo principal no es
+  la licencia:
+
+  > La pieza dice «lo he conseguido», y esa frase **necesita una prueba**. Una
+  > foto del catálogo debajo de «lo he hecho» es decoración disfrazada de
+  > evidencia — y encima es la misma imagen que ya salió en la tarjeta de
+  > WhatsApp de ese gooal.
+
+  Lo de Commons —203 de 223 licencias obligan a citar al autor dentro de la
+  imagen— sigue siendo cierto y refuerza la decisión, pero no es el motivo.
+
+  **El dato que hay que tener delante al escribirlo:** de los 24 gooals
+  conseguidos que hay en toda la app, **uno** tiene foto propia, y es el de
+  David. La pieza que se está rediseñando es su mejor caso y el único que
+  existe hoy; los otros 23 no la han visto nunca con foto.
+
+  Del SELLO queda una pregunta abierta, que decide si el canvas se puede
+  retirar del todo o no: su contenido no cambia, pero **si no se muda también,
+  `story-canvas.ts` se queda, y seguirá habiendo dos sistemas**. En el sello
+  además falta «gooals.app»: no es que esté pequeño, es que no está, y esa
+  pieza existe justo para que alguien entre.
 
   **Y LA INSTRUCCIÓN QUE IMPORTA MÁS QUE EL DIBUJO:** cuando el servidor tenga
   que decidir quién puede ver la foto privada de alguien, **se reutiliza
