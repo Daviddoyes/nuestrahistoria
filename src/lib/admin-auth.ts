@@ -1,4 +1,4 @@
-import { createClient as createServerClient } from '@/lib/supabase/server'
+import { idDeSesion } from '@/lib/sesion'
 import { createServiceRoleClient } from '@/lib/supabase/service'
 
 /**
@@ -17,16 +17,18 @@ import { createServiceRoleClient } from '@/lib/supabase/service'
  * Se marca a alguien como admin desde el SQL Editor (ver supabase/fase3c.sql).
  */
 export async function esAdmin(): Promise<boolean> {
-  const supa = await createServerClient()
-  const { data: { user } } = await supa.auth.getUser()
-  if (!user) return false
+  // Quién es, comprobando la firma del JWT y una sola vez por petición. Que
+  // ADEMÁS sea admin se sigue leyendo de la base aquí abajo, en cada
+  // comprobación: quitarle el permiso a alguien sigue siendo inmediato.
+  const userId = await idDeSesion()
+  if (!userId) return false
 
   // La lectura va con el service role porque profiles no expone es_admin por RLS.
   const service = createServiceRoleClient()
   const { data, error } = await service
     .from('profiles')
     .select('es_admin')
-    .eq('id', user.id)
+    .eq('id', userId)
     .single()
 
   if (error) {

@@ -50,9 +50,19 @@ export async function proxy(request: NextRequest) {
     }
   )
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  // ── QUIÉN ERES, SIN SALIR A LA RED ──────────────────────
+  //
+  // Esto corre en CADA petición que no sea pública: cada pantalla, y también
+  // cada una de las ocho o nueve que Next pide por adelantado de otras rutas.
+  // Con `auth.getUser()` eran otros tantos viajes al servidor de Auth, 79 ms
+  // cada uno, medidos.
+  //
+  // `getClaims()` comprueba la FIRMA del JWT aquí mismo con la clave pública
+  // del proyecto: 1 ms. No es leer la cookie y creérsela —eso sería
+  // `getSession()`, que no vale para decidir nada—, es una comprobación
+  // criptográfica. El porqué entero y lo que se pierde, en `src/lib/sesion.ts`.
+  const { data: claims } = await supabase.auth.getClaims()
+  const user = claims?.claims?.sub ? { id: claims.claims.sub } : null
 
   const isProtected =
     pathname.startsWith('/inicio') ||

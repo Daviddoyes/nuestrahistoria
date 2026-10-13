@@ -12,6 +12,7 @@ import { proponerUsername } from '@/lib/username'
 import { amigosDe, puedeVerLaFoto, VISIBILIDADES } from '@/lib/permisos'
 import { leerTodo } from '@/lib/paginar'
 import { ES_UUID, ES_CODIGO } from '@/lib/tarjeta-compartir'
+import { idDeSesion } from '@/lib/sesion'
 import {
   BUCKET_LOGROS, errorDeArchivo, rutaDeRecuerdo, tipoDeRecuerdo, type TipoRecuerdo,
 } from '@/lib/recuerdo-media'
@@ -48,18 +49,28 @@ const PINES_POR_VUELTA = 1000
 const SUGERENCIAS_POR_DIA = 5
 
 export async function getMyProfile(): Promise<Profile | null> {
-  const serverSupa = await createServerClient()
-  const { data: { user } } = await serverSupa.auth.getUser()
-  if (!user) return null
+  const userId = await idDeSesion()
+  if (!userId) return null
 
   const service = createServiceRoleClient()
   const { data: profile } = await service
     .from('profiles')
     .select('*')
-    .eq('id', user.id)
+    .eq('id', userId)
     .single()
 
   if (!profile) {
+    // ── AQUÍ SÍ SE PREGUNTA AL SERVIDOR DE AUTH ──────────
+    //
+    // Para saber QUIÉN eres basta con la firma del JWT, y por eso lo demás ya
+    // no sale a la red. Pero esta rama crea un perfil, y necesita el correo y
+    // el nombre de la cuenta: pedírselos al servidor es una llamada de 79 ms
+    // que solo ocurre la primera vez que alguien entra sin perfil. Pagarla ahí
+    // es barato; pagarla en cada pantalla era lo caro.
+    const serverSupa = await createServerClient()
+    const { data: { user } } = await serverSupa.auth.getUser()
+    if (!user) return null
+
     const nombre = (user.user_metadata?.nombre as string) || user.email?.split('@')[0] || ''
     // Misma generación que el onboarding, del módulo compartido: eran dos
     // copias con el mismo defecto, que es la señal de que faltaba un módulo.
@@ -290,11 +301,17 @@ function aUsuarioMini(p: PerfilRow): UsuarioMini {
   }
 }
 
-/** Usuario de la sesión actual. No se exporta: en 'use server' todo export debe ser async. */
+/**
+ * Usuario de la sesión actual. No se exporta: en 'use server' todo export debe
+ * ser async.
+ *
+ * Lo resuelve `idDeSesion()`, que comprueba la firma del JWT aquí mismo en vez
+ * de preguntar al servidor de Auth — 1 ms en lugar de 79, medido — y que
+ * además solo lo hace UNA VEZ por petición aunque se llame diez veces. El
+ * porqué entero está en `src/lib/sesion.ts`.
+ */
 async function getUserId(): Promise<string | null> {
-  const serverSupa = await createServerClient()
-  const { data: { user } } = await serverSupa.auth.getUser()
-  return user?.id ?? null
+  return idDeSesion()
 }
 
 /**

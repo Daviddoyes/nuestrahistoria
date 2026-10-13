@@ -2180,6 +2180,22 @@ expliquen no va ahí.
   WhatsApp los parte en dos líneas. `npm run compartir` lo dice en su primera
   línea —«uuid — fase4b.sql todavía sin pegar»— y empieza a comprobar la rama
   del código el día que esté. Anotado el 13-10-2026.
+- **CIEN GOOALS GENÉRICOS, SIN SITIO.** Los que sirven a cualquiera viva donde
+  viva: «Correr un 10K», «Aprender a hacer pan», «Dormir bajo las estrellas».
+
+  La razón no es llenar el catálogo, y conviene tenerla delante porque cambia
+  qué gooals hay que escribir:
+
+  > **Lo que viaja cuando alguien comparte no son los gooals locales, son los
+  > genéricos.** Un gooal con sitio solo vale si quien lo recibe puede llegar
+  > hasta allí; mandarle a alguien de Sevilla la ferrata de Boixadera dels
+  > Bancs no es proponerle nada. El genérico lo puede hacer quien sea, y es el
+  > que sobrevive al enlace de WhatsApp.
+
+  **Van DESPUÉS de las tandas 3 y 4 de fotos**, porque cada uno necesita la
+  suya — y los genéricos son justo los que Commons no tiene (ver «Commons
+  tiene sitios y objetos, no gente haciendo cosas»), así que son todos de IA.
+  Anotado el 13-10-2026.
 - **REPASO PENDIENTE: LAS SEIS CATEGORÍAS CONTRA SU REGLA.** «Dormir en el
   refugio de Amitges» estaba en `deporte`; los otros seis gooals de
   dormir/refugio están en `naturaleza`, incluido **su propio padre genérico**,
