@@ -892,6 +892,71 @@ export async function conseguirSinFoto(gooalId: string): Promise<{
 }
 
 /**
+ * Borra la foto o el vídeo de un gooal, sin tocar el gooal.
+ *
+ * ── ESTE BOTÓN ES LA RAZÓN DE QUE DESMARCAR NO BORRE LA FOTO ──
+ *
+ * Al desmarcar, la foto se queda enganchada a la fila. Eso solo es aceptable
+ * si esa persona PUEDE VERLA Y BORRARLA: una foto suya que la app guarda y
+ * ella no puede quitar es la misma forma que el fichero huérfano del cubo, y
+ * no se prohíbe el huérfano en el cubo para fabricarlo en la pantalla.
+ *
+ * Mismo orden que quitar, y por lo mismo: base primero, fichero al final y su
+ * fallo escrito en vez de tragado.
+ */
+export async function borrarFotoDeGooal(gooalId: string): Promise<{ success: boolean; error?: string }> {
+  const userId = await getUserId()
+  if (!userId) return { success: false, error: 'No autenticado' }
+
+  const service = createServiceRoleClient()
+
+  const { data: fila } = await service
+    .from('user_gooals')
+    .select('id, foto_url, video_url')
+    .eq('user_id', userId)
+    .eq('gooal_id', gooalId)
+    .maybeSingle()
+
+  if (!fila) return { success: false, error: 'Este gooal no está en tu lista.' }
+  const suya = fila as { id: string; foto_url: string | null; video_url: string | null }
+  const guardado = suya.foto_url ?? suya.video_url
+  if (!guardado) return { success: false, error: 'Aquí no hay ninguna foto tuya guardada.' }
+
+  // El post del muro enseña esta foto, así que se va con ella. Un post sin la
+  // foto que lo motivó no es un post más corto: es otro post.
+  const { error: errorMuro } = await service.from('muro_posts').delete().eq('user_gooal_id', suya.id)
+  if (errorMuro) {
+    console.error('[borrarFotoDeGooal] muro_posts:', errorMuro)
+    return { success: false, error: 'No se ha podido borrar. Inténtalo otra vez.' }
+  }
+
+  const { data: tocadas, error } = await service
+    .from('user_gooals')
+    .update({ foto_url: null, video_url: null, descripcion: null })
+    .eq('id', suya.id)
+    .eq('user_id', userId)
+    .select('id')
+
+  if (error || !tocadas || tocadas.length === 0) {
+    console.error('[borrarFotoDeGooal] update:', error)
+    return { success: false, error: 'No se ha podido borrar. Inténtalo otra vez.' }
+  }
+
+  const ruta = rutaDeRecuerdo(guardado, userId, gooalId)
+  if (!ruta) {
+    console.error('[borrarFotoDeGooal] HUÉRFANO: ruta no reconocida', { userId, gooalId, guardado })
+  } else {
+    const { error: errorCubo } = await service.storage.from(BUCKET_LOGROS).remove([ruta])
+    if (errorCubo) console.error('[borrarFotoDeGooal] HUÉRFANO en el cubo:', ruta, errorCubo)
+  }
+
+  revalidatePath('/muro')
+  revalidatePath('/perfil')
+  revalidatePath('/inicio')
+  return { success: true }
+}
+
+/**
  * DESMARCAR: lo marqué sin querer, o resulta que no lo hice. Vuelve a pendiente.
  *
  * Es la mitad REVERSIBLE de deshacer, y por eso no pide confirmación: no

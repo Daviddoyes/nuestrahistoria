@@ -14,6 +14,7 @@ import CelebracionPuntos from '@/components/CelebracionPuntos'
 import type { ResultadoCompletado } from '@/components/AnadirFotoModal'
 import CabeceraPerfil from '@/components/perfil/CabeceraPerfil'
 import PestanasPerfil, { type PestanaPerfil } from '@/components/perfil/PestanasPerfil'
+import { CATEGORIAS, type CategoriaGooal } from '@/lib/gooals'
 import Universo from '@/components/perfil/Universo'
 import EnComun, { CabeceraRelacion, cruzar, type RelacionEnComun } from '@/components/perfil/EnComun'
 import ListaPerfil from '@/components/perfil/ListaPerfil'
@@ -47,7 +48,19 @@ function PerfilContenido() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [siguiendoAccion, setSiguiendoAccion] = useState(false)
-  const [pestana, setPestana] = useState<PestanaPerfil>('conseguidos')
+  /**
+   * La pestaña y el filtro vienen de la URL la primera vez, porque hay cosas
+   * que apuntan aquí desde fuera: las tres cifras de Tú y las burbujas del
+   * universo. Después son estado normal — cambiar de pestaña no reescribe la
+   * dirección, que llenaría el historial de pasos atrás que nadie pidió.
+   */
+  const [pestana, setPestana] = useState<PestanaPerfil>(
+    searchParams.get('lista') === 'pendientes' ? 'pendientes' : 'conseguidos'
+  )
+  const [filtro, setFiltro] = useState<CategoriaGooal | null>(() => {
+    const pedida = searchParams.get('cat')
+    return CATEGORIAS.includes(pedida as CategoriaGooal) ? (pedida as CategoriaGooal) : null
+  })
   /**
    * Qué relación de "en común" se está mirando. null = las tres filas.
    *
@@ -156,6 +169,7 @@ function PerfilContenido() {
 
   const cambiarPestana = (nueva: PestanaPerfil) => {
     setPestana(nueva)
+    setFiltro(null)
     // Salir de "en común" cierra la relación que estuviera abierta: volver a esa
     // pestaña y aparecer dentro de una sublista es de las cosas que hacen que
     // alguien no sepa dónde está.
@@ -191,7 +205,10 @@ function PerfilContenido() {
     </button>
   )
 
-  const lineas = pestana === 'pendientes' ? perfil.pendientes : perfil.conseguidos
+  const todas = pestana === 'pendientes' ? perfil.pendientes : perfil.conseguidos
+  // El filtro se aplica aquí y no en el servidor: las dos listas ya están en la
+  // pantalla enteras, así que filtrar no cuesta ni una consulta.
+  const lineas = filtro ? todas.filter(l => l.gooal.categoria === filtro) : todas
   const progreso = progresoNivel(perfil.puntos)
   const nivel = progreso.actual
   // Los gooals de la relación abierta. Se cruza aquí y no en el servidor porque
@@ -304,7 +321,8 @@ function PerfilContenido() {
                     onVolver={() => setRelacion(null)}
                   />
                   <div style={{ paddingTop: 10 }}>
-                    <ListaPerfil lineas={deLaRelacion} onAbrir={abrirLinea} />
+                    {/* 'juntos' son SUS pendientes; las otras dos, sus conseguidos. */}
+                    <ListaPerfil lineas={deLaRelacion} conseguidos={relacion !== 'juntos'} onAbrir={abrirLinea} />
                   </div>
                 </>
               )
@@ -326,7 +344,13 @@ function PerfilContenido() {
                 />
               )
             ) : (
-              <ListaPerfil lineas={lineas} onAbrir={abrirLinea} />
+              <ListaPerfil
+                lineas={lineas}
+                conseguidos={pestana === 'conseguidos'}
+                onAbrir={abrirLinea}
+                filtro={filtro}
+                onQuitarFiltro={() => setFiltro(null)}
+              />
             )}
           </div>
 

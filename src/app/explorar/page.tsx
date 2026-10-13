@@ -10,6 +10,7 @@ import {
 import AppShell, { PantallaCargando } from '@/components/AppShell'
 import ExplorarFeed from '@/components/ExplorarFeed'
 import FiltrosCatalogo, { SIN_FILTROS, type Filtros } from '@/components/explorar/FiltrosCatalogo'
+import { CATEGORIAS, type CategoriaGooal } from '@/lib/gooals'
 import Descubrir from '@/components/explorar/Descubrir'
 import GooalV2DetailModal from '@/components/GooalV2DetailModal'
 import SugerirGooalSheet from '@/components/SugerirGooalSheet'
@@ -59,7 +60,15 @@ function ExplorarContenido() {
   const [pestana, setPestana] = useState<Pestana>(
     tabPedida === 'mapa' ? 'mapa' : tabPedida === 'descubrir' ? 'descubrir' : 'lista',
   )
-  const [filtros, setFiltros] = useState<Filtros>({ ...SIN_FILTROS, busqueda: searchParams.get('q') ?? '' })
+  // ?cat= llega de una burbuja a cero del universo: quien la toca no tiene
+  // nada de esa categoría, y lo que necesita es ver qué hay. Se valida contra
+  // la lista de verdad, que un parámetro de la URL lo escribe cualquiera.
+  const catPedida = searchParams.get('cat')
+  const [filtros, setFiltros] = useState<Filtros>({
+    ...SIN_FILTROS,
+    busqueda: searchParams.get('q') ?? '',
+    categoria: CATEGORIAS.includes(catPedida as CategoriaGooal) ? (catPedida as CategoriaGooal) : 'todos',
+  })
   // Lo escrito y lo aplicado van por separado: la consulta espera a que dejes de
   // teclear, pero el campo tiene que responder a cada tecla.
   const [aplicada, setAplicada] = useState(searchParams.get('q') ?? '')

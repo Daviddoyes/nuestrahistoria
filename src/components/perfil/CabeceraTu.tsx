@@ -20,6 +20,18 @@ type Props = {
   onBuscar: () => void
   /** "Amigos" abre las dos listas: quién te sigue y a quién sigues. */
   onAmigos: () => void
+  /** Las otras dos cifras llevan a su lista, ya en la pestaña que toca. */
+  onConseguidos: () => void
+  onPendientes: () => void
+  /**
+   * Una burbuja del universo. `tieneGooals` decide a dónde: con algo dentro, a
+   * la lista filtrada; a cero, a Explorar por esa categoría.
+   *
+   * Una burbuja a cero NO puede llevar a una lista vacía: quien la toca es
+   * justo quien no tiene nada de eso, y lo que necesita no es ver su vacío, es
+   * ver qué hay. Una lista vacía ahí es un callejón.
+   */
+  onCategoria: (categoria: CategoriaGooal, tieneGooals: boolean) => void
 }
 
 /**
@@ -54,6 +66,7 @@ export const esDiaUno = (conseguidos: number) => conseguidos === 0
  */
 export default function CabeceraTu({
   nombre, foto, conseguidos, pendientes, amigos, puntos, conteos, intereses, onBuscar, onAmigos,
+  onConseguidos, onPendientes, onCategoria,
 }: Props) {
   const progreso = progresoNivel(puntos)
   const diaUno = esDiaUno(conseguidos)
@@ -104,6 +117,7 @@ export default function CabeceraTu({
           // distingue de uno roto, y además no hay nada que haya avanzado.
           porcentajeNivel={diaUno ? null : progreso.porcentaje}
           resumen={resumirUniverso(conteos, intereses)}
+          onCategoria={onCategoria}
         />
       </div>
 
@@ -115,8 +129,11 @@ export default function CabeceraTu({
         }}
       >
         {([
-          ['Conseguidos', conseguidos, null],
-          ['Pendientes', pendientes, null],
+          // Las tres llevan a algún sitio. Parecían botones y no lo eran, que
+          // es de las cosas que más desconciertan: una cifra en un recuadro con
+          // borde pide que la toques.
+          ['Conseguidos', conseguidos, onConseguidos],
+          ['Pendientes', pendientes, onPendientes],
           // Amigos se toca y abre las dos listas. El número es uno —amigo es
           // seguirse los dos— pero detrás hay dos listas, y si esta puerta no
           // estuviera no habría ninguna otra forma de llegar a ellas.

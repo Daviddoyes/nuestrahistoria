@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { X, Plus, Check, Camera, MapPin, Trash2, MessageCircle } from 'lucide-react'
-import { anadirGooal, conseguirSinFoto, quitarGooal, getDetalleGooal } from '@/lib/actions'
+import { anadirGooal, conseguirSinFoto, quitarGooal, borrarFotoDeGooal, getDetalleGooal } from '@/lib/actions'
 import {
   CATEGORIA_COLOR, CATEGORIA_LABEL, CATEGORIA_GRADIENTE, DIFICULTAD_META,
 } from '@/lib/gooals'
@@ -56,6 +56,8 @@ export default function GooalV2DetailModal({
   const [confirmacion, setConfirmacion] = useState<string | null>(null)
   const [quitando, setQuitando] = useState(false)
   const [preguntandoQuitar, setPreguntandoQuitar] = useState(false)
+  const [preguntandoBorrarFoto, setPreguntandoBorrarFoto] = useState(false)
+  const [borrandoFoto, setBorrandoFoto] = useState(false)
   const [tieneFoto, setTieneFoto] = useState(false)
   // El post del muro de quien mira, para poder volver a sus comentarios.
   const [miPostId, setMiPostId] = useState<string | null>(null)
@@ -87,8 +89,18 @@ export default function GooalV2DetailModal({
     reintentado.current = true
     refrescar()
   }
-  const fotoPropia = fotoRota ? null : foto
-  const videoPropio = fotoRota ? null : video
+  // ── LA CABECERA ES DE LO VIVIDO ───────────────────────
+  //
+  // La foto de esa persona manda en la cabecera SOLO si el gooal está
+  // conseguido. Un pendiente puede tener foto desde que se puede desmarcar, y
+  // una cabecera con su foto diría «esto lo viviste tú» de algo que todavía no.
+  // Cuando está pendiente la cabecera vuelve a ser la del catálogo y su foto
+  // baja a la tira, donde además se puede borrar.
+  const vivido = estadoLocal === 'completado'
+  const suyaFoto = fotoRota ? null : foto
+  const suyoVideo = fotoRota ? null : video
+  const fotoPropia = vivido ? suyaFoto : null
+  const videoPropio = vivido ? suyoVideo : null
 
   const color = CATEGORIA_COLOR[gooal.categoria]
 
@@ -165,6 +177,25 @@ export default function GooalV2DetailModal({
       setError(res.error ?? 'No se pudo guardar el gooal.')
     }
     setMarcando(false)
+  }
+
+  const handleBorrarFoto = async () => {
+    setBorrandoFoto(true)
+    setError('')
+    const res = await borrarFotoDeGooal(gooal.id)
+    if (res.success) {
+      setPreguntandoBorrarFoto(false)
+      setTieneFoto(false)
+      // Que la tira desaparezca de verdad: sin esto seguiría pintándose con una
+      // dirección firmada que ya no apunta a nada.
+      refrescar()
+      setConfirmacion('Foto borrada')
+      onCambio()
+    } else {
+      setPreguntandoBorrarFoto(false)
+      setError(res.error ?? 'No se pudo borrar la foto.')
+    }
+    setBorrandoFoto(false)
   }
 
   const handleQuitar = async () => {
@@ -328,6 +359,62 @@ export default function GooalV2DetailModal({
               </div>
             )}
           </div>
+
+          {/* ── TU FOTO, CUANDO EL GOOAL ESTÁ PENDIENTE ──────
+              Existe por una razón y solo una: al desmarcar, la foto se queda
+              enganchada a la fila. Eso solo vale si quien la subió PUEDE VERLA
+              Y BORRARLA — una foto que la app guarda y su dueña no puede quitar
+              es la misma forma que el fichero huérfano del cubo, y no se
+              prohíbe el huérfano en el cubo para fabricarlo en la pantalla.
+
+              Por eso el botón de borrar no es un extra de esta tira: es la
+              tira. Sin él, esto sería esconder la foto con más trabajo. */}
+          {!vivido && (suyaFoto || suyoVideo) && (
+            <div
+              className="px-6"
+              style={{
+                paddingTop: 14, display: 'flex', alignItems: 'center', gap: 12,
+              }}
+            >
+              {suyoVideo ? (
+                <video
+                  src={suyoVideo}
+                  playsInline
+                  muted
+                  style={{ width: 54, height: 54, borderRadius: 10, objectFit: 'cover', flexShrink: 0, background: '#000' }}
+                />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element -- dirección firmada que caduca
+                <img
+                  src={suyaFoto as string}
+                  alt=""
+                  onError={alFallarLaFoto}
+                  style={{ width: 54, height: 54, borderRadius: 10, objectFit: 'cover', flexShrink: 0 }}
+                />
+              )}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                {/* Neutro a propósito: «guardaste esta foto cuando lo marcaste»
+                    suena a reproche, y aquí no ha hecho nada malo nadie. */}
+                <p style={{ fontSize: 13, fontWeight: 600, color: '#FFFFFF', lineHeight: 1.3 }}>
+                  Tu foto de este gooal
+                </p>
+                <p style={{ fontSize: 11, color: '#7A8A85', lineHeight: 1.35, marginTop: 2 }}>
+                  Se guarda por si vuelves a marcarlo.
+                </p>
+              </div>
+              <button
+                onClick={() => setPreguntandoBorrarFoto(true)}
+                disabled={borrandoFoto}
+                className="transition-colors active:bg-[#1E2120]"
+                style={{
+                  flexShrink: 0, height: 34, padding: '0 12px', borderRadius: 17,
+                  border: '1px solid #2A2E2C', color: '#FF5252', fontSize: 13, fontWeight: 600,
+                }}
+              >
+                Borrar
+              </button>
+            </div>
+          )}
 
         <div
           className="px-6"
@@ -504,6 +591,18 @@ export default function GooalV2DetailModal({
           ocupado={quitando}
           onConfirmar={handleQuitar}
           onCancelar={() => setPreguntandoQuitar(false)}
+        />
+      )}
+
+      {preguntandoBorrarFoto && (
+        <Confirmacion
+          titulo="Borrar tu foto"
+          texto="Se borrará para siempre, y también lo que publicaste en el muro con ella. El gooal se queda en tu lista."
+          confirmar="Borrar"
+          peligro
+          ocupado={borrandoFoto}
+          onConfirmar={handleBorrarFoto}
+          onCancelar={() => setPreguntandoBorrarFoto(false)}
         />
       )}
 

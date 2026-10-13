@@ -183,6 +183,15 @@ export default function InicioPage() {
             intereses={resumen.intereses}
             onBuscar={() => router.push('/explorar')}
             onAmigos={() => setLista('seguidores')}
+            onConseguidos={() => router.push('/perfil?lista=conseguidos')}
+            onPendientes={() => router.push('/perfil?lista=pendientes')}
+            // Con algo dentro, a su lista filtrada. A cero, a Explorar: quien
+            // toca una burbuja vacía necesita ver qué hay, no su vacío.
+            onCategoria={(categoria, tieneGooals) => router.push(
+              tieneGooals
+                ? `/perfil?lista=conseguidos&cat=${categoria}`
+                : `/explorar?cat=${categoria}`
+            )}
           />
 
           {error && (

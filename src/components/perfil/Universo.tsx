@@ -131,9 +131,16 @@ type Props = {
   porcentajeNivel: number | null
   /** Para el lector de pantalla, que de un dibujo no saca nada. */
   resumen: string
+  /**
+   * Tocar una burbuja. Opcional: en el perfil AJENO no se pasa, y entonces
+   * siguen siendo lo que eran, un dibujo. Filtrar la lista de otra persona por
+   * categoría no es una necesidad de nadie, y una burbuja que a veces se toca y
+   * a veces no sería peor que una que nunca se toca.
+   */
+  onCategoria?: (categoria: CategoriaGooal, tieneGooals: boolean) => void
 }
 
-export default function Universo({ conteos, intereses, foto, nombre, porcentajeNivel, resumen }: Props) {
+export default function Universo({ conteos, intereses, foto, nombre, porcentajeNivel, resumen, onCategoria }: Props) {
   const porCategoria = new Map(conteos.map(c => [c.categoria, c.conseguidos]))
   const interesadas = new Set(intereses ?? [])
 
@@ -192,9 +199,17 @@ export default function Universo({ conteos, intereses, foto, nombre, porcentajeN
       </div>
 
       {/* ── Las seis categorías ──────────────────────────── */}
-      {burbujas.map(b => (
-        <div
+      {burbujas.map(b => {
+        const Etiqueta = onCategoria ? 'button' : 'div'
+        return (
+        <Etiqueta
           key={b.categoria}
+          {...(onCategoria ? {
+            onClick: () => onCategoria(b.categoria, b.gooals > 0),
+            'aria-label': b.gooals > 0
+              ? `Ver tus ${b.gooals} de ${CATEGORIA_LABEL[b.categoria]}`
+              : `Explorar gooals de ${CATEGORIA_LABEL[b.categoria]}`,
+          } : {})}
           style={{
             position: 'absolute',
             left: '50%', marginLeft: b.dx - b.diametro / 2,
@@ -228,8 +243,9 @@ export default function Universo({ conteos, intereses, foto, nombre, porcentajeN
           >
             {CATEGORIA_LABEL[b.categoria]}
           </span>
-        </div>
-      ))}
+        </Etiqueta>
+        )
+      })}
     </div>
   )
 }
