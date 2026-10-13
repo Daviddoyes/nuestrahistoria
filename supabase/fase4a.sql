@@ -56,8 +56,6 @@ create table if not exists usernames_retirados (
 create index if not exists usernames_retirados_user_idx
   on usernames_retirados (user_id);
 
-alter table usernames_retirados enable row level security;
-
 
 -- ── 2. LOS NOMBRES RESERVADOS ──────────────────────────────
 --
@@ -85,6 +83,41 @@ insert into usernames_reservados (username) values
   ('inicio'), ('explorar'), ('muro'), ('mapa'), ('perfil'), ('onboarding'),
   ('auth'), ('invite'), ('baja'), ('download'), ('reset-password')
 on conflict (username) do nothing;
+
+
+-- ── 2bis. Y LAS DOS, CERRADAS. ESTO NO ES UN TRÁMITE ───────
+--
+-- > **Una tabla nueva no nace cerrada.** La RLS decide filas; los GRANT
+-- > deciden columnas. Toda tabla nueva lleva su RLS y sus permisos revisados
+-- > EN EL MISMO FICHERO QUE LA CREA, aunque lo que guarde parezca inofensivo.
+--
+-- En Supabase, una tabla nueva en `public` nace con permisos para `anon` y
+-- `authenticated` — es exactamente como `es_admin` acabó siendo escribible por
+-- cualquiera con la clave pública del navegador, que es la que va en el bundle.
+--
+-- Y aquí el daño sería peor que en una tabla cualquiera, porque estas dos SON
+-- la cerradura:
+--
+--   · con INSERT en `usernames_reservados`, cualquiera se reserva todos los
+--     nombres que quiera. La tabla que protege los nombres se convierte en el
+--     arma para secuestrarlos.
+--   · con INSERT en `usernames_retirados`, cualquiera «retira» el @usuario de
+--     otra persona y le impide volver a usarlo.
+--
+-- Ninguna de las dos la toca el navegador: solo los disparadores de aquí
+-- abajo, que van con `security definer` y por tanto corren con los permisos de
+-- quien los creó, no con los de quien escribe. Así que se revoca TODO de
+-- forma explícita en vez de confiar en el defecto — que es justo lo que falló
+-- la otra vez.
+alter table usernames_retirados  enable row level security;
+alter table usernames_reservados enable row level security;
+
+revoke all on table usernames_retirados  from anon, authenticated;
+revoke all on table usernames_reservados from anon, authenticated;
+
+-- Y sin ninguna política, a propósito: una tabla con RLS y sin políticas está
+-- cerrada, y eso es lo correcto para lo que solo toca el servidor. No es un
+-- olvido; no le añadas una «para que funcione».
 
 
 -- ── 3. EL DISPARADOR: formato, retirados y un cambio cada 30 días ──
@@ -261,9 +294,13 @@ create trigger profiles_username_al_crear
 -- ═══════════════════════════════════════════════════════════
 -- QUÉ COMPROBAR DESPUÉS DE PEGAR ESTO
 --
--- Pega esta consulta sola y mira el resultado. Tiene que salir UNA fila con
--- CINCO «si». Si alguna dice «NO», eso es lo que no ha entrado.
+-- Son DOS consultas y hacen preguntas distintas. La primera dice que las
+-- piezas EXISTEN; la segunda, que están CERRADAS. Las dos tienen que salir
+-- bien: una tabla que existe y está abierta es peor que no tenerla.
 -- ═══════════════════════════════════════════════════════════
+--
+-- ── A · ¿han entrado las piezas? ──────────────────────────
+-- Una fila con CINCO «si». Si alguna dice «NO», eso es lo que falta.
 --
 -- select
 --   case when to_regclass('public.usernames_retirados') is not null
@@ -280,6 +317,39 @@ create trigger profiles_username_al_crear
 --        then 'si' else 'NO' end                                as disparador_crear;
 --
 --
+-- ── B · ¿están cerradas? ──────────────────────────────────
+--
+-- Misma forma que `supabase/consultas/cerradura-puntos.sql`, que es la que ya
+-- usamos para esto. Tienen que salir CUATRO filas:
+--
+--   usernames_reservados · RLS ENCENDIDA  -> SÍ
+--   usernames_retirados  · RLS ENCENDIDA  -> SÍ
+--   usernames_reservados · PERMISOS       -> (ninguno)
+--   usernames_retirados  · PERMISOS       -> (ninguno)
+--
+-- Si en PERMISOS sale cualquier cosa —INSERT, SELECT, lo que sea— para `anon`
+-- o para `authenticated`, esa tabla la puede tocar quien tenga la clave
+-- pública del navegador, y entonces la cerradura es el arma.
+--
+-- with t as (select unnest(array['usernames_retirados','usernames_reservados']) as tabla)
+-- select c.relname::text as tabla,
+--        'RLS ENCENDIDA'::text as apartado,
+--        (case when c.relrowsecurity then 'SÍ' else 'NO — abierta de par en par' end)::text as detalle
+--   from pg_class c
+--   join pg_namespace n on n.oid = c.relnamespace
+--  where n.nspname = 'public' and c.relname in (select tabla from t)
+-- union all
+-- select t.tabla, 'PERMISOS de anon y authenticated',
+--        coalesce(
+--          (select string_agg(distinct g.grantee || ': ' || g.privilege_type, ', ')
+--             from information_schema.role_table_grants g
+--            where g.table_schema = 'public' and g.table_name = t.tabla
+--              and g.grantee in ('anon','authenticated')),
+--          '(ninguno)')
+--   from t
+--  order by 1, 2;
+--
+--
 -- Y UNA PRUEBA DE VERDAD, que es distinta de que las piezas existan. Esta
 -- intenta ponerle a TU PROPIO perfil un nombre de usuario que no vale, y tiene
 -- que FALLAR con el mensaje del formato. Si no falla, el disparador existe
@@ -289,8 +359,25 @@ create trigger profiles_username_al_crear
 --
 -- update profiles set username = '__' where email = '<TU_EMAIL>';
 --
--- Tiene que responder:
+-- TIENE QUE RESPONDER EXACTAMENTE ESTO:
+--
 --   ERROR: El nombre de usuario solo puede llevar letras sin acentos, números
 --   y guiones bajos; tiene que empezar por una letra y no acabar en guion bajo.
 --
--- Nada queda escrito: un error deshace la sentencia entera.
+-- ── Y SI FALLA CON OTRO MENSAJE, NO HA PASADO LA PRUEBA ───
+--
+-- Esto importa más de lo que parece. Lo que se está comprobando es que el
+-- disparador SE EJECUTA Y RECHAZA; un error distinto significa que ni siquiera
+-- se ha llegado a él, y el fallo de verdad queda tapado por el rojo del error:
+--
+--   · «column "email" does not exist» o 0 filas afectadas -> la sentencia no
+--     encontró tu perfil. No se ha probado nada. Busca tu id con
+--     `select id, email, username from profiles where email ilike '%algo%';`
+--     y usa ese id en el where.
+--   · «duplicate key ... profiles_username_unico» -> habría entrado por el
+--     índice, no por el disparador. El disparador NO está actuando.
+--   · cualquier otro -> léelo entero antes de darlo por bueno.
+--
+-- Un error no es una prueba superada: la prueba está superada si el error es
+-- EL QUE ESPERABAS. Nada queda escrito en ningún caso — un error deshace la
+-- sentencia entera.

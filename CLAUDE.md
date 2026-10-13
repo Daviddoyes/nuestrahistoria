@@ -602,6 +602,31 @@ se aplicó con `supabase/fase3y.sql`. El criterio del reparto:
 > Una columna nueva nace cerrada, que es el lado bueno: si algún día hace falta
 > escribirla desde el navegador, falla en cuanto se prueba y se añade a la lista.
 
+### Una tabla nueva no nace cerrada
+
+El corolario práctico de lo de arriba, y se encontró revisando un fichero de
+migración **antes** de pegarlo, que es el único momento barato.
+
+`fase4a.sql` creaba dos tablas: `usernames_retirados`, con su
+`enable row level security`, y `usernames_reservados`, **sin nada**. En Supabase
+una tabla nueva en `public` nace con permisos para `anon` y `authenticated`, que
+es exactamente como `es_admin` acabó siendo escribible por cualquiera con la
+clave pública.
+
+Y el daño habría sido peor que en una tabla cualquiera, porque esas dos **son
+la cerradura**: con un `insert` en `usernames_reservados`, cualquiera se reserva
+todos los nombres que quiera. **La tabla que protege los nombres se convierte
+en el arma para secuestrarlos.**
+
+> **Toda tabla nueva lleva su RLS y sus permisos revisados EN EL MISMO FICHERO
+> QUE LA CREA**, aunque lo que guarde parezca inofensivo. Y se revoca de forma
+> explícita en vez de confiar en el defecto, que es justo lo que falló la otra
+> vez.
+
+La señal para detectarlo: **si en un fichero hay dos `create table` y solo un
+`enable row level security`, ahí está el fallo.** No hace falta saber qué
+guarda cada una.
+
 ## A veces no hay que medir: basta con mirar qué sería imposible
 
 Al cerrar los permisos de `profiles` (8-10-2026) había una pregunta que daba
