@@ -434,14 +434,34 @@ revoke all on table user_gooals from authenticated;
 -- OJO al quitarlo: un `revoke update (codigo)` NO habría servido de nada. Un
 -- permiso por columna no recorta el de la tabla entera, convive con él y
 -- pierde. Hay que quitar el de la tabla.
-revoke update on table gooals_v2 from anon;
-revoke update on table gooals_v2 from authenticated;
+--
+-- Y SE QUITAN LOS TRES, no solo el update que pedía el código. Los otros dos
+-- son inofensivos hoy POR UNA RAZÓN QUE NO TIENE NADA QUE VER CON ELLOS: que
+-- esta tabla no tiene ninguna política de escritura. El día que alguien añada
+-- una por cualquier otro motivo, la puerta se abre sola y nadie va a
+-- relacionar las dos cosas — se tocó una política y se abrió un permiso que
+-- llevaba años ahí. Es la misma forma que tenía el agujero de `es_admin`: la
+-- política era correcta, y abría la puerta un permiso que nadie miraba porque
+-- no parecía parte de la cerradura.
+--
+-- PUBLIC va en la lista porque un permiso concedido a PUBLIC lo tiene todo el
+-- mundo sin aparecer con su nombre, y entonces una comprobación que solo mira
+-- a los dos roles dice «nadie» con la puerta abierta.
+revoke insert, update, delete on table gooals_v2 from public;
+revoke insert, update, delete on table gooals_v2 from anon;
+revoke insert, update, delete on table gooals_v2 from authenticated;
 
--- Y lo que NO se ha quitado, para que se sepa: el `insert` y el `delete` de
--- `gooals_v2` siguen concedidos, y lo único que los frena es que esta tabla no
--- tiene ninguna política de escritura. Hoy eso basta. Cerrarlos también sería
--- correcto y no rompería nada, pero es una decisión aparte de la del código y
--- no se tomó de paso. Anotado el 13-10-2026.
+-- El SELECT no se toca y no es un descuido: `gooals_v2` es la única tabla con
+-- lectura pública del proyecto, y es lo que hace que se vea el catálogo. Si
+-- algún día alguien lo cierra por simetría, Explorar, el mapa y el buscador se
+-- quedan en blanco.
+--
+-- Hay una cerradura más del mismo día que NO está aquí: el
+-- `revoke execute on function codigo_gooal_nuevo() from public, anon,
+-- authenticated`. Vive solo en `fase4b.sql`, que es donde se crea esa función,
+-- porque ponerla también aquí haría que este fichero fallara al lanzarse
+-- entero contra una base donde fase4b no se haya pegado — y la promesa de este
+-- fichero es justo que lanzarlo entero funcione.
 
 
 -- ═══════════════════════════════════════════════════════════

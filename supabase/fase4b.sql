@@ -231,10 +231,17 @@ create trigger gooals_v2_codigo_no_cambia
 -- navegador. Esto es la SEGUNDA cerradura, y va escrita en vez de confiarse al
 -- reparto por defecto: es exactamente lo que falló con `es_admin`.
 --
--- Todo lo que escribe en esta tabla lo hace con la clave de servicio desde el
--- servidor —el panel, la importación por CSV, la siembra; están todos
--- buscados, no supuestos— y la clave de servicio se salta los permisos: nada
--- de esto le afecta.
+-- Y LA PREMISA, QUE ES LA QUE SOSTIENE TODO ESTO, escrita aquí al lado para
+-- que se pueda volver a comprobar y no haya que creérsela: el 13-10-2026 se
+-- buscaron TODAS las escrituras sobre `gooals_v2` —ocho en la app (el panel,
+-- la importación por CSV, los dos repasos de títulos, el recuento de
+-- conseguidos) y cuatro en los guiones (la siembra, el geocodificador y los
+-- dos de fotos)— y las doce usan la clave de servicio. Ninguna va con la clave
+-- pública del navegador. La clave de servicio se salta los permisos, así que
+-- nada de esto le afecta.
+--
+-- Si algún día eso dejara de ser verdad, lo que se rompe es lo de aquí abajo,
+-- y se rompe RUIDOSAMENTE —un error al guardar—, que es la forma buena.
 --
 -- ── DOS TRAMPAS DE POSTGRES, Y LAS DOS MUERDEN AQUÍ ───────
 --
@@ -247,9 +254,27 @@ create trigger gooals_v2_codigo_no_cambia
 -- 2. Una función nueva nace con EXECUTE para PUBLIC. Quitárselo a `anon` y a
 --    `authenticated` y quedarse tranquilo sería la comprobación a medias de
 --    siempre: siguen pudiendo ejecutarla, por ser público. Hay que quitárselo
---    a PUBLIC.
+--    a PUBLIC. Por eso PUBLIC está también en el revoke de la tabla: para que
+--    la comprobación B pueda decir «(nadie)» de verdad y no «nadie de los dos
+--    que he mirado».
+--
+-- ── Y POR QUÉ TAMBIÉN EL INSERT Y EL DELETE ───────────────
+--
+-- No hacen falta para el código corto. Se quitan porque hoy son inofensivos
+-- POR UNA RAZÓN QUE NO TIENE NADA QUE VER CON ELLOS: que esta tabla no tiene
+-- ninguna política de escritura.
+--
+-- El día que alguien añada una política a `gooals_v2` por cualquier otro
+-- motivo —una sugerencia que se guarde desde el navegador, un contador que se
+-- escriba desde el cliente—, la puerta se abre SOLA, y nadie va a relacionar
+-- las dos cosas: lo que se tocó fue una política, y lo que se abrió fue un
+-- permiso que llevaba años ahí.
+--
+-- Es exactamente la forma que tenía el agujero de `es_admin`: la política era
+-- correcta, y el que abría la puerta era un permiso que nadie estaba mirando
+-- porque no parecía parte de la cerradura.
 
-revoke update on gooals_v2 from anon, authenticated;
+revoke insert, update, delete on gooals_v2 from public, anon, authenticated;
 revoke execute on function codigo_gooal_nuevo() from public, anon, authenticated;
 
 
@@ -289,22 +314,25 @@ revoke execute on function codigo_gooal_nuevo() from public, anon, authenticated
 -- ── B · ¿están cerradas? ──────────────────────────────────
 --
 -- Misma forma que `supabase/consultas/cerradura-puntos.sql`. Tienen que salir
--- TRES filas, y las tres tienen que decir que no hay nada:
+-- CINCO filas, en este orden, y las cinco tienen que decir que no hay nada:
 --
 --   codigo_gooal_nuevo · QUIÉN PUEDE EJECUTARLA  -> (nadie)
---   gooals_v2 · QUIÉN PUEDE HACER UPDATE         -> (nadie)
 --   gooals_v2 · POLÍTICAS DE ESCRITURA           -> (ninguna)
+--   gooals_v2 · QUIÉN PUEDE HACER DELETE         -> (nadie)
+--   gooals_v2 · QUIÉN PUEDE HACER INSERT         -> (nadie)
+--   gooals_v2 · QUIÉN PUEDE HACER UPDATE         -> (nadie)
 --
--- La tercera es la importante y la que no hay que perder de vista: aunque
--- alguien devolviera los permisos de las dos primeras, sin una política de
--- escritura la RLS sigue cerrando la puerta. Y al revés — el día que se añada
--- una política de escritura a esta tabla, las dos primeras pasan a ser lo
--- único que queda.
+-- Y OJO CON LEER LA DE LAS POLÍTICAS COMO LA RED DE LAS OTRAS. Es la trampa
+-- entera: los tres permisos son inofensivos HOY porque no hay política de
+-- escritura, que es una condición que no tiene nada que ver con ellos. El día
+-- que alguien añada una política a esta tabla por otro motivo, la puerta se
+-- abre sola y nadie va a relacionar las dos cosas — se tocó una política y se
+-- abrió un permiso que llevaba años ahí. Por eso se quitan los tres, en vez de
+-- apoyarse en la quinta fila.
 --
--- Las dos primeras miran también a PUBLIC, no solo a `anon` y
--- `authenticated`. Un permiso concedido a PUBLIC lo tiene todo el mundo sin
--- aparecer con su nombre: una consulta que solo busca los dos roles diría
--- «(nadie)» con la puerta abierta.
+-- Todas miran también a PUBLIC, no solo a `anon` y `authenticated`. Un permiso
+-- concedido a PUBLIC lo tiene todo el mundo sin aparecer con su nombre: una
+-- consulta que solo busca los dos roles diría «(nadie)» con la puerta abierta.
 --
 -- select 'codigo_gooal_nuevo'::text as pieza,
 --        'QUIÉN PUEDE EJECUTARLA'::text as apartado,
@@ -315,14 +343,15 @@ revoke execute on function codigo_gooal_nuevo() from public, anon, authenticated
 --              and grantee in ('anon','authenticated','PUBLIC')),
 --          '(nadie)')::text as detalle
 -- union all
--- select 'gooals_v2', 'QUIÉN PUEDE HACER UPDATE',
+-- select 'gooals_v2', 'QUIÉN PUEDE HACER ' || p.privilegio,
 --        coalesce(
 --          (select string_agg(distinct grantee, ', ')
 --             from information_schema.table_privileges
 --            where table_schema = 'public' and table_name = 'gooals_v2'
---              and privilege_type = 'UPDATE'
+--              and privilege_type = p.privilegio
 --              and grantee in ('anon','authenticated','PUBLIC')),
 --          '(nadie)')
+--   from (values ('UPDATE'), ('INSERT'), ('DELETE')) as p(privilegio)
 -- union all
 -- select 'gooals_v2', 'POLÍTICAS DE ESCRITURA',
 --        coalesce(
@@ -332,6 +361,11 @@ revoke execute on function codigo_gooal_nuevo() from public, anon, authenticated
 --              and cmd <> 'SELECT'),
 --          '(ninguna)')
 --  order by 1, 2;
+--
+-- Y EL SELECT NO SALE EN ESTA LISTA A PROPÓSITO: `gooals_v2` es la única tabla
+-- del proyecto con lectura pública, y eso es lo que hace que el catálogo se
+-- vea. Si algún día alguien «cierra» también el select por simetría, Explorar,
+-- el mapa y el buscador se quedan en blanco.
 --
 --
 -- ── C · LAS PRUEBAS DE VERDAD, UNA POR DISPARADOR ─────────
