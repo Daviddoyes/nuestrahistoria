@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { X } from 'lucide-react'
+import { Camera, X } from 'lucide-react'
 import { CATEGORIA_COLOR, CATEGORIA_LABEL, type CategoriaGooal } from '@/lib/gooals'
 import type { LineaPerfil } from '@/types/gooals'
 import BotonVerMas, { POR_TANDA } from './BotonVerMas'
@@ -120,34 +120,29 @@ export default function ListaPerfil({ lineas, conseguidos, onAbrir, filtro = nul
               {/* Los puntos van SIEMPRE y en su columna. Si en unas líneas
                   hubiera puntos y en otras una cámara, la columna se rompería y
                   la lista dejaría de leerse de un vistazo. */}
-              {/* ── RELLENA SI ESTÁ CONSEGUIDO, DE CONTORNO SI NO ──
-                  Es la gramática de las burbujas del universo —lleno cuando
-                  está hecho, discontinuo cuando no— traída aquí. Pero NO con el
-                  color, con la forma, y la diferencia importa:
+              {/* ── SOLO EN CONSEGUIDOS ───────────────────────────
+                  Hubo un intento de marcar también los pendientes con foto —se
+                  puede tener una desde que se puede desmarcar—, primero con la
+                  cámara entera rellena y luego con solo el objetivo. Se miraron
+                  las dos a tamaño real en una hoja de pruebas:
 
-                  una diferencia de TONO necesita tener al lado con qué
-                  compararse, y una de FORMA se entiende sola. Las seis burbujas
-                  se ven juntas, así que allí el color basta. Estas dos listas
-                  NUNCA comparten pantalla —en «Conseguidos» están todas
-                  conseguidas—, así que un gris más claro no diría nada: no hay
-                  nada al lado para notar que es más claro. */}
-              {linea.fotoVisible && (
-                // SVG a mano y no <Camera> de lucide: hace falta rellenar SOLO
-                // el objetivo, y el componente solo deja rellenar todo.
-                <svg
-                  role="img"
-                  aria-label={conseguidos ? 'con su foto' : 'con una foto guardada, todavía pendiente'}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#7A8A85"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  style={{ width: 13, height: 13, flexShrink: 0, opacity: 0.75 }}
-                >
-                  <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
-                  <circle cx="12" cy="13" r="3" fill={conseguidos ? '#7A8A85' : 'none'} />
-                </svg>
+                  · la cámara entera rellena deja de parecer una cámara a 13 px:
+                    es una mancha. Para marcar el estado nuevo estropeaba el que
+                    ya funcionaba, que es el cambio que no hay que hacer.
+                  · y entre el objetivo relleno y el contorno NO HAY DIFERENCIA
+                    VISIBLE a ese tamaño. Un icono que nadie distingue parece
+                    información y no lo es.
+
+                  Así que en los pendientes no va nada, y en conseguidos se queda
+                  exactamente como estaba. Quien tenga una foto en un pendiente la
+                  ve y la borra en la ficha, que es donde hay sitio para decirlo
+                  con palabras: esa tira es la red de seguridad, y el icono solo
+                  avisaba antes. */}
+              {conseguidos && linea.fotoVisible && (
+                <Camera
+                  aria-label="con su foto"
+                  style={{ width: 13, height: 13, flexShrink: 0, color: '#7A8A85', opacity: 0.75 }}
+                />
               )}
               <span style={{ fontSize: 12, fontWeight: 600, color: '#7A8A85', whiteSpace: 'nowrap', flexShrink: 0 }}>
                 {linea.puntos} pts

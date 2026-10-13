@@ -1829,6 +1829,34 @@ Server Actions, va en un módulo normal al lado. Las constantes de los permisos
 están en `src/lib/permisos.ts`, que no lleva directiva, y las importan tanto las
 acciones como el resto.
 
+## Si no se distinguen en la hoja de pruebas, no se envía la diferencia
+
+> **Si dos estados no se distinguen puestos uno al lado del otro en una hoja de
+> pruebas, no se van a distinguir nunca en la app.** No se envía la diferencia:
+> se quita.
+
+Desde que se puede desmarcar, un gooal pendiente puede tener foto, y había que
+marcarlo de otra forma que uno conseguido. Se intentó dos veces, con la
+gramática de las burbujas del universo —lleno cuando está hecho, contorno
+cuando no— aplicada al icono de la cámara de la lista:
+
+- **la cámara entera rellena** deja de parecer una cámara a 13 px: es una
+  mancha gris. Para marcar el estado nuevo **estropeaba el que ya funcionaba**,
+  que es el cambio que no hay que hacer nunca.
+- **solo el objetivo relleno** no estropea el icono, y entre eso y el contorno
+  **no hay diferencia visible** a ese tamaño.
+
+Así que no se envió ninguna de las dos. Y el razonamiento de por qué no se
+insiste, que es el que vale para la próxima: la hoja de pruebas pone las dos
+**juntas**, que es el caso más fácil. En la app nunca se ven juntas —en
+«Conseguidos» están todas conseguidas— así que si juntas ya cuesta, solas es
+imposible.
+
+Y lo que se hace en su lugar: **poner la señal donde haya sitio para decirla
+con palabras.** Aquí es la tira de la ficha —«Tu foto de este gooal», con su
+botón de borrar—, que además es la que de verdad resuelve el problema. El icono
+solo avisaba antes.
+
 ## Una acción que escribe tiene que COMPROBAR que escribió
 
 > **Si no tocó ninguna fila, devuelve error y dice por qué.** Una acción que
