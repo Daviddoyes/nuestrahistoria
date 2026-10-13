@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
+import { motivoInvalido, USERNAME_MAX } from '@/lib/username'
 import { X, Camera } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import Avatar from './Avatar'
@@ -8,9 +9,10 @@ import Avatar from './Avatar'
 type Props = {
   userId: string
   nombreActual: string
+  usernameActual: string | null
   fotoActual: string | null
   onClose: () => void
-  onGuardado: (cambios: { nombre: string; foto_perfil_url: string | null }) => void
+  onGuardado: (cambios: { nombre: string; username: string; foto_perfil_url: string | null }) => void
 }
 
 /** Reduce el avatar a 800px y JPEG 0.85 antes de subirlo al bucket 'avatars'. */
@@ -39,16 +41,54 @@ function comprimirAvatar(file: File): Promise<Blob> {
 }
 
 export default function EditarPerfilModal({
-  userId, nombreActual, fotoActual, onClose, onGuardado,
+  userId, nombreActual, usernameActual, fotoActual, onClose, onGuardado,
 }: Props) {
   const supabase = useMemo(() => createClient(), [])
   const inputRef = useRef<HTMLInputElement>(null)
 
   const [nombre, setNombre] = useState(nombreActual)
+  /**
+   * EL NOMBRE ES LO QUE SE VE; EL @USUARIO ES POR LO QUE TE ENCUENTRAN.
+   *
+   * Los dos aquí y no en dos sitios: son las dos mitades de «quién eres», y
+   * tenerlas separadas hace que nadie encuentre la segunda.
+   *
+   * Y se puede cambiar a propósito: quien se equivocó al escribirlo tiene que
+   * poder arreglarlo. Lo que no se puede es coger el que otro acaba de soltar,
+   * y de eso se encarga la base (ver supabase/fase4a.sql), no esta pantalla.
+   */
+  const [username, setUsername] = useState(usernameActual ?? '')
+  // null = todavía sin comprobar; true/false = lo que contestó la base.
+  const [libre, setLibre] = useState<boolean | null>(null)
+  const [comprobando, setComprobando] = useState(false)
   const [foto, setFoto] = useState<string | null>(fotoActual)
   const [archivo, setArchivo] = useState<File | null>(null)
   const [guardando, setGuardando] = useState(false)
   const [error, setError] = useState('')
+
+  // El formato se comprueba aquí para avisar mientras se escribe. Quien manda
+  // es el disparador de la base: esto es la cara amable, no la cerradura.
+  const limpio = username.trim().toLowerCase()
+  const cambiaElUsuario = limpio !== (usernameActual ?? '').toLowerCase()
+  const malFormato = cambiaElUsuario && limpio.length > 0 ? motivoInvalido(limpio) : null
+
+  useEffect(() => {
+    if (!cambiaElUsuario || malFormato || !limpio) { setLibre(null); return }
+    let vigente = true
+    setComprobando(true)
+    const t = setTimeout(async () => {
+      // Se pregunta a username_libre() y no se lee profiles: la tabla no la
+      // puede leer el navegador, y esa función existe justo para esto.
+      const { data, error } = await supabase.rpc('username_libre', { nombre_pedido: limpio })
+      if (!vigente) return
+      // Si la consulta falla NO se dice que está libre: se deja sin contestar y
+      // que lo rechace la base al guardar. Un «libre» inventado es peor que un
+      // «no lo sé», porque el siguiente paso es un error que nadie esperaba.
+      setLibre(error ? null : Boolean(data))
+      setComprobando(false)
+    }, 400)
+    return () => { vigente = false; clearTimeout(t) }
+  }, [limpio, cambiaElUsuario, malFormato, supabase])
 
   const handleFoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -60,6 +100,8 @@ export default function EditarPerfilModal({
   const guardar = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!nombre.trim()) { setError('Escribe tu nombre.'); return }
+    if (malFormato) { setError(malFormato); return }
+    if (cambiaElUsuario && libre === false) { setError('Ese nombre de usuario ya está cogido.'); return }
     setGuardando(true)
     setError('')
 
@@ -82,14 +124,25 @@ export default function EditarPerfilModal({
 
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({ nombre: nombre.trim(), foto_perfil_url: fotoUrl })
+        // El @usuario solo se manda si CAMBIA. Mandarlo igual haría que el
+        // disparador lo viera como un cambio... no: compara con `is not distinct from`
+        // y sale antes. Pero no mandarlo deja más claro qué se está tocando.
+        .update(
+          cambiaElUsuario
+            ? { nombre: nombre.trim(), username: limpio, foto_perfil_url: fotoUrl }
+            : { nombre: nombre.trim(), foto_perfil_url: fotoUrl }
+        )
         .eq('id', userId)
       if (updateError) throw updateError
 
-      onGuardado({ nombre: nombre.trim(), foto_perfil_url: fotoUrl })
+      onGuardado({ nombre: nombre.trim(), username: cambiaElUsuario ? limpio : (usernameActual ?? ''), foto_perfil_url: fotoUrl })
     } catch (err) {
       console.error('[EditarPerfilModal]', err)
-      setError('No hemos podido guardar los cambios. Inténtalo de nuevo.')
+      // El mensaje del disparador se enseña TAL CUAL: dice exactamente qué
+      // pasa —reservado, retirado, o cuándo podrás volver a cambiarlo— y
+      // sustituirlo por «no se pudo» sería tirar la única explicación que hay.
+      const msg = err instanceof Error ? err.message : ''
+      setError(msg && msg.length < 200 ? msg : 'No hemos podido guardar los cambios. Inténtalo de nuevo.')
       setGuardando(false)
     }
   }
@@ -156,6 +209,40 @@ export default function EditarPerfilModal({
             )}
           </div>
 
+          <div>
+            <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#7A8A85] mb-1.5">
+              Tu @usuario
+            </label>
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#7A8A85] text-base">@</span>
+              <input
+                type="text"
+                value={username}
+                onChange={e => setUsername(e.target.value.toLowerCase())}
+                maxLength={USERNAME_MAX}
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                placeholder="tu_usuario"
+                className="w-full pl-9 pr-4 py-3.5 rounded-xl border border-[#2A2E2C] bg-[#2A2E2C] text-[#FFFFFF] placeholder-[#7A8A85] focus:outline-none focus:border-[#00D1A7] text-base"
+              />
+            </div>
+            {/* Un aviso cada vez y en este orden: primero si no vale la forma,
+                y solo si vale se mira si está cogido. Enseñar los dos a la vez
+                hace dudar de cuál hay que arreglar. */}
+            {malFormato ? (
+              <p className="text-xs text-[#FF5252] mt-1.5">{malFormato}</p>
+            ) : comprobando ? (
+              <p className="text-xs text-[#7A8A85] mt-1.5">Comprobando…</p>
+            ) : libre === false ? (
+              <p className="text-xs text-[#FF5252] mt-1.5">Ese @usuario ya está cogido.</p>
+            ) : libre === true ? (
+              <p className="text-xs text-[#00D1A7] mt-1.5">Libre.</p>
+            ) : (
+              <p className="text-xs text-[#7A8A85] mt-1.5">Es por lo que te encuentran. Solo se puede cambiar una vez cada 30 días.</p>
+            )}
+          </div>
+
           {error && (
             <p className="text-sm text-[#FF5252] bg-[rgba(255,82,82,0.14)] px-3 py-2 rounded-lg">{error}</p>
           )}
@@ -171,7 +258,7 @@ export default function EditarPerfilModal({
             </button>
             <button
               type="submit"
-              disabled={guardando || !nombre.trim()}
+              disabled={guardando || !nombre.trim() || Boolean(malFormato) || (cambiaElUsuario && libre === false)}
               className="flex-1 bg-[#00D1A7] active:bg-[#00B893] disabled:opacity-30 text-[#0B0B0B] py-3.5 rounded-xl transition-colors text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2"
             >
               {guardando && (

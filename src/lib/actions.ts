@@ -8,6 +8,7 @@ import {
   CATEGORIAS, categoriasDeIntereses, contarPorCategoria, normalizarCategoriaGooal, type CategoriaGooal,
 } from '@/lib/gooals'
 import { limpiarBusqueda, limpiarBusquedaPersonas } from '@/lib/busqueda'
+import { proponerUsername } from '@/lib/username'
 import { amigosDe, puedeVerLaFoto, VISIBILIDADES } from '@/lib/permisos'
 import { leerTodo } from '@/lib/paginar'
 import {
@@ -59,11 +60,11 @@ export async function getMyProfile(): Promise<Profile | null> {
 
   if (!profile) {
     const nombre = (user.user_metadata?.nombre as string) || user.email?.split('@')[0] || ''
-    const base = nombre.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '') || 'user'
-    const suffix = Math.random().toString(36).slice(2, 6)
+    // Misma generación que el onboarding, del módulo compartido: eran dos
+    // copias con el mismo defecto, que es la señal de que faltaba un módulo.
     const { data: newProfile } = await service
       .from('profiles')
-      .insert({ id: user.id, email: user.email || '', nombre, username: `${base}_${suffix}` })
+      .insert({ id: user.id, email: user.email || '', nombre, username: proponerUsername(nombre) })
       .select()
       .single()
     return newProfile as Profile | null

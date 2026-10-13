@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { proponerUsername } from '@/lib/username'
 import { getGooalsOnboarding, anadirGooal, conseguirSinFoto } from '@/lib/actions'
 import {
   CATEGORIAS, CATEGORIA_COLOR, CATEGORIA_GRADIENTE, CATEGORIA_LABEL, DIFICULTAD_META,
@@ -33,11 +34,11 @@ const CON_QUIEN_OPTIONS: { id: CompaniaId; icon: string; label: string }[] = [
 // (scripts/migrar-intereses.mjs) y la tabla se borró, para no dejar un tercer
 // vocabulario rondando.
 
-function genUsername(nombre: string) {
-  const base = nombre.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '') || 'user'
-  const suffix = Math.random().toString(36).slice(2, 6)
-  return `${base}_${suffix}`
-}
+// La generación vive en @/lib/username, que es donde además CONVIERTE los
+// acentos en vez de borrarlos: lo de aquí dejaba «Català» en `catal` y
+// «Fariña» en `faria`, que no son el nombre de nadie. Y sin sufijo al azar,
+// que es lo que hacía impronunciables los 16 que se generaron solos.
+
 
 const TOTAL = 5
 
@@ -93,7 +94,7 @@ export default function OnboardingPage() {
       setUserId(user.id)
       setCodigoInvitacion((profile as { codigo_invitacion?: string }).codigo_invitacion || user.id)
       // Pre-fill username from existing or generate new
-      setUsername((profile as { username?: string }).username || genUsername(n))
+      setUsername((profile as { username?: string }).username || proponerUsername(n))
       setLoading(false)
     }
     load()
@@ -102,7 +103,7 @@ export default function OnboardingPage() {
   // Auto-update username when nombre changes (only if username hasn't been manually edited)
   const [usernameManual, setUsernameManual] = useState(false)
   useEffect(() => {
-    if (!usernameManual && nombre) setUsername(genUsername(nombre))
+    if (!usernameManual && nombre) setUsername(proponerUsername(nombre))
   }, [nombre, usernameManual])
 
   // Debounced username uniqueness check

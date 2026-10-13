@@ -324,6 +324,7 @@ export default function InicioPage() {
         <EditarPerfilModal
           userId={profile.id}
           nombreActual={profile.nombre}
+          usernameActual={profile.username}
           fotoActual={profile.foto_perfil_url}
           onClose={() => setEditando(false)}
           onGuardado={cambios => {
