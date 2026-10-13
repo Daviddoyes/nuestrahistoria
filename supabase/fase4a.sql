@@ -350,26 +350,50 @@ create trigger profiles_username_al_crear
 --  order by 1, 2;
 --
 --
--- Y UNA PRUEBA DE VERDAD, que es distinta de que las piezas existan. Esta
--- intenta ponerle a TU PROPIO perfil un nombre de usuario que no vale, y tiene
--- que FALLAR con el mensaje del formato. Si no falla, el disparador existe
--- pero no está haciendo nada.
+-- ── C · LAS PRUEBAS DE VERDAD, UNA POR REGLA ──────────────
 --
--- Cambia <TU_EMAIL> por el tuyo y lánzala; da error a propósito:
+-- Distintas de que las piezas existan: éstas comprueban que el disparador SE
+-- EJECUTA Y RECHAZA. Son DOS porque son dos reglas, y una sola no las prueba
+-- las dos — el disparador las mira EN ORDEN y la primera que salta tapa a las
+-- que vienen detrás.
 --
--- update profiles set username = '__' where email = '<TU_EMAIL>';
+-- (Eso mismo invalidó la primera versión de esta prueba, que usaba '__' y
+-- decía esperar el mensaje del formato: '__' mide dos caracteres, así que
+-- salta el largo y al formato no se llega NUNCA. El resultado esperado era
+-- imposible, y una prueba así no falla: confunde.)
 --
--- TIENE QUE RESPONDER EXACTAMENTE ESTO:
+-- Cambia <TU_EMAIL> por el tuyo en las dos. Las dos dan error a propósito, y
+-- nada queda escrito: un error deshace la sentencia entera.
 --
---   ERROR: El nombre de usuario solo puede llevar letras sin acentos, números
---   y guiones bajos; tiene que empezar por una letra y no acabar en guion bajo.
+--
+--   C1 · EL LARGO.  'ab' mide dos.
+--
+--   update profiles set username = 'ab' where email = '<TU_EMAIL>';
+--
+--   TIENE QUE RESPONDER:
+--     ERROR: El nombre de usuario tiene que medir entre 3 y 20 caracteres.
+--
+--
+--   C2 · EL FORMATO.  'ab_' mide tres —así que pasa el largo— y acaba en
+--   guion bajo, que es lo que no se puede.
+--
+--   update profiles set username = 'ab_' where email = '<TU_EMAIL>';
+--
+--   TIENE QUE RESPONDER:
+--     ERROR: El nombre de usuario solo puede llevar letras sin acentos,
+--     números y guiones bajos; tiene que empezar por una letra y no acabar en
+--     guion bajo.
+--
 --
 -- ── Y SI FALLA CON OTRO MENSAJE, NO HA PASADO LA PRUEBA ───
 --
--- Esto importa más de lo que parece. Lo que se está comprobando es que el
--- disparador SE EJECUTA Y RECHAZA; un error distinto significa que ni siquiera
--- se ha llegado a él, y el fallo de verdad queda tapado por el rojo del error:
+-- Esto importa más de lo que parece. Un error distinto significa que ni
+-- siquiera se ha llegado a la regla que se quería probar, y el fallo de verdad
+-- queda tapado por el rojo del error:
 --
+--   · C2 contesta el mensaje del LARGO -> no es que haya pasado: es que la
+--     regla del formato no se ha probado. Mira que hayas copiado 'ab_' y no
+--     otra cosa.
 --   · «column "email" does not exist» o 0 filas afectadas -> la sentencia no
 --     encontró tu perfil. No se ha probado nada. Busca tu id con
 --     `select id, email, username from profiles where email ilike '%algo%';`
@@ -379,5 +403,4 @@ create trigger profiles_username_al_crear
 --   · cualquier otro -> léelo entero antes de darlo por bueno.
 --
 -- Un error no es una prueba superada: la prueba está superada si el error es
--- EL QUE ESPERABAS. Nada queda escrito en ningún caso — un error deshace la
--- sentencia entera.
+-- EL QUE ESPERABAS.

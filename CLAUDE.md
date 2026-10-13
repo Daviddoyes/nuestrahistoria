@@ -1514,6 +1514,36 @@ tener qué proteger**.
 > Poner el guardián no arregla nada por sí solo. Un guardián que mira una lista
 > que nadie rellena es un guardián mirando una lista vacía.
 
+## Una prueba cuyo resultado esperado es imposible no falla: confunde
+
+Y es peor que una prueba mal escrita, porque **pasa**.
+
+`fase4a.sql` traía una prueba para comprobar que el disparador del @usuario
+rechaza de verdad: poner `'__'` y esperar el mensaje del FORMATO. El disparador
+mira las reglas en orden —vacío, largo, formato, reservados, retirados— y
+`'__'` mide **dos caracteres**, así que salta la del largo y al formato **no se
+llega nunca**. El mensaje documentado no podía salir jamás.
+
+Y el resultado de eso no es un fallo visible: la sentencia da error, el
+disparador se ejecuta, parece que todo va bien. Lo único raro es un mensaje que
+no es el que ponía en el papel — y ahí es donde la mayoría da por buena la
+prueba y sigue.
+
+> **Al escribir una prueba, comprueba que el caso elegido PUEDE producir el
+> resultado que dices esperar.** Es un paso aparte de escribirla, y se hace
+> leyendo el camino que va a recorrer.
+
+Y el corolario, que es lo que lo arregla de raíz:
+
+> **Donde hay varias reglas en orden, una sola prueba no las prueba todas: la
+> primera que salta tapa a las de detrás.** Una prueba por regla, con un caso
+> que pase las anteriores. Aquí: `'ab'` para el largo, y `'ab_'` —tres
+> caracteres, así que pasa el largo— para el formato.
+
+Es la misma familia que «una comprobación a medias es peor que ninguna» y que
+«el montaje de la prueba también se comprueba», pero en la EXPECTATIVA en vez
+de en el montaje.
+
 ## Una prueba de un mecanismo de seguridad no puede hacer el daño del que protege
 
 El mismo día, probando ese guardián: se lanzó el generador contra **la lista
