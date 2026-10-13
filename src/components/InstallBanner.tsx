@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { X } from 'lucide-react'
 import { isSafariIOS, isAndroidChrome, isStandalone } from '@/lib/platform'
 import InstallStepsSheet from './InstallStepsSheet'
 import { ALTO_NAV_TOTAL, conBarraInferior } from './BottomNav'
+import { tocaOfrecerInstalar } from '@/lib/instalar'
 
 type Platform = 'ios' | 'android' | null
 
@@ -16,16 +17,48 @@ type BeforeInstallPromptEvent = Event & {
 
 const DISMISSED_KEY = 'install-dismissed'
 
+/**
+ * La variable que dice cuánto alto ocupa el banner.
+ *
+ * La lee `AppShell` para dejarle sitio de verdad. Ver «QUE OCUPE SITIO» aquí
+ * abajo.
+ */
+export const VAR_ALTO = '--alto-banner'
+
 export default function InstallBanner() {
   const pathname = usePathname()
   const [platform, setPlatform] = useState<Platform>(null)
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [installing, setInstalling] = useState(false)
   const [showPasos, setShowPasos] = useState(false)
+  const caja = useRef<HTMLDivElement | null>(null)
+
+  // ── DÓNDE NO SALE, Y POR QUÉ ────────────────────────────
+  //
+  // Solo dentro de la app. Fuera —la portada y la página pública de un gooal,
+  // `/g/<x>`— quien está mirando TODAVÍA NO SABE QUÉ ES GOOALS: llega de un
+  // enlace de WhatsApp o de ningún sitio. Pedirle que lo instale antes de
+  // contárselo es un anuncio; después de usarlo, es una oferta.
+  //
+  // Y en `/g/` hacía daño de verdad: en un móvil corto tapaba el título a
+  // media palabra y dejaba fuera el único botón que tiene esa página,
+  // «Guárdalo en tu lista».
+  const dentroDeLaApp = conBarraInferior(pathname)
 
   useEffect(() => {
-    if (localStorage.getItem(DISMISSED_KEY)) return
-    if (isStandalone()) return
+    if (!dentroDeLaApp) return
+    try {
+      if (localStorage.getItem(DISMISSED_KEY)) return
+      if (isStandalone()) return
+
+      // Cuándo toca ofrecerlo —segunda visita, o primer gooal conseguido— lo
+      // decide `src/lib/instalar.ts`, que es donde también se marca el motivo.
+      if (!tocaOfrecerInstalar()) return
+    } catch {
+      // Sin almacenamiento —modo privado— no se ofrece nada: es mejor no
+      // enseñarlo que enseñarlo en cada carga sin poder recordar el «no».
+      return
+    }
 
     if (isSafariIOS()) {
       setPlatform('ios')
@@ -41,10 +74,38 @@ export default function InstallBanner() {
       window.addEventListener('beforeinstallprompt', handlePrompt)
       return () => window.removeEventListener('beforeinstallprompt', handlePrompt)
     }
-  }, [])
+  }, [dentroDeLaApp])
+
+  // ── QUE OCUPE SITIO, NO QUE FLOTE ENCIMA ─────────────────
+  //
+  // Sigue siendo `fixed` —así no se va con el scroll— pero publica su alto en
+  // una variable de CSS que `AppShell` le descuenta al área de contenido. El
+  // resultado es que empuja: lo de debajo se encoge en vez de esconderse.
+  //
+  // El alto se MIDE y no se escribe: en un móvil estrecho el título se parte en
+  // dos líneas y el banner pasa de 75 a 95 px. Un número a mano acertaría en un
+  // móvil y dejaría los demás tapados.
+  useEffect(() => {
+    const raiz = document.documentElement
+    if (!platform || !caja.current) {
+      raiz.style.removeProperty(VAR_ALTO)
+      return
+    }
+    const medir = () => {
+      const alto = caja.current?.getBoundingClientRect().height ?? 0
+      raiz.style.setProperty(VAR_ALTO, `${Math.ceil(alto)}px`)
+    }
+    medir()
+    const observador = new ResizeObserver(medir)
+    observador.observe(caja.current)
+    return () => {
+      observador.disconnect()
+      raiz.style.removeProperty(VAR_ALTO)
+    }
+  }, [platform])
 
   const dismiss = () => {
-    localStorage.setItem(DISMISSED_KEY, '1')
+    try { localStorage.setItem(DISMISSED_KEY, '1') } catch { /* modo privado */ }
     setShowPasos(false)
     setPlatform(null)
   }
@@ -70,14 +131,12 @@ export default function InstallBanner() {
     }
   }
 
-  // /download ya es una landing de instalación entera: el banner encima sobra.
-  if (!platform || pathname?.startsWith('/download')) return null
-
-  const hayBarra = conBarraInferior(pathname)
+  if (!platform || !dentroDeLaApp) return null
 
   return (
     <>
       <div
+        ref={caja}
         className="fixed left-0 right-0 z-40 bg-[#1E2120]"
         style={{
           // ENCIMA de la barra inferior, no sobre ella.
@@ -86,13 +145,8 @@ export default function InstallBanner() {
           // contra z-20), así que en las cuatro pestañas la tapaba entera: quien
           // no cerrara el banner no podía navegar. Un bloqueo total por un
           // número.
-          //
-          // El hueco de seguridad del móvil se lo deja a la barra cuando hay
-          // barra: ella ya lo aplica, y sumarlo aquí también lo contaría dos
-          // veces y dejaría el banner flotando.
-          bottom: hayBarra ? `calc(${ALTO_NAV_TOTAL}px + env(safe-area-inset-bottom, 0px))` : 0,
+          bottom: `calc(${ALTO_NAV_TOTAL}px + env(safe-area-inset-bottom, 0px))`,
           borderTop: '1px solid #00D1A7',
-          paddingBottom: hayBarra ? 0 : 'env(safe-area-inset-bottom, 0px)',
         }}
       >
         <div className="flex items-center gap-3 px-4 py-3">

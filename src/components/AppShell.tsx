@@ -23,7 +23,15 @@ export default function AppShell({ tab, fotoPerfil, header, children }: Props) {
       style={{
         height: '100dvh',
         paddingTop: 'env(safe-area-inset-top, 0px)',
-        paddingBottom: `calc(${ALTO_NAV_TOTAL}px + env(safe-area-inset-bottom, 0px))`,
+        // ── EL BANNER DE INSTALAR CUENTA COMO SITIO OCUPADO ──
+        //
+        // `--alto-banner` lo publica InstallBanner con su alto MEDIDO, y vale
+        // 0 cuando no está. Sin esto el banner flotaba encima del contenido: en
+        // un iPhone SE tapaba los tres botones de Descubrir ENTEROS, así que
+        // esa pantalla no se podía usar y no había forma de saber por qué.
+        //
+        // Nada fijo puede cubrir un control. Si ocupa sitio, que lo ocupe.
+        paddingBottom: `calc(${ALTO_NAV_TOTAL}px + env(safe-area-inset-bottom, 0px) + var(--alto-banner, 0px))`,
       }}
     >
       <div className="flex-shrink-0 flex items-center justify-center" style={{ height: 36 }}>

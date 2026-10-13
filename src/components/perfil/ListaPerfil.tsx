@@ -106,13 +106,27 @@ export default function ListaPerfil({ lineas, conseguidos, onAbrir, filtro = nul
                 }}
               />
 
-              {/* Una sola línea con puntos suspensivos. Que todas midan lo mismo
-                  es lo que hace que una lista de 34 se lea de un vistazo. */}
+              {/* ── HASTA DOS LÍNEAS ───────────────────────────
+                  Era UNA sola con puntos suspensivos, y la razón era buena: que
+                  todas midan lo mismo es lo que hace que una lista de 34 se lea
+                  de un vistazo.
+
+                  Pierde contra algo más fuerte. En un móvil de 375 caben unos
+                  33 caracteres y hay títulos de 57, así que se cortaban tres de
+                  cada siete — y en esta lista EL TÍTULO ES LO ÚNICO QUE HAY.
+                  Una lista cuyo único contenido está cortado no se lee de un
+                  vistazo: se lee a medias.
+
+                  Dos líneas y no más: con tres, una lista larga deja de tener
+                  forma. Lo que sigue alineado en todas las filas es la barrita
+                  de color y la columna de puntos, que es lo que de verdad
+                  sostiene el vistazo. */}
               <span
                 style={{
                   flex: 1, minWidth: 0, fontSize: 14, lineHeight: 1.3, color: '#FFFFFF',
-                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                }}
+                  display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                } as React.CSSProperties}
               >
                 {linea.gooal.titulo}
               </span>

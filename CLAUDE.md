@@ -2021,6 +2021,37 @@ La forma de detectarlo: **ante cualquier cosa que salga de la app, lee cada
 palabra como si no supieras qué es gooals.** La que necesite que te lo
 expliquen no va ahí.
 
+## Nada fijo puede cubrir un control
+
+> **Un elemento fijo —un banner, una barra, un aviso— NO puede quedar encima de
+> algo con lo que se interactúa. Nunca.** Si ocupa sitio, que lo ocupe de
+> verdad y empuje el contenido; flotando encima, lo que tapa deja de existir.
+
+Sale del banner de «Instala GooALS», que iba `fixed` y en un iPhone SE **tapaba
+los tres botones de Descubrir enteros**. Esa pantalla no se podía usar —no
+había forma de decir sí ni no a un gooal, solo deslizar— y **quien lo sufriera
+no tenía manera de saber por qué**: no hay error, no hay hueco, no hay nada. La
+app simplemente no responde.
+
+Y es la segunda vez en el mismo componente. La primera estaba en `bottom: 0`
+con una capa por encima de la barra de navegación y la tapaba entera: quien no
+cerrara el banner no podía ni cambiar de pestaña. Se arregló subiéndolo por
+encima de la barra —y así pasó a tapar el contenido en vez de la barra. **El
+fallo no era el número: era flotar.**
+
+Cómo se hace bien, que es lo que está puesto:
+
+1. El elemento fijo **publica su alto medido** en una variable de CSS
+   (`--alto-banner`), y el marco de la app se lo descuenta al área de
+   contenido. Lo de debajo se encoge en vez de esconderse.
+2. **El alto se MIDE, no se escribe.** En un móvil estrecho el mismo banner
+   pasa de 75 a 95 px porque el título se parte en dos líneas: un número a mano
+   acierta en un móvil y deja los demás tapados.
+
+Y la señal para buscarlo: **cualquier `position: fixed` que no sea la barra de
+navegación.** Si hay uno, la pregunta es qué hay debajo en la pantalla más
+corta, no en la tuya.
+
 ## Se mide desde donde corre el código
 
 Sale de intentar quitar las seis preguntas de «quién eres» de la pantalla de

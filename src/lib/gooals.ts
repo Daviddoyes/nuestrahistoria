@@ -198,8 +198,31 @@ export function normalizarCategoriaGooal(valor: string | null | undefined): Cate
 }
 
 /** "hace 3 h", "hace 2 d"... para la cabecera de cada post del muro. */
+/**
+ * Hace cuánto fue algo, en palabras.
+ *
+ * ── LA FECHA VIENE SIN ZONA HORARIA, Y ESO MENTÍA ─────────
+ *
+ * Las columnas de fecha de este proyecto son `timestamp` sin zona, así que
+ * PostgREST las devuelve como `2026-10-13T08:55:50` — SIN la `Z` del final. La
+ * base las guarda en UTC, pero `new Date()` lee una cadena así como hora
+ * LOCAL, y en España eso son dos horas de regalo (tres en verano).
+ *
+ * El resultado era que **la app no decía «ahora mismo» jamás**: un post recién
+ * publicado salía como «hace 2 h», y todo lo que hacías nacía viejo. No daba
+ * ningún error y hacía que la app entera pareciera muerta.
+ *
+ * Se arregla aquí, poniéndole la `Z` cuando no la trae, y no en la base: eso
+ * sería migrar todas las columnas a `timestamptz`, que es un cambio de verdad
+ * y no hace falta para esto. Si algún día se migran, esta función seguirá
+ * siendo correcta — una fecha que YA trae zona no se toca.
+ */
+function conZonaHoraria(fecha: string): string {
+  return /[Zz]|[+-]\d{2}:?\d{2}$/.test(fecha) ? fecha : fecha + 'Z'
+}
+
 export function hace(fecha: string): string {
-  const ms = Date.now() - new Date(fecha).getTime()
+  const ms = Date.now() - new Date(conZonaHoraria(fecha)).getTime()
   const min = Math.floor(ms / 60000)
   if (min < 1) return 'ahora mismo'
   if (min < 60) return `hace ${min} min`

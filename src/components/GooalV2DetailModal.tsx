@@ -7,6 +7,7 @@ import {
   anadirGooal, conseguirSinFoto, quitarGooal, borrarFotoDeGooal, getDetalleGooal, miUsername,
 } from '@/lib/actions'
 import { compartirGooal } from '@/lib/compartir-gooal'
+import { hayMotivoParaInstalar } from '@/lib/instalar'
 import { refDeGooal } from '@/lib/tarjeta-compartir'
 import FotoCatalogo from '@/components/FotoCatalogo'
 import { FOTO } from '@/lib/fotos'
@@ -204,6 +205,9 @@ export default function GooalV2DetailModal({
       setEstadoLocal('completado')
       setTieneFoto(false)
       setInvitandoFoto(true)
+      // Ya ha conseguido algo: a partir de ahora ofrecerle instalar la app es
+      // una oferta y no un anuncio. Ver InstallBanner.
+      hayMotivoParaInstalar()
       setConfirmacion(`¡Conseguido! +${res.puntosGanados ?? gooal.puntos} pts`)
       onCambio()
       // La celebración se pone encima (z-80) y la ficha se queda debajo con la
