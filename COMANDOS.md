@@ -67,16 +67,18 @@ npm run registro -- --seco # dice qué cambiaría, sin escribir
 npm run hoja -- A         # la hoja de contacto del grupo A
 ```
 
- tiene UNA FILA POR IMAGEN generada, con tres
-estados: ,  (con motivo) y . «Sin mirar» NO es
-lo mismo que rechazada, y mezclarlas era por qué no se podía contar cuánto
-quedaba.
+`scripts/fotos-generadas.json` tiene **una fila por imagen generada**, con tres
+estados: `aprobada`, `rechazada` (con motivo) y `sin_mirar`.
 
-Relanzarlo **no pisa lo que ya esté decidido**: solo añade lo nuevo.
+«Sin mirar» **no es lo mismo que rechazada**, y mezclarlas era la razón por la
+que no se podía contar cuánto quedaba: el 13-10-2026 había 463 imágenes en el
+disco y el manifiesto conocía 122.
 
-Las hojas salen en No sé qué quieres que haga con eso. ¿Me pides que genere las hojas B y C (hoy solo existe `Claude outputs/hoja-A.html`), que mire algo concreto del script `scripts/hoja-contacto.mjs`, o es una corrección de algún texto donde pone `outputs/` sin el `Claude ` delante? y se abren con el navegador.
-Las fotos se ven a 179 px —el tamaño de una tarjeta de verdad— y al tocarlas se
-abren grandes, que son las dos preguntas distintas.
+Relanzar el registro **no pisa lo que ya esté decidido**: solo añade lo nuevo.
+
+Las hojas salen en `Claude outputs/hoja-A.html` (o B, o C) y se abren con el
+navegador. Las fotos se ven a **179 px** —el tamaño real de una tarjeta— y al
+tocarlas se abren grandes: son dos preguntas distintas y las dos hacen falta.
 
 ### La revisión pantalla por pantalla
 

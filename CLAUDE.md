@@ -760,6 +760,28 @@ const cambiar = (viejo, nuevo) => {
 }
 ```
 
+### Y nunca se escribe un fichero desde una cadena entre comillas de bash
+
+Esto ya costó un fichero duplicado y commiteado (`generar.mjs`, con 308 líneas
+donde había 159) y **volvió a pasar el 13-10-2026, peor**.
+
+Escribiendo un trozo de COMANDOS.md con un `node -e "..."`, el texto llevaba
+unos backticks —los de marcar código en markdown— sin escapar. Bash los tomó
+por una SUSTITUCIÓN DE COMANDOS, ejecutó lo que había dentro, y **metió la
+respuesta de ese comando dentro del fichero**. Lo que quedó escrito en
+COMANDOS.md, y commiteado, fue una frase que nadie escribió:
+
+> «Las hojas salen en No sé qué quieres que haga con eso. ¿Me pides que
+> genere las hojas B y C…»
+
+No dio ningún error. El guion dijo «ok», el commit pasó y el fichero quedó con
+texto ajeno dentro.
+
+> **Para escribir o cambiar un fichero se usa el editor, no una cadena entre
+> comillas pasada a un intérprete.** Las comillas de bash no son un envoltorio
+> inocente: los backticks ejecutan, el `$` expande y el `\` desaparece. Un
+> texto en español con markdown dentro los lleva todos.
+
 Dos detalles que son el fallo entero:
 
 1. **Normalizar los finales de línea al leer.** El repo se trabaja en Windows
