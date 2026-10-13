@@ -178,7 +178,10 @@ export default function GooalV2DetailModal({
       onCambio()
     } else {
       setPreguntandoQuitar(false)
-      setError('No se pudo quitar el gooal.')
+      // El motivo viene de la acción: «tiene una foto tuya guardada» no es lo
+      // mismo que «no se pudo», y hasta ahora ni siquiera se llegaba aquí
+      // porque la acción decía que sí sin haber borrado nada.
+      setError(res.error ?? 'No se pudo quitar el gooal.')
     }
     setQuitando(false)
   }

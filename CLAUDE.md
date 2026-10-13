@@ -1829,6 +1829,34 @@ Server Actions, va en un módulo normal al lado. Las constantes de los permisos
 están en `src/lib/permisos.ts`, que no lleva directiva, y las importan tanto las
 acciones como el resto.
 
+## Una acción que escribe tiene que COMPROBAR que escribió
+
+> **Si no tocó ninguna fila, devuelve error y dice por qué.** Una acción que
+> miente diciendo que sí es peor que una que falla, porque nadie la va a
+> buscar.
+
+`quitarGooal` borraba la fila con un filtro que descarta las que tienen foto
+—`.is('foto_url', null)`, puesto a propósito para no borrar la prueba de
+nadie— y **no miraba el resultado**: devolvía `success: true` pasara lo que
+pasara. Así que quien tenía foto pulsaba «quitar», la consulta no casaba con
+ninguna fila, y la pantalla le contestaba **«Quitado de tus pendientes»**. No
+pasaba nada y se le decía que sí. Estuvo vivo para los 54 usuarios hasta el
+13-10-2026.
+
+Lo que lo arregla son dos líneas y un matiz:
+
+1. **`.select()` en el borrado**, que devuelve las filas tocadas. Cero filas no
+   es un éxito silencioso.
+2. **Y mirar POR QUÉ fueron cero**, que es el matiz: la fila no estaba, o tiene
+   una foto que esta acción no toca. «No se pudo» a secas no le dice a nadie
+   qué hacer después; «tiene una foto tuya guardada» sí.
+
+Es la misma forma que recorre todo este fichero —un reemplazo que no encuentra
+su texto, un cebo que no se inserta, un contador que no se compara— con otra
+ropa: **lo que no da error no es por eso correcto.** Y la señal para buscarlo:
+cualquier escritura cuyo filtro pueda no casar con nada. Si el filtro tiene una
+condición que descarta filas, esa condición puede descartarlas todas.
+
 ## Un insert de varias filas no respeta los valores por defecto
 
 Se descubrió montando una prueba, y el día que alguien escriba un guion de

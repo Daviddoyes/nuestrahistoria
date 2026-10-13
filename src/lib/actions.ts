@@ -902,14 +902,20 @@ export async function conseguirSinFoto(gooalId: string): Promise<{
  * Al quitar un conseguido se recalculan los puntos: no se puede quedar con los
  * de algo que ya no tiene.
  */
-export async function quitarGooal(gooalId: string): Promise<{ success: boolean }> {
+export async function quitarGooal(gooalId: string): Promise<{ success: boolean; error?: string }> {
   const userId = await getUserId()
-  if (!userId) return { success: false }
+  if (!userId) return { success: false, error: 'No autenticado' }
 
   const service = createServiceRoleClient()
   // La condición de "sin foto" va en la consulta, no en un `if`: así no hay
   // forma de borrar una prueba llamando a esto a mano.
-  await service
+  //
+  // Y EL `.select()` NO ES DECORACIÓN: dice QUÉ se borró. Hasta el 13-10-2026
+  // esto no miraba el resultado y devolvía `success: true` siempre, así que
+  // quien tenía foto pulsaba «quitar», la consulta no casaba con ninguna fila
+  // —la descarta el `.is('foto_url', null)`— y la pantalla le contestaba
+  // «Quitado de tus pendientes». No pasaba nada y se le decía que sí.
+  const { data: borradas, error } = await service
     .from('user_gooals')
     .delete()
     .eq('user_id', userId)
@@ -917,6 +923,34 @@ export async function quitarGooal(gooalId: string): Promise<{ success: boolean }
     .in('estado', ['pendiente', 'completado'])
     .is('foto_url', null)
     .is('video_url', null)
+    .select('id')
+
+  if (error) {
+    console.error('[quitarGooal] delete:', error)
+    return { success: false, error: 'No se ha podido quitar. Inténtalo otra vez.' }
+  }
+
+  // Cero filas borradas no es un éxito silencioso: es que la fila no estaba, o
+  // que tiene una foto que esta acción no toca. Hay que mirar cuál de las dos
+  // para poder decirlo, porque «no se pudo» a secas no le dice a nadie qué
+  // hacer después.
+  if (!borradas || borradas.length === 0) {
+    const { data: fila } = await service
+      .from('user_gooals')
+      .select('foto_url, video_url')
+      .eq('user_id', userId)
+      .eq('gooal_id', gooalId)
+      .maybeSingle()
+
+    if (!fila) return { success: false, error: 'Este gooal ya no está en tu lista.' }
+    const conRecuerdo = fila as { foto_url: string | null; video_url: string | null }
+    return {
+      success: false,
+      error: conRecuerdo.foto_url || conRecuerdo.video_url
+        ? 'Este gooal tiene una foto tuya guardada, así que no se puede quitar desde aquí.'
+        : 'No se ha podido quitar. Inténtalo otra vez.',
+    }
+  }
 
   // Quitar un conseguido baja sus puntos y el contador del gooal. Quitar un
   // pendiente no mueve ninguno de los dos, pero recontar siempre sale más
