@@ -37,6 +37,21 @@ type Props = {
   searchParams: Promise<{ de?: string }>
 }
 
+/**
+ * El segundo renglón del enlace, cuando el gooal no trae el suyo.
+ *
+ * Corto a propósito: WhatsApp le da UNA línea y corta sin avisar, así que una
+ * frase larga no se lee entera, se lee a medias. Y va en una constante porque
+ * la usan los dos sitios —la descripción de la página y la del enlace—, que es
+ * lo que evita que una se quede vieja.
+ *
+ * Lo ideal sería que cada gooal pusiera aquí la suya: 506 tarjetas diciendo lo
+ * mismo son 506 tarjetas iguales. Hoy no se puede — de los 541 publicados,
+ * UNO tiene descripción (medido el 13-10-2026) —, pero el `??` ya está puesto
+ * para el día que las haya.
+ */
+const FRASE = 'Elige retos de verdad y consíguelos.'
+
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { id } = await params
   const { de } = await searchParams
@@ -46,10 +61,10 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const quien = await quienComparte(de)
   return {
     title: `${gooal.titulo} · gooals`,
-    description: gooal.descripcion ?? 'Un gooal de gooals.',
+    description: gooal.descripcion ?? FRASE,
     openGraph: {
       title: quien ? `${quien.nombre} te propone: ${gooal.titulo}` : gooal.titulo,
-      description: gooal.descripcion ?? 'Elige retos de verdad, consíguelos y demuéstralo con una foto.',
+      description: gooal.descripcion ?? FRASE,
       siteName: 'gooals',
       locale: 'es_ES',
       type: 'website',
