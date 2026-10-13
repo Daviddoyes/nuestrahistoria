@@ -3,6 +3,8 @@
 import { CATEGORIA_GRADIENTE } from '@/lib/gooals'
 import { MARCA, TEXTO } from '@/lib/estilo'
 import type { GooalResumen } from '@/types/gooals'
+import FotoCatalogo from '@/components/FotoCatalogo'
+import { FOTO } from '@/lib/fotos'
 
 type Props = {
   gooals: GooalResumen[]
@@ -52,9 +54,9 @@ export default function ParaEmpezar({ gooals, onAbrir }: Props) {
           >
             {g.imagen_url && (
               // eslint-disable-next-line @next/next/no-img-element -- del cubo público del catálogo, ya en webp y al tamaño
-              <img
-                src={g.imagen_url}
-                alt=""
+              <FotoCatalogo
+                url={g.imagen_url}
+                {...FOTO.paraEmpezar}
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
               />
             )}

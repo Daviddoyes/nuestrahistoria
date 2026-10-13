@@ -4,6 +4,8 @@ import { getGooalPublico, quienComparte } from '@/lib/actions'
 import { CATEGORIA_LABEL, CATEGORIA_GRADIENTE, CATEGORIA_COLOR, DIFICULTAD_META } from '@/lib/gooals'
 import Logotipo from '@/components/Logotipo'
 import CreditoFoto from '@/components/CreditoFoto'
+import FotoCatalogo from '@/components/FotoCatalogo'
+import { FOTO } from '@/lib/fotos'
 import { TARJETA, urlDeTarjeta } from '@/lib/tarjeta-compartir'
 
 /**
@@ -156,10 +158,9 @@ export default async function GooalPublicoPage({ params, searchParams }: Props) 
           background: gooal.imagen_url ? '#161817' : CATEGORIA_GRADIENTE[gooal.categoria],
         }}>
           {gooal.imagen_url && (
-            // eslint-disable-next-line @next/next/no-img-element -- del cubo público, de tamaño variable
-            <img
-              src={gooal.imagen_url}
-              alt=""
+            <FotoCatalogo
+              url={gooal.imagen_url}
+              {...FOTO.cabecera}
               style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
             />
           )}

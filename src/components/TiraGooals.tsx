@@ -3,6 +3,8 @@
 import Link from 'next/link'
 import { CATEGORIA_COLOR } from '@/lib/gooals'
 import type { GooalResumen } from '@/types/gooals'
+import FotoCatalogo from '@/components/FotoCatalogo'
+import { FOTO } from '@/lib/fotos'
 
 // La fila de tarjetas de gooals que se desliza, y la cabecera de su sección.
 //
@@ -123,9 +125,9 @@ function Tarjeta({ gooal, km, onAbrir }: { gooal: GooalResumen; km?: number; onA
       style={{ ...marco, background: '#161817' }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element -- fotos del catálogo de tamaño variable */}
-      <img
-        src={gooal.imagen_url!}
-        alt=""
+      <FotoCatalogo
+        url={gooal.imagen_url!}
+        {...FOTO.tira}
         loading="lazy"
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
       />

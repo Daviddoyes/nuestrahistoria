@@ -7,6 +7,8 @@ import {
 } from '@/lib/actions'
 import { CATEGORIA_LABEL } from '@/lib/gooals'
 import CreditoFoto from '@/components/CreditoFoto'
+import FotoCatalogo from '@/components/FotoCatalogo'
+import { FOTO } from '@/lib/fotos'
 import type { ResultadoCompletado } from '@/components/AnadirFotoModal'
 import type { CartaDescubrir } from '@/types/gooals'
 
@@ -206,7 +208,7 @@ export default function Descubrir({ onCompletado, onCambio }: Props) {
           >
             {c.gooal.imagen_url && (
               // eslint-disable-next-line @next/next/no-img-element -- fotos del catálogo de tamaño variable
-              <img src={c.gooal.imagen_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <FotoCatalogo url={c.gooal.imagen_url} {...FOTO.descubrir} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             )}
           </div>
         ))}
@@ -226,9 +228,9 @@ export default function Descubrir({ onCompletado, onCambio }: Props) {
         >
           {gooal.imagen_url && (
             // eslint-disable-next-line @next/next/no-img-element -- fotos del catálogo de tamaño variable
-            <img
-              src={gooal.imagen_url}
-              alt=""
+            <FotoCatalogo
+              url={gooal.imagen_url}
+              {...FOTO.descubrir}
               draggable={false}
               style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
             />

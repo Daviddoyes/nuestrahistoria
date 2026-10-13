@@ -3,6 +3,8 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { Plus } from 'lucide-react'
 import { getCatalogoGooals } from '@/lib/actions'
+import FotoCatalogo from './FotoCatalogo'
+import { FOTO } from '@/lib/fotos'
 import { CATEGORIA_GRADIENTE } from '@/lib/gooals'
 import type { Filtros } from './explorar/FiltrosCatalogo'
 import { hayFiltros as tieneFiltros } from './explorar/FiltrosCatalogo'
@@ -181,9 +183,9 @@ function CardGooal({
       }}
     >
       {gooal.imagen_url && (
-        <img
-          src={gooal.imagen_url}
-          alt=""
+        <FotoCatalogo
+          url={gooal.imagen_url}
+          {...FOTO.rejilla}
           loading="lazy"
           decoding="async"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}

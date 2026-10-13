@@ -8,6 +8,8 @@ import {
 } from '@/lib/actions'
 import { compartirGooal } from '@/lib/compartir-gooal'
 import { refDeGooal } from '@/lib/tarjeta-compartir'
+import FotoCatalogo from '@/components/FotoCatalogo'
+import { FOTO } from '@/lib/fotos'
 import {
   CATEGORIA_COLOR, CATEGORIA_LABEL, CATEGORIA_GRADIENTE, DIFICULTAD_META,
 } from '@/lib/gooals'
@@ -336,10 +338,9 @@ export default function GooalV2DetailModal({
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
               />
             ) : gooal.imagen_url ? (
-              // eslint-disable-next-line @next/next/no-img-element -- imágenes del catálogo de tamaño variable
-              <img
-                src={gooal.imagen_url}
-                alt=""
+              <FotoCatalogo
+                url={gooal.imagen_url}
+                {...FOTO.cabecera}
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
               />
             ) : null}

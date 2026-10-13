@@ -10,6 +10,8 @@ import {
   type CategoriaGooal,
 } from '@/lib/gooals'
 import IconoCategoria from '@/components/IconoCategoria'
+import FotoCatalogo from '@/components/FotoCatalogo'
+import { FOTO } from '@/lib/fotos'
 import MarcaEstadoGooal from '@/components/MarcaEstadoGooal'
 import { MARCA_ESTADO } from '@/lib/estado-gooal'
 import type { EstadoUserGooal, GooalV2 } from '@/types/gooals'
@@ -455,7 +457,7 @@ export default function OnboardingPage() {
                         background: g.imagen_url ? '#2A2E2C' : CATEGORIA_GRADIENTE[g.categoria],
                       }}>
                         {g.imagen_url && (
-                          <img src={g.imagen_url} alt="" loading="lazy"
+                          <FotoCatalogo url={g.imagen_url} {...FOTO.miniatura} loading="lazy"
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         )}
                       </div>

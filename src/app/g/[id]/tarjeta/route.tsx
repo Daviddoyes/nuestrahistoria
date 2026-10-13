@@ -6,6 +6,7 @@ import type { NextRequest } from 'next/server'
 import { getGooalPublico, quienComparte } from '@/lib/actions'
 import { CATEGORIA_COLOR, CATEGORIA_SOMBRA, CATEGORIA_LABEL, DIFICULTAD_META } from '@/lib/gooals'
 import { TARJETA } from '@/lib/tarjeta-compartir'
+import { urlFoto, FOTO } from '@/lib/fotos'
 
 /**
  * LA TARJETA DE UN GOOAL COMPARTIDO: la imagen que sale en WhatsApp.
@@ -315,11 +316,17 @@ function Pastilla({ color, fondo, children }: { color: string; fondo?: string; c
  */
 async function recortarAnclandoArriba(url: string, ancho: number, alto: number): Promise<string | null> {
   try {
-    const respuesta = await fetch(url)
-    if (!respuesta.ok) {
-      console.error(`tarjeta: la foto respondió ${respuesta.status} — ${url}`)
-      return null
-    }
+    // ── NO SE BAJA LA ORIGINAL ────────────────────────────
+    //
+    // El panel mide 500 de ancho, así que pedir los 1024×1536 completos era
+    // bajarse el doble de lo que se va a usar para tirarlo. Se piden 688, que
+    // con una foto vertical da 688×1032: de sobra para recortar 500×630.
+    //
+    // Y si la versión reducida falla —el transformador de Supabase es un
+    // servicio aparte—, se intenta la original. Una tarjeta más lenta es mejor
+    // que un enlace sin imagen.
+    const respuesta = await traerFoto(urlFoto(url, FOTO.tarjetaCompartir.ancho), url)
+    if (!respuesta) return null
     const bytes = Buffer.from(await respuesta.arrayBuffer())
     const { width: w, height: h } = await sharp(bytes).metadata()
     if (!w || !h) {
@@ -345,6 +352,24 @@ async function recortarAnclandoArriba(url: string, ancho: number, alto: number):
     console.error(`tarjeta: la foto no se pudo preparar — ${url}`, e)
     return null
   }
+}
+
+/**
+ * Trae la foto reducida y, si no puede, la original.
+ *
+ * Devuelve null solo cuando han fallado las dos — y entonces lo dice, porque
+ * un fallo que no se cuenta es un fallo que nadie arregla.
+ */
+async function traerFoto(reducida: string, original: string): Promise<Response | null> {
+  const r = await fetch(reducida)
+  if (r.ok) return r
+  console.error(`tarjeta: la foto reducida respondió ${r.status}, se prueba la original — ${reducida}`)
+
+  if (reducida === original) return null
+  const o = await fetch(original)
+  if (o.ok) return o
+  console.error(`tarjeta: la foto original respondió ${o.status} — ${original}`)
+  return null
 }
 
 /**
