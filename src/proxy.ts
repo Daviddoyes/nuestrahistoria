@@ -14,6 +14,13 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith('/auth/') ||
     pathname.startsWith('/invite') ||
     pathname.startsWith('/download') ||
+    // /g/<id> es la página de un gooal compartido, y TIENE que funcionar sin
+    // cuenta: si quien recibe el enlace se encuentra un login, la cadena se
+    // rompe justo donde empezaba a servir. Va escrito aquí a propósito aunque
+    // una ruta que no esté en ninguna de las dos listas ya pasaría: lo que no
+    // está escrito se rompe el día que alguien añade `/g` a `isProtected`
+    // pensando que falta.
+    pathname.startsWith('/g/') ||
     pathname.startsWith('/api/')
 
   if (isPublic) {

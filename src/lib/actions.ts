@@ -107,6 +107,41 @@ const BUSCAR_PERSONAS_ENSENADOS = 10
  * dónde ir, así que no se enseñan.
  */
 /**
+ * Quién comparte un gooal, para la página pública /g/<id>?de=<@usuario>.
+ *
+ * Devuelve null si ese @usuario no existe. Eso NO es un detalle: sin
+ * comprobarlo, cualquiera podría escribir `?de=` con el nombre de quien
+ * quisiera y la página pintaría «X te propone esto» firmado por otro.
+ *
+ * ── DOS COLUMNAS, NOMBRADAS, Y NUNCA `select *` ───────────
+ *
+ * Esto corre con la clave de servicio, porque quien mira la página pública no
+ * tiene sesión y `profiles` está cerrada a `anon`. Y la clave de servicio se
+ * salta la RLS entera: pedir la fila completa traería también el CORREO de esa
+ * persona, y de ahí a que acabe dentro del HTML que cualquiera ve con el botón
+ * derecho hay un paso. Por eso se nombran las dos columnas que se van a
+ * pintar, y la función devuelve solo esas dos — no el objeto.
+ */
+export async function quienComparte(
+  username: string | undefined
+): Promise<{ username: string; nombre: string } | null> {
+  const pedido = (username ?? '').replace(/^@/, '').trim().toLowerCase()
+  if (!pedido || pedido.length > 30) return null
+
+  const service = createServiceRoleClient()
+  const { data, error } = await service
+    .from('profiles')
+    .select('username, nombre')
+    .ilike('username', pedido)
+    .maybeSingle()
+
+  if (error || !data) return null
+  const fila = data as { username: string | null; nombre: string | null }
+  if (!fila.username) return null
+  return { username: fila.username, nombre: fila.nombre ?? fila.username }
+}
+
+/**
  * ¿Puede esta persona cambiarse el @usuario ahora, o tiene que esperar?
  *
  * Devuelve la fecha a partir de la cual podrá, o null si puede ya.
