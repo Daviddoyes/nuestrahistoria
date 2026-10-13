@@ -2021,6 +2021,48 @@ La forma de detectarlo: **ante cualquier cosa que salga de la app, lee cada
 palabra como si no supieras qué es gooals.** La que necesite que te lo
 expliquen no va ahí.
 
+## Una comprobación tiene que saber en qué pantalla está
+
+> **Una comprobación sobre una pantalla verifica EN QUÉ RUTA ACABÓ, no solo qué
+> texto hay.** Con redirecciones de por medio, buscar un texto sin mirar la
+> dirección es comprobar una pantalla que no es la que crees.
+
+Pasó revisando que el banner de instalar ya no sale en la portada. La
+comprobación cargaba `/`, buscaba «Instala GooALS» y lo encontraba: **fallo**.
+No había tal fallo. Con sesión, `/` REDIRIGE a `/inicio`, que es justo donde el
+banner SÍ tiene que salir. La comprobación estaba mirando otra pantalla y
+cantando un error que no existía.
+
+Y eso cuesta igual que uno de verdad: **un rojo equivocado y un rojo real se
+leen igual**, y el tiempo se gasta en el sitio que no es. Es la misma familia
+que buscar la sesión en `localStorage` cuando vivía en las cookies — las dos
+veces la comprobación era la que estaba mal, no el código.
+
+En la práctica son dos líneas: devolver `location.pathname` junto con lo que se
+mire, y dejar escrito en qué ruta tenía que acabar.
+
+## Una prueba que no puede observar su caso no falla: no mira
+
+Hermana de la de arriba y del mismo día.
+
+> **Si por su propia forma la prueba nunca llega al estado que quiere probar,
+> no es que falle: es que no va a mirar nunca.** Y pasa en verde.
+
+El banner de instalar pasó a salir solo en la SEGUNDA visita. La revisión abre
+un navegador nuevo cada vez, y **un navegador nuevo es siempre la primera
+visita**: las veinte capturas habrían salido sin banner, que es exactamente el
+caso que no hacía falta revisar. La mitad de lo que había que mirar —que ya no
+tapa los botones— no habría aparecido en ninguna.
+
+No es que la prueba estuviera mal escrita: es que su forma excluía su caso. La
+señal para reconocerlo: **cuando algo depende de un estado que se acumula**
+—una segunda visita, un contador, una caché, un «ya te lo dije una vez»—, una
+prueba que empieza de cero nunca lo alcanza. Hay que ponerlo a mano.
+
+Es la misma familia que «probar el estado vacío no prueba el lleno» y que el
+cebo de `invitaciones_email`: en las tres, **la prueba pasa sin haber mirado
+nada**.
+
 ## Nada fijo puede cubrir un control
 
 > **Un elemento fijo —un banner, una barra, un aviso— NO puede quedar encima de
