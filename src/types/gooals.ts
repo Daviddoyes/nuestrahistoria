@@ -17,6 +17,22 @@ export type Profile = {
 /** Fila del catálogo curado desde /admin. */
 export type GooalV2 = {
   id: string
+  /**
+   * El trozo corto de la dirección pública: `/g/k3m9x2`.
+   *
+   * Seis caracteres sin vocales ni letras que se confundan con cifras, puestos
+   * por la base (`supabase/fase4b.sql`) y que NO cambian nunca: un código que
+   * cambia rompe en silencio los enlaces que ya están en chats de gente.
+   *
+   * NO es un secreto. Se puede adivinar probando, y da igual: `gooals_v2` es
+   * la única tabla con lectura pública y el catálogo entero se lee desde el
+   * navegador de todas formas. Es una dirección, no una llave.
+   *
+   * Opcional en el tipo porque las filas leídas antes de que fase4b estuviera
+   * aplicado no lo traen. Quien construye un enlace usa `refDeGooal()`, que
+   * cae al uuid cuando falta.
+   */
+  codigo?: string | null
   titulo: string
   descripcion: string | null
   categoria: CategoriaGooal

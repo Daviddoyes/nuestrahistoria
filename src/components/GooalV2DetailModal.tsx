@@ -7,6 +7,7 @@ import {
   anadirGooal, conseguirSinFoto, quitarGooal, borrarFotoDeGooal, getDetalleGooal, miUsername,
 } from '@/lib/actions'
 import { compartirGooal } from '@/lib/compartir-gooal'
+import { refDeGooal } from '@/lib/tarjeta-compartir'
 import {
   CATEGORIA_COLOR, CATEGORIA_LABEL, CATEGORIA_GRADIENTE, DIFICULTAD_META,
 } from '@/lib/gooals'
@@ -165,7 +166,8 @@ export default function GooalV2DetailModal({
   }, [confirmacion, invitandoFoto])
 
   const handleCompartir = async () => {
-    const resultado = await compartirGooal(gooal.id, gooal.titulo, miUsuario)
+    // El código corto si lo tiene, y si no el uuid: ver refDeGooal().
+    const resultado = await compartirGooal(refDeGooal(gooal), gooal.titulo, miUsuario)
     // Cancelar no dice nada: quien cierra el share sheet ya sabe lo que ha
     // hecho, y un aviso sería discutirle la decisión.
     if (resultado === 'copiado') {

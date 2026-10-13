@@ -417,6 +417,32 @@ grant update (nombre, username, intereses, con_quien_vive, onboarding_completado
 revoke all on table user_gooals from anon;
 revoke all on table user_gooals from authenticated;
 
+-- ── gooals_v2 ─────────────────────────────────────────────
+-- Puesto el 13-10-2026 con `fase4b.sql`, al darle a cada gooal un código corto
+-- para su dirección pública (`/g/k3m9x2`).
+--
+-- El SELECT no se toca: ésta es LA tabla con lectura pública, y es a propósito.
+-- Lo que se quita es el UPDATE, que es lo que podría cambiar un código — y un
+-- código que cambia rompe los enlaces que ya están en chats de gente, sin que
+-- nadie se entere. En la base hay además un disparador que lo impide
+-- (`gooals_v2_codigo_no_cambia`); esto es la otra cerradura.
+--
+-- Nada se rompe: todo lo que escribe en el catálogo —el panel, la importación
+-- por CSV, la siembra, el recuento de conseguidos— va con el service role
+-- desde el servidor, y el service role se salta esto.
+--
+-- OJO al quitarlo: un `revoke update (codigo)` NO habría servido de nada. Un
+-- permiso por columna no recorta el de la tabla entera, convive con él y
+-- pierde. Hay que quitar el de la tabla.
+revoke update on table gooals_v2 from anon;
+revoke update on table gooals_v2 from authenticated;
+
+-- Y lo que NO se ha quitado, para que se sepa: el `insert` y el `delete` de
+-- `gooals_v2` siguen concedidos, y lo único que los frena es que esta tabla no
+-- tiene ninguna política de escritura. Hoy eso basta. Cerrarlos también sería
+-- correcto y no rompería nada, pero es una decisión aparte de la del código y
+-- no se tomó de paso. Anotado el 13-10-2026.
+
 
 -- ═══════════════════════════════════════════════════════════
 -- 4 · Y que la segunda cerradura siga echada
@@ -426,7 +452,8 @@ select
   has_column_privilege('authenticated', 'public.' || x.tabla, x.col, 'UPDATE') as authenticated_escribe
 from (values
   ('profiles', 'es_admin'), ('profiles', 'puntos_totales'), ('profiles', 'nivel'),
-  ('profiles', 'nombre'), ('user_gooals', 'puntos_ganados')
+  ('profiles', 'nombre'), ('user_gooals', 'puntos_ganados'),
+  ('gooals_v2', 'codigo')
 ) as x(tabla, col)
 order by 1;
 --   todas false MENOS profiles.nombre, que tiene que ser true: es la única de

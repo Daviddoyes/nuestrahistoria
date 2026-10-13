@@ -12,17 +12,23 @@ export type ResultadoCompartir = 'compartido' | 'copiado' | 'cancelado' | 'error
 /**
  * La dirección pública de un gooal, con quién lo manda si se sabe.
  *
+ * `ref` es con lo que se nombra el gooal: su código corto (`k3m9x2`) o, si
+ * todavía no tiene, su uuid. Lo decide `refDeGooal()`. Importa porque este
+ * enlace es **lo único que ve alguien antes de decidir si pulsa** —la tarjeta
+ * con la foto la ve después, y solo si pulsa—, y con el uuid entero son 71
+ * caracteres que WhatsApp parte en dos líneas y parecen spam.
+ *
  * Va el @USUARIO y nunca el id de la cuenta ni el correo: esta dirección se
  * pega en un chat, se reenvía y acaba en sitios que no controlamos. Un @usuario
  * ya es público —sale en cada perfil— y además es legible, así que quien lo
  * recibe entiende de quién viene con solo mirar la URL.
  */
-export function enlaceDeGooal(id: string, miUsuario?: string | null): string {
+export function enlaceDeGooal(ref: string, miUsuario?: string | null): string {
   const base =
     typeof window !== 'undefined'
       ? window.location.origin
       : (process.env.NEXT_PUBLIC_APP_URL ?? 'https://gooals.app')
-  return `${base}/g/${id}${miUsuario ? `?de=${encodeURIComponent(miUsuario)}` : ''}`
+  return `${base}/g/${ref}${miUsuario ? `?de=${encodeURIComponent(miUsuario)}` : ''}`
 }
 
 /**
@@ -44,11 +50,11 @@ export function enlaceDeGooal(id: string, miUsuario?: string | null): string {
  * (el correo, por ejemplo) y las demás lo ignoran sin molestar.
  */
 export async function compartirGooal(
-  id: string,
+  ref: string,
   titulo: string,
   miUsuario?: string | null
 ): Promise<ResultadoCompartir> {
-  const url = enlaceDeGooal(id, miUsuario)
+  const url = enlaceDeGooal(ref, miUsuario)
 
   if (typeof navigator !== 'undefined' && navigator.share) {
     try {

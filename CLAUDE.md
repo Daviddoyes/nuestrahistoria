@@ -2152,4 +2152,29 @@ expliquen no va ahí.
   cuando el cubo crezca más que las filas que lo apuntan— habrá que escribir la
   limpieza, que es cruzar los objetos del cubo contra `user_gooals.foto_url` y
   `video_url` y borrar lo que no apunte nadie. Anotado el 13-10-2026.
+- **`supabase/fase4b.sql` ESTÁ ESCRITO Y SIN PEGAR.** Le da a cada gooal un
+  código corto para su dirección pública (`/g/k3m9x2` en vez del uuid entero).
+  El código de la app ya acepta las dos formas y **cae al uuid mientras la
+  columna no exista**, así que no hay nada roto esperando: lo único que pasa
+  hasta entonces es que los enlaces que se comparten miden 71 caracteres y
+  WhatsApp los parte en dos líneas. `npm run compartir` lo dice en su primera
+  línea —«uuid — fase4b.sql todavía sin pegar»— y empieza a comprobar la rama
+  del código el día que esté. Anotado el 13-10-2026.
+- **REPASO PENDIENTE: LAS SEIS CATEGORÍAS CONTRA SU REGLA.** «Dormir en el
+  refugio de Amitges» estaba en `deporte`; los otros seis gooals de
+  dormir/refugio están en `naturaleza`, incluido **su propio padre genérico**,
+  «Dormir una noche en un refugio de montaña». La regla le da la razón al
+  padre: *lo que VES o DÓNDE ESTÁS → naturaleza*.
+
+  Lo que lo hace más urgente que antes no es que haya más errores, es dónde se
+  ven:
+
+  > **Ahora que los gooals tienen página pública, una categoría mal puesta ya
+  > no la ve solo quien usa la app: la ve cualquiera que reciba un enlace por
+  > WhatsApp.** Amitges lo demostró — una foto de una casa de piedra en el
+  > Pirineo con la palabra «Deporte» al lado, en la tarjeta que sale en el chat.
+
+  El repaso es pasar los 541 publicados por la regla de las seis y sacar los
+  que no cuadran, para decidirlos uno a uno. **Va DESPUÉS de las tandas 3 y 4
+  de fotos.** Anotado el 13-10-2026.
 - No hay tests.

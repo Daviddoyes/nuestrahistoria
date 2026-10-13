@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { getGooalV2, quienComparte } from '@/lib/actions'
+import { getGooalPublico, quienComparte } from '@/lib/actions'
 import { CATEGORIA_LABEL, CATEGORIA_GRADIENTE, CATEGORIA_COLOR, DIFICULTAD_META } from '@/lib/gooals'
 import Logotipo from '@/components/Logotipo'
 import CreditoFoto from '@/components/CreditoFoto'
-import { ES_UUID, TARJETA, urlDeTarjeta } from '@/lib/tarjeta-compartir'
+import { TARJETA, urlDeTarjeta } from '@/lib/tarjeta-compartir'
 
 /**
  * LA PÁGINA PÚBLICA DE UN GOOAL. Funciona SIN CUENTA, y ése es el punto.
@@ -55,7 +55,7 @@ const FRASE = 'Elige retos de verdad y consíguelos.'
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { id } = await params
   const { de } = await searchParams
-  const gooal = ES_UUID.test(id) ? await getGooalV2(id) : null
+  const gooal = await getGooalPublico(id)
   if (!gooal) return { title: 'gooals' }
 
   const quien = await quienComparte(de)
@@ -91,9 +91,9 @@ export default async function GooalPublicoPage({ params, searchParams }: Props) 
   const { id } = await params
   const { de } = await searchParams
 
-  // El id se valida antes de ir a la base: un `where id = 'hola'` con una
-  // columna uuid es un error de Postgres, no un «no encontrado».
-  const gooal = ES_UUID.test(id) ? await getGooalV2(id) : null
+  // Acepta el código corto y el uuid, y comprueba la forma antes de ir a la
+  // base. Las dos formas se quedan para siempre: ver tarjeta-compartir.ts.
+  const gooal = await getGooalPublico(id)
 
   // ── EL GOOAL QUE YA NO ESTÁ ─────────────────────────────
   //

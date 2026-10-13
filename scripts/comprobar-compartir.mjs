@@ -46,11 +46,21 @@ try {
   console.log(`cuenta de prueba: @${usuario}`)
 
   // Un gooal publicado cualquiera, de los que tienen foto.
+  //
+  // `select('*')` y no una lista de columnas A PROPÓSITO: así esto funciona
+  // tanto antes como después de pegar `fase4b.sql`. Nombrando `codigo` antes
+  // de que la columna exista, la consulta daría error y la prueba entera
+  // moriría por una cosa que no estaba probando.
   const { data: gooals, error: eG } = await s.from('gooals_v2')
-    .select('id, titulo').eq('estado', 'verificado').not('imagen_url', 'is', null).order('id').limit(1)
+    .select('*').eq('estado', 'verificado').not('imagen_url', 'is', null).order('id').limit(1)
   if (eG) throw new Error(eG.message)
   const gooal = gooals[0]
-  console.log(`gooal:            «${gooal.titulo}»\n`)
+  // Con qué se nombra en el enlace: lo mismo que decide `refDeGooal()`.
+  const ref = gooal.codigo ?? gooal.id
+  const hayCodigo = Boolean(gooal.codigo)
+  console.log(`gooal:            «${gooal.titulo}»`)
+  console.log(`se nombra como:   ${ref}` + (hayCodigo ? '  (código corto)' : '  (uuid — fase4b.sql todavía sin pegar)'))
+  console.log()
 
   // ── El navegador ────────────────────────────────────────
   nav = await abrirNavegador({ ancho: 390, alto: 844, ua: UA_ANDROID, puerto: 9361 })
@@ -106,8 +116,15 @@ try {
   comprobar(Boolean(compartido), 'al pulsarlo se abre el share sheet del sistema')
   if (compartido) {
     console.log('      lo que manda: ' + JSON.stringify(compartido))
-    comprobar(compartido.url?.includes(`/g/${gooal.id}`), 'la dirección es la del gooal')
+    comprobar(compartido.url?.includes(`/g/${ref}`), 'la dirección es la del gooal')
     comprobar(compartido.url?.includes(`?de=${usuario}`), 'y lleva MI @usuario', compartido.url)
+
+    // El largo SOLO se exige cuando hay código, porque con el uuid es
+    // imposible de cumplir: una prueba cuyo resultado esperado no puede darse
+    // no avisa de nada, confunde. Sin código se dice el número y se sigue.
+    const largo = compartido.url.replace(/^https?:\/\//, '').length
+    if (hayCodigo) comprobar(largo <= 50, 'y cabe en una línea de WhatsApp', largo + ' caracteres')
+    else console.log(`      (el enlace mide ${largo} sin el https://. Con el código corto bajará a ~41.)`)
     comprobar(compartido.title === gooal.titulo, 'el título va de asunto')
     comprobar(compartido.text === undefined, 'y no manda texto suelto, que duplicaría la tarjeta')
     comprobar(compartido.gesto !== false, 'se llama DENTRO del gesto (lo que exige Safari)')
@@ -119,10 +136,25 @@ try {
     comprobar(r.ok, 'el enlace generado contesta 200 sin sesión', String(r.status))
     comprobar(html.includes('Prueba Compartir'), 'y la página firma con quien lo manda')
     comprobar(
-      html.includes(`/g/${gooal.id}/tarjeta?de=${usuario}`),
+      html.includes(`/g/${ref}/tarjeta?de=${usuario}`),
       'y enlaza su tarjeta, con la firma dentro',
     )
     comprobar(!/@gooals-prueba\.invalid/.test(html), 'sin que aparezca ningún correo en el HTML')
+
+    // ── Y QUE EL UUID SIGA ABRIENDO, SIEMPRE ─────────────
+    //
+    // Esto no es una comprobación de transición: los enlaces repartidos antes
+    // del código corto viven en chats de gente, y el día que alguien decida
+    // que «ya han pasado meses» y quite esa rama, dejarán de funcionar sin que
+    // nada avise. Esta línea es lo que avisaría.
+    if (hayCodigo) {
+      const rUuid = await fetch(`${BASE}/g/${gooal.id}`)
+      const htmlUuid = await rUuid.text()
+      comprobar(rUuid.ok && htmlUuid.includes(gooal.titulo),
+        'el enlace VIEJO con el uuid sigue abriendo el mismo gooal', String(rUuid.status))
+    } else {
+      console.log('      (la rama del código corto no se prueba: fase4b.sql todavía sin pegar)')
+    }
   }
 
   // ── Y EL ORDENADOR, QUE NO TIENE SHARE SHEET ──────────

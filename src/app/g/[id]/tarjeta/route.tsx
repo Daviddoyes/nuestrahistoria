@@ -3,9 +3,9 @@ import sharp from 'sharp'
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import type { NextRequest } from 'next/server'
-import { getGooalV2, quienComparte } from '@/lib/actions'
+import { getGooalPublico, quienComparte } from '@/lib/actions'
 import { CATEGORIA_COLOR, CATEGORIA_SOMBRA, CATEGORIA_LABEL, DIFICULTAD_META } from '@/lib/gooals'
-import { ES_UUID, TARJETA } from '@/lib/tarjeta-compartir'
+import { TARJETA } from '@/lib/tarjeta-compartir'
 
 /**
  * LA TARJETA DE UN GOOAL COMPARTIDO: la imagen que sale en WhatsApp.
@@ -109,7 +109,8 @@ export async function GET(
   const { id } = await params
   const de = peticion.nextUrl.searchParams.get('de') ?? undefined
 
-  const gooal = ES_UUID.test(id) ? await getGooalV2(id) : null
+  // El mismo resolvedor que la página: código corto o uuid, y nada más.
+  const gooal = await getGooalPublico(id)
 
   // Un gooal que no existe no tiene tarjeta: la página de `/g/<id>` ya no pone
   // la etiqueta `og:image` en ese caso, así que aquí solo llega un enlace

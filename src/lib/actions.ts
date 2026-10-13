@@ -11,6 +11,7 @@ import { limpiarBusqueda, limpiarBusquedaPersonas } from '@/lib/busqueda'
 import { proponerUsername } from '@/lib/username'
 import { amigosDe, puedeVerLaFoto, VISIBILIDADES } from '@/lib/permisos'
 import { leerTodo } from '@/lib/paginar'
+import { ES_UUID, ES_CODIGO } from '@/lib/tarjeta-compartir'
 import {
   BUCKET_LOGROS, errorDeArchivo, rutaDeRecuerdo, tipoDeRecuerdo, type TipoRecuerdo,
 } from '@/lib/recuerdo-media'
@@ -742,6 +743,40 @@ export async function getGooalsMapa(filtros: FiltrosMapa): Promise<{
  * para que lo que alguien ya tiene no desaparezca. Si algún día hay que abrir
  * desde el perfil un gooal que pasó a borrador, no uses esta función.
  */
+/**
+ * El gooal de una dirección pública `/g/<x>`, venga como venga.
+ *
+ * Acepta el CÓDIGO CORTO y el UUID, y las dos ramas se quedan para siempre:
+ * los enlaces repartidos antes del código viven en chats de gente y tienen que
+ * seguir abriendo dentro de dos años. El porqué entero está en
+ * `src/lib/tarjeta-compartir.ts`.
+ *
+ * Lo que NO hace es preguntar a la base por cualquier cosa que venga en la
+ * URL: si no tiene forma ni de uno ni de otro, devuelve null sin consultar.
+ */
+export async function getGooalPublico(ref: string): Promise<GooalV2 | null> {
+  if (ES_UUID.test(ref)) return getGooalV2(ref)
+  if (!ES_CODIGO.test(ref)) return null
+
+  const service = createServiceRoleClient()
+  const { data, error } = await service
+    .from('gooals_v2')
+    .select('*')
+    .eq('codigo', ref.toLowerCase())
+    .eq('activo', true)
+    .eq('estado', 'verificado')
+    .maybeSingle()
+
+  // Si la columna todavía no existe —`fase4b.sql` sin pegar— Postgres contesta
+  // un error y aquí sale un «no existe», que es lo correcto: en ese mundo
+  // tampoco hay ningún enlace con código por ahí.
+  if (error) {
+    console.error('[getGooalPublico]', error.message)
+    return null
+  }
+  return (data as GooalV2 | null) ?? null
+}
+
 export async function getGooalV2(id: string): Promise<GooalV2 | null> {
   const service = createServiceRoleClient()
   const { data } = await service
