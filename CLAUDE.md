@@ -769,6 +769,71 @@ Y lo bueno de ponerlos: los datos de prueba hacen aparecer también lo de al
 lado. El post que se insertó para la línea del muro enseñó, de paso, que el
 texto sale bien con el nombre y el gooal, cosa que nadie había visto nunca.
 
+## «Demasiado oscura» no es oscuridad: es que no se reconoce
+
+La causa más repetida de fallo en dos tandas de cuarenta —**7 de 17, el 41 %**—
+se apuntaba como «demasiado oscura». Se intentaron las dos explicaciones
+obvias, y las dos eran falsas.
+
+**No era el estilo.** Seis fotos que ya funcionaban, una por categoría,
+regeneradas cambiando SOLO la luz (una fuente principal más un relleno suave,
+sombras abiertas, y dicho que se mira en un cuadrado pequeño): gana la nueva en
+dos, gana la vieja en tres, empate en una. Y medido: la luminancia media sube
+en cuatro de seis, pero **el porcentaje de píxeles casi negros SUBE en tres**.
+Pedir relleno no da una imagen más clara — a veces da una más apagada, y en una
+tarjeta de 179 px una imagen apagada es peor que una oscura con una forma
+nítida. La variante quedó escrita en `estilos.mjs` como `L`, sin usar, para que
+nadie vuelva a probarlo sin saber que ya se probó.
+
+**Y no se puede medir.** Se midió, sobre las 80 tarjetas de las dos tandas, la
+mayor región conectada de píxeles claros en los dos tercios de arriba del
+recorte cuadrado — que es la hipótesis buena, porque los gorgs de la Garrotxa
+están al 35 de media con un 74 % de negro y funcionan, por el chorro. Con
+cuatro variantes del umbral:
+
+| medida | para cazar las 7 oscuras | falsas alarmas |
+|---|---|---|
+| forma clara (umbral 70) | ≤ 42,1 % | 36 de 63 — **57 %** |
+| forma clara (umbral 110) | ≤ 12,5 % | 21 de 63 — **33 %** |
+| forma clara (umbral 150) | ≤ 10,3 % | 34 de 63 — **54 %** |
+| luminancia media | ≤ 79 | 26 de 63 — **41 %** |
+
+Ninguna separa, y el solapamiento es directo: «Ver una etapa de la Volta a
+Catalunya» **funciona** con una forma de 0,4, exactamente la misma que «Ver una
+final de Grand Slam de tenis», que falla. Descartada: una comprobación que no
+distingue es peor que ninguna.
+
+Y en ese solapamiento está la conclusión de verdad:
+
+> **Lo que llamamos «demasiado oscura» no es una propiedad de los píxeles.** El
+> pelotón de la Volta es oscuro y pequeño y funciona porque se reconoce que es
+> un pelotón. El trofeo del Grand Slam es oscuro y pequeño y falla porque no se
+> reconoce qué es. Las dos fotos miden igual.
+
+Así que no hay número que lo cace, y la pregunta sigue siendo la del principio
+—**¿se entiende de qué gooal es?**—, que es exactamente el juicio que en este
+repo no ha podido sustituir ninguna heurística. Lo que sí se puede es evitar
+fabricar el problema, y eso sí tiene regla: ver «Un sitio oscuro no se arregla
+con más luz general» aquí abajo.
+
+### Un sitio oscuro no se arregla con más luz general
+
+> Un interior sin luz, un bosque, un fiordo, un plato oscuro: **o la luz está
+> DENTRO del cuadro y es el asunto, o la escena se mueve al momento en que ese
+> sitio sí está iluminado.**
+
+Es la regla de la luz `noche`, que se retiró por esto mismo, generalizada. Los
+cuatro casos del 11-10-2026, con su arreglo:
+
+- **cabaña sin electricidad** → lo que cuenta el gooal es el quinqué encendido,
+  no la cabaña: la llama pasa a ser el asunto, en `detalle`.
+- **Matagalls-Montserrat** → el amanecer sobre el mar de nubes, que es cuando
+  ese sitio tiene luz y además es a lo que se va.
+- **fiordos noruegos** → a ras del agua, con el cielo claro y su reflejo
+  partiendo el cuadro.
+- **fugu** → el sashimi es translúcido y blanco: pide plato y mantel claros, no
+  madera oscura.
+
 ## Una foto vale si se entiende sin leer el título
 
 Esta va por encima de todos los contadores de este repo, y conviene leerla

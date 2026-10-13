@@ -195,6 +195,23 @@ export const CALIDAD = 'medium'
 // Medes se lee a 144 px porque es UNA forma roja sobre fondo oscuro.
 const ENCUADRES = {
   espaldas: 'La persona está DE ESPALDAS a la cámara, se le ve la nuca y los hombros, nunca la cara.',
+  // LA CONDICIÓN DE `hombros`, CON SU MEDIDA (11-10-2026).
+  //
+  // Decía «solo vale si hay UN OBJETO en el cuadro», y la condición era buena
+  // pero no se podía comprobar antes de generar. Ahora sí, porque los datos la
+  // afinan: el objeto tiene que SOSTENERSE CON LAS MANOS y ser MÁS GRANDE QUE
+  // UNA MANO. El torso llena el cuadro y un objeto pequeño o pegado al cuerpo
+  // no le gana.
+  //
+  // Cuadra con todo lo que llevamos: birrete, guitarra, maletas, persiana y
+  // copa de cata funcionan, y son grandes y se sostienen. El tubo de la médula
+  // y la máquina de tatuar fallaron los dos, y son más pequeños que una mano:
+  // se fueron a 'detalle', donde el objeto ES el cuadro entero.
+  //
+  // LA EXCEPCIÓN, anotada porque es el límite de la medida: «Correr una media
+  // maratón» lleva un reloj, que no la pasa, y su foto FUNCIONA y está
+  // aprobada. Lo que cuenta ahí no es el reloj, es la postura de la zancada.
+  // La medida predice fallos; no es motivo para rehacer lo que ya funciona.
   hombros: 'El encuadre está RECORTADO POR LOS HOMBROS: se ven las manos, los brazos y el torso, y la cabeza queda fuera del encuadre por arriba.',
   // Comer necesita boca, y «la cabeza fuera del encuadre» lo hacía imposible.
   // Una regla que choca con el sujeto no da error: se incumple en silencio, y
