@@ -52,12 +52,25 @@ No hace falta `npm run dev`: mide gooals.app, no tu ordenador. Medir en local
 con fibra dice que todo va bien siempre, y por eso no sirve.
 
 Tarda unos diez minutos. Crea una cuenta de prueba con hasta 220 gooals y la
-borra al terminar, así que **después hay que recontar**, y el propio guion lo
-recuerda al acabar:
+borra al terminar.
+
+No hace falta recontar después: la siembra escribe directamente con la clave de
+servicio, así que el contador `veces_completado` del catálogo ni se entera
+(comprobado, 0 descuadres). Si algún día esa siembra pasa a marcar gooals *por
+la app*, entonces sí haría falta.
+
+### ¿Salen bien las fotos reducidas?
 
 ```bash
-node --env-file=.env.local scripts/recontar-conseguidos.mjs --escribir
+npm run fotos
 ```
+
+Pide cada tamaño de verdad a Supabase y comprueba que lo que llega tiene la
+proporción correcta y pesa menos. Existe porque una dirección mal construida
+**no da error**: devuelve una imagen más pequeña y recortada, y todo parece
+bien hasta que alguien mira una foto de cerca.
+
+Tiene que decir **TODAS BIEN**.
 
 ### Has tocado el botón de compartir
 

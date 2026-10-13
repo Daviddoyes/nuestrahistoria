@@ -403,6 +403,13 @@ try {
   if (nav) await nav.cerrar()
   await limpiar(creadas)
   console.log('\ncuenta de prueba borrada.')
-  console.log('AHORA HAY QUE RECONTAR, que la siembra movió `veces_completado`:')
-  console.log('  node --env-file=.env.local scripts/recontar-conseguidos.mjs --escribir')
+  // NO dice «hay que recontar». Lo decía, y era una falsa alarma: la siembra
+  // inserta en `user_gooals` directamente con la clave de servicio, así que no
+  // pasa por `sincronizarVecesConseguido` y el contador del catálogo NI SE
+  // ENTERA. Comprobado las dos veces que se ha lanzado: 0 descuadres.
+  //
+  // Un aviso que sale siempre y nunca es verdad se deja de leer, y el día que
+  // avise de algo real tampoco lo leerá nadie. Si alguna vez esta siembra pasa
+  // a marcar gooals POR LA APP, entonces sí hay que recontar y hay que volver
+  // a poner el aviso aquí.
 }
