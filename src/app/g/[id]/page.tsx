@@ -4,6 +4,7 @@ import { getGooalV2, quienComparte } from '@/lib/actions'
 import { CATEGORIA_LABEL, CATEGORIA_GRADIENTE, CATEGORIA_COLOR, DIFICULTAD_META } from '@/lib/gooals'
 import Logotipo from '@/components/Logotipo'
 import CreditoFoto from '@/components/CreditoFoto'
+import { ES_UUID, TARJETA, urlDeTarjeta } from '@/lib/tarjeta-compartir'
 
 /**
  * LA PÁGINA PÚBLICA DE UN GOOAL. Funciona SIN CUENTA, y ése es el punto.
@@ -36,9 +37,6 @@ type Props = {
   searchParams: Promise<{ de?: string }>
 }
 
-/** Un uuid, para no ir a la base con cualquier cosa que venga en la URL. */
-const ES_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { id } = await params
   const { de } = await searchParams
@@ -55,8 +53,20 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
       siteName: 'gooals',
       locale: 'es_ES',
       type: 'website',
-      // La imagen la pone `opengraph-image.tsx`, que va al lado: Next la
-      // enlaza sola y la genera a 1200x630 con la foto recortada.
+      // La imagen la dibuja `tarjeta/route.tsx`, y se enlaza A MANO porque
+      // tiene que llevar el `?de=`: el fichero `opengraph-image.tsx` de Next
+      // no recibe los parámetros de la URL, solo los de la ruta, así que con
+      // él la firma de quién lo manda era imposible. El porqué entero está en
+      // `src/lib/tarjeta-compartir.ts`.
+      // Y va el @usuario YA COMPROBADO, no el `de` que venía en la URL: si
+      // alguien escribe un nombre inventado, la dirección de la tarjeta sale
+      // sin `?de=` y no hay nada que firmar.
+      images: [{
+        url: urlDeTarjeta(id, quien ? quien.username : undefined),
+        width: TARJETA.ancho,
+        height: TARJETA.alto,
+        alt: gooal.titulo,
+      }],
     },
     twitter: { card: 'summary_large_image' },
   }
