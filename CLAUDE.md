@@ -2021,6 +2021,45 @@ La forma de detectarlo: **ante cualquier cosa que salga de la app, lee cada
 palabra como si no supieras qué es gooals.** La que necesite que te lo
 expliquen no va ahí.
 
+## Una tanda no está cerrada hasta que cada imagen tiene estado escrito
+
+> **Una tanda no está cerrada hasta que CADA IMAGEN que generó tiene su estado
+> escrito en el registro.** Aprobar en una conversación y anotar son UNA acción.
+
+Ya estaba aprendido con `APROBADAS` —trece fotos dadas por buenas en un chat y
+ninguna escrita— y **volvió a pasar un nivel más arriba, esta vez con 341
+imágenes**.
+
+El 13-10-2026 se contaron los ficheros del disco: **463 imágenes generadas, y
+`fotos-definitivas.json` conocía 122**. Las otras 341 no eran rechazos: eran
+catorce tandas que nunca se anotaron.
+
+Y el daño no es el desorden, es que **no se puede contar nada**. «No está en el
+manifiesto» mezclaba dos cosas que no son lo mismo:
+
+- se miró y se descartó, y
+- **nadie la ha mirado todavía**.
+
+Mezcladas, cualquier número de «cuánto queda» sale como un suelo y no como una
+respuesta. Durante dos vueltas se dijo «hay 1 pendiente» cuando había 18 fotos
+aprobadas y pagadas para gooals que salían sin foto en la app.
+
+Lo que quedó puesto: `scripts/fotos-generadas.json`, **una fila por imagen** con
+tres estados —`aprobada`, `rechazada` (con motivo) y `sin_mirar`— que rehace
+`npm run registro` leyendo el disco. Y dos cosas de ese guion que son el punto:
+
+1. **No inventa.** Solo marca `aprobada` lo que está escrito —el fichero que su
+   gooal declara como elegido—, y **nunca deduce un rechazo**: de un descarte no
+   hay constancia de ninguna clase, así que dar por rechazado lo que sobra sería
+   fabricar una decisión que nadie tomó.
+2. **No pisa lo decidido** al relanzarse. Un registro que se borra al rehacerlo
+   no es un registro.
+
+Y el matiz que obligó a dejar 341 en `sin_mirar` en vez de repartirlas:
+**`APROBADAS` aprueba un TÍTULO, no un fichero.** De «Ver la Nochevieja en Times
+Square» hay cuatro versiones en cuatro tandas; decir cuál era la buena sería
+adivinar.
+
 ## Se mide el artefacto, no la intención
 
 La lección de contar cuántas fotos del catálogo llevan una persona, el

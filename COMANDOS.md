@@ -59,6 +59,25 @@ servicio, así que el contador `veces_completado` del catálogo ni se entera
 (comprobado, 0 descuadres). Si algún día esa siembra pasa a marcar gooals *por
 la app*, entonces sí haría falta.
 
+### Las fotos generadas: registro y hojas para decidir
+
+```bash
+npm run registro          # rehace el registro leyendo el disco
+npm run registro -- --seco # dice qué cambiaría, sin escribir
+npm run hoja -- A         # la hoja de contacto del grupo A
+```
+
+ tiene UNA FILA POR IMAGEN generada, con tres
+estados: ,  (con motivo) y . «Sin mirar» NO es
+lo mismo que rechazada, y mezclarlas era por qué no se podía contar cuánto
+quedaba.
+
+Relanzarlo **no pisa lo que ya esté decidido**: solo añade lo nuevo.
+
+Las hojas salen en No sé qué quieres que haga con eso. ¿Me pides que genere las hojas B y C (hoy solo existe `Claude outputs/hoja-A.html`), que mire algo concreto del script `scripts/hoja-contacto.mjs`, o es una corrección de algún texto donde pone `outputs/` sin el `Claude ` delante? y se abren con el navegador.
+Las fotos se ven a 179 px —el tamaño de una tarjeta de verdad— y al tocarlas se
+abren grandes, que son las dos preguntas distintas.
+
 ### La revisión pantalla por pantalla
 
 ```bash

@@ -1,0 +1,4172 @@
+{
+  "_comentario": "ESTADO DE CADA IMAGEN GENERADA, una fila por fichero. Lo rehace `npm run registro` leyendo el disco, y NO pisa lo que ya tenga estado. Tres estados: aprobada / rechazada (con motivo) / sin_mirar. «sin_mirar» quiere decir que nadie la ha mirado, NO que se descartara: esa diferencia es justo la que faltaba cuando se descubrió que había 463 imágenes generadas y el manifiesto conocía 122. `titulo_en_aprobadas` es información, no decisión: APROBADAS aprueba un título y de varios títulos hay cuatro versiones en cuatro tandas.",
+  "imagenes": {
+    "Claude outputs/abstractos-B/B-montar-tu-propia-empresa-1.png": {
+      "titulo": "Montar tu propia empresa",
+      "encuadre": null,
+      "tanda": "Claude outputs/abstractos-B",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1793
+    },
+    "Claude outputs/abstractos-B/B-montar-tu-propia-empresa-2.png": {
+      "titulo": "Montar tu propia empresa",
+      "encuadre": null,
+      "tanda": "Claude outputs/abstractos-B",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2334
+    },
+    "Claude outputs/abstractos-B/B-publicar-un-libro-1.png": {
+      "titulo": "Publicar un libro",
+      "encuadre": null,
+      "tanda": "Claude outputs/abstractos-B",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2327
+    },
+    "Claude outputs/abstractos-B/B-publicar-un-libro-2.png": {
+      "titulo": "Publicar un libro",
+      "encuadre": null,
+      "tanda": "Claude outputs/abstractos-B",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2166
+    },
+    "Claude outputs/abstractos-B/B-sacarte-el-c1-de-ingles-1.png": {
+      "titulo": "Sacarte el C1 de inglés",
+      "encuadre": null,
+      "tanda": "Claude outputs/abstractos-B",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2298
+    },
+    "Claude outputs/abstractos-B/B-sacarte-el-c1-de-ingles-2.png": {
+      "titulo": "Sacarte el C1 de inglés",
+      "encuadre": null,
+      "tanda": "Claude outputs/abstractos-B",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2355
+    },
+    "Claude outputs/abstractos-B/B-sacarte-el-cinturon-negro-1.png": {
+      "titulo": "Sacarte el cinturón negro",
+      "encuadre": null,
+      "tanda": "Claude outputs/abstractos-B",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2323
+    },
+    "Claude outputs/abstractos-B/B-sacarte-el-cinturon-negro-2.png": {
+      "titulo": "Sacarte el cinturón negro",
+      "encuadre": null,
+      "tanda": "Claude outputs/abstractos-B",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2073
+    },
+    "Claude outputs/abstractos-B/B-terminar-un-master-1.png": {
+      "titulo": "Terminar un máster",
+      "encuadre": null,
+      "tanda": "Claude outputs/abstractos-B",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2427
+    },
+    "Claude outputs/abstractos-B/B-terminar-un-master-2.png": {
+      "titulo": "Terminar un máster",
+      "encuadre": null,
+      "tanda": "Claude outputs/abstractos-B",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 3252
+    },
+    "Claude outputs/abstractos-B/B-vivir-un-ano-en-otro-pais-1.png": {
+      "titulo": "Vivir un año en otro país",
+      "encuadre": null,
+      "tanda": "Claude outputs/abstractos-B",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2280
+    },
+    "Claude outputs/abstractos-B/B-vivir-un-ano-en-otro-pais-2.png": {
+      "titulo": "Vivir un año en otro país",
+      "encuadre": null,
+      "tanda": "Claude outputs/abstractos-B",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2197
+    },
+    "Claude outputs/cuarenta-nuevas/01-contraluz.png": {
+      "titulo": "Ir a la Festa dels Raiers",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2357
+    },
+    "Claude outputs/cuarenta-nuevas/02-contraluz.png": {
+      "titulo": "Ir al Burning Man",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1974
+    },
+    "Claude outputs/cuarenta-nuevas/03-contraluz.png": {
+      "titulo": "Ir al Festival de Cine de Sitges",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2002
+    },
+    "Claude outputs/cuarenta-nuevas/04-lugar_vacio.png": {
+      "titulo": "Ir al Glastonbury",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2528
+    },
+    "Claude outputs/cuarenta-nuevas/05-objeto.png": {
+      "titulo": "Ir al Saint Patrick's Day de Dublín",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2022
+    },
+    "Claude outputs/cuarenta-nuevas/06-objeto.png": {
+      "titulo": "Montar en un coche clásico por La Habana",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2517
+    },
+    "Claude outputs/cuarenta-nuevas/07-primera_persona.png": {
+      "titulo": "Ver la Nochevieja en Times Square",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2301
+    },
+    "Claude outputs/cuarenta-nuevas/08-primera_persona.png": {
+      "titulo": "Ver los fuegos de Nochevieja en Sídney",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2503
+    },
+    "Claude outputs/cuarenta-nuevas/09-primera_persona.png": {
+      "titulo": "Ver un Gran Premio de Fórmula 1",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2367
+    },
+    "Claude outputs/cuarenta-nuevas/10-primera_persona.png": {
+      "titulo": "Ver un Gran Premio de MotoGP",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2668
+    },
+    "Claude outputs/cuarenta-nuevas/11-primera_persona.png": {
+      "titulo": "Ver un partido del Mundial de fútbol",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2327
+    },
+    "Claude outputs/cuarenta-nuevas/12-primera_persona.png": {
+      "titulo": "Ver un partido del Mundial de rugby",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2903
+    },
+    "Claude outputs/cuarenta-nuevas/13-primera_persona.png": {
+      "titulo": "Ver un partido del Seis Naciones",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2334
+    },
+    "Claude outputs/cuarenta-nuevas/14-primera_persona.png": {
+      "titulo": "Ver una carrera en Indianápolis",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2482
+    },
+    "Claude outputs/cuarenta-nuevas/15-primera_persona.png": {
+      "titulo": "Ver una etapa de la Volta a Catalunya",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2588
+    },
+    "Claude outputs/cuarenta-nuevas/16-primera_persona.png": {
+      "titulo": "Ver una etapa del Rally Dakar",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2363
+    },
+    "Claude outputs/cuarenta-nuevas/17-primera_persona.png": {
+      "titulo": "Ver una final de Grand Slam de tenis",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1940
+    },
+    "Claude outputs/cuarenta-nuevas/18-primera_persona.png": {
+      "titulo": "Ver una final de la NBA",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2063
+    },
+    "Claude outputs/cuarenta-nuevas/19-contraluz.png": {
+      "titulo": "Bailar salsa",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1731
+    },
+    "Claude outputs/cuarenta-nuevas/20-detalle.png": {
+      "titulo": "Bailar tango",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1931
+    },
+    "Claude outputs/cuarenta-nuevas/21-objeto.png": {
+      "titulo": "Bañarte en la cala de Sa Tuna",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2235
+    },
+    "Claude outputs/cuarenta-nuevas/22-espaldas.png": {
+      "titulo": "Bañarte en la piscina del Marina Bay Sands",
+      "encuadre": "espaldas",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1998
+    },
+    "Claude outputs/cuarenta-nuevas/23-detalle.png": {
+      "titulo": "Bañarte en los gorgs de la Garrotxa",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2090
+    },
+    "Claude outputs/cuarenta-nuevas/24-detalle.png": {
+      "titulo": "Bañarte en una playa de arena negra de Santorini",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2792
+    },
+    "Claude outputs/cuarenta-nuevas/25-primera_persona.png": {
+      "titulo": "Bucear a más de 30 metros",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1932
+    },
+    "Claude outputs/cuarenta-nuevas/26-lugar_vacio.png": {
+      "titulo": "Bucear en Raja Ampat",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2360
+    },
+    "Claude outputs/cuarenta-nuevas/27-espaldas.png": {
+      "titulo": "Caminar sobre un glaciar en Islandia",
+      "encuadre": "espaldas",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2125
+    },
+    "Claude outputs/cuarenta-nuevas/28-contraluz.png": {
+      "titulo": "Cantar en un karaoke",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1939
+    },
+    "Claude outputs/cuarenta-nuevas/29-plato.png": {
+      "titulo": "Comer arroz en el Delta del Ebro",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2264
+    },
+    "Claude outputs/cuarenta-nuevas/30-plato.png": {
+      "titulo": "Comer en el mercado de Toyosu",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2250
+    },
+    "Claude outputs/cuarenta-nuevas/31-plato.png": {
+      "titulo": "Comer en un restaurante con una estrella Michelin",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1854
+    },
+    "Claude outputs/cuarenta-nuevas/32-plato.png": {
+      "titulo": "Comer suquet de peix en la Costa Brava",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1979
+    },
+    "Claude outputs/cuarenta-nuevas/33-plato.png": {
+      "titulo": "Comerte un escorpión",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2087
+    },
+    "Claude outputs/cuarenta-nuevas/34-plato.png": {
+      "titulo": "Comerte una tarántula",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2310
+    },
+    "Claude outputs/cuarenta-nuevas/35-espaldas.png": {
+      "titulo": "Correr la Mitja de Granollers",
+      "encuadre": "espaldas",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2022
+    },
+    "Claude outputs/cuarenta-nuevas/36-contraluz.png": {
+      "titulo": "Correr la Ultra Pirineu",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1940
+    },
+    "Claude outputs/cuarenta-nuevas/37-espaldas.png": {
+      "titulo": "Correr un 10K",
+      "encuadre": "espaldas",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2129
+    },
+    "Claude outputs/cuarenta-nuevas/38-contraluz.png": {
+      "titulo": "Correr un encierro de San Fermín",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2129
+    },
+    "Claude outputs/cuarenta-nuevas/39-primera_persona.png": {
+      "titulo": "Correr un maratón",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2590
+    },
+    "Claude outputs/cuarenta-nuevas/40-hombros.png": {
+      "titulo": "Correr una media maratón",
+      "encuadre": "hombros",
+      "tanda": "Claude outputs/cuarenta-nuevas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2322
+    },
+    "Claude outputs/cuarenta/01-plato.png": {
+      "titulo": "Comerte un escorpión",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2168
+    },
+    "Claude outputs/cuarenta/02-plato.png": {
+      "titulo": "Comerte una tarántula",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2533
+    },
+    "Claude outputs/cuarenta/03-plato.png": {
+      "titulo": "Hacer una calçotada en Valls",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2230
+    },
+    "Claude outputs/cuarenta/04-plato.png": {
+      "titulo": "Comer en un hawker centre de Singapur",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1999
+    },
+    "Claude outputs/cuarenta/05-plato.png": {
+      "titulo": "Comer gambas de Palamós",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2362
+    },
+    "Claude outputs/cuarenta/06-plato.png": {
+      "titulo": "Comer en un restaurante con una estrella Michelin",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2173
+    },
+    "Claude outputs/cuarenta/07-plato.png": {
+      "titulo": "Comer en los puestos de Jemaa el-Fna",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2120
+    },
+    "Claude outputs/cuarenta/08-plato.png": {
+      "titulo": "Comer xató en Vilanova",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2317
+    },
+    "Claude outputs/cuarenta/09-hombros.png": {
+      "titulo": "Hacerte un tatuaje",
+      "encuadre": "hombros",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2164
+    },
+    "Claude outputs/cuarenta/10-hombros.png": {
+      "titulo": "Dar una charla ante más de cien personas",
+      "encuadre": "hombros",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2250
+    },
+    "Claude outputs/cuarenta/11-hombros.png": {
+      "titulo": "Donar médula",
+      "encuadre": "hombros",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2356
+    },
+    "Claude outputs/cuarenta/12-hombros.png": {
+      "titulo": "Tocar un instrumento delante de público",
+      "encuadre": "hombros",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2074
+    },
+    "Claude outputs/cuarenta/13-hombros.png": {
+      "titulo": "Montar tu propia empresa",
+      "encuadre": "hombros",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2561
+    },
+    "Claude outputs/cuarenta/14-hombros.png": {
+      "titulo": "Terminar una carrera universitaria",
+      "encuadre": "hombros",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2333
+    },
+    "Claude outputs/cuarenta/15-contraluz.png": {
+      "titulo": "Formar parte de un castell",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1846
+    },
+    "Claude outputs/cuarenta/16-contraluz.png": {
+      "titulo": "Ir a la Nit del Foc de las Fallas",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1931
+    },
+    "Claude outputs/cuarenta/17-contraluz.png": {
+      "titulo": "Ir al Carnaval de Río",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2036
+    },
+    "Claude outputs/cuarenta/18-contraluz.png": {
+      "titulo": "Ir a la Feria de Abril",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1964
+    },
+    "Claude outputs/cuarenta/19-contraluz.png": {
+      "titulo": "Ir al Canet Rock",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2215
+    },
+    "Claude outputs/cuarenta/20-contraluz.png": {
+      "titulo": "Ir a la Patum de Berga",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2175
+    },
+    "Claude outputs/cuarenta/21-contraluz.png": {
+      "titulo": "Beber en una carpa del Oktoberfest",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2239
+    },
+    "Claude outputs/cuarenta/22-primera_persona.png": {
+      "titulo": "Ver un Gran Premio de Fórmula 1",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2498
+    },
+    "Claude outputs/cuarenta/23-primera_persona.png": {
+      "titulo": "Ver un partido de la NBA",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1987
+    },
+    "Claude outputs/cuarenta/24-primera_persona.png": {
+      "titulo": "Ver una etapa del Tour de Francia",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2564
+    },
+    "Claude outputs/cuarenta/25-primera_persona.png": {
+      "titulo": "Ver la Nochevieja en Times Square",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2497
+    },
+    "Claude outputs/cuarenta/26-primera_persona.png": {
+      "titulo": "Ver una procesión de la Semana Santa de Sevilla",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2387
+    },
+    "Claude outputs/cuarenta/27-primera_persona.png": {
+      "titulo": "Ver el festival de globos de Albuquerque",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2491
+    },
+    "Claude outputs/cuarenta/28-lugar_vacio.png": {
+      "titulo": "Perderte en los zocos de Marrakech",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2305
+    },
+    "Claude outputs/cuarenta/29-lugar_vacio.png": {
+      "titulo": "Salir por el Temple Bar",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2159
+    },
+    "Claude outputs/cuarenta/30-lugar_vacio.png": {
+      "titulo": "Bañarte en los Baños Széchenyi",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2237
+    },
+    "Claude outputs/cuarenta/31-lugar_vacio.png": {
+      "titulo": "Pasar un día en PortAventura",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2286
+    },
+    "Claude outputs/cuarenta/32-lugar_vacio.png": {
+      "titulo": "Bañarte en la playa de Copacabana",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2773
+    },
+    "Claude outputs/cuarenta/33-lugar_vacio.png": {
+      "titulo": "Llegar al Cabo de Buena Esperanza",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2497
+    },
+    "Claude outputs/cuarenta/34-objeto.png": {
+      "titulo": "Sacarte el carnet de moto",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2337
+    },
+    "Claude outputs/cuarenta/35-objeto.png": {
+      "titulo": "Sacarte la licencia de piloto",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2004
+    },
+    "Claude outputs/cuarenta/36-objeto.png": {
+      "titulo": "Doctorarte",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2011
+    },
+    "Claude outputs/cuarenta/37-objeto.png": {
+      "titulo": "Tomar un café en el Café Central",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2033
+    },
+    "Claude outputs/cuarenta/38-detalle.png": {
+      "titulo": "Recorrer el Freedom Trail",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 3437
+    },
+    "Claude outputs/cuarenta/39-detalle.png": {
+      "titulo": "Bañarte en una playa de arena negra de Santorini",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 3020
+    },
+    "Claude outputs/cuarenta/40-espaldas.png": {
+      "titulo": "Vivir un año en otro país",
+      "encuadre": "espaldas",
+      "tanda": "Claude outputs/cuarenta",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2437
+    },
+    "Claude outputs/cuy/01-plato.png": {
+      "titulo": "Probar el cuy",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/cuy",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2334
+    },
+    "Claude outputs/doce-b/01-detalle.png": {
+      "titulo": "Ir al Festival de Cine de Sitges",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/doce-b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1976
+    },
+    "Claude outputs/doce-b/02-manos.png": {
+      "titulo": "Cantar en un karaoke",
+      "encuadre": "manos",
+      "tanda": "Claude outputs/doce-b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2198
+    },
+    "Claude outputs/doce-b/03-primera_persona.png": {
+      "titulo": "Ver la Nochevieja en Times Square",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/doce-b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2988
+    },
+    "Claude outputs/doce-b/04-primera_persona.png": {
+      "titulo": "Ver los fuegos de Nochevieja en Sídney",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/doce-b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2462
+    },
+    "Claude outputs/doce-b/05-detalle.png": {
+      "titulo": "Bucear en Raja Ampat",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/doce-b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2723
+    },
+    "Claude outputs/doce-b/06-plato.png": {
+      "titulo": "Comerte un escorpión",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/doce-b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2338
+    },
+    "Claude outputs/doce-b/07-lugar_vacio.png": {
+      "titulo": "Bañarte en la piscina del Marina Bay Sands",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/doce-b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2284
+    },
+    "Claude outputs/doce-b/08-contraluz.png": {
+      "titulo": "Ir a la Festa dels Raiers",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/doce-b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2325
+    },
+    "Claude outputs/doce-b/09-primera_persona.png": {
+      "titulo": "Ver una final de Grand Slam de tenis",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/doce-b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2776
+    },
+    "Claude outputs/doce-b/10-primera_persona.png": {
+      "titulo": "Ver una final de la NBA",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/doce-b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2971
+    },
+    "Claude outputs/doce-b/11-plato.png": {
+      "titulo": "Comer en el mercado de Toyosu",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/doce-b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2144
+    },
+    "Claude outputs/doce-b/12-contraluz.png": {
+      "titulo": "Correr un encierro de San Fermín",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/doce-b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2101
+    },
+    "Claude outputs/doce/01-plato.png": {
+      "titulo": "Comer gambas de Palamós",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/doce",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2390
+    },
+    "Claude outputs/doce/02-lugar_vacio.png": {
+      "titulo": "Dormir en un bungalow sobre el agua en Bora Bora",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/doce",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2811
+    },
+    "Claude outputs/doce/03-lugar_vacio.png": {
+      "titulo": "Dormir en el desierto de Wadi Rum",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/doce",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2160
+    },
+    "Claude outputs/doce/04-lugar_vacio.png": {
+      "titulo": "Dormir en una jaima en el Sáhara",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/doce",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2777
+    },
+    "Claude outputs/doce/05-primera_persona.png": {
+      "titulo": "Ver un partido en el Madison Square Garden",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/doce",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2261
+    },
+    "Claude outputs/doce/06-contraluz.png": {
+      "titulo": "Formar parte de un castell",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/doce",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1990
+    },
+    "Claude outputs/doce/07-contraluz.png": {
+      "titulo": "Ir a la Festa Major de Vilafranca",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/doce",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1951
+    },
+    "Claude outputs/doce/08-detalle.png": {
+      "titulo": "Ir al Carnaval de Sitges",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/doce",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2145
+    },
+    "Claude outputs/doce/09-detalle.png": {
+      "titulo": "Ir al Carnaval de Santa Cruz de Tenerife",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/doce",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2567
+    },
+    "Claude outputs/doce/10-detalle.png": {
+      "titulo": "Probar el balut",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/doce",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2170
+    },
+    "Claude outputs/doce/11-detalle.png": {
+      "titulo": "Probar el huevo de cien años",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/doce",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2162
+    },
+    "Claude outputs/doce/12-detalle.png": {
+      "titulo": "Probar el cuy",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/doce",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2478
+    },
+    "Claude outputs/fotos-ia/A-caminar-sobre-un-glaciar-en-islandia-1.png": {
+      "titulo": "Caminar sobre un glaciar en Islandia",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2472
+    },
+    "Claude outputs/fotos-ia/A-caminar-sobre-un-glaciar-en-islandia-2.png": {
+      "titulo": "Caminar sobre un glaciar en Islandia",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2899
+    },
+    "Claude outputs/fotos-ia/A-cantar-en-un-karaoke-1.png": {
+      "titulo": "Cantar en un karaoke",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2291
+    },
+    "Claude outputs/fotos-ia/A-cantar-en-un-karaoke-2.png": {
+      "titulo": "Cantar en un karaoke",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2279
+    },
+    "Claude outputs/fotos-ia/A-correr-la-marato-de-barcelona-1.png": {
+      "titulo": "Correr la Marató de Barcelona",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2738
+    },
+    "Claude outputs/fotos-ia/A-correr-la-marato-de-barcelona-2.png": {
+      "titulo": "Correr la Marató de Barcelona",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2555
+    },
+    "Claude outputs/fotos-ia/A-dormir-en-una-cabana-sin-electricidad-1.png": {
+      "titulo": "Dormir en una cabaña sin electricidad",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2291
+    },
+    "Claude outputs/fotos-ia/A-dormir-en-una-cabana-sin-electricidad-2.png": {
+      "titulo": "Dormir en una cabaña sin electricidad",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1908
+    },
+    "Claude outputs/fotos-ia/A-montar-tu-propia-empresa-1.png": {
+      "titulo": "Montar tu propia empresa",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2431
+    },
+    "Claude outputs/fotos-ia/A-montar-tu-propia-empresa-2.png": {
+      "titulo": "Montar tu propia empresa",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2559
+    },
+    "Claude outputs/fotos-ia/A-practicar-esqui-1.png": {
+      "titulo": "Practicar esquí",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2487
+    },
+    "Claude outputs/fotos-ia/A-practicar-esqui-2.png": {
+      "titulo": "Practicar esquí",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2336
+    },
+    "Claude outputs/fotos-ia/A-probar-el-fugu-1.png": {
+      "titulo": "Probar el fugu",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2286
+    },
+    "Claude outputs/fotos-ia/A-probar-el-fugu-2.png": {
+      "titulo": "Probar el fugu",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2062
+    },
+    "Claude outputs/fotos-ia/A-saltar-en-paracaidas-1.png": {
+      "titulo": "Saltar en paracaídas",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2349
+    },
+    "Claude outputs/fotos-ia/A-saltar-en-paracaidas-2.png": {
+      "titulo": "Saltar en paracaídas",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2688
+    },
+    "Claude outputs/fotos-ia/B-caminar-sobre-un-glaciar-en-islandia-1.png": {
+      "titulo": "Caminar sobre un glaciar en Islandia",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2208
+    },
+    "Claude outputs/fotos-ia/B-caminar-sobre-un-glaciar-en-islandia-2.png": {
+      "titulo": "Caminar sobre un glaciar en Islandia",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2202
+    },
+    "Claude outputs/fotos-ia/B-cantar-en-un-karaoke-1.png": {
+      "titulo": "Cantar en un karaoke",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2087
+    },
+    "Claude outputs/fotos-ia/B-cantar-en-un-karaoke-2.png": {
+      "titulo": "Cantar en un karaoke",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2158
+    },
+    "Claude outputs/fotos-ia/B-correr-la-marato-de-barcelona-1.png": {
+      "titulo": "Correr la Marató de Barcelona",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2423
+    },
+    "Claude outputs/fotos-ia/B-correr-la-marato-de-barcelona-2.png": {
+      "titulo": "Correr la Marató de Barcelona",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2385
+    },
+    "Claude outputs/fotos-ia/B-dormir-en-una-cabana-sin-electricidad-1.png": {
+      "titulo": "Dormir en una cabaña sin electricidad",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1874
+    },
+    "Claude outputs/fotos-ia/B-dormir-en-una-cabana-sin-electricidad-2.png": {
+      "titulo": "Dormir en una cabaña sin electricidad",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1738
+    },
+    "Claude outputs/fotos-ia/B-montar-tu-propia-empresa-1.png": {
+      "titulo": "Montar tu propia empresa",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1991
+    },
+    "Claude outputs/fotos-ia/B-montar-tu-propia-empresa-2.png": {
+      "titulo": "Montar tu propia empresa",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2198
+    },
+    "Claude outputs/fotos-ia/B-practicar-esqui-1.png": {
+      "titulo": "Practicar esquí",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2125
+    },
+    "Claude outputs/fotos-ia/B-practicar-esqui-2.png": {
+      "titulo": "Practicar esquí",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1997
+    },
+    "Claude outputs/fotos-ia/B-probar-el-fugu-1.png": {
+      "titulo": "Probar el fugu",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2273
+    },
+    "Claude outputs/fotos-ia/B-probar-el-fugu-2.png": {
+      "titulo": "Probar el fugu",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2269
+    },
+    "Claude outputs/fotos-ia/B-saltar-en-paracaidas-1.png": {
+      "titulo": "Saltar en paracaídas",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2038
+    },
+    "Claude outputs/fotos-ia/B-saltar-en-paracaidas-2.png": {
+      "titulo": "Saltar en paracaídas",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2083
+    },
+    "Claude outputs/fotos-ia/C-caminar-sobre-un-glaciar-en-islandia-1.png": {
+      "titulo": "Caminar sobre un glaciar en Islandia",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2617
+    },
+    "Claude outputs/fotos-ia/C-caminar-sobre-un-glaciar-en-islandia-2.png": {
+      "titulo": "Caminar sobre un glaciar en Islandia",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2412
+    },
+    "Claude outputs/fotos-ia/C-cantar-en-un-karaoke-1.png": {
+      "titulo": "Cantar en un karaoke",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2563
+    },
+    "Claude outputs/fotos-ia/C-cantar-en-un-karaoke-2.png": {
+      "titulo": "Cantar en un karaoke",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2280
+    },
+    "Claude outputs/fotos-ia/C-correr-la-marato-de-barcelona-1.png": {
+      "titulo": "Correr la Marató de Barcelona",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2624
+    },
+    "Claude outputs/fotos-ia/C-correr-la-marato-de-barcelona-2.png": {
+      "titulo": "Correr la Marató de Barcelona",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 3138
+    },
+    "Claude outputs/fotos-ia/C-dormir-en-una-cabana-sin-electricidad-1.png": {
+      "titulo": "Dormir en una cabaña sin electricidad",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2129
+    },
+    "Claude outputs/fotos-ia/C-dormir-en-una-cabana-sin-electricidad-2.png": {
+      "titulo": "Dormir en una cabaña sin electricidad",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1858
+    },
+    "Claude outputs/fotos-ia/C-montar-tu-propia-empresa-1.png": {
+      "titulo": "Montar tu propia empresa",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2379
+    },
+    "Claude outputs/fotos-ia/C-montar-tu-propia-empresa-2.png": {
+      "titulo": "Montar tu propia empresa",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2260
+    },
+    "Claude outputs/fotos-ia/C-practicar-esqui-1.png": {
+      "titulo": "Practicar esquí",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 3836
+    },
+    "Claude outputs/fotos-ia/C-practicar-esqui-2.png": {
+      "titulo": "Practicar esquí",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2951
+    },
+    "Claude outputs/fotos-ia/C-probar-el-fugu-1.png": {
+      "titulo": "Probar el fugu",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2140
+    },
+    "Claude outputs/fotos-ia/C-probar-el-fugu-2.png": {
+      "titulo": "Probar el fugu",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2194
+    },
+    "Claude outputs/fotos-ia/C-saltar-en-paracaidas-1.png": {
+      "titulo": "Saltar en paracaídas",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 3615
+    },
+    "Claude outputs/fotos-ia/C-saltar-en-paracaidas-2.png": {
+      "titulo": "Saltar en paracaídas",
+      "encuadre": null,
+      "tanda": "Claude outputs/fotos-ia",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 3342
+    },
+    "Claude outputs/indy/01-primera_persona.png": {
+      "titulo": "Ver una carrera en Indianápolis",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/indy",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2759
+    },
+    "Claude outputs/indy2/01-detalle.png": {
+      "titulo": "Ver una carrera en Indianápolis",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/indy2",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2333
+    },
+    "Claude outputs/pequenos/01-lugar_vacio.png": {
+      "titulo": "Bañarte en Bondi Beach",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2323
+    },
+    "Claude outputs/pequenos/02-primera_persona.png": {
+      "titulo": "Ver un partido de la NBA",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2137
+    },
+    "Claude outputs/pequenos/03-primera_persona.png": {
+      "titulo": "Ver un partido en el Madison Square Garden",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2731
+    },
+    "Claude outputs/pequenos/04-primera_persona.png": {
+      "titulo": "Ver una final de la NBA",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2167
+    },
+    "Claude outputs/pequenos/05-plato.png": {
+      "titulo": "Comer en un restaurante con una estrella Michelin",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2023
+    },
+    "Claude outputs/pequenos/06-plato.png": {
+      "titulo": "Comer en un restaurante con dos estrellas Michelin",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2130
+    },
+    "Claude outputs/pequenos/07-plato.png": {
+      "titulo": "Comer gambas de Palamós",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2445
+    },
+    "Claude outputs/pequenos/08-lugar_vacio.png": {
+      "titulo": "Dormir en el desierto de Wadi Rum",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2982
+    },
+    "Claude outputs/pequenos/09-lugar_vacio.png": {
+      "titulo": "Dormir en una jaima en el Sáhara",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2800
+    },
+    "Claude outputs/pequenos/10-lugar_vacio.png": {
+      "titulo": "Dormir en el refugio de Amitges",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2825
+    },
+    "Claude outputs/pequenos/11-lugar_vacio.png": {
+      "titulo": "Dormir una noche en un refugio de montaña",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2206
+    },
+    "Claude outputs/pequenos/12-lugar_vacio.png": {
+      "titulo": "Dormir en un bungalow sobre el agua en Bora Bora",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2718
+    },
+    "Claude outputs/pequenos/13-lugar_vacio.png": {
+      "titulo": "Dormir en un bungalow sobre el agua en Maldivas",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2487
+    },
+    "Claude outputs/pequenos/14-contraluz.png": {
+      "titulo": "Formar parte de un castell",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1983
+    },
+    "Claude outputs/pequenos/15-contraluz.png": {
+      "titulo": "Ir a la Festa Major de Vilafranca",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1823
+    },
+    "Claude outputs/pequenos/16-contraluz.png": {
+      "titulo": "Ir al Carnaval de Cádiz",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1967
+    },
+    "Claude outputs/pequenos/17-contraluz.png": {
+      "titulo": "Ir al Carnaval de Sitges",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2115
+    },
+    "Claude outputs/pequenos/18-contraluz.png": {
+      "titulo": "Ir al Carnaval de Río",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2241
+    },
+    "Claude outputs/pequenos/19-contraluz.png": {
+      "titulo": "Ir al Carnaval de Santa Cruz de Tenerife",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2385
+    },
+    "Claude outputs/pequenos/20-plato.png": {
+      "titulo": "Probar el balut",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2061
+    },
+    "Claude outputs/pequenos/21-plato.png": {
+      "titulo": "Probar el huevo de cien años",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2196
+    },
+    "Claude outputs/pequenos/22-plato.png": {
+      "titulo": "Probar el cuy",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2130
+    },
+    "Claude outputs/pequenos/23-plato.png": {
+      "titulo": "Probar la carne de cocodrilo",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2243
+    },
+    "Claude outputs/pequenos/24-primera_persona.png": {
+      "titulo": "Ver un partido del Mundial de rugby",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2738
+    },
+    "Claude outputs/pequenos/25-primera_persona.png": {
+      "titulo": "Ver un partido del Seis Naciones",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/pequenos",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2244
+    },
+    "Claude outputs/prueba-luz/01-objeto.png": {
+      "titulo": "Montar en un coche clásico por La Habana",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/prueba-luz",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2488
+    },
+    "Claude outputs/prueba-luz/02-detalle.png": {
+      "titulo": "Bañarte en los gorgs de la Garrotxa",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/prueba-luz",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2137
+    },
+    "Claude outputs/prueba-luz/03-contraluz.png": {
+      "titulo": "Jugar al Holi en India",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/prueba-luz",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2184
+    },
+    "Claude outputs/prueba-luz/04-objeto.png": {
+      "titulo": "Practicar snowboard",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/prueba-luz",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2108
+    },
+    "Claude outputs/prueba-luz/05-plato.png": {
+      "titulo": "Comerte una tarántula",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/prueba-luz",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2130
+    },
+    "Claude outputs/prueba-luz/06-hombros.png": {
+      "titulo": "Montar tu propia empresa",
+      "encuadre": "hombros",
+      "tanda": "Claude outputs/prueba-luz",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2785
+    },
+    "Claude outputs/ronda2-A/A-caminar-sobre-un-glaciar-en-islandia-1.png": {
+      "titulo": "Caminar sobre un glaciar en Islandia",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda2-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2585
+    },
+    "Claude outputs/ronda2-A/A-caminar-sobre-un-glaciar-en-islandia-2.png": {
+      "titulo": "Caminar sobre un glaciar en Islandia",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda2-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2660
+    },
+    "Claude outputs/ronda2-A/A-cantar-en-un-karaoke-1.png": {
+      "titulo": "Cantar en un karaoke",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda2-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2256
+    },
+    "Claude outputs/ronda2-A/A-cantar-en-un-karaoke-2.png": {
+      "titulo": "Cantar en un karaoke",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda2-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2075
+    },
+    "Claude outputs/ronda2-A/A-correr-la-marato-de-barcelona-1.png": {
+      "titulo": "Correr la Marató de Barcelona",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda2-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2716
+    },
+    "Claude outputs/ronda2-A/A-correr-la-marato-de-barcelona-2.png": {
+      "titulo": "Correr la Marató de Barcelona",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda2-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2625
+    },
+    "Claude outputs/ronda2-A/A-dormir-en-una-cabana-sin-electricidad-1.png": {
+      "titulo": "Dormir en una cabaña sin electricidad",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda2-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1779
+    },
+    "Claude outputs/ronda2-A/A-dormir-en-una-cabana-sin-electricidad-2.png": {
+      "titulo": "Dormir en una cabaña sin electricidad",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda2-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1999
+    },
+    "Claude outputs/ronda2-A/A-montar-tu-propia-empresa-1.png": {
+      "titulo": "Montar tu propia empresa",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda2-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2747
+    },
+    "Claude outputs/ronda2-A/A-montar-tu-propia-empresa-2.png": {
+      "titulo": "Montar tu propia empresa",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda2-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2941
+    },
+    "Claude outputs/ronda2-A/A-practicar-esqui-1.png": {
+      "titulo": "Practicar esquí",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda2-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2382
+    },
+    "Claude outputs/ronda2-A/A-practicar-esqui-2.png": {
+      "titulo": "Practicar esquí",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda2-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2552
+    },
+    "Claude outputs/ronda2-A/A-probar-el-fugu-1.png": {
+      "titulo": "Probar el fugu",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda2-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2224
+    },
+    "Claude outputs/ronda2-A/A-probar-el-fugu-2.png": {
+      "titulo": "Probar el fugu",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda2-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2026
+    },
+    "Claude outputs/ronda2-A/A-saltar-en-paracaidas-1.png": {
+      "titulo": "Saltar en paracaídas",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda2-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2621
+    },
+    "Claude outputs/ronda2-A/A-saltar-en-paracaidas-2.png": {
+      "titulo": "Saltar en paracaídas",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda2-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2473
+    },
+    "Claude outputs/ronda3-A/A-caminar-sobre-un-glaciar-en-islandia-1.png": {
+      "titulo": "Caminar sobre un glaciar en Islandia",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda3-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2226
+    },
+    "Claude outputs/ronda3-A/A-caminar-sobre-un-glaciar-en-islandia-2.png": {
+      "titulo": "Caminar sobre un glaciar en Islandia",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda3-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2814
+    },
+    "Claude outputs/ronda3-A/A-cantar-en-un-karaoke-1.png": {
+      "titulo": "Cantar en un karaoke",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda3-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1868
+    },
+    "Claude outputs/ronda3-A/A-cantar-en-un-karaoke-2.png": {
+      "titulo": "Cantar en un karaoke",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda3-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2164
+    },
+    "Claude outputs/ronda3-A/A-correr-la-marato-de-barcelona-1.png": {
+      "titulo": "Correr la Marató de Barcelona",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda3-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2209
+    },
+    "Claude outputs/ronda3-A/A-correr-la-marato-de-barcelona-2.png": {
+      "titulo": "Correr la Marató de Barcelona",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda3-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2155
+    },
+    "Claude outputs/ronda3-A/A-dormir-en-una-cabana-sin-electricidad-1.png": {
+      "titulo": "Dormir en una cabaña sin electricidad",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda3-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2177
+    },
+    "Claude outputs/ronda3-A/A-dormir-en-una-cabana-sin-electricidad-2.png": {
+      "titulo": "Dormir en una cabaña sin electricidad",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda3-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1802
+    },
+    "Claude outputs/ronda3-A/A-montar-tu-propia-empresa-1.png": {
+      "titulo": "Montar tu propia empresa",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda3-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2580
+    },
+    "Claude outputs/ronda3-A/A-montar-tu-propia-empresa-2.png": {
+      "titulo": "Montar tu propia empresa",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda3-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2620
+    },
+    "Claude outputs/ronda3-A/A-practicar-esqui-1.png": {
+      "titulo": "Practicar esquí",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda3-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2325
+    },
+    "Claude outputs/ronda3-A/A-practicar-esqui-2.png": {
+      "titulo": "Practicar esquí",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda3-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2402
+    },
+    "Claude outputs/ronda3-A/A-probar-el-fugu-1.png": {
+      "titulo": "Probar el fugu",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda3-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2228
+    },
+    "Claude outputs/ronda3-A/A-probar-el-fugu-2.png": {
+      "titulo": "Probar el fugu",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda3-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2140
+    },
+    "Claude outputs/ronda3-A/A-saltar-en-paracaidas-1.png": {
+      "titulo": "Saltar en paracaídas",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda3-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2130
+    },
+    "Claude outputs/ronda3-A/A-saltar-en-paracaidas-2.png": {
+      "titulo": "Saltar en paracaídas",
+      "encuadre": null,
+      "tanda": "Claude outputs/ronda3-A",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2500
+    },
+    "Claude outputs/siete/01-objeto.png": {
+      "titulo": "Ir al Carnaval de Cádiz",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/siete",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2299
+    },
+    "Claude outputs/siete/02-objeto.png": {
+      "titulo": "Ir al Saint Patrick's Day de Dublín",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/siete",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2108
+    },
+    "Claude outputs/siete/03-lugar_vacio.png": {
+      "titulo": "Beber en una carpa del Oktoberfest",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/siete",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2004
+    },
+    "Claude outputs/siete/04-contraluz.png": {
+      "titulo": "Correr un maratón",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/siete",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2307
+    },
+    "Claude outputs/siete/05-lugar_vacio.png": {
+      "titulo": "Dormir en el refugio de Amitges",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/siete",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2800
+    },
+    "Claude outputs/siete/06-lugar_vacio.png": {
+      "titulo": "Hacer una travesía de varios días en montaña",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/siete",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2423
+    },
+    "Claude outputs/siete/07-lugar_vacio.png": {
+      "titulo": "Hacer paddle surf en el cabo de Creus",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/siete",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2404
+    },
+    "Claude outputs/tanda-hacer-v2/A-banarte-en-la-cala-de-sa-tuna-1.png": {
+      "titulo": "Bañarte en la cala de Sa Tuna",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2243
+    },
+    "Claude outputs/tanda-hacer-v2/A-banarte-en-la-piscina-del-marina-bay-sands-1.png": {
+      "titulo": "Bañarte en la piscina del Marina Bay Sands",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2102
+    },
+    "Claude outputs/tanda-hacer-v2/A-banarte-en-los-gorgs-de-la-garrotxa-1.png": {
+      "titulo": "Bañarte en los gorgs de la Garrotxa",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2228
+    },
+    "Claude outputs/tanda-hacer-v2/A-banarte-en-una-playa-de-arena-negra-de-san-1.png": {
+      "titulo": "Bañarte en una playa de arena negra de Santorini",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2406
+    },
+    "Claude outputs/tanda-hacer-v2/A-bucear-en-las-islas-medes-1.png": {
+      "titulo": "Bucear en las islas Medes",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2159
+    },
+    "Claude outputs/tanda-hacer-v2/A-bucear-en-raja-ampat-1.png": {
+      "titulo": "Bucear en Raja Ampat",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2278
+    },
+    "Claude outputs/tanda-hacer-v2/A-caminar-sobre-un-glaciar-en-islandia-1.png": {
+      "titulo": "Caminar sobre un glaciar en Islandia",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2255
+    },
+    "Claude outputs/tanda-hacer-v2/A-comer-arroz-en-el-delta-del-ebro-1.png": {
+      "titulo": "Comer arroz en el Delta del Ebro",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2167
+    },
+    "Claude outputs/tanda-hacer-v2/A-comer-en-el-mercado-de-toyosu-1.png": {
+      "titulo": "Comer en el mercado de Toyosu",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2033
+    },
+    "Claude outputs/tanda-hacer-v2/A-comer-en-un-restaurante-con-una-estrella-m-1.png": {
+      "titulo": "Comer en un restaurante con una estrella Michelin",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2090
+    },
+    "Claude outputs/tanda-hacer-v2/A-comer-gambas-de-palamos-1.png": {
+      "titulo": "Comer gambas de Palamós",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2288
+    },
+    "Claude outputs/tanda-hacer-v2/A-comer-suquet-de-peix-en-la-costa-brava-1.png": {
+      "titulo": "Comer suquet de peix en la Costa Brava",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2174
+    },
+    "Claude outputs/tanda-hacer-v2/A-correr-la-mitja-de-granollers-1.png": {
+      "titulo": "Correr la Mitja de Granollers",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2108
+    },
+    "Claude outputs/tanda-hacer-v2/A-correr-la-ultra-pirineu-1.png": {
+      "titulo": "Correr la Ultra Pirineu",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2180
+    },
+    "Claude outputs/tanda-hacer-v2/A-correr-un-encierro-de-san-fermin-1.png": {
+      "titulo": "Correr un encierro de San Fermín",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1763
+    },
+    "Claude outputs/tanda-hacer-v2/A-dormir-en-el-desierto-de-wadi-rum-1.png": {
+      "titulo": "Dormir en el desierto de Wadi Rum",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2170
+    },
+    "Claude outputs/tanda-hacer-v2/A-dormir-en-un-bungalow-sobre-el-agua-en-bor-1.png": {
+      "titulo": "Dormir en un bungalow sobre el agua en Bora Bora",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2088
+    },
+    "Claude outputs/tanda-hacer-v2/A-dormir-en-un-bungalow-sobre-el-agua-en-mal-1.png": {
+      "titulo": "Dormir en un bungalow sobre el agua en Maldivas",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2312
+    },
+    "Claude outputs/tanda-hacer-v2/A-escalar-en-siurana-1.png": {
+      "titulo": "Escalar en Siurana",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2615
+    },
+    "Claude outputs/tanda-hacer-v2/A-escalar-una-aguja-de-montserrat-1.png": {
+      "titulo": "Escalar una aguja de Montserrat",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2603
+    },
+    "Claude outputs/tanda-hacer-v2/A-flotar-en-el-mar-muerto-1.png": {
+      "titulo": "Flotar en el mar Muerto",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2492
+    },
+    "Claude outputs/tanda-hacer-v2/A-formar-parte-de-un-castell-1.png": {
+      "titulo": "Formar parte de un castell",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2099
+    },
+    "Claude outputs/tanda-hacer-v2/A-hacer-barranquismo-en-la-noguera-1.png": {
+      "titulo": "Hacer barranquismo en la Noguera",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2182
+    },
+    "Claude outputs/tanda-hacer-v2/A-hacer-el-cami-dels-bons-homes-1.png": {
+      "titulo": "Hacer el Camí dels Bons Homes",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2289
+    },
+    "Claude outputs/tanda-hacer-v2/A-hacer-el-camino-de-santiago-desde-montserr-1.png": {
+      "titulo": "Hacer el Camino de Santiago desde Montserrat",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2199
+    },
+    "Claude outputs/tanda-hacer-v2/A-hacer-la-ferrata-de-boixadera-dels-bancs-1.png": {
+      "titulo": "Hacer la ferrata de Boixadera dels Bancs",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2371
+    },
+    "Claude outputs/tanda-hacer-v2/A-hacer-la-ferrata-de-les-baumes-1.png": {
+      "titulo": "Hacer la ferrata de Les Baumes",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2277
+    },
+    "Claude outputs/tanda-hacer-v2/A-hacer-la-ferrata-del-salt-del-grill-1.png": {
+      "titulo": "Hacer la ferrata del Salt del Grill",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2336
+    },
+    "Claude outputs/tanda-hacer-v2/A-hacer-la-matagalls-montserrat-1.png": {
+      "titulo": "Hacer la Matagalls-Montserrat",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1863
+    },
+    "Claude outputs/tanda-hacer-v2/A-hacer-la-ruta-de-las-nueve-ermitas-del-mon-1.png": {
+      "titulo": "Hacer la ruta de las nueve ermitas del Montsant",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2268
+    },
+    "Claude outputs/tanda-hacer-v2/A-hacer-la-travessia-del-port-de-barcelona-n-1.png": {
+      "titulo": "Hacer la Travessia del Port de Barcelona nadando",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2364
+    },
+    "Claude outputs/tanda-hacer-v2/A-hacer-la-via-verde-del-carrilet-de-olot-a--1.png": {
+      "titulo": "Hacer la Vía Verde del Carrilet de Olot a Girona",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2369
+    },
+    "Claude outputs/tanda-hacer-v2/A-hacer-los-carros-de-foc-1.png": {
+      "titulo": "Hacer los Carros de Foc",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2349
+    },
+    "Claude outputs/tanda-hacer-v2/A-hacer-paddle-surf-en-el-cabo-de-creus-1.png": {
+      "titulo": "Hacer paddle surf en el cabo de Creus",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2138
+    },
+    "Claude outputs/tanda-hacer-v2/A-hacer-rafting-por-el-noguera-pallaresa-1.png": {
+      "titulo": "Hacer rafting por el Noguera Pallaresa",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2252
+    },
+    "Claude outputs/tanda-hacer-v2/A-hacer-un-safari-por-el-desierto-de-dubai-1.png": {
+      "titulo": "Hacer un safari por el desierto de Dubái",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2593
+    },
+    "Claude outputs/tanda-hacer-v2/A-jugar-al-holi-en-india-1.png": {
+      "titulo": "Jugar al Holi en India",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2275
+    },
+    "Claude outputs/tanda-hacer-v2/A-mojarte-en-el-songkran-1.png": {
+      "titulo": "Mojarte en el Songkran",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2378
+    },
+    "Claude outputs/tanda-hacer-v2/A-navegar-entre-los-islotes-de-el-nido-1.png": {
+      "titulo": "Navegar entre los islotes de El Nido",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2546
+    },
+    "Claude outputs/tanda-hacer-v2/A-navegar-por-el-amazonas-1.png": {
+      "titulo": "Navegar por el Amazonas",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2473
+    },
+    "Claude outputs/tanda-hacer-v2/A-navegar-por-el-delta-del-ebro-1.png": {
+      "titulo": "Navegar por el delta del Ebro",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2277
+    },
+    "Claude outputs/tanda-hacer-v2/A-navegar-por-el-rio-li-en-guilin-1.png": {
+      "titulo": "Navegar por el río Li en Guilin",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2258
+    },
+    "Claude outputs/tanda-hacer-v2/A-navegar-por-la-bahia-de-ha-long-1.png": {
+      "titulo": "Navegar por la bahía de Ha Long",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2201
+    },
+    "Claude outputs/tanda-hacer-v2/A-navegar-por-los-fiordos-noruegos-1.png": {
+      "titulo": "Navegar por los fiordos noruegos",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2426
+    },
+    "Claude outputs/tanda-hacer-v2/A-pasar-un-dia-en-ferrari-land-1.png": {
+      "titulo": "Pasar un día en Ferrari Land",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2381
+    },
+    "Claude outputs/tanda-hacer-v2/A-pasar-un-dia-en-portaventura-1.png": {
+      "titulo": "Pasar un día en PortAventura",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2442
+    },
+    "Claude outputs/tanda-hacer-v2/A-recorrer-el-cami-de-ronda-entero-1.png": {
+      "titulo": "Recorrer el Camí de Ronda entero",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2327
+    },
+    "Claude outputs/tanda-hacer-v2/A-recorrer-el-carril-bici-mas-largo-del-mund-1.png": {
+      "titulo": "Recorrer el carril bici más largo del mundo",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2177
+    },
+    "Claude outputs/tanda-hacer-v2/A-recorrer-el-gr-11-por-el-pirineo-catalan-1.png": {
+      "titulo": "Recorrer el GR-11 por el Pirineo catalán",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2183
+    },
+    "Claude outputs/tanda-hacer-v2/A-recorrer-el-parc-natural-del-montseny-1.png": {
+      "titulo": "Recorrer el Parc Natural del Montseny",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2177
+    },
+    "Claude outputs/tanda-hacer-v2/A-recorrer-la-tarragona-romana-1.png": {
+      "titulo": "Recorrer la Tarragona romana",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2375
+    },
+    "Claude outputs/tanda-hacer-v2/A-recorrer-la-via-dolorosa-1.png": {
+      "titulo": "Recorrer la Vía Dolorosa",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2230
+    },
+    "Claude outputs/tanda-hacer-v2/A-recorrer-las-islas-feroe-1.png": {
+      "titulo": "Recorrer las islas Feroe",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2175
+    },
+    "Claude outputs/tanda-hacer-v2/A-recorrer-las-murallas-de-dubrovnik-1.png": {
+      "titulo": "Recorrer las murallas de Dubrovnik",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2336
+    },
+    "Claude outputs/tanda-hacer-v2/A-recorrer-las-murallas-de-montblanc-1.png": {
+      "titulo": "Recorrer las murallas de Montblanc",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2144
+    },
+    "Claude outputs/tanda-hacer-v2/A-recorrer-las-torres-del-paine-1.png": {
+      "titulo": "Recorrer las Torres del Paine",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2441
+    },
+    "Claude outputs/tanda-hacer-v2/A-recorrer-los-canales-de-amsterdam-en-barco-1.png": {
+      "titulo": "Recorrer los canales de Ámsterdam en barco",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2245
+    },
+    "Claude outputs/tanda-hacer-v2/A-recorrer-los-tuneles-de-cu-chi-1.png": {
+      "titulo": "Recorrer los túneles de Cu Chi",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2131
+    },
+    "Claude outputs/tanda-hacer-v2/A-recorrer-un-gr-entero-1.png": {
+      "titulo": "Recorrer un GR entero",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2500
+    },
+    "Claude outputs/tanda-hacer-v2/A-recorrer-un-mercado-flotante-de-tailandia-1.png": {
+      "titulo": "Recorrer un mercado flotante de Tailandia",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2548
+    },
+    "Claude outputs/tanda-hacer-v2/A-sacarte-el-c1-de-ingles-1.png": {
+      "titulo": "Sacarte el C1 de inglés",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2110
+    },
+    "Claude outputs/tanda-hacer-v2/A-sacarte-el-titulo-de-buceo-open-water-1.png": {
+      "titulo": "Sacarte el título de buceo Open Water",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1994
+    },
+    "Claude outputs/tanda-hacer-v2/A-saltar-en-puenting-en-queenstown-1.png": {
+      "titulo": "Saltar en puenting en Queenstown",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2172
+    },
+    "Claude outputs/tanda-hacer-v2/A-subir-en-bici-a-la-rabassa-1.png": {
+      "titulo": "Subir en bici a la Rabassa",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2063
+    },
+    "Claude outputs/tanda-hacer-v2/A-subir-en-bici-al-alpe-d-huez-1.png": {
+      "titulo": "Subir en bici al Alpe d'Huez",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2175
+    },
+    "Claude outputs/tanda-hacer-v2/A-subir-en-bici-al-angliru-1.png": {
+      "titulo": "Subir en bici al Angliru",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2234
+    },
+    "Claude outputs/tanda-hacer-v2/A-subir-en-bici-al-mont-ventoux-1.png": {
+      "titulo": "Subir en bici al Mont Ventoux",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2295
+    },
+    "Claude outputs/tanda-hacer-v2/A-subir-en-bici-al-port-del-canto-1.png": {
+      "titulo": "Subir en bici al Port del Cantó",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2018
+    },
+    "Claude outputs/tanda-hacer-v2/A-terminar-un-ironman-1.png": {
+      "titulo": "Terminar un Ironman",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2310
+    },
+    "Claude outputs/tanda-hacer-v2/A-terminar-un-medio-ironman-1.png": {
+      "titulo": "Terminar un medio Ironman",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2655
+    },
+    "Claude outputs/tanda-hacer-v2/A-terminar-una-hyrox-1.png": {
+      "titulo": "Terminar una Hyrox",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2512
+    },
+    "Claude outputs/tanda-hacer-v2/A-volar-en-globo-sobre-la-capadocia-1.png": {
+      "titulo": "Volar en globo sobre la Capadocia",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2221
+    },
+    "Claude outputs/tanda-hacer-v2/A-volar-en-globo-sobre-los-volcanes-de-la-ga-1.png": {
+      "titulo": "Volar en globo sobre los volcanes de la Garrotxa",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2113
+    },
+    "Claude outputs/tanda-hacer-v3/A-banarte-en-la-piscina-del-marina-bay-sands-1.png": {
+      "titulo": "Bañarte en la piscina del Marina Bay Sands",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v3",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2036
+    },
+    "Claude outputs/tanda-hacer-v3/A-flotar-en-el-mar-muerto-1.png": {
+      "titulo": "Flotar en el mar Muerto",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v3",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2040
+    },
+    "Claude outputs/tanda-hacer-v3/A-pasar-un-dia-en-ferrari-land-1.png": {
+      "titulo": "Pasar un día en Ferrari Land",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v3",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2237
+    },
+    "Claude outputs/tanda-hacer-v3/A-sacarte-el-c1-de-ingles-1.png": {
+      "titulo": "Sacarte el C1 de inglés",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer-v3",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2078
+    },
+    "Claude outputs/tanda-hacer/A-banarte-en-la-piscina-del-marina-bay-sands-1.png": {
+      "titulo": "Bañarte en la piscina del Marina Bay Sands",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2228
+    },
+    "Claude outputs/tanda-hacer/A-banarte-en-los-gorgs-de-la-garrotxa-1.png": {
+      "titulo": "Bañarte en los gorgs de la Garrotxa",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2365
+    },
+    "Claude outputs/tanda-hacer/A-banarte-en-una-playa-de-arena-negra-de-san-1.png": {
+      "titulo": "Bañarte en una playa de arena negra de Santorini",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2251
+    },
+    "Claude outputs/tanda-hacer/A-bucear-en-raja-ampat-1.png": {
+      "titulo": "Bucear en Raja Ampat",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-hacer",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2391
+    },
+    "Claude outputs/tanda-rehechas-2/A-doctorarte-1.png": {
+      "titulo": "Doctorarte",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-rehechas-2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1972
+    },
+    "Claude outputs/tanda-rehechas-2/A-hacer-un-voluntariado-en-el-extranjero-1.png": {
+      "titulo": "Hacer un voluntariado en el extranjero",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-rehechas-2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2315
+    },
+    "Claude outputs/tanda-rehechas-2/A-hacer-una-cata-de-whisky-en-una-destileria-1.png": {
+      "titulo": "Hacer una cata de whisky en una destilería",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-rehechas-2",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2099
+    },
+    "Claude outputs/tanda-rehechas-2/A-probar-el-pulpo-vivo-1.png": {
+      "titulo": "Probar el pulpo vivo",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-rehechas-2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2174
+    },
+    "Claude outputs/tanda-rehechas-2/A-ver-un-eclipse-solar-total-1.png": {
+      "titulo": "Ver un eclipse solar total",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-rehechas-2",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2119
+    },
+    "Claude outputs/tanda-rehechas/A-comerte-un-escorpion-1.png": {
+      "titulo": "Comerte un escorpión",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-rehechas",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2214
+    },
+    "Claude outputs/tanda-rehechas/A-comerte-una-tarantula-1.png": {
+      "titulo": "Comerte una tarántula",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-rehechas",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2224
+    },
+    "Claude outputs/tanda-rehechas/A-correr-un-10k-1.png": {
+      "titulo": "Correr un 10K",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-rehechas",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2284
+    },
+    "Claude outputs/tanda-rehechas/A-doctorarte-1.png": {
+      "titulo": "Doctorarte",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-rehechas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2255
+    },
+    "Claude outputs/tanda-rehechas/A-probar-el-cuy-1.png": {
+      "titulo": "Probar el cuy",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-rehechas",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2162
+    },
+    "Claude outputs/tanda-rehechas/A-probar-el-fugu-1.png": {
+      "titulo": "Probar el fugu",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-rehechas",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2256
+    },
+    "Claude outputs/tanda-rehechas/A-probar-el-huevo-de-cien-anos-1.png": {
+      "titulo": "Probar el huevo de cien años",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-rehechas",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2158
+    },
+    "Claude outputs/tanda-rehechas/A-probar-el-pulpo-vivo-1.png": {
+      "titulo": "Probar el pulpo vivo",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-rehechas",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2257
+    },
+    "Claude outputs/tanda-rehechas/A-probar-las-hormigas-culonas-1.png": {
+      "titulo": "Probar las hormigas culonas",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-rehechas",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2059
+    },
+    "Claude outputs/tanda-rehechas/A-probar-los-saltamontes-fritos-1.png": {
+      "titulo": "Probar los saltamontes fritos",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-rehechas",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2198
+    },
+    "Claude outputs/tanda-sin-sitio/A-bailar-salsa-1.png": {
+      "titulo": "Bailar salsa",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2246
+    },
+    "Claude outputs/tanda-sin-sitio/A-bailar-tango-1.png": {
+      "titulo": "Bailar tango",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2333
+    },
+    "Claude outputs/tanda-sin-sitio/A-bucear-a-mas-de-30-metros-1.png": {
+      "titulo": "Bucear a más de 30 metros",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1782
+    },
+    "Claude outputs/tanda-sin-sitio/A-cantar-en-un-karaoke-1.png": {
+      "titulo": "Cantar en un karaoke",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2002
+    },
+    "Claude outputs/tanda-sin-sitio/A-comerte-un-escorpion-1.png": {
+      "titulo": "Comerte un escorpión",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2216
+    },
+    "Claude outputs/tanda-sin-sitio/A-comerte-una-tarantula-1.png": {
+      "titulo": "Comerte una tarántula",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2166
+    },
+    "Claude outputs/tanda-sin-sitio/A-correr-un-10k-1.png": {
+      "titulo": "Correr un 10K",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2196
+    },
+    "Claude outputs/tanda-sin-sitio/A-correr-un-maraton-1.png": {
+      "titulo": "Correr un maratón",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2308
+    },
+    "Claude outputs/tanda-sin-sitio/A-correr-una-media-maraton-1.png": {
+      "titulo": "Correr una media maratón",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2293
+    },
+    "Claude outputs/tanda-sin-sitio/A-dar-una-charla-ante-mas-de-cien-personas-1.png": {
+      "titulo": "Dar una charla ante más de cien personas",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2331
+    },
+    "Claude outputs/tanda-sin-sitio/A-doctorarte-1.png": {
+      "titulo": "Doctorarte",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2089
+    },
+    "Claude outputs/tanda-sin-sitio/A-donar-medula-1.png": {
+      "titulo": "Donar médula",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2137
+    },
+    "Claude outputs/tanda-sin-sitio/A-dormir-en-una-cabana-sin-electricidad-1.png": {
+      "titulo": "Dormir en una cabaña sin electricidad",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1742
+    },
+    "Claude outputs/tanda-sin-sitio/A-dormir-una-noche-en-un-refugio-de-montana-1.png": {
+      "titulo": "Dormir una noche en un refugio de montaña",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2055
+    },
+    "Claude outputs/tanda-sin-sitio/A-hacer-cumbre-en-un-cuatromil-1.png": {
+      "titulo": "Hacer cumbre en un cuatromil",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2264
+    },
+    "Claude outputs/tanda-sin-sitio/A-hacer-cumbre-en-un-dosmil-1.png": {
+      "titulo": "Hacer cumbre en un dosmil",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2409
+    },
+    "Claude outputs/tanda-sin-sitio/A-hacer-un-voluntariado-en-el-extranjero-1.png": {
+      "titulo": "Hacer un voluntariado en el extranjero",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2276
+    },
+    "Claude outputs/tanda-sin-sitio/A-hacer-una-cata-de-whisky-en-una-destileria-1.png": {
+      "titulo": "Hacer una cata de whisky en una destilería",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2188
+    },
+    "Claude outputs/tanda-sin-sitio/A-hacer-una-ruta-en-moto-de-varios-dias-1.png": {
+      "titulo": "Hacer una ruta en moto de varios días",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2561
+    },
+    "Claude outputs/tanda-sin-sitio/A-hacer-una-travesia-de-varios-dias-en-monta-1.png": {
+      "titulo": "Hacer una travesía de varios días en montaña",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2186
+    },
+    "Claude outputs/tanda-sin-sitio/A-hacer-una-via-ferrata-1.png": {
+      "titulo": "Hacer una vía ferrata",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2481
+    },
+    "Claude outputs/tanda-sin-sitio/A-hacerte-un-tatuaje-1.png": {
+      "titulo": "Hacerte un tatuaje",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2165
+    },
+    "Claude outputs/tanda-sin-sitio/A-montar-tu-propia-empresa-1.png": {
+      "titulo": "Montar tu propia empresa",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2312
+    },
+    "Claude outputs/tanda-sin-sitio/A-mudarte-a-otro-continente-1.png": {
+      "titulo": "Mudarte a otro continente",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2249
+    },
+    "Claude outputs/tanda-sin-sitio/A-pilotar-un-kart-1.png": {
+      "titulo": "Pilotar un kart",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2174
+    },
+    "Claude outputs/tanda-sin-sitio/A-pilotar-una-avioneta-1.png": {
+      "titulo": "Pilotar una avioneta",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2070
+    },
+    "Claude outputs/tanda-sin-sitio/A-practicar-esqui-1.png": {
+      "titulo": "Practicar esquí",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2366
+    },
+    "Claude outputs/tanda-sin-sitio/A-practicar-patinaje-sobre-hielo-1.png": {
+      "titulo": "Practicar patinaje sobre hielo",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2170
+    },
+    "Claude outputs/tanda-sin-sitio/A-practicar-snowboard-1.png": {
+      "titulo": "Practicar snowboard",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2382
+    },
+    "Claude outputs/tanda-sin-sitio/A-practicar-vela-1.png": {
+      "titulo": "Practicar vela",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2475
+    },
+    "Claude outputs/tanda-sin-sitio/A-probar-el-cuy-1.png": {
+      "titulo": "Probar el cuy",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2170
+    },
+    "Claude outputs/tanda-sin-sitio/A-probar-el-fugu-1.png": {
+      "titulo": "Probar el fugu",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2270
+    },
+    "Claude outputs/tanda-sin-sitio/A-probar-el-huevo-de-cien-anos-1.png": {
+      "titulo": "Probar el huevo de cien años",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2124
+    },
+    "Claude outputs/tanda-sin-sitio/A-probar-el-pulpo-vivo-1.png": {
+      "titulo": "Probar el pulpo vivo",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2133
+    },
+    "Claude outputs/tanda-sin-sitio/A-probar-las-hormigas-culonas-1.png": {
+      "titulo": "Probar las hormigas culonas",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2049
+    },
+    "Claude outputs/tanda-sin-sitio/A-probar-los-saltamontes-fritos-1.png": {
+      "titulo": "Probar los saltamontes fritos",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2173
+    },
+    "Claude outputs/tanda-sin-sitio/A-publicar-un-libro-1.png": {
+      "titulo": "Publicar un libro",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2135
+    },
+    "Claude outputs/tanda-sin-sitio/A-sacarte-el-carnet-de-moto-1.png": {
+      "titulo": "Sacarte el carnet de moto",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2741
+    },
+    "Claude outputs/tanda-sin-sitio/A-sacarte-el-cinturon-negro-1.png": {
+      "titulo": "Sacarte el cinturón negro",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2208
+    },
+    "Claude outputs/tanda-sin-sitio/A-sacarte-el-titulo-de-patron-de-embarcacion-1.png": {
+      "titulo": null,
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2294
+    },
+    "Claude outputs/tanda-sin-sitio/A-sacarte-la-licencia-de-piloto-1.png": {
+      "titulo": "Sacarte la licencia de piloto",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2293
+    },
+    "Claude outputs/tanda-sin-sitio/A-saltar-en-paracaidas-1.png": {
+      "titulo": "Saltar en paracaídas",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2402
+    },
+    "Claude outputs/tanda-sin-sitio/A-saltar-en-puenting-1.png": {
+      "titulo": "Saltar en puenting",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2183
+    },
+    "Claude outputs/tanda-sin-sitio/A-subir-un-puerto-de-primera-categoria-en-bi-1.png": {
+      "titulo": "Subir un puerto de primera categoría en bici",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2790
+    },
+    "Claude outputs/tanda-sin-sitio/A-terminar-un-master-1.png": {
+      "titulo": "Terminar un máster",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2294
+    },
+    "Claude outputs/tanda-sin-sitio/A-tocar-un-instrumento-delante-de-publico-1.png": {
+      "titulo": "Tocar un instrumento delante de público",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2259
+    },
+    "Claude outputs/tanda-sin-sitio/A-ver-un-eclipse-solar-total-1.png": {
+      "titulo": "Ver un eclipse solar total",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2326
+    },
+    "Claude outputs/tanda-sin-sitio/A-ver-una-velada-de-boxeo-por-un-titulo-mund-1.png": {
+      "titulo": "Ver una velada de boxeo por un título mundial",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2238
+    },
+    "Claude outputs/tanda-sin-sitio/A-vivir-un-ano-en-otro-pais-1.png": {
+      "titulo": "Vivir un año en otro país",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-sin-sitio",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2091
+    },
+    "Claude outputs/tanda-whisky/A-hacer-una-cata-de-whisky-en-una-destileria-1.png": {
+      "titulo": "Hacer una cata de whisky en una destilería",
+      "encuadre": null,
+      "tanda": "Claude outputs/tanda-whisky",
+      "estado": "aprobada",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2079
+    },
+    "Claude outputs/tanda2/01-contraluz.png": {
+      "titulo": "Dar una charla ante más de cien personas",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/tanda2",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1983
+    },
+    "Claude outputs/tanda2/02-objeto.png": {
+      "titulo": "Doctorarte",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/tanda2",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2064
+    },
+    "Claude outputs/tanda2/03-hombros.png": {
+      "titulo": "Donar médula",
+      "encuadre": "hombros",
+      "tanda": "Claude outputs/tanda2",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2390
+    },
+    "Claude outputs/tanda2/04-lugar_vacio.png": {
+      "titulo": "Dormir en una cabaña sin electricidad",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/tanda2",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1862
+    },
+    "Claude outputs/tanda2/05-detalle.png": {
+      "titulo": "Escalar en Siurana",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/tanda2",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2381
+    },
+    "Claude outputs/tanda2/06-contraluz.png": {
+      "titulo": "Escalar una aguja de Montserrat",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/tanda2",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1859
+    },
+    "Claude outputs/tanda2/07-espaldas.png": {
+      "titulo": "Flotar en el mar Muerto",
+      "encuadre": "espaldas",
+      "tanda": "Claude outputs/tanda2",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2151
+    },
+    "Claude outputs/tanda2/08-primera_persona.png": {
+      "titulo": "Hacer barranquismo en la Noguera",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/tanda2",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2152
+    },
+    "Claude outputs/tanda2/09-primera_persona.png": {
+      "titulo": "Hacer cumbre en un cuatromil",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/tanda2",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2549
+    },
+    "Claude outputs/tanda2/10-objeto.png": {
+      "titulo": "Hacer cumbre en un dosmil",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/tanda2",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2536
+    },
+    "Claude outputs/tanda2/11-lugar_vacio.png": {
+      "titulo": "Hacer el Camí dels Bons Homes",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/tanda2",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2717
+    },
+    "Claude outputs/tanda2/12-detalle.png": {
+      "titulo": "Hacer el Camino de Santiago desde Montserrat",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/tanda2",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 3312
+    },
+    "Claude outputs/tanda2/13-primera_persona.png": {
+      "titulo": "Hacer la ferrata de Boixadera dels Bancs",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/tanda2",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2566
+    },
+    "Claude outputs/tanda2b/01-lugar_vacio.png": {
+      "titulo": "Hacer la ferrata de Les Baumes",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2482
+    },
+    "Claude outputs/tanda2b/02-lugar_vacio.png": {
+      "titulo": "Hacer la ferrata del Salt del Grill",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2900
+    },
+    "Claude outputs/tanda2b/03-lugar_vacio.png": {
+      "titulo": "Hacer la Matagalls-Montserrat",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2198
+    },
+    "Claude outputs/tanda2b/04-primera_persona.png": {
+      "titulo": "Hacer la Travessia del Port de Barcelona nadando",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2124
+    },
+    "Claude outputs/tanda2b/05-objeto.png": {
+      "titulo": "Hacer los Carros de Foc",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2476
+    },
+    "Claude outputs/tanda2b/06-detalle.png": {
+      "titulo": "Hacer rafting por el Noguera Pallaresa",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2672
+    },
+    "Claude outputs/tanda2b/07-objeto.png": {
+      "titulo": "Hacer un safari por el desierto de Dubái",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2296
+    },
+    "Claude outputs/tanda2b/08-manos.png": {
+      "titulo": "Hacer un voluntariado en el extranjero",
+      "encuadre": "manos",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2188
+    },
+    "Claude outputs/tanda2b/09-hombros.png": {
+      "titulo": "Hacer una cata de whisky en una destilería",
+      "encuadre": "hombros",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2345
+    },
+    "Claude outputs/tanda2b/10-objeto.png": {
+      "titulo": "Hacer una ruta en moto de varios días",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2547
+    },
+    "Claude outputs/tanda2b/11-hombros.png": {
+      "titulo": "Hacerte un tatuaje",
+      "encuadre": "hombros",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2167
+    },
+    "Claude outputs/tanda2b/12-contraluz.png": {
+      "titulo": "Jugar al Holi en India",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1945
+    },
+    "Claude outputs/tanda2b/13-contraluz.png": {
+      "titulo": "Mojarte en el Songkran",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2452
+    },
+    "Claude outputs/tanda2b/14-hombros.png": {
+      "titulo": "Montar tu propia empresa",
+      "encuadre": "hombros",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2505
+    },
+    "Claude outputs/tanda2b/15-espaldas.png": {
+      "titulo": "Mudarte a otro continente",
+      "encuadre": "espaldas",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2254
+    },
+    "Claude outputs/tanda2b/16-primera_persona.png": {
+      "titulo": "Navegar entre los islotes de El Nido",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 3039
+    },
+    "Claude outputs/tanda2b/17-detalle.png": {
+      "titulo": "Navegar por el Amazonas",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2254
+    },
+    "Claude outputs/tanda2b/18-primera_persona.png": {
+      "titulo": "Navegar por los fiordos noruegos",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2326
+    },
+    "Claude outputs/tanda2b/19-objeto.png": {
+      "titulo": "Pasar un día en Ferrari Land",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2139
+    },
+    "Claude outputs/tanda2b/20-lugar_vacio.png": {
+      "titulo": "Pasar un día en PortAventura",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2465
+    },
+    "Claude outputs/tanda2b/21-objeto.png": {
+      "titulo": "Pilotar un kart",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2366
+    },
+    "Claude outputs/tanda2b/22-primera_persona.png": {
+      "titulo": "Pilotar una avioneta",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2082
+    },
+    "Claude outputs/tanda2b/23-primera_persona.png": {
+      "titulo": "Practicar esquí",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2763
+    },
+    "Claude outputs/tanda2b/24-detalle.png": {
+      "titulo": "Practicar patinaje sobre hielo",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2254
+    },
+    "Claude outputs/tanda2b/25-objeto.png": {
+      "titulo": "Practicar snowboard",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2164
+    },
+    "Claude outputs/tanda2b/26-plato.png": {
+      "titulo": "Probar el fugu",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1880
+    },
+    "Claude outputs/tanda2b/27-plato.png": {
+      "titulo": "Probar el pulpo vivo",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/tanda2b",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2355
+    },
+    "Claude outputs/trece/01-plato.png": {
+      "titulo": "Comerte una tarántula",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/trece",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2469
+    },
+    "Claude outputs/trece/02-plato.png": {
+      "titulo": "Hacer una calçotada en Valls",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/trece",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2154
+    },
+    "Claude outputs/trece/03-plato.png": {
+      "titulo": "Comer en un hawker centre de Singapur",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/trece",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2150
+    },
+    "Claude outputs/trece/04-plato.png": {
+      "titulo": "Comer en los puestos de Jemaa el-Fna",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/trece",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2057
+    },
+    "Claude outputs/trece/05-plato.png": {
+      "titulo": "Comer xató en Vilanova",
+      "encuadre": "plato",
+      "tanda": "Claude outputs/trece",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2183
+    },
+    "Claude outputs/trece/06-contraluz.png": {
+      "titulo": "Beber en una carpa del Oktoberfest",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/trece",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1617
+    },
+    "Claude outputs/trece/07-primera_persona.png": {
+      "titulo": "Ver un partido de la NBA",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/trece",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2527
+    },
+    "Claude outputs/trece/08-primera_persona.png": {
+      "titulo": "Ver una etapa del Tour de Francia",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/trece",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2388
+    },
+    "Claude outputs/trece/09-primera_persona.png": {
+      "titulo": "Ver la Nochevieja en Times Square",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/trece",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2279
+    },
+    "Claude outputs/trece/10-primera_persona.png": {
+      "titulo": "Ver el festival de globos de Albuquerque",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/trece",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2262
+    },
+    "Claude outputs/trece/11-detalle.png": {
+      "titulo": "Recorrer el Freedom Trail",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/trece",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2752
+    },
+    "Claude outputs/trece/12-detalle.png": {
+      "titulo": "Bañarte en una playa de arena negra de Santorini",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/trece",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 3099
+    },
+    "Claude outputs/trece/13-primera_persona.png": {
+      "titulo": "Pilotar una avioneta",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/trece",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 2410
+    },
+    "Claude outputs/tres-c/01-detalle.png": {
+      "titulo": "Comerte un escorpión",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/tres-c",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2223
+    },
+    "Claude outputs/tres-c/02-objeto.png": {
+      "titulo": "Ir a la Festa dels Raiers",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/tres-c",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2437
+    },
+    "Claude outputs/tres-c/03-detalle.png": {
+      "titulo": "Correr un encierro de San Fermín",
+      "encuadre": "detalle",
+      "tanda": "Claude outputs/tres-c",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2046
+    },
+    "Claude outputs/tres/01-primera_persona.png": {
+      "titulo": "Correr un maratón",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/tres",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2422
+    },
+    "Claude outputs/tres/02-objeto.png": {
+      "titulo": "Hacer paddle surf en el cabo de Creus",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/tres",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2562
+    },
+    "Claude outputs/tres/03-objeto.png": {
+      "titulo": "Dormir en el refugio de Amitges",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/tres",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2356
+    },
+    "Claude outputs/veintiuna/01-lugar_vacio.png": {
+      "titulo": "Dormir en el refugio de Amitges",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/veintiuna",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2428
+    },
+    "Claude outputs/veintiuna/02-lugar_vacio.png": {
+      "titulo": "Hacer la ruta de las nueve ermitas del Montsant",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/veintiuna",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2559
+    },
+    "Claude outputs/veintiuna/03-lugar_vacio.png": {
+      "titulo": "Hacer una travesía de varios días en montaña",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/veintiuna",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2712
+    },
+    "Claude outputs/veintiuna/04-lugar_vacio.png": {
+      "titulo": "Llegar al campo base del Everest",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/veintiuna",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2447
+    },
+    "Claude outputs/veintiuna/05-contraluz.png": {
+      "titulo": "Correr un maratón",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/veintiuna",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1953
+    },
+    "Claude outputs/veintiuna/06-contraluz.png": {
+      "titulo": "Ir al Carnaval de Cádiz",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/veintiuna",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1938
+    },
+    "Claude outputs/veintiuna/07-contraluz.png": {
+      "titulo": "Ir al Saint Patrick's Day de Dublín",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/veintiuna",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1804
+    },
+    "Claude outputs/veintiuna/08-espaldas.png": {
+      "titulo": "Correr la Marató de Barcelona",
+      "encuadre": "espaldas",
+      "tanda": "Claude outputs/veintiuna",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2531
+    },
+    "Claude outputs/veintiuna/09-espaldas.png": {
+      "titulo": "Correr la Mitja de Granollers",
+      "encuadre": "espaldas",
+      "tanda": "Claude outputs/veintiuna",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2265
+    },
+    "Claude outputs/veintiuna/10-espaldas.png": {
+      "titulo": "Correr un 10K",
+      "encuadre": "espaldas",
+      "tanda": "Claude outputs/veintiuna",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2449
+    },
+    "Claude outputs/veintiuna/11-contraluz.png": {
+      "titulo": "Beber en una carpa del Oktoberfest",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/veintiuna",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": false,
+      "kb": 1868
+    },
+    "Claude outputs/veintiuna/12-contraluz.png": {
+      "titulo": "Ir a la Feria de Abril",
+      "encuadre": "contraluz",
+      "tanda": "Claude outputs/veintiuna",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 1824
+    },
+    "Claude outputs/veintiuna/13-lugar_vacio.png": {
+      "titulo": "Hacer la Vía Verde del Carrilet de Olot a Girona",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/veintiuna",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2755
+    },
+    "Claude outputs/veintiuna/14-lugar_vacio.png": {
+      "titulo": "Subir en bici al Port del Cantó",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/veintiuna",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2353
+    },
+    "Claude outputs/veintiuna/15-primera_persona.png": {
+      "titulo": "Ver una final de la Champions League",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/veintiuna",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2268
+    },
+    "Claude outputs/veintiuna/16-primera_persona.png": {
+      "titulo": "Ver los fuegos de Nochevieja en Sídney",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/veintiuna",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2696
+    },
+    "Claude outputs/veintiuna/17-lugar_vacio.png": {
+      "titulo": "Navegar por el delta del Ebro",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/veintiuna",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2187
+    },
+    "Claude outputs/veintiuna/18-primera_persona.png": {
+      "titulo": "Bañarte en Cala Estreta",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/veintiuna",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2638
+    },
+    "Claude outputs/veintiuna/19-primera_persona.png": {
+      "titulo": "Practicar vela",
+      "encuadre": "primera_persona",
+      "tanda": "Claude outputs/veintiuna",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2281
+    },
+    "Claude outputs/veintiuna/20-lugar_vacio.png": {
+      "titulo": "Hacer paddle surf en el cabo de Creus",
+      "encuadre": "lugar_vacio",
+      "tanda": "Claude outputs/veintiuna",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2159
+    },
+    "Claude outputs/veintiuna/21-objeto.png": {
+      "titulo": "Ir al Aplec del Caragol de Lleida",
+      "encuadre": "objeto",
+      "tanda": "Claude outputs/veintiuna",
+      "estado": "sin_mirar",
+      "motivo": null,
+      "titulo_en_aprobadas": true,
+      "kb": 2104
+    }
+  }
+}
