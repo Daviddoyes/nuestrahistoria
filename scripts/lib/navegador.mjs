@@ -115,6 +115,39 @@ export async function abrirNavegador({ ancho = 390, alto = 844, ua, puerto = 922
     },
     /** Lo que ha escrito la página en su consola desde que se abrió. */
     consolaDe() { return consola.slice() },
+    /**
+     * Pulsa un elemento CON UN DEDO DE VERDAD, no con `.click()`.
+     *
+     * No es lo mismo y la diferencia no es un detalle: un `.click()` escrito en
+     * JavaScript NO cuenta como gesto de la persona, y hay cosas que el
+     * navegador solo deja hacer dentro de un gesto — abrir el share sheet,
+     * pedir pantalla completa, reproducir sonido. Probándolas con `.click()`
+     * **pasan en el ordenador y fallan en el móvil de alguien**, que es
+     * justo la clase de fallo que este arnés existe para cazar.
+     *
+     * Esto manda los eventos por donde los manda un dedo (`Input.*`), así que
+     * el navegador los cuenta como activación de la persona.
+     *
+     * Devuelve dónde pulsó, o lanza si no encuentra el elemento: un clic que
+     * no cae en nada tiene que PARAR, no seguir como si hubiera pulsado.
+     */
+    async pulsar(selector) {
+      const donde = await api.ejecutar(`(() => {
+        const el = document.querySelector(${JSON.stringify(selector)})
+        if (!el) return null
+        el.scrollIntoView({ block: 'center' })
+        const b = el.getBoundingClientRect()
+        if (b.width === 0 || b.height === 0) return null
+        return { x: Math.round(b.left + b.width / 2), y: Math.round(b.top + b.height / 2) }
+      })()`)
+      if (!donde) throw new Error('no puedo pulsar, no lo encuentro o no se ve: ' + selector)
+      for (const type of ['mousePressed', 'mouseReleased']) {
+        await enviar('Input.dispatchMouseEvent', {
+          type, x: donde.x, y: donde.y, button: 'left', clickCount: 1,
+        })
+      }
+      return donde
+    },
     /** Mete un fichero de verdad en un <input type=file>, como si lo eligieras. */
     async ponerFichero(selector, rutaEnDisco) {
       const doc = await enviar("DOM.getDocument", { depth: -1 })

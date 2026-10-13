@@ -184,6 +184,34 @@ export async function cuandoPuedoCambiarUsername(): Promise<{ hasta: string | nu
   return { hasta: hasta > new Date() ? hasta.toISOString() : null }
 }
 
+/**
+ * El @usuario de quien está dentro, para firmar los enlaces que comparte.
+ *
+ * Devuelve null si no hay sesión o si esa cuenta todavía no tiene @usuario: un
+ * enlace sin firma funciona igual, solo que no dice de parte de quién va.
+ *
+ * Se pide AL ABRIR la ficha y no al pulsar «Compartir», aunque así se pida
+ * alguna vez de más: `navigator.share` exige estar dentro del gesto de la
+ * persona, y un `await` de red por delante hace que Safari lo rechace con
+ * `NotAllowedError`. Está explicado en `src/lib/compartir-gooal.ts`.
+ */
+export async function miUsername(): Promise<string | null> {
+  const userId = await getUserId()
+  if (!userId) return null
+
+  const service = createServiceRoleClient()
+  // Solo la columna que hace falta: esta clave se salta la RLS entera, y
+  // `profiles` guarda el correo de la gente.
+  const { data, error } = await service
+    .from('profiles')
+    .select('username')
+    .eq('id', userId)
+    .maybeSingle()
+
+  if (error || !data) return null
+  return (data as { username: string | null }).username
+}
+
 export async function searchUsers(query: string): Promise<ResultadoBusqueda[]> {
   const limpio = limpiarBusquedaPersonas(query)
   if (limpio.length < 2) return []

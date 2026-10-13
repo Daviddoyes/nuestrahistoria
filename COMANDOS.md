@@ -37,6 +37,21 @@ npx tsc --noEmit && npm run lint && npm run build
 
 Los tres de una tirada. Si falla uno, para y arréglalo antes de seguir.
 
+### Has tocado el botón de compartir
+
+```bash
+npm run dev          # en una ventana, y lo dejas abierto
+npm run compartir    # en otra
+```
+
+Entra de verdad en la app con una cuenta de prueba, abre la ficha de un gooal,
+**pulsa el botón con un dedo de verdad** y mira qué manda: que la dirección
+lleve tu @usuario, que esa dirección funcione sin cuenta y que no se escape
+ningún correo. Al terminar borra la cuenta.
+
+Tiene que decir **TODO BIEN**. Si alguna línea empieza por `NO`, ahí está el
+fallo y la línea dice cuál.
+
 ---
 
 ## Has tocado los PDFs, el parser o las fusiones

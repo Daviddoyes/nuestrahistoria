@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "pantallas": "node --env-file=.env.local scripts/comprobar-pantallas.mjs",
+    "compartir": "node --env-file=.env.local scripts/comprobar-compartir.mjs",
     "lint": "eslint"
   },
   "dependencies": {

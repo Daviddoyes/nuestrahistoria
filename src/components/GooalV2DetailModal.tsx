@@ -2,8 +2,11 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { X, Plus, Check, Camera, MapPin, Trash2, MessageCircle } from 'lucide-react'
-import { anadirGooal, conseguirSinFoto, quitarGooal, borrarFotoDeGooal, getDetalleGooal } from '@/lib/actions'
+import { X, Plus, Check, Camera, MapPin, Trash2, MessageCircle, Share2, Link2 } from 'lucide-react'
+import {
+  anadirGooal, conseguirSinFoto, quitarGooal, borrarFotoDeGooal, getDetalleGooal, miUsername,
+} from '@/lib/actions'
+import { compartirGooal } from '@/lib/compartir-gooal'
 import {
   CATEGORIA_COLOR, CATEGORIA_LABEL, CATEGORIA_GRADIENTE, DIFICULTAD_META,
 } from '@/lib/gooals'
@@ -74,6 +77,16 @@ export default function GooalV2DetailModal({
   // está puesta, la ficha NO se cierra sola, porque ofrecer algo y quitarlo de
   // en medio es peor que no ofrecerlo.
   const [invitandoFoto, setInvitandoFoto] = useState(false)
+  /**
+   * Mi @usuario, para firmar el enlace que comparto.
+   *
+   * Se pide AL ABRIR la ficha, no al pulsar «Compartir», y eso no es por ir
+   * sobrado: `navigator.share` solo vale dentro del gesto de la persona, y si
+   * hay una petición de red por delante Safari lo rechaza. El porqué entero
+   * está en `src/lib/compartir-gooal.ts`.
+   */
+  const [miUsuario, setMiUsuario] = useState<string | null>(null)
+  const [copiado, setCopiado] = useState(false)
 
   // Fuera de <ProveedorFotosPrivadas> (Explorar, el mapa) esto no pide nada y
   // devuelve null, así que la cabecera se queda con la foto del catálogo.
@@ -126,6 +139,19 @@ export default function GooalV2DetailModal({
     return () => { vivo = false }
   }, [gooal.id])
 
+  // Mi @usuario, por adelantado. Va en su propio efecto y no dentro del de
+  // arriba porque no depende del gooal: cambiar de ficha no cambia quién soy.
+  useEffect(() => {
+    let vivo = true
+    miUsername()
+      // Si falla se comparte sin firma, que es exactamente lo que ya pasa con
+      // quien aún no tiene @usuario. Quedarse sin poder compartir por esto
+      // sería cambiar un enlace sin firma por ningún enlace.
+      .then(u => { if (vivo) setMiUsuario(u) })
+      .catch(e => console.error('[GooalV2DetailModal] @usuario', e))
+    return () => { vivo = false }
+  }, [])
+
   // Antes, al añadir, solo cambiaba el texto de un botón: la ficha se quedaba
   // igual y parecía que no había pasado nada. Ahora se ve la confirmación y la
   // ficha se cierra sola, que es la señal de que la acción terminó.
@@ -137,6 +163,17 @@ export default function GooalV2DetailModal({
     // reiniciaría el temporizador sin parar.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [confirmacion, invitandoFoto])
+
+  const handleCompartir = async () => {
+    const resultado = await compartirGooal(gooal.id, gooal.titulo, miUsuario)
+    // Cancelar no dice nada: quien cierra el share sheet ya sabe lo que ha
+    // hecho, y un aviso sería discutirle la decisión.
+    if (resultado === 'copiado') {
+      setCopiado(true)
+      setTimeout(() => setCopiado(false), 2200)
+    }
+    if (resultado === 'error') setError('No se ha podido compartir el enlace.')
+  }
 
   const handleAnadir = async () => {
     setAnadiendo(true)
@@ -574,6 +611,27 @@ export default function GooalV2DetailModal({
 
                 <BotonYaLoHice onClick={handleYaLoHice} ocupado={marcando} />
               </>
+            )}
+
+            {/* ── COMPARTIR ───────────────────────────────
+                Está en TODOS los estados, y es a propósito: proponerle un
+                gooal a alguien no tiene nada que ver con si yo lo tengo. De
+                hecho el caso más frecuente es el contrario — ves algo, piensas
+                «esto es para nosotros dos» y lo mandas antes de añadírtelo.
+
+                Pero NO sale mientras hay una confirmación en pantalla: ahí la
+                ficha se está cerrando sola en un segundo y medio, y un botón
+                que desaparece solo invita a pulsar en falso. */}
+            {!confirmacion && (
+              <button
+                onClick={handleCompartir}
+                className="w-full py-3 rounded-xl text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2 border border-[#2A2E2C] text-[#FFFFFF] active:bg-[#1E2120] transition-colors"
+                style={copiado ? { borderColor: '#00D1A7', color: '#00D1A7' } : undefined}
+              >
+                {copiado
+                  ? <><Link2 className="w-4 h-4" /> Enlace copiado</>
+                  : <><Share2 className="w-4 h-4" /> Compartir</>}
+              </button>
             )}
           </div>
 
