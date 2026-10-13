@@ -8,6 +8,7 @@
     "start": "next start",
     "pantallas": "node --env-file=.env.local scripts/comprobar-pantallas.mjs",
     "compartir": "node --env-file=.env.local scripts/comprobar-compartir.mjs",
+    "velocidad": "node --env-file=.env.local scripts/medir-velocidad.mjs",
     "lint": "eslint"
   },
   "dependencies": {

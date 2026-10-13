@@ -77,9 +77,47 @@ export async function abrirNavegador({ ancho = 390, alto = 844, ua, puerto = 922
     }
   })
 
+  // ── EL LIBRO DE CUENTAS DE LA RED ─────────────────────────
+  //
+  // Se apunta cada petición desde que se abre el navegador, porque medir
+  // cuánto pesa una pantalla NO se puede hacer desde dentro de la página:
+  // `performance.getEntries()` miente con lo que viene de otro dominio —las
+  // fotos están en Supabase— y devuelve 0 bytes salvo que el servidor mande
+  // `Timing-Allow-Origin`. Desde fuera, con CDP, se ve el tamaño de verdad:
+  // el que viaja por el cable, ya comprimido.
+  const peticiones = new Map()
+  ws.addEventListener('message', e => {
+    const m = JSON.parse(e.data)
+    if (m.method === 'Network.requestWillBeSent') {
+      peticiones.set(m.params.requestId, {
+        url: m.params.request.url,
+        empezo: m.params.timestamp,
+        tipo: m.params.type ?? '?',
+        bytes: 0, estado: null, acabo: null, delCache: false,
+      })
+    }
+    if (m.method === 'Network.responseReceived') {
+      const p = peticiones.get(m.params.requestId)
+      if (p) {
+        p.estado = m.params.response.status
+        p.tipo = m.params.type ?? p.tipo
+        p.delCache = Boolean(m.params.response.fromDiskCache)
+      }
+    }
+    if (m.method === 'Network.loadingFinished') {
+      const p = peticiones.get(m.params.requestId)
+      if (p) { p.bytes = m.params.encodedDataLength; p.acabo = m.params.timestamp }
+    }
+    if (m.method === 'Network.loadingFailed') {
+      const p = peticiones.get(m.params.requestId)
+      if (p) { p.acabo = m.params.timestamp; p.fallo = m.params.errorText }
+    }
+  })
+
   await enviar("DOM.enable")
   await enviar("Page.enable")
   await enviar('Runtime.enable')
+  await enviar('Network.enable')
   // Móvil de verdad: tamaño, densidad y "soy un móvil".
   await enviar('Emulation.setDeviceMetricsOverride', {
     width: ancho, height: alto, deviceScaleFactor: 2, mobile: true,
@@ -115,6 +153,43 @@ export async function abrirNavegador({ ancho = 390, alto = 844, ua, puerto = 922
     },
     /** Lo que ha escrito la página en su consola desde que se abrió. */
     consolaDe() { return consola.slice() },
+    /**
+     * Pone la red como la de un móvil, no como la fibra del que programa.
+     *
+     * Medir en local con fibra dice que todo va bien SIEMPRE, y por eso no
+     * sirve de nada. Los valores por defecto son los que Chrome llama «Slow
+     * 4G»: 1,6 Mb/s de bajada, 750 kb/s de subida y 562 ms de ida y vuelta.
+     * La latencia pesa tanto como el ancho de banda — cada petición empieza
+     * pagando medio segundo, así que treinta peticiones en fila son quince
+     * segundos aunque no pesen nada.
+     */
+    async limitarRed({ bajadaKbps = 1600, subidaKbps = 750, latenciaMs = 562 } = {}) {
+      await enviar('Network.emulateNetworkConditions', {
+        offline: false,
+        latency: latenciaMs,
+        downloadThroughput: (bajadaKbps * 1024) / 8,
+        uploadThroughput: (subidaKbps * 1024) / 8,
+      })
+    },
+    /** Vacía el libro de cuentas: lo que venga a partir de ahora es la medida. */
+    empezarAContar() { peticiones.clear() },
+    /**
+     * Lo apuntado desde `empezarAContar()`: cada petición con su tamaño real y
+     * cuánto tardó. Se descartan las que no llegaron a responder.
+     */
+    cuentaDeRed() {
+      return [...peticiones.values()]
+        .filter(p => p.estado !== null || p.fallo)
+        .map(p => ({
+          url: p.url,
+          tipo: p.tipo,
+          estado: p.estado,
+          bytes: p.bytes,
+          ms: p.acabo && p.empezo ? Math.round((p.acabo - p.empezo) * 1000) : null,
+          delCache: p.delCache,
+          fallo: p.fallo ?? null,
+        }))
+    },
     /**
      * Pulsa un elemento CON UN DEDO DE VERDAD, no con `.click()`.
      *

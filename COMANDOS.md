@@ -37,6 +37,28 @@ npx tsc --noEmit && npm run lint && npm run build
 
 Los tres de una tirada. Si falla uno, para y arréglalo antes de seguir.
 
+### ¿Por qué va lenta la app?
+
+```bash
+npm run velocidad
+```
+
+Entra en **producción** con una cuenta de prueba y **con la red limitada a 4G
+lento**, recorre las pantallas y dice de cada una cuánto tarda en verse, cuántos
+bytes baja y cuáles son las peticiones más lentas. Al final, la lista de peor a
+mejor.
+
+No hace falta `npm run dev`: mide gooals.app, no tu ordenador. Medir en local
+con fibra dice que todo va bien siempre, y por eso no sirve.
+
+Tarda unos diez minutos. Crea una cuenta de prueba con hasta 220 gooals y la
+borra al terminar, así que **después hay que recontar**, y el propio guion lo
+recuerda al acabar:
+
+```bash
+node --env-file=.env.local scripts/recontar-conseguidos.mjs --escribir
+```
+
 ### Has tocado el botón de compartir
 
 ```bash
