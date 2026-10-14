@@ -35,6 +35,7 @@ import { readFileSync, writeFileSync, statSync } from 'node:fs'
 import { createClient } from '@supabase/supabase-js'
 
 const grupo = (process.argv[2] ?? 'A').toUpperCase()
+const todas = process.argv.includes('--todas')
 if (!['A', 'B', 'C'].includes(grupo)) {
   console.error('Dime qué hoja: A, B o C.')
   process.exit(1)
@@ -50,9 +51,20 @@ const { data, error } = await s.from('gooals_v2')
 if (error) throw new Error(error.message)
 const enLaApp = new Map(data.map(g => [g.titulo, g]))
 
+// ── LO YA RECHAZADO NO VUELVE A SALIR ─────────────────────
+//
+// Para eso está el registro de tres estados: una hoja que vuelve a enseñar lo
+// que alguien ya descartó hace que mirarla otra vez no sirva de nada, y es la
+// manera más segura de que nadie la abra una segunda vez.
+//
+// Con `--rechazadas` salen igualmente, por si hay que revisar un descarte.
+const verRechazadas = process.argv.includes('--rechazadas')
+let escondidasPorRechazo = 0
+
 const porGooal = new Map()
 for (const [fichero, info] of Object.entries(registro)) {
   if (!info.titulo) continue
+  if (info.estado === 'rechazada' && !verRechazadas) { escondidasPorRechazo++; continue }
   if (!porGooal.has(info.titulo)) porGooal.set(info.titulo, [])
   porGooal.get(info.titulo).push({ fichero, ...info })
 }
@@ -81,11 +93,44 @@ const PINTA = {
 const filas = []
 for (const [titulo, imgs] of porGooal) {
   const g = enLaApp.get(titulo)
-  if (!g || !PINTA.filtra(g)) continue
-  const puesta = definitivas[titulo]?.fichero?.split('\\').join('/') ?? null
-  const candidatas = imgs.filter(i => i.fichero !== puesta)
+  if (!g) continue
+
+  // ── LA QUE ESTÁ SUBIDA Y NO ESTÁ EN LA APP ──────────────
+  //
+  // Una foto puede estar en el cubo y su gooal salir SIN FOTO, porque subir y
+  // escribir la fila son dos pasos y el segundo puede no haberse hecho. Le
+  // pasó a «Flotar en el mar Muerto».
+  //
+  // Esa no se puede esconder como «ya puesta» —que es lo que hace la hoja con
+  // la elegida— porque entonces nadie la mira nunca: se le enseñarían las
+  // otras versiones y la buena se quedaría invisible para siempre. Así que
+  // entra en la hoja B como una candidata más, diciendo lo que le pasa.
+  const declarada = definitivas[titulo]?.fichero?.split('\\').join('/') ?? null
+  const subidaSinFila = Boolean(definitivas[titulo]?.subida_como) && !g.imagen_url
+
+  if (!subidaSinFila && !PINTA.filtra(g)) continue
+  if (subidaSinFila && grupo !== 'B') continue
+
+  // ── POR DEFECTO, SOLO LO QUE YA PASÓ POR UN OJO ─────────
+  //
+  // Sin esto la hoja B salen 96 gooals y 243 imágenes, porque entran también
+  // las versiones que nadie ha mirado nunca. Eso no es una hoja de decidir, es
+  // una tanda entera — y la hoja existe para despachar lo que ya está hecho.
+  //
+  // Con `--todas` salen las demás, que son una sesión distinta y más larga.
+  //
+  // NO se aplica a la A, y por poco se aplica: la A son gooals que hoy salen
+  // SIN NINGUNA FOTO, y ahí cualquier imagen generada merece una mirada aunque
+  // nadie la haya aprobado nunca. Al ponerlo para todos, la hoja A pasó de 20
+  // gooals a 7 sin decir una palabra.
+  if (grupo !== 'A' && !todas && !APROBADAS.has(titulo) && !subidaSinFila) continue
+
+  const candidatas = imgs.filter(i => i.fichero !== declarada || subidaSinFila)
   if (candidatas.length === 0) continue
-  filas.push({ titulo, gooal: g, candidatas, aprobada: APROBADAS.has(titulo) })
+  filas.push({
+    titulo, gooal: g, candidatas, aprobada: APROBADAS.has(titulo),
+    subidaSinFila: subidaSinFila ? declarada : null,
+  })
 }
 filas.sort((a, b) => a.titulo.localeCompare(b.titulo))
 
@@ -100,7 +145,7 @@ const opcionesDe = f => [
   ...(PINTA.conLaQueEsta ? [{ valor: 'QUEDA_LA_QUE_ESTA', etiqueta: 'LA QUE ESTÁ EN LA APP', sub: f.gooal.foto_fuente, src: f.gooal.imagen_url, esLaQueEsta: true }] : []),
   ...f.candidatas.map(c => ({
     valor: c.fichero,
-    etiqueta: c.tanda.replace('Claude outputs/', ''),
+    etiqueta: (c.fichero === f.subidaSinFila ? 'YA SUBIDA · falta la fila · ' : '') + c.tanda.replace('Claude outputs/', ''),
     sub: [c.encuadre, c.kb + ' KB'].filter(Boolean).join(' · '),
     src: ruta(c.fichero),
   })),
@@ -284,4 +329,5 @@ writeFileSync(destino, html, 'utf8')
 console.log(PINTA.titulo)
 console.log('  gooals: ' + filas.length + '   imágenes que mirar: ' + filas.reduce((a, f) => a + f.candidatas.length, 0))
 console.log('  con el título en APROBADAS: ' + filas.filter(f => f.aprobada).length)
+if (escondidasPorRechazo) console.log('  (y ' + escondidasPorRechazo + ' que ya estaban rechazadas, que no se vuelven a enseñar)')
 console.log('\nescrita: ' + destino + '   (' + Math.round(statSync(destino).size / 1024) + ' KB)')

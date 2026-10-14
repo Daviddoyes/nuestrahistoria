@@ -242,8 +242,27 @@ const ENCUADRES = {
   // alguien se lo va a comer—. Ofrecer de más es una trampa; poner una
   // barandilla a lo que va a venir igualmente, no.
   plato: 'Encuadre cenital, la cámara justo encima y mirando a plomo: llenan el cuadro el plato y la mesa, que son el asunto. Si hay manos, ENTRAN POR EL BORDE del encuadre y están CORTADAS POR LA MUÑECA. NO SE VE NINGUNA CARA, ni boca, ni ningún trozo de piel desnuda que llame la atención: si detrás del plato asoma alguien, va vestido y queda en penumbra, de contexto.',
-  contraluz: 'La persona está A CONTRALUZ y sale como una SILUETA oscura y limpia contra la luz: no se le distingue ni un rasgo de la cara.',
   casco: 'La persona lleva CASCO Y GAFAS que le tapan la cara por completo, y además está en pleno movimiento.',
+
+  // ── `lleno`: EL EVENTO ES EL SUJETO ───────────────────────
+  //
+  // El encuadre que faltaba, y el que de verdad describe lo que David aceptó
+  // el 14-10-2026 al revisar la hoja A.
+  //
+  // `lugar_vacio` dice «sin nadie», y un estadio vacío no es un partido: la
+  // mitad de lo que hace a un evento ser un evento es que está LLENO. Pero
+  // hasta ahora la única manera de que saliera gente era un encuadre que
+  // nombraba a UNA persona, y entonces esa persona se comía la foto.
+  //
+  // Aquí hay gente y ninguna es el asunto. Dice lo que SÍ se ve —la masa, la
+  // grada, la plaza— en vez de lo que no, que es lo que separa los encuadres
+  // que aguantan de los que se caen.
+  //
+  // LAS VARIANTES SON OBLIGATORIAS, no un adorno: ver `LLENO_DESDE`. Un
+  // encuadre que nombra una sola imagen fabrica una sola imagen —`contraluz`
+  // convirtió cinco fiestas distintas en la misma silueta— y «una multitud»
+  // a secas haría ochenta veces la misma grada vista desde arriba.
+  lleno: 'EL EVENTO LLENA EL CUADRO y es el sujeto. Hay gente, pero NINGUNA PERSONA es el asunto: nadie posa, nadie está en primer plano, ninguna figura se recorta sola contra la luz. Si lo primero que se ve al mirar la foto es un cuerpo, está mal.',
 
   // ── Los seis SIN persona, que son los que hay que preferir ──
   // Y QUE LLENE AL MENOS LA MITAD DEL ALTO. «Practicar pádel» falló dos
@@ -266,7 +285,16 @@ const ENCUADRES = {
   //
   // Un elemento opcional que solo puede empeorar no es una opción, es una
   // trampa: el modelo la va a tomar la mitad de las veces y nadie la pidió.
-  primera_persona: 'La cámara está DONDE ESTARÍAN LOS OJOS de quien lo vive: se ve lo que ve. DE SU CUERPO NO SE VE NADA: ni manos, ni brazos, ni pies.',
+  // LA CONDICIÓN DEL 14-10-2026. `primera_persona` TAMBIÉN es un encuadre de
+  // persona —la persona es la cámara—, y por eso no bastaba con decir que no
+  // se le ve el cuerpo: de las once que David aceptó en la hoja A, nueve son
+  // de aquí, y lo que aceptó no fue el punto de vista, fue que EL EVENTO
+  // LLENABA LA FOTO. Cuando lo que se ve desde esos ojos es otra persona,
+  // vuelve el mismo problema con otra etiqueta.
+  //
+  // Por eso la segunda frase no es un adorno: nombra lo que tiene que llenar
+  // el cuadro, que es lo que le falta a un encuadre definido por resta.
+  primera_persona: 'La cámara está DONDE ESTARÍAN LOS OJOS de quien lo vive: se ve lo que ve. DE SU CUERPO NO SE VE NADA: ni manos, ni brazos, ni pies. Y LO QUE LLENA EL CUADRO ES EL EVENTO O EL SITIO —la parrilla, la pista, la plaza, el escenario—, nunca otra persona en primer plano.',
   manos: 'Se ven ÚNICAMENTE LAS MANOS haciendo la acción, desde cerca. Ni cara, ni cabeza, ni torso, ni hombros.',
   // RETIRADO el 10-10-2026: existió "silueta_lejana", una figura diminuta
   // dentro de un paisaje grande. Lo tumbaron DOS razones independientes, y
@@ -281,6 +309,83 @@ const ENCUADRES = {
   //      con el tamaño al que se mira.
   //
   // Sus 14 gooals están repartidos uno a uno en decisiones.mjs.
+}
+
+/**
+ * LOS ENCUADRES RETIRADOS, con la fecha y el porqué.
+ *
+ * No se borran de aquí: si un gooal todavía los tiene asignado y el nombre
+ * simplemente desapareciera, el prompt saldría SIN ENCUADRE y no daría ningún
+ * error — el modelo elegiría por su cuenta, que es lo que lleva todo este
+ * fichero intentando evitar. Estando aquí, `textoDelEncuadre()` puede parar y
+ * decir cuál es.
+ */
+const RETIRADOS = {
+  // RETIRADO EL 14-10-2026, y no de los eventos: ENTERO.
+  //
+  // David revisó veinte gooals en la hoja A y rechazó LAS CINCO de contraluz
+  // que vio, sin una excepción. No es una impresión suya: son cinco decisiones
+  // seguidas en la misma dirección.
+  //
+  // Y encaja con lo que ya estaba medido aquí: este encuadre no es una manera
+  // de mirar, es una FÁBRICA de una sola imagen. Se reescribieron cuatro
+  // escenas suyas para que el asunto fuera un bombo, unas jarras, unas mesas y
+  // un bosque de piernas, y salieron las cuatro iguales: una silueta contra
+  // una mancha de luz. Lo que lo sustituye es `lleno`, que pone a la gente sin
+  // convertir a nadie en el asunto.
+  contraluz: 'La persona está A CONTRALUZ y sale como una SILUETA oscura y limpia contra la luz: no se le distingue ni un rasgo de la cara.',
+}
+
+/**
+ * DÓNDE PUEDE USARSE CADA ENCUADRE.
+ *
+ * Hasta hoy cualquier encuadre podía tocarle a cualquier gooal, y por eso seis
+ * de once pedían un cuerpo humano: mientras eso fuera así, el reparto no podía
+ * arreglar nada. **El arreglo no era el reparto, era el vocabulario.**
+ *
+ * `null` quiere decir que vale para cualquiera. Lo demás es una lista cerrada,
+ * y `puedeUsarse()` es lo que la hace valer.
+ */
+const SOLO_EN = {
+  // Los tres sin nadie y el del evento mandan en lo que es un evento.
+  objeto: null,
+  detalle: null,
+  lugar_vacio: null,
+  lleno: null,
+  primera_persona: null,
+  // El plato es de comer. En cualquier otro sitio pone una mesa donde no la hay.
+  plato: ['gastronomia'],
+  // El casco solo donde se lleva casco de verdad.
+  casco: ['deporte'],
+  // Y los dos que enseñan cuerpo se quedan para lo PERSONAL —aprender algo,
+  // conseguir un título, un gesto de alguien—, nunca para un evento: ahí la
+  // persona tapa justo lo que hay que ver.
+  espaldas: ['deporte', 'vida', 'naturaleza'],
+  hombros: ['deporte', 'vida', 'gastronomia'],
+  manos: ['deporte', 'vida', 'gastronomia'],
+}
+
+/**
+ * El texto de un encuadre, o PARAR si ya no existe.
+ *
+ * Que un encuadre retirado deje el prompt sin su frase es exactamente la clase
+ * de fallo que este fichero persigue: no da error, y el modelo decide solo.
+ */
+export function textoDelEncuadre(encuadre) {
+  if (ENCUADRES[encuadre]) return ENCUADRES[encuadre]
+  if (RETIRADOS[encuadre]) {
+    throw new Error(
+      `El encuadre «${encuadre}» está RETIRADO y hay un gooal que todavía lo tiene puesto. ` +
+      'Hay que darle otro en decisiones.mjs antes de generar: ver RETIRADOS en estilos.mjs.')
+  }
+  throw new Error(`No existe el encuadre «${encuadre}».`)
+}
+
+/** ¿Puede este encuadre tocarle a un gooal de esta categoría? */
+export function puedeUsarse(encuadre, categoria) {
+  if (!(encuadre in SOLO_EN)) throw new Error(`No existe el encuadre «${encuadre}».`)
+  const donde = SOLO_EN[encuadre]
+  return donde === null || donde.includes(categoria)
 }
 
 /**
@@ -325,16 +430,27 @@ const EJE_QUE_FIJA = {
   primera_persona: 'angulo',  // «la cámara está donde estarían los ojos»
   detalle: 'angulo',          // «tan cerca que el resto no se ve»
   manos: 'angulo',            // «desde cerca»
-  contraluz: 'luz',           // «a contraluz»: la luz viene de detrás, y eso ES la luz
 }
 
-const CUERPO = new Set(['espaldas', 'hombros', 'contraluz', 'casco'])
+// ── QUIÉN SALE, Y POR TANTO A QUIÉN SE DESCRIBE ───────────
+//
+// Desde el 14-10-2026 solo TRES de los nueve encuadres enseñan un cuerpo, y
+// los tres son para acciones personales. Eran seis de once, y mientras lo
+// fueron ningún reparto podía evitar que la IA metiera a alguien: el arreglo
+// no estaba en a cuántos gooals le tocaba cada encuadre, estaba en el
+// vocabulario.
+//
+// `lleno` NO va aquí aunque salga gente, y es la decisión que lo hace útil: la
+// rotación de quién aparece («una mujer de unos 30») describe a UNA persona, y
+// metérsela a una grada llena pondría a esa mujer en primer plano sin que
+// nadie lo pidiera. En `lleno` la gente es masa, no personaje.
+const CUERPO = new Set(['espaldas', 'hombros', 'casco'])
 const SOLO_MANOS = new Set(['manos', 'plato'])
 
-// ── LOS SEIS QUE NOMBRAN AL SUJETO ────────────────────────
+// ── LOS QUE NOMBRAN AL SUJETO ─────────────────────────────
 //
 // Cuatro encuadres son una MANERA DE MIRAR (objeto, detalle, lugar_vacio,
-// primera_persona): no dicen qué sale. Estos seis NOMBRAN AL SUJETO, y en
+// primera_persona): no dicen qué sale. Estos NOMBRAN AL SUJETO, y en
 // ellos la escena solo puede poner el dónde, el cuándo y lo que hay
 // alrededor. Si nombra otro sujeto, gana el encuadre y la escena no sale.
 //
@@ -342,7 +458,11 @@ const SOLO_MANOS = new Set(['manos', 'plato'])
 // comparan tal cual: quitar acentos deja «marato» y «maraton», que siguen
 // siendo distintas.
 const SUJETO_DEL_ENCUADRE = {
-  contraluz: ['silueta', 'persona', 'alguien', 'gente', 'figura', 'corredor', 'cabeza', 'público', 'multitud', 'coro', 'pareja', 'humana', 'piernas', 'manos', 'brazos', 'criatura', 'enmascarado', 'nazareno'],
+  // `lleno` nombra EL EVENTO como sujeto, así que la cabeza de su escena tiene
+  // que traer una de estas cosas. Si la escena empieza por una persona —«un
+  // chaval saltando…»— es que se le ha colado el problema de siempre por otra
+  // puerta, y aquí para en vez de salir en la foto.
+  lleno: ['grada', 'gradas', 'graderío', 'pista', 'circuito', 'campo', 'plaza', 'calle', 'escenario', 'público', 'gentío', 'multitud', 'marea', 'parrilla', 'carpa', 'recinto', 'estadio', 'pabellón', 'procesión', 'desfile', 'cabalgata', 'pasacalle', 'confeti', 'fuegos', 'luces', 'mesas'],
   espaldas: ['de espaldas', 'nuca', 'hombros', 'alguien', 'corredor', 'persona'],
   hombros: ['torso', 'brazo', 'manos', 'hombros'],
   casco: ['casco'],
@@ -854,7 +974,10 @@ export function construirPrompt(gooal, clave, indice = 0) {
   // lo sostiene. Lo que sí hay que vigilar es que no se contradigan: por eso
   // las escenas de objeto llevan escrito 'hombros', que es compatible con unas
   // manos sosteniendo algo.
-  partes.push(ENCUADRES[encuadre])
+  // Por `textoDelEncuadre` y no por `ENCUADRES[...]` directamente: un encuadre
+  // retirado daría `undefined`, el prompt saldría sin su frase y el modelo
+  // elegiría por su cuenta — sin un solo error por ningún lado. Así para.
+  partes.push(textoDelEncuadre(encuadre))
 
   // ── Y el cerrado SOLO si hay alguien a quien encerrar ────
   //
