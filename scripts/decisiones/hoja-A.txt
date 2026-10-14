@@ -1,0 +1,21 @@
+HOJA A · 20 de 20
+Ir al Saint Patrick's Day de Dublín  ->  Claude outputs/cuarenta-nuevas/05-objeto.png
+Montar en un coche clásico por La Habana  ->  Claude outputs/cuarenta-nuevas/06-objeto.png
+Ver la Nochevieja en Times Square  ->  Claude outputs/cuarenta/25-primera_persona.png
+Ver los fuegos de Nochevieja en Sídney  ->  Claude outputs/doce-b/04-primera_persona.png
+Ver un Gran Premio de Fórmula 1  ->  Claude outputs/cuarenta/22-primera_persona.png
+Ver un Gran Premio de MotoGP  ->  Claude outputs/cuarenta-nuevas/10-primera_persona.png
+Ver un partido del Mundial de fútbol  ->  Claude outputs/cuarenta-nuevas/11-primera_persona.png
+Ver un partido del Mundial de rugby  ->  Claude outputs/cuarenta-nuevas/12-primera_persona.png
+Ver una etapa de la Volta a Catalunya  ->  Claude outputs/cuarenta-nuevas/15-primera_persona.png
+Ver una etapa del Rally Dakar  ->  Claude outputs/cuarenta-nuevas/16-primera_persona.png
+Ver una final de Grand Slam de tenis  ->  Claude outputs/doce-b/09-primera_persona.png
+Flotar en el mar Muerto  ->  NINGUNA
+Ir a la Festa dels Raiers  ->  NINGUNA
+Ir a la Festa Major de Vilafranca  ->  NINGUNA
+Ir al Burning Man  ->  NINGUNA
+Ir al Festival de Cine de Sitges  ->  NINGUNA
+Ir al Glastonbury  ->  NINGUNA
+Ver un partido del Seis Naciones  ->  NINGUNA
+Ver una carrera en Indianápolis  ->  NINGUNA
+Ver una final de la NBA  ->  NINGUNA

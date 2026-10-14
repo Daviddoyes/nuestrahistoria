@@ -113,55 +113,65 @@
       "titulo": "Ir a la Festa dels Raiers",
       "encuadre": "contraluz",
       "tanda": "Claude outputs/cuarenta-nuevas",
-      "estado": "sin_mirar",
-      "motivo": null,
+      "estado": "rechazada",
+      "motivo": "David, hoja A: silueta/figura humana dominante, todas parecidas",
       "titulo_en_aprobadas": true,
-      "kb": 2357
+      "kb": 2357,
+      "decidida_en": "scripts/decisiones/hoja-A.txt"
     },
     "Claude outputs/cuarenta-nuevas/02-contraluz.png": {
       "titulo": "Ir al Burning Man",
       "encuadre": "contraluz",
       "tanda": "Claude outputs/cuarenta-nuevas",
-      "estado": "sin_mirar",
-      "motivo": null,
+      "estado": "rechazada",
+      "motivo": "David, hoja A: silueta/figura humana dominante, todas parecidas",
       "titulo_en_aprobadas": true,
-      "kb": 1974
+      "kb": 1974,
+      "decidida_en": "scripts/decisiones/hoja-A.txt"
     },
     "Claude outputs/cuarenta-nuevas/03-contraluz.png": {
       "titulo": "Ir al Festival de Cine de Sitges",
       "encuadre": "contraluz",
       "tanda": "Claude outputs/cuarenta-nuevas",
-      "estado": "sin_mirar",
-      "motivo": null,
+      "estado": "rechazada",
+      "motivo": "David, hoja A: silueta/figura humana dominante, todas parecidas",
       "titulo_en_aprobadas": true,
-      "kb": 2002
+      "kb": 2002,
+      "decidida_en": "scripts/decisiones/hoja-A.txt"
     },
     "Claude outputs/cuarenta-nuevas/04-lugar_vacio.png": {
       "titulo": "Ir al Glastonbury",
       "encuadre": "lugar_vacio",
       "tanda": "Claude outputs/cuarenta-nuevas",
-      "estado": "sin_mirar",
-      "motivo": null,
+      "estado": "rechazada",
+      "motivo": "David, hoja A: no representa el gooal",
       "titulo_en_aprobadas": true,
-      "kb": 2528
+      "kb": 2528,
+      "decidida_en": "scripts/decisiones/hoja-A.txt"
     },
     "Claude outputs/cuarenta-nuevas/05-objeto.png": {
       "titulo": "Ir al Saint Patrick's Day de Dublín",
       "encuadre": "objeto",
       "tanda": "Claude outputs/cuarenta-nuevas",
-      "estado": "sin_mirar",
+      "estado": "aprobada",
       "motivo": null,
       "titulo_en_aprobadas": true,
-      "kb": 2022
+      "kb": 2022,
+      "decidida_en": "scripts/decisiones/hoja-A.txt",
+      "subida_como": "f986914f-7c75-4418-9231-07d09b193f62-20261014-yzfq.webp",
+      "en_el_catalogo": true
     },
     "Claude outputs/cuarenta-nuevas/06-objeto.png": {
       "titulo": "Montar en un coche clásico por La Habana",
       "encuadre": "objeto",
       "tanda": "Claude outputs/cuarenta-nuevas",
-      "estado": "sin_mirar",
+      "estado": "aprobada",
       "motivo": null,
       "titulo_en_aprobadas": true,
-      "kb": 2517
+      "kb": 2517,
+      "decidida_en": "scripts/decisiones/hoja-A.txt",
+      "subida_como": "7f56bfd9-120a-4787-bbe7-dd3009579b69-20261014-axwv.webp",
+      "en_el_catalogo": true
     },
     "Claude outputs/cuarenta-nuevas/07-primera_persona.png": {
       "titulo": "Ver la Nochevieja en Times Square",
@@ -194,64 +204,81 @@
       "titulo": "Ver un Gran Premio de MotoGP",
       "encuadre": "primera_persona",
       "tanda": "Claude outputs/cuarenta-nuevas",
-      "estado": "sin_mirar",
+      "estado": "aprobada",
       "motivo": null,
       "titulo_en_aprobadas": true,
-      "kb": 2668
+      "kb": 2668,
+      "decidida_en": "scripts/decisiones/hoja-A.txt",
+      "subida_como": "881dd8dc-52aa-4c49-8bcd-9f5cea911ca8-20261014-o4jb.webp",
+      "en_el_catalogo": true
     },
     "Claude outputs/cuarenta-nuevas/11-primera_persona.png": {
       "titulo": "Ver un partido del Mundial de fútbol",
       "encuadre": "primera_persona",
       "tanda": "Claude outputs/cuarenta-nuevas",
-      "estado": "sin_mirar",
+      "estado": "aprobada",
       "motivo": null,
       "titulo_en_aprobadas": true,
-      "kb": 2327
+      "kb": 2327,
+      "decidida_en": "scripts/decisiones/hoja-A.txt",
+      "subida_como": "f5247d4c-9e47-48a7-b6b8-34d164824bed-20261014-pvtn.webp",
+      "en_el_catalogo": true
     },
     "Claude outputs/cuarenta-nuevas/12-primera_persona.png": {
       "titulo": "Ver un partido del Mundial de rugby",
       "encuadre": "primera_persona",
       "tanda": "Claude outputs/cuarenta-nuevas",
-      "estado": "sin_mirar",
+      "estado": "aprobada",
       "motivo": null,
       "titulo_en_aprobadas": true,
-      "kb": 2903
+      "kb": 2903,
+      "decidida_en": "scripts/decisiones/hoja-A.txt",
+      "subida_como": "41dc9307-c9ff-4a81-84d4-afb5f209ff8f-20261014-iwgm.webp",
+      "en_el_catalogo": true
     },
     "Claude outputs/cuarenta-nuevas/13-primera_persona.png": {
       "titulo": "Ver un partido del Seis Naciones",
       "encuadre": "primera_persona",
       "tanda": "Claude outputs/cuarenta-nuevas",
-      "estado": "sin_mirar",
-      "motivo": null,
+      "estado": "rechazada",
+      "motivo": "David, hoja A: no representa el gooal",
       "titulo_en_aprobadas": true,
-      "kb": 2334
+      "kb": 2334,
+      "decidida_en": "scripts/decisiones/hoja-A.txt"
     },
     "Claude outputs/cuarenta-nuevas/14-primera_persona.png": {
       "titulo": "Ver una carrera en Indianápolis",
       "encuadre": "primera_persona",
       "tanda": "Claude outputs/cuarenta-nuevas",
-      "estado": "sin_mirar",
-      "motivo": null,
+      "estado": "rechazada",
+      "motivo": "David, hoja A: no representa el gooal",
       "titulo_en_aprobadas": false,
-      "kb": 2482
+      "kb": 2482,
+      "decidida_en": "scripts/decisiones/hoja-A.txt"
     },
     "Claude outputs/cuarenta-nuevas/15-primera_persona.png": {
       "titulo": "Ver una etapa de la Volta a Catalunya",
       "encuadre": "primera_persona",
       "tanda": "Claude outputs/cuarenta-nuevas",
-      "estado": "sin_mirar",
+      "estado": "aprobada",
       "motivo": null,
       "titulo_en_aprobadas": true,
-      "kb": 2588
+      "kb": 2588,
+      "decidida_en": "scripts/decisiones/hoja-A.txt",
+      "subida_como": "ca324d10-2265-4a2f-bedd-2931e4c52dfa-20261014-y874.webp",
+      "en_el_catalogo": true
     },
     "Claude outputs/cuarenta-nuevas/16-primera_persona.png": {
       "titulo": "Ver una etapa del Rally Dakar",
       "encuadre": "primera_persona",
       "tanda": "Claude outputs/cuarenta-nuevas",
-      "estado": "sin_mirar",
+      "estado": "aprobada",
       "motivo": null,
       "titulo_en_aprobadas": true,
-      "kb": 2363
+      "kb": 2363,
+      "decidida_en": "scripts/decisiones/hoja-A.txt",
+      "subida_como": "5a739565-5982-46c2-8259-a693edef229a-20261014-cd5w.webp",
+      "en_el_catalogo": true
     },
     "Claude outputs/cuarenta-nuevas/17-primera_persona.png": {
       "titulo": "Ver una final de Grand Slam de tenis",
@@ -266,10 +293,11 @@
       "titulo": "Ver una final de la NBA",
       "encuadre": "primera_persona",
       "tanda": "Claude outputs/cuarenta-nuevas",
-      "estado": "sin_mirar",
-      "motivo": null,
+      "estado": "rechazada",
+      "motivo": "David, hoja A: no representa el gooal",
       "titulo_en_aprobadas": true,
-      "kb": 2063
+      "kb": 2063,
+      "decidida_en": "scripts/decisiones/hoja-A.txt"
     },
     "Claude outputs/cuarenta-nuevas/19-contraluz.png": {
       "titulo": "Bailar salsa",
@@ -662,10 +690,13 @@
       "titulo": "Ver un Gran Premio de Fórmula 1",
       "encuadre": "primera_persona",
       "tanda": "Claude outputs/cuarenta",
-      "estado": "sin_mirar",
+      "estado": "aprobada",
       "motivo": null,
       "titulo_en_aprobadas": true,
-      "kb": 2498
+      "kb": 2498,
+      "decidida_en": "scripts/decisiones/hoja-A.txt",
+      "subida_como": "5b52d446-36c4-4b36-820f-8f45f1aded63-20261014-b0lm.webp",
+      "en_el_catalogo": true
     },
     "Claude outputs/cuarenta/23-primera_persona.png": {
       "titulo": "Ver un partido de la NBA",
@@ -689,10 +720,13 @@
       "titulo": "Ver la Nochevieja en Times Square",
       "encuadre": "primera_persona",
       "tanda": "Claude outputs/cuarenta",
-      "estado": "sin_mirar",
+      "estado": "aprobada",
       "motivo": null,
       "titulo_en_aprobadas": true,
-      "kb": 2497
+      "kb": 2497,
+      "decidida_en": "scripts/decisiones/hoja-A.txt",
+      "subida_como": "ae63036b-1426-4dd5-82aa-03a9dd43756d-20261014-3k6k.webp",
+      "en_el_catalogo": true
     },
     "Claude outputs/cuarenta/26-primera_persona.png": {
       "titulo": "Ver una procesión de la Semana Santa de Sevilla",
@@ -842,10 +876,11 @@
       "titulo": "Ir al Festival de Cine de Sitges",
       "encuadre": "detalle",
       "tanda": "Claude outputs/doce-b",
-      "estado": "sin_mirar",
-      "motivo": null,
+      "estado": "rechazada",
+      "motivo": "David, hoja A: no representa el gooal",
       "titulo_en_aprobadas": true,
-      "kb": 1976
+      "kb": 1976,
+      "decidida_en": "scripts/decisiones/hoja-A.txt"
     },
     "Claude outputs/doce-b/02-manos.png": {
       "titulo": "Cantar en un karaoke",
@@ -869,10 +904,13 @@
       "titulo": "Ver los fuegos de Nochevieja en Sídney",
       "encuadre": "primera_persona",
       "tanda": "Claude outputs/doce-b",
-      "estado": "sin_mirar",
+      "estado": "aprobada",
       "motivo": null,
       "titulo_en_aprobadas": true,
-      "kb": 2462
+      "kb": 2462,
+      "decidida_en": "scripts/decisiones/hoja-A.txt",
+      "subida_como": "70f7d609-e235-4e6a-b25d-342d26b625f3-20261014-s5f8.webp",
+      "en_el_catalogo": true
     },
     "Claude outputs/doce-b/05-detalle.png": {
       "titulo": "Bucear en Raja Ampat",
@@ -905,28 +943,33 @@
       "titulo": "Ir a la Festa dels Raiers",
       "encuadre": "contraluz",
       "tanda": "Claude outputs/doce-b",
-      "estado": "sin_mirar",
-      "motivo": null,
+      "estado": "rechazada",
+      "motivo": "David, hoja A: silueta/figura humana dominante, todas parecidas",
       "titulo_en_aprobadas": true,
-      "kb": 2325
+      "kb": 2325,
+      "decidida_en": "scripts/decisiones/hoja-A.txt"
     },
     "Claude outputs/doce-b/09-primera_persona.png": {
       "titulo": "Ver una final de Grand Slam de tenis",
       "encuadre": "primera_persona",
       "tanda": "Claude outputs/doce-b",
-      "estado": "sin_mirar",
+      "estado": "aprobada",
       "motivo": null,
       "titulo_en_aprobadas": true,
-      "kb": 2776
+      "kb": 2776,
+      "decidida_en": "scripts/decisiones/hoja-A.txt",
+      "subida_como": "79967951-8020-4361-b4a5-49a23153b7ac-20261014-e57g.webp",
+      "en_el_catalogo": true
     },
     "Claude outputs/doce-b/10-primera_persona.png": {
       "titulo": "Ver una final de la NBA",
       "encuadre": "primera_persona",
       "tanda": "Claude outputs/doce-b",
-      "estado": "sin_mirar",
-      "motivo": null,
+      "estado": "rechazada",
+      "motivo": "David, hoja A: no representa el gooal",
       "titulo_en_aprobadas": true,
-      "kb": 2971
+      "kb": 2971,
+      "decidida_en": "scripts/decisiones/hoja-A.txt"
     },
     "Claude outputs/doce-b/11-plato.png": {
       "titulo": "Comer en el mercado de Toyosu",
@@ -1004,10 +1047,11 @@
       "titulo": "Ir a la Festa Major de Vilafranca",
       "encuadre": "contraluz",
       "tanda": "Claude outputs/doce",
-      "estado": "sin_mirar",
-      "motivo": null,
+      "estado": "rechazada",
+      "motivo": "David, hoja A: silueta/figura humana dominante, todas parecidas",
       "titulo_en_aprobadas": true,
-      "kb": 1951
+      "kb": 1951,
+      "decidida_en": "scripts/decisiones/hoja-A.txt"
     },
     "Claude outputs/doce/08-detalle.png": {
       "titulo": "Ir al Carnaval de Sitges",
@@ -1490,19 +1534,21 @@
       "titulo": "Ver una carrera en Indianápolis",
       "encuadre": "primera_persona",
       "tanda": "Claude outputs/indy",
-      "estado": "sin_mirar",
-      "motivo": null,
+      "estado": "rechazada",
+      "motivo": "David, hoja A: no representa el gooal",
       "titulo_en_aprobadas": false,
-      "kb": 2759
+      "kb": 2759,
+      "decidida_en": "scripts/decisiones/hoja-A.txt"
     },
     "Claude outputs/indy2/01-detalle.png": {
       "titulo": "Ver una carrera en Indianápolis",
       "encuadre": "detalle",
       "tanda": "Claude outputs/indy2",
-      "estado": "sin_mirar",
-      "motivo": null,
+      "estado": "rechazada",
+      "motivo": "David, hoja A: no representa el gooal",
       "titulo_en_aprobadas": false,
-      "kb": 2333
+      "kb": 2333,
+      "decidida_en": "scripts/decisiones/hoja-A.txt"
     },
     "Claude outputs/pequenos/01-lugar_vacio.png": {
       "titulo": "Bañarte en Bondi Beach",
@@ -1535,10 +1581,11 @@
       "titulo": "Ver una final de la NBA",
       "encuadre": "primera_persona",
       "tanda": "Claude outputs/pequenos",
-      "estado": "sin_mirar",
-      "motivo": null,
+      "estado": "rechazada",
+      "motivo": "David, hoja A: no representa el gooal",
       "titulo_en_aprobadas": true,
-      "kb": 2167
+      "kb": 2167,
+      "decidida_en": "scripts/decisiones/hoja-A.txt"
     },
     "Claude outputs/pequenos/05-plato.png": {
       "titulo": "Comer en un restaurante con una estrella Michelin",
@@ -1634,10 +1681,11 @@
       "titulo": "Ir a la Festa Major de Vilafranca",
       "encuadre": "contraluz",
       "tanda": "Claude outputs/pequenos",
-      "estado": "sin_mirar",
-      "motivo": null,
+      "estado": "rechazada",
+      "motivo": "David, hoja A: silueta/figura humana dominante, todas parecidas",
       "titulo_en_aprobadas": true,
-      "kb": 1823
+      "kb": 1823,
+      "decidida_en": "scripts/decisiones/hoja-A.txt"
     },
     "Claude outputs/pequenos/16-contraluz.png": {
       "titulo": "Ir al Carnaval de Cádiz",
@@ -1724,10 +1772,11 @@
       "titulo": "Ver un partido del Seis Naciones",
       "encuadre": "primera_persona",
       "tanda": "Claude outputs/pequenos",
-      "estado": "sin_mirar",
-      "motivo": null,
+      "estado": "rechazada",
+      "motivo": "David, hoja A: no representa el gooal",
       "titulo_en_aprobadas": true,
-      "kb": 2244
+      "kb": 2244,
+      "decidida_en": "scripts/decisiones/hoja-A.txt"
     },
     "Claude outputs/prueba-luz/01-objeto.png": {
       "titulo": "Montar en un coche clásico por La Habana",
@@ -2318,10 +2367,11 @@
       "titulo": "Flotar en el mar Muerto",
       "encuadre": null,
       "tanda": "Claude outputs/tanda-hacer-v2",
-      "estado": "sin_mirar",
-      "motivo": null,
+      "estado": "rechazada",
+      "motivo": "David, hoja A: no representa el gooal",
       "titulo_en_aprobadas": false,
-      "kb": 2492
+      "kb": 2492,
+      "decidida_en": "scripts/decisiones/hoja-A.txt"
     },
     "Claude outputs/tanda-hacer-v2/A-formar-parte-de-un-castell-1.png": {
       "titulo": "Formar parte de un castell",
@@ -3506,10 +3556,11 @@
       "titulo": "Flotar en el mar Muerto",
       "encuadre": "espaldas",
       "tanda": "Claude outputs/tanda2",
-      "estado": "sin_mirar",
-      "motivo": null,
+      "estado": "rechazada",
+      "motivo": "David, hoja A: no representa el gooal",
       "titulo_en_aprobadas": false,
-      "kb": 2151
+      "kb": 2151,
+      "decidida_en": "scripts/decisiones/hoja-A.txt"
     },
     "Claude outputs/tanda2/08-primera_persona.png": {
       "titulo": "Hacer barranquismo en la Noguera",
@@ -3938,10 +3989,11 @@
       "titulo": "Ir a la Festa dels Raiers",
       "encuadre": "objeto",
       "tanda": "Claude outputs/tres-c",
-      "estado": "sin_mirar",
-      "motivo": null,
+      "estado": "rechazada",
+      "motivo": "David, hoja A: no representa el gooal",
       "titulo_en_aprobadas": true,
-      "kb": 2437
+      "kb": 2437,
+      "decidida_en": "scripts/decisiones/hoja-A.txt"
     },
     "Claude outputs/tres-c/03-detalle.png": {
       "titulo": "Correr un encierro de San Fermín",
