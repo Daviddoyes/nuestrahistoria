@@ -760,7 +760,24 @@ const cambiar = (viejo, nuevo) => {
 }
 ```
 
-### Y nunca se escribe un fichero desde una cadena entre comillas de bash
+### EL CONTENIDO DE UN FICHERO NO PASA NUNCA POR BASH
+
+> **Ni con `node -e`, ni con `sed`, ni con `echo`, ni entre comillas de ningún
+> tipo. El texto de un fichero se escribe con la herramienta de escribir
+> ficheros, y punto.**
+
+Y la regla NO es «ten cuidado con los backticks». Es que el texto **no viaje por
+ahí**. Las dos veces que ha fallado, el guion imprimió «ok» y el commit pasó
+limpio: **no hay cuidado que valga contra un fallo que no da la cara.**
+
+Lo que sí salvó las dos veces fue releer. Así que:
+
+> **Un commit que toca un `.md` o un `.json` de texto se lee EN EL DIFF antes de
+> subirlo.** Son los ficheros donde un destrozo no rompe nada —no hay build que
+> falle, no hay prueba que se ponga roja— y por eso son justo los que se suben
+> rotos.
+
+### Lo que pasó las dos veces
 
 Esto ya costó un fichero duplicado y commiteado (`generar.mjs`, con 308 líneas
 donde había 159) y **volvió a pasar el 13-10-2026, peor**.
