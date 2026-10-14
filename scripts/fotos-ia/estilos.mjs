@@ -841,6 +841,99 @@ const GRUPOS = {
   'carreras a pie': ['Correr la Mitja de Granollers', 'Correr la Ultra Pirineu', 'Hacer la Matagalls-Montserrat'],
 }
 
+// ══ DESDE DÓNDE SE MIRA UN EVENTO LLENO ═══════════════════
+//
+// Un eje aparte, como el de la cámara, y NO variantes del texto de `lleno`.
+// Tres razones, y la tercera es la que decide:
+//
+//   1. Un encuadre con cinco redacciones son cinco encuadres mal llamados: el
+//      registro, el detector de gemelas y SUJETO_DEL_ENCUADRE verían uno solo.
+//   2. El reparto por turno dentro de un grupo ya existe aquí arriba y
+//      funciona; no hace falta inventar otro.
+//   3. **UN EJE SE PUEDE CONTAR.** «De los cuarenta de eventos, cuántos
+//      llevaron cada mirada» es una consulta. Con variantes de texto, no.
+//
+// Y hace falta porque `lleno` nombra una multitud, y un encuadre que nombra
+// una sola imagen FABRICA una sola imagen: es exactamente lo que hizo
+// `contraluz` con cinco fiestas distintas. Sin esto, ochenta eventos serían
+// ochenta veces la misma grada vista desde arriba.
+//
+// CADA MIRADA DICE QUÉ LLENA EL CUADRO, nunca qué falta. Un encuadre definido
+// por resta lo decide el modelo, y elige lo cómodo.
+const LLENO_DESDE = {
+  grada_desde_abajo:
+    'LA MASA DE PÚBLICO LLENA EL CUADRO, subiendo en vertical como una pared de gente, vista desde el borde mismo del campo. Las caras quedan lejos y pequeñas: lo que se lee es la mancha de colores y los brazos en alto, no ninguna persona.',
+  campo_desde_arriba:
+    'EL CAMPO ENTERO LLENA EL CUADRO —el verde, las líneas, la pista— visto desde lo alto de la grada, con el juego abajo. Por el borde de abajo entran cabezas de la grada, pequeñas y oscuras, como marco.',
+  pista_de_frente:
+    'LA PISTA O LA RECTA VIENE HACIA LA CÁMARA y llena el cuadro: el asfalto, las vallas, las marcas del suelo. A los lados, el gentío apretado y fuera de foco.',
+
+  // ── REESCRITA el 14-10-2026 ──────────────────────────────
+  //
+  // Decía «la calle a la altura de la cintura, cuerpos cortados por el borde,
+  // el paso de la fiesta cruzando». El sujeto de esa frase era LA GENTE otra
+  // vez — exactamente lo que estamos corrigiendo, colado por la puerta de al
+  // lado. Ahora el evento va primero y los cuerpos son el marco.
+  calle_a_ras:
+    'LA FIESTA PASANDO POR LA CALLE LLENA EL CUADRO: los gigantes, la carroza, los castellers, la cabalgata, el paso. Se ve desde el borde mismo del recorrido. La gente entra SOLO por los lados, cortada por el borde y fuera de foco: es el marco, nunca el asunto.',
+
+  luces_y_confeti:
+    'EL AIRE LLENA EL CUADRO: confeti, papelillos, humo de colores, chispas o fuegos, atravesados por la luz. La gente queda detrás, desenfocada y sin que se distinga a nadie.',
+
+  // ── REESCRITA el 14-10-2026, y por poco se queda fuera ───
+  //
+  // Decía «el escenario iluminado al fondo y un mar de nucas oscuras delante».
+  // Eso SON ESPALDAS: la foto que llevamos tres semanas rechazando, con otro
+  // nombre. Y caía justo en el par que esta misma lista avisa de evitar —
+  // escenario iluminado más siluetas oscuras delante, a 179 px, es la foto de
+  // contraluz que acabamos de jubilar.
+  //
+  // La redacción que aguanta pone el escenario LLENANDO el cuadro y visto de
+  // cerca, no al fondo. Y entonces la prohibición de las nucas no pelea con el
+  // sujeto —que es lo que nunca funciona—, sino que es una barandilla a algo
+  // que la escena ya no necesita.
+  escenario_de_cerca:
+    'EL ESCENARIO LLENA EL CUADRO, visto de frente y desde cerca: la estructura, las torres de luces, las pantallas y el humo atravesado por los focos. Del público, como mucho, una franja baja y DESENFOCADA en el borde de abajo — ninguna nuca, ninguna cabeza recortada, ninguna silueta que se lea como una persona.',
+
+  recinto_de_lejos:
+    'EL RECINTO ENTERO LLENA EL CUADRO —las carpas, las atracciones, el campamento, los puestos— con la gente pequeña entre medias, leída como textura y no como personas.',
+}
+
+/**
+ * LAS PAREJAS QUE NO PUEDEN CAER JUNTAS, y por qué cada una.
+ *
+ * No es estética: las dos nacen de fallos que ya se pagaron.
+ */
+const LLENO_INCOMPATIBLES = [
+  // Las dos acaban siendo manchas de luz sobre un fondo oscuro, que es el
+  // fallo de `contraluz` con otra ropa.
+  ['luces_y_confeti', 'escenario_de_cerca'],
+  // Son la misma pareja invertida: alternarlas da variedad DENTRO de un
+  // estadio, pero dos estadios seguidos con la misma son dos fotos iguales.
+  ['grada_desde_abajo', 'campo_desde_arriba'],
+]
+
+/**
+ * Qué mirada le toca a un gooal de `lleno`, por su POSICIÓN en su grupo.
+ *
+ * Por turno y no al azar, que es lo único que garantiza que no se repitan —la
+ * misma razón por la que los momentos de los puertos se reparten así.
+ *
+ * `posicion` la pone quien reparte; sin grupo, se usa el orden alfabético del
+ * conjunto que se esté generando, que para una tanda es igual de estable.
+ */
+export function miradaDeLleno(posicion) {
+  const nombres = Object.keys(LLENO_DESDE)
+  return nombres[posicion % nombres.length]
+}
+
+/** Las dos miradas de una pareja prohibida, para que quien reparte lo compruebe. */
+export function miradasQueChocan(a, b) {
+  return LLENO_INCOMPATIBLES.some(p => (p[0] === a && p[1] === b) || (p[0] === b && p[1] === a))
+}
+
+export { LLENO_DESDE }
+
 // 'parejas' va de dos en dos: cada pareja empieza por el primer momento.
 const momentoDe = titulo => {
   for (const [grupo, lista] of Object.entries(GRUPOS)) {
@@ -978,6 +1071,16 @@ export function construirPrompt(gooal, clave, indice = 0) {
   // retirado daría `undefined`, el prompt saldría sin su frase y el modelo
   // elegiría por su cuenta — sin un solo error por ningún lado. Así para.
   partes.push(textoDelEncuadre(encuadre))
+
+  // Y si es `lleno`, DESDE DÓNDE se mira. Sin esto, «el evento llena el
+  // cuadro» a secas sale ochenta veces como la misma grada: un encuadre que
+  // nombra una sola imagen fabrica una sola imagen.
+  if (encuadre === 'lleno') {
+    const mirada = gooal.miradaLleno
+    if (!mirada) throw new Error(`«${gooal.titulo}» lleva el encuadre «lleno» y no trae mirada. La pone quien reparte, con miradaDeLleno().`)
+    if (!LLENO_DESDE[mirada]) throw new Error(`La mirada «${mirada}» no existe. Ver LLENO_DESDE en estilos.mjs.`)
+    partes.push(LLENO_DESDE[mirada])
+  }
 
   // ── Y el cerrado SOLO si hay alguien a quien encerrar ────
   //

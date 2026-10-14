@@ -134,6 +134,45 @@ for (const [titulo, imgs] of porGooal) {
 }
 filas.sort((a, b) => a.titulo.localeCompare(b.titulo))
 
+// ── EL GUARDIA DE LOS RECUENTOS ───────────────────────────
+//
+// La hoja A pasó de 20 gooals a 7 por un filtro mal puesto, y lo único que lo
+// delató fue un número que alguien estaba mirando. Es la TERCERA vez en este
+// repo que un cambio silencioso de recuento es la única señal — antes fueron
+// las 97 cámaras escritas en el mapa equivocado y los 259 que pasaron a 162.
+//
+// Así que la hoja no imprime el número: lo AFIRMA. Cuenta por su cuenta lo que
+// debería salir y para si no cuadra con lo que ha salido.
+{
+  const esperadosGooals = [...porGooal.keys()].filter(titulo => {
+    const g = enLaApp.get(titulo)
+    if (!g) return false
+    const declarada = definitivas[titulo]?.fichero?.split('\\').join('/') ?? null
+    const subidaSinFila = Boolean(definitivas[titulo]?.subida_como) && !g.imagen_url
+    if (!subidaSinFila && !PINTA.filtra(g)) return false
+    if (subidaSinFila && grupo !== 'B') return false
+    if (grupo !== 'A' && !todas && !APROBADAS.has(titulo) && !subidaSinFila) return false
+    return porGooal.get(titulo).some(i => i.fichero !== declarada || subidaSinFila)
+  }).length
+  const esperadasImagenes = filas.reduce((a, f) => a + f.candidatas.length, 0)
+
+  // Un guardia que nadie ha visto parar es un guardia que no se sabe si para.
+  // `--probar-guardia` le quita una fila a lo que ya se ha montado —no toca
+  // ningún dato, ni ningún fichero— para comprobar que salta. Es el coche de
+  // cartón: una prueba de un freno no puede causar el daño del que protege.
+  if (process.argv.includes('--probar-guardia')) filas.pop()
+
+  if (filas.length !== esperadosGooals) {
+    console.error(`PARA: esperaba ${esperadosGooals} gooals en la hoja y han salido ${filas.length}.`)
+    process.exit(1)
+  }
+  if (filas.some(f => f.candidatas.length === 0)) {
+    console.error('PARA: hay un gooal en la hoja sin ninguna imagen que enseñar.')
+    process.exit(1)
+  }
+  console.log(`cuadre: ${filas.length} gooals y ${esperadasImagenes} imágenes, que es lo que se esperaba.`)
+}
+
 const esc = t => String(t ?? '')
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 // El HTML vive en `Claude outputs/`, así que para llegar a un fichero de ahí
